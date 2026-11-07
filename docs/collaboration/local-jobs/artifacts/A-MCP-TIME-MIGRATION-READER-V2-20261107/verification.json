@@ -1,0 +1,165 @@
+{
+  "id": "A-MCP-TIME-MIGRATION-READER-V2-20261107",
+  "kind": "reader-test",
+  "reader": "new-context reader (not the old page, u1, maintainer follow-up, or cloud cold read)",
+  "date": "2026-11-08",
+  "status": "blocked",
+  "blocked_reason": "Required runtime and test dependencies are absent: mcp, tzlocal, jsonschema, pytest, pytest-asyncio, freezegun, ruff, pyright; the mcp-server-time distribution and console script are not installed.",
+  "page": {
+    "path": "docs/decisions/migrations.md",
+    "commit": "9d0321cc594034fb8267540895075376157e3848",
+    "bytes": 10226,
+    "sha256": "3c47c5f82ea1d074e17d4483880919381577a8c3ad45cc10661bf5bc96375497",
+    "fingerprint_matches_card": true,
+    "attached_text_equals_pinned_blob": true,
+    "used_main_instead": false
+  },
+  "target": {
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "base_commit": "2f8dc42931d96d083b45691a859619d45362713a",
+    "base_subject": "Merge pull request #5120 from modelcontextprotocol/v2/chore/5119-guard-main-source",
+    "candidate_commit": "38fa696473ec9d83c87b470155693c174440c15d",
+    "candidate_subject": "feat(fetch,git,time): serve the 2026-07-28 era beside 2025-11-25",
+    "scope": [
+      "src/time/README.md",
+      "src/time/src/mcp_server_time/server.py",
+      "src/time/tests/test_protocol.py",
+      "src/time/tests/test_eras.py"
+    ],
+    "insertions": 195,
+    "deletions": 30,
+    "other_commit_paths_not_taken": [
+      ".claude/skills/client-smoke/SKILL.md",
+      "src/fetch/README.md",
+      "src/fetch/src/mcp_server_fetch/server.py",
+      "src/fetch/tests/test_eras.py",
+      "src/fetch/tests/test_protocol.py",
+      "src/git/README.md",
+      "src/git/src/mcp_server_git/server.py",
+      "src/git/tests/test_eras.py",
+      "src/git/tests/test_protocol.py",
+      "src/git/tests/test_server.py"
+    ]
+  },
+  "patch": {
+    "path": "migration.patch",
+    "bytes": 13184,
+    "sha256": "9ce2cdaeaaa2e5517c7c6f3fe2d8ea7f49adacd985ba46043d8ceebb10109755",
+    "files": 4,
+    "applies_cleanly_to_base": true,
+    "applied_blob_hashes_match_candidate": true,
+    "applied_blobs": {
+      "src/time/README.md": "7103cafc82bf7e64f88e5cca496322a470cf1bff",
+      "src/time/src/mcp_server_time/server.py": "4a2cd187ae97af2fa8195169a8c88df15d499860",
+      "src/time/tests/test_protocol.py": "e4daee641888c1f7cbf0c9581683cea1b2dc0021",
+      "src/time/tests/test_eras.py": "5f2e35b45aa1eb25e2b98ce57c906f23f9b9e20e"
+    }
+  },
+  "dependency_check": {
+    "lock_and_manifest_changed": false,
+    "checked_paths": [
+      "src/time/uv.lock",
+      "src/time/pyproject.toml",
+      "src/time/.python-version"
+    ],
+    "locked_mcp_version": "2.3.0",
+    "declared_mcp_constraint": "mcp>=2.2,<3",
+    "declared_runtime_dependencies": [
+      "jsonschema>=4.20.0",
+      "mcp>=2.2,<3",
+      "pydantic>=2.0.0",
+      "tzdata>=2024.2",
+      "tzlocal>=5.3.1"
+    ],
+    "declared_dev_dependencies": [
+      "freezegun>=1.5.1",
+      "pyright>=1.1.389",
+      "pytest>=8.3.3",
+      "pytest-asyncio>=1.4.0",
+      "pytest-cov>=7.1.0",
+      "ruff>=0.8.1"
+    ]
+  },
+  "source_checks": {
+    "commit_metadata_read": true,
+    "four_file_diff_only": true,
+    "page_pin_wording_matches_test_eras": true,
+    "page_entry_point_wording_matches_sources": true,
+    "py_compile": {
+      "command": "python -m py_compile <candidate src/time python files>",
+      "exit_code": 0,
+      "note": "syntax only; not ruff, pyright, or import success"
+    },
+    "test_function_count_uncollected": {
+      "src/time/tests/test_protocol.py": 25,
+      "src/time/tests/test_eras.py": 7
+    },
+    "candidate_test_transport": "test_eras.py uses create_client_server_memory_streams (in-memory); this does not replace the card's requirement to start the project's real stdio CLI"
+  },
+  "environment": {
+    "python_version": "3.13.5",
+    "python_bits": 64,
+    "project_requires_python": ">=3.10",
+    "project_dot_python_version": "3.10",
+    "uv_version": "0.11.7",
+    "probes": [
+      {"check": "import mcp", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "import tzlocal", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "import jsonschema", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "import pytest", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "import pytest_asyncio", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "import freezegun", "exit_code": 1, "result": "ModuleNotFoundError"},
+      {"check": "ruff --version", "exit_code": 127, "result": "command not found"},
+      {"check": "pyright --version", "exit_code": 127, "result": "command not found"},
+      {"check": "pip show mcp", "exit_code": 1, "result": "not found"},
+      {"check": "pip show mcp-server-time", "exit_code": 1, "result": "not found"},
+      {"check": "which mcp-server-time", "exit_code": 1, "result": "not found"},
+      {"check": "python -m mcp_server_time (uninstalled source tree)", "exit_code": 1, "result": "No module named mcp_server_time"}
+    ],
+    "other_interpreters_checked": "uv-managed 3.9/3.10/3.11 and system 3.13; none has mcp or pytest",
+    "uv_tool_list": "empty",
+    "forbidden_workarounds_not_used": [
+      "PYTHONPATH cache stitching",
+      "fake dist-info",
+      "dependency stubs",
+      "installing or downloading packages",
+      "deleting acceptance items"
+    ]
+  },
+  "not_run": [
+    "real stdio client in legacy mode",
+    "real stdio client in 2026-07-28 mode",
+    "convert_time UTC 12:00 -> Etc/GMT-5 expecting 17:00 / +5.0h",
+    "tool list and input contracts",
+    "invalid timezone, missing argument, unknown tool, unsupported method error classes",
+    "fresh connection after shutdown",
+    "baseline fails on modern client",
+    "candidate succeeds on modern client",
+    "native pytest suite (baseline and candidate)",
+    "ruff",
+    "pyright",
+    "python -m mcp_server_time and the mcp-server-time console script",
+    "mcp 2.3.0 internal API source check"
+  ],
+  "recovery_conditions": [
+    "Prepare a project-real install from src/time/uv.lock with mcp==2.3.0 and runtime dependencies, and install the mcp-server-time distribution so import and console entry work.",
+    "Install pytest, pytest-asyncio, freezegun, ruff, and pyright within the declared version ranges.",
+    "Run pytest, ruff, and pyright from src/time with a recorded Python version.",
+    "Start the real stdio entry and rerun the legacy and 2026-07-28 client checks from the card, keeping raw logs private."
+  ],
+  "artifacts": [
+    "result.md",
+    "migration.patch",
+    "verification.json",
+    "SERVERS-LICENSE.txt",
+    "reader-tests/A-MCP-TIME-MIGRATION-READER-V2-20261107-u1.md"
+  ],
+  "probe_script_submitted": false,
+  "probe_script_reason": "probe-time-eras.py is only submitted when actually run; no runnable environment was available",
+  "public_safety": {
+    "local_absolute_paths_included": false,
+    "emails_included": false,
+    "credentials_included": false,
+    "private_call_ids_included": false
+  }
+}

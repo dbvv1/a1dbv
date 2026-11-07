@@ -1,0 +1,296 @@
+diff --git a/src/time/README.md b/src/time/README.md
+index 6cb87ee..7103caf 100644
+--- a/src/time/README.md
++++ b/src/time/README.md
+@@ -22,6 +22,10 @@ Requires MCP Python SDK 2.x (`mcp>=2.2,<3`).
+ 
+ A timezone name, here and in `--local-timezone`, must be an exact IANA key, case included: `Europe/Warsaw` is accepted and `europe/warsaw` is rejected on every platform, including macOS, whose case-insensitive filesystem would otherwise resolve it.
+ 
++### Protocol versions
++
++The server speaks both eras of the Model Context Protocol over stdio, with nothing to configure: a **2026-07-28** client (discovered with `server/discover`, no session) and a **2025-11-25** client (the `initialize` handshake). The client's first request decides which. Tools behave the same in both. Methods the 2026-07-28 specification removes, such as `ping`, are answered only on a 2025-11-25 connection.
++
+ ## Installation
+ 
+ ### Using uv (recommended)
+@@ -279,7 +283,8 @@ npx @modelcontextprotocol/inspector uv run mcp-server-time
+ ## Development
+ 
+ Run the tests from `src/time`. They live in `tests/`: `test_protocol.py` drives
+-the server through an MCP `ClientSession` in-process, `test_entrypoints.py`
++the server through an MCP `ClientSession` in-process, `test_eras.py` runs a
++`Client` against it as a 2026-07-28 and as a 2025-11-25 client, `test_entrypoints.py`
+ covers `main()`, `python -m mcp_server_time` and the console script, and
+ `test_server.py` unit-tests the time helpers.
+ 
+diff --git a/src/time/src/mcp_server_time/server.py b/src/time/src/mcp_server_time/server.py
+index 92e2704..4a2cd18 100644
+--- a/src/time/src/mcp_server_time/server.py
++++ b/src/time/src/mcp_server_time/server.py
+@@ -5,8 +5,10 @@
+ # Built on the MCP Python SDK v2's low-level `Server` (#4851). That SDK no
+ # longer validates tool arguments or folds tool exceptions into `isError`
+ # results, so `call_tool` does both with SDK v1's messages, keeping tool
+-# results as they were on v1. `serve()` runs the legacy (2025-11-25) handshake
+-# loop only; serving 2026-07-28 is #4853.
++# results as they were on v1. `serve()` serves both protocol eras (#4853): a
++# 2025-11-25 client through the initialize handshake, and a 2026-07-28 client
++# sessionlessly. No handler reads the session or calls back to the client
++# (roots, sampling, elicitation, logging), so nothing differs between them.
+ 
+ from datetime import datetime, timedelta
+ from functools import cache
+@@ -21,7 +23,6 @@ from tzlocal import get_localzone_name  # ← returns "Europe/Paris", etc.
+ 
+ import jsonschema
+ from mcp.server import Server, ServerRequestContext
+-from mcp.server.runner import serve_loop
+ from mcp.server.stdio import stdio_server
+ from mcp.types import (
+     CallToolRequestParams,
+@@ -325,15 +326,9 @@ async def serve(local_timezone: str | None = None) -> None:
+     )
+     options = server.create_initialization_options()
+     async with stdio_server() as (read_stream, write_stream):
+-        # Legacy era only. Server.run() would also serve 2026-07-28 (its
+-        # dual-era loop answers server/discover and per-request envelopes);
+-        # adopting that era is #4853, so this port (#4851) serves the
+-        # handshake loop alone, the only era it served on SDK v1.
+-        async with server.lifespan(server) as lifespan_state:
+-            await serve_loop(
+-                server,
+-                read_stream,
+-                write_stream,
+-                lifespan_state=lifespan_state,
+-                init_options=options,
+-            )
++        # Both eras (#4853): Server.run()'s dual-era loop lets the client's
++        # first request decide. `initialize` gets the 2025-11-25 handshake;
++        # `server/discover` or a request carrying a 2026-07-28 envelope gets
++        # the modern, sessionless era, with its required result fields
++        # (resultType, ttlMs, cacheScope) filled in by the SDK.
++        await server.run(read_stream, write_stream, options)
+diff --git a/src/time/tests/test_eras.py b/src/time/tests/test_eras.py
+new file mode 100644
+index 0000000..5f2e35b
+--- /dev/null
++++ b/src/time/tests/test_eras.py
+@@ -0,0 +1,157 @@
++# Both protocol eras, driven through a real `mcp` 2.x `Client` (#4853).
++#
++# serve() answers a 2025-11-25 client through the initialize handshake and a
++# 2026-07-28 client sessionlessly, the client's first request deciding which.
++# Each test here pins the client's `mode` explicitly (never "auto" alone), so
++# a test names the era it covers and cannot pass by falling back to the other
++# one. The client talks to the real `serve()` over in-memory streams, the same
++# JSON-RPC path stdio takes, rather than the SDK's in-process shortcut, which
++# would bypass serve() and its era dispatch.
++#
++# The legacy-era characterization tests in test_protocol.py stay as the
++# backward-compatibility net; this file adds what differs by era and shows
++# that the rest does not.
++
++import json
++from collections.abc import AsyncIterator
++from contextlib import asynccontextmanager
++from typing import Any
++from unittest.mock import patch
++
++import anyio
++import pytest
++from mcp import Client
++from mcp.client._transport import TransportStreams
++from mcp.shared.exceptions import MCPError
++from mcp.shared.memory import create_client_server_memory_streams
++from mcp.types import METHOD_NOT_FOUND, CallToolResult, TextContent
++
++from mcp_server_time.server import serve
++
++MODERN = "2026-07-28"
++LEGACY = "2025-11-25"
++# Each `mode` a test pins, with the protocol version it must negotiate.
++ERAS = [
++    pytest.param(MODERN, MODERN, id=MODERN),
++    pytest.param("legacy", LEGACY, id=LEGACY),
++]
++
++
++@asynccontextmanager
++async def connect(
++    mode: str, local_timezone: str | None = "UTC"
++) -> AsyncIterator[Client]:
++    """Run `serve(local_timezone)` in-process and yield a `Client` in `mode`."""
++    async with create_client_server_memory_streams() as (
++        client_streams,
++        server_streams,
++    ):
++
++        @asynccontextmanager
++        async def fake_stdio_server() -> AsyncIterator[Any]:
++            yield server_streams
++
++        @asynccontextmanager
++        async def transport() -> AsyncIterator[TransportStreams]:
++            yield client_streams
++
++        with patch("mcp_server_time.server.stdio_server", fake_stdio_server):
++            async with anyio.create_task_group() as tg:
++                tg.start_soon(serve, local_timezone)
++                async with Client(transport(), mode=mode) as client:
++                    yield client
++                tg.cancel_scope.cancel()
++
++
++def text_of(result: CallToolResult) -> str:
++    """The text of a result holding one text block."""
++    assert len(result.content) == 1
++    block = result.content[0]
++    assert isinstance(block, TextContent)
++    return block.text
++
++
++def tool_wire(client_tools: Any) -> list[dict[str, Any]]:
++    return [
++        t.model_dump(by_alias=True, mode="json", exclude_none=True)
++        for t in client_tools
++    ]
++
++
++@pytest.mark.parametrize(("mode", "negotiated"), ERAS)
++async def test_each_era_is_negotiated(mode: str, negotiated: str) -> None:
++    async with connect(mode) as client:
++        assert client.session.protocol_version == negotiated
++
++
++async def test_auto_mode_discovers_the_2026_07_28_era() -> None:
++    # An auto client probes server/discover first and only falls back to the
++    # handshake on a server that refuses it; this server no longer does.
++    async with connect("auto") as client:
++        assert client.session.protocol_version == MODERN
++
++
++async def test_tools_list_is_the_same_in_both_eras() -> None:
++    # Same tools, same schemas, same deterministic order, in either era and on
++    # every call.
++    async with connect(MODERN) as client:
++        modern = tool_wire((await client.list_tools()).tools)
++        again = tool_wire((await client.list_tools()).tools)
++    async with connect("legacy") as client:
++        legacy = tool_wire((await client.list_tools()).tools)
++    assert [t["name"] for t in modern] == ["get_current_time", "convert_time"]
++    assert modern == again == legacy
++
++
++@pytest.mark.parametrize(("mode", "negotiated"), ERAS)
++async def test_tool_call_succeeds_in_each_era(mode: str, negotiated: str) -> None:
++    # Etc/GMT-5 is UTC+5 all year, so the result does not depend on the date.
++    async with connect(mode) as client:
++        result = await client.call_tool(
++            "convert_time",
++            {"source_timezone": "UTC", "time": "12:00", "target_timezone": "Etc/GMT-5"},
++        )
++    assert result.is_error is False
++    assert result.result_type == "complete"
++    data = json.loads(text_of(result))
++    assert data["target"]["datetime"].endswith("T17:00:00+05:00")
++    assert data["time_difference"] == "+5.0h"
++
++
++@pytest.mark.parametrize(("mode", "negotiated"), ERAS)
++async def test_tool_failure_is_an_is_error_result_in_each_era(
++    mode: str, negotiated: str
++) -> None:
++    async with connect(mode) as client:
++        bad_zone = await client.call_tool(
++            "get_current_time", {"timezone": "Nope/Nowhere"}
++        )
++        unknown = await client.call_tool("no_such_tool", {})
++    assert bad_zone.is_error is True
++    assert "Invalid timezone" in text_of(bad_zone)
++    assert unknown.is_error is True
++    assert text_of(unknown) == (
++        "Error processing mcp-server-time query: Unknown tool: no_such_tool"
++    )
++
++
++@pytest.mark.parametrize(("mode", "negotiated"), ERAS)
++async def test_unsupported_method_is_a_json_rpc_error_in_each_era(
++    mode: str, negotiated: str
++) -> None:
++    # The server declares no resources, so resources/list is a protocol error
++    # (an MCPError on the client), not an isError result.
++    async with connect(mode) as client:
++        with pytest.raises(MCPError) as excinfo:
++            await client.list_resources()
++    assert excinfo.value.error.code == METHOD_NOT_FOUND
++
++
++async def test_ping_is_served_only_in_the_legacy_era() -> None:
++    # ping is removed in 2026-07-28; the legacy era keeps answering it.
++    async with connect("legacy") as client:
++        await client.session.send_ping()
++    async with connect(MODERN) as client:
++        with pytest.raises(MCPError) as excinfo:
++            await client.session.send_ping()
++    assert excinfo.value.error.code == METHOD_NOT_FOUND
+diff --git a/src/time/tests/test_protocol.py b/src/time/tests/test_protocol.py
+index 5c22460..e4daee6 100644
+--- a/src/time/tests/test_protocol.py
++++ b/src/time/tests/test_protocol.py
+@@ -34,7 +34,7 @@ import pytest
+ from mcp import ClientSession
+ from mcp.shared.memory import create_client_server_memory_streams
+ from mcp.shared.message import SessionMessage
+-from mcp.types import METHOD_NOT_FOUND, JSONRPCRequest
++from mcp.types import JSONRPCRequest
+ from pydantic import BaseModel
+ 
+ from mcp_server_time.server import serve
+@@ -930,16 +930,16 @@ async def test_session_survives_errors() -> None:
+ # ---------------------------------------------------------------------------
+ 
+ 
+-async def test_modern_era_is_not_served() -> None:
+-    # #4851: the SDK v2 port serves the 2025-11-25 handshake era only.
+-    # Server.run() would also open a 2026-07-28 connection for a request that
+-    # carries the per-request `_meta` envelope; adopting that era is #4853.
+-    # Until then such a request is refused as an unknown method.
++async def test_server_discover_answers_the_2026_07_28_era() -> None:
++    # #4853: serve() serves the 2026-07-28 era beside the 2025-11-25 handshake.
++    # A `server/discover` carrying the per-request `_meta` envelope opens it.
++    # Asserted on the raw JSON-RPC response, so the fields the 2026-07-28
++    # spec requires on a result (resultType, ttlMs, cacheScope) are pinned as
++    # the server sends them, not as a client model would default them. Era by
++    # era behavior through a real client is in test_eras.py.
+     #
+-    # Behavior change in the SDK v2 port: SDK v1 answered every unknown
+-    # method with -32602 "Invalid request parameters" (its request union
+-    # failed to parse); SDK v2 answers -32601 "Method not found", the code
+-    # JSON-RPC defines for it.
++    # Replaces #4851's test_modern_era_is_not_served, which pinned this request
++    # being refused with -32601 "Method not found" until this issue landed.
+     discover = JSONRPCRequest(
+         jsonrpc="2.0",
+         id=1,
+@@ -974,9 +974,17 @@ async def test_modern_era_is_not_served() -> None:
+     assert response.message.model_dump(by_alias=True, exclude_none=True) == {
+         "jsonrpc": "2.0",
+         "id": 1,
+-        "error": {
+-            "code": METHOD_NOT_FOUND,
+-            "message": "Method not found",
+-            "data": "server/discover",
++        "result": {
++            "capabilities": {"tools": {"listChanged": False}},
++            "supportedVersions": ["2026-07-28"],
++            "resultType": "complete",
++            "ttlMs": 0,
++            "cacheScope": "private",
++            "_meta": {
++                "io.modelcontextprotocol/serverInfo": {
++                    "name": "mcp-time",
++                    "version": version("mcp-server-time"),
++                }
++            },
+         },
+     }
