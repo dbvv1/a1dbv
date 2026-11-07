@@ -867,9 +867,11 @@ MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 
 
 **取消输入时也撤回失效的操作指令，但保留后来到达的权威回执。** MOBA 的实际 client 曾在设置、失焦、隐藏与 Stop 后清掉瞄准，却仍要求“左击施法”；统一战斗候选现让 Controls 沿同一退出路径请求撤销，HUD 仅在当前文本仍等于该次瞄准提示时执行。连续两次 Q 点击后先进入 E 瞄准，下一逻辑步才到达的 `alreadyCasting` 拒绝不能被 E 的取消抹掉。中间适配器必须透传可选的 `onlyIfCurrent`，只转发新文本会把条件撤销变成无条件清空；具体接线见[改键页的提示交接增量](../../experiments/moba-keybindings/README.md#aim-notice-handoff)。这是当前单输入所有者的窄实现，文本相等不代表通用消息身份。
 
+**命令提示要区分已排入本地队列、已交给模拟和已被丢弃。** 设置／隐藏／失焦会清空本地待发队列；若点 Q 后还未推进一帧，不能留下“命令已排队”。由持有队列的 client 在清空前通知 Controls，只撤该批里对应命令的回执；已执行的移动，不能因为后来取消一个购物命令而被撤回。队列达到上限时先看是否真正接收，再更新回执；本例拒收第 33 条时保留 Q 瞄准，队列消费后重新点击可施法。死亡／终局另按角色生命周期撤旧回执，新拒绝或结算消息保持优先。这些都是同一输入通路的处理，不新增消息总线。
+
 **角色已失去操作资格时，提示跟随角色状态，不只看整局是否仍在进行。** FPS 团队回合在玩家被击倒后仍可能继续，信标已安放时进攻方全灭也不等于失败。HUD 应清掉该玩家不可用的准星、换弹与交互指令，说明等待结算；胜负仍读团队结果，下一回合按新状态恢复，不能依赖额外 reset。弹药指引同样要看备用弹药和另一把枪，空匣不总能按 R。让 Agent 用真实命令走完击倒→继续→结算→下一局，以及当前枪耗尽→切备枪→补给，确认提示符合实际命令资格，同时保留命中／受伤反馈。回归可先用真实 Game 加 DOM 替身找逻辑错误，可读性仍回游戏画面。
 
-来源：[MOBA 条件撤销原修复](https://github.com/dbvv1/MOBA-Like/commit/332cbfe64312a5699653ee436cd14c9f6fada564)；[现有完整旁置范围](https://github.com/dbvv1/MOBA-Like/blob/90d4fad0885847d53aa96a33debb766b9237c28b/docs/verification/death-trial-integration.md)将赏金、瞄准清理及死亡源一并限在原 Q/W 试验入口，默认／quiet 保旧。FPS [真实消费者与回归](https://github.com/dbvv1/FPS-Like/blob/c3dc63535126c5ab11427235799581af7d190d6d/docs/training-integration.md)已在原训练候选接入，47 项相关回归通过；只核对应消费者，不是全量或视觉验收。两案均未合 main／部署，真实可读性、辅助播报与视听品质仍待验；核实 2026-11-07。
+来源：[MOBA 条件撤销原修复](https://github.com/dbvv1/MOBA-Like/commit/332cbfe64312a5699653ee436cd14c9f6fada564)；[现有完整旁置范围](https://github.com/dbvv1/MOBA-Like/blob/90d4fad0885847d53aa96a33debb766b9237c28b/docs/verification/death-trial-integration.md)将赏金、瞄准清理及死亡源一并限在原 Q/W 试验入口；[同一候选的命令回执接线](https://github.com/dbvv1/MOBA-Like/blob/f4c8857a6073d9dd4cd75a76330c7497f5165139/docs/verification/submitted-command-lifetime.md)在真实 client／Controls／LocalMatch 先复现三种丢弃和队列溢出，再通过 659 项回归与独立审查，默认／quiet 保旧。FPS [真实消费者与回归](https://github.com/dbvv1/FPS-Like/blob/c3dc63535126c5ab11427235799581af7d190d6d/docs/training-integration.md)已在原训练候选接入，47 项相关回归通过；只核对应消费者，不是全量或视觉验收。两案均未合 main／部署，真实可读性、辅助播报与视听品质仍待验；核实 2026-11-07。
 
 震动短脉冲有时限，旧命中不补播；换设备／退局取消所属玩家旧工作，旧设备可达则发停止。Unity 1.20.1 PauseHaptics 保速度、不挡后写，Reset 清除；UE 按 PlayerController 的 Tag／循环／Play While Paused 管理。先停持续写入者，不误停别人。
 
