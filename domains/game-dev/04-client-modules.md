@@ -865,6 +865,10 @@ MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 
 
 来源：[源码／CPU 回归] MOBA 固定版本 [输入目标与控件归属](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/commands.ts)、[失焦与隐藏取消](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/controls.ts)、[真实消费者测试](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/tests/client/targeting-controls.test.ts)，核实 2026-10-28。
 
+**取消输入时也撤回失效的操作指令，但保留后来到达的权威回执。** MOBA 的实际 client 曾在设置、失焦、隐藏与 Stop 后清掉瞄准，却仍要求“左击施法”；统一战斗候选现让 Controls 沿同一退出路径请求撤销，HUD 仅在当前文本仍等于该次瞄准提示时执行。连续两次 Q 点击后先进入 E 瞄准，下一逻辑步才到达的 `alreadyCasting` 拒绝不能被 E 的取消抹掉。中间适配器必须透传可选的 `onlyIfCurrent`，只转发新文本会把条件撤销变成无条件清空；具体接线见[改键页的提示交接增量](../../experiments/moba-keybindings/README.md#aim-notice-handoff)。这是当前单输入所有者的窄实现，文本相等不代表通用消息身份。
+
+来源：[候选实现与真实 client 回归](https://github.com/dbvv1/MOBA-Like/commit/332cbfe64312a5699653ee436cd14c9f6fada564)，核实 2026-11-07。本次复核既有源码与断言，不重跑产品测试；该候选未合 main／部署，真实焦点、可读性与辅助播报仍待验。
+
 震动短脉冲有时限，旧命中不补播；换设备／退局取消所属玩家旧工作，旧设备可达则发停止。Unity 1.20.1 PauseHaptics 保速度、不挡后写，Reset 清除；UE 按 PlayerController 的 Tag／循环／Play While Paused 管理。先停持续写入者，不误停别人。
 
 来源：[一手] [输入交接](../../docs/research/wp10-content.md#21)、[蓄力计量](05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)、[反馈依据](../../docs/research/wp10-content.md#22)。

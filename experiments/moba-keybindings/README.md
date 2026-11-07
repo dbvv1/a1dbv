@@ -48,7 +48,7 @@ npm run typecheck:web
 ## 移植接线：一份对象串起操作与提示
 
 1. **在浏览器客户端创建一次** `const bindings = new KeyboardBindings(() => window.localStorage)`，作为既有 `createControls` 的第七参数。对象不放入模拟、快照或回放；重开对局沿用它或从同一存储新建，不再次迁移旧命令。输入默认仍为 QWER/A/S/Space。
-2. **进入设置先撤操作权限**：`controls.setEnabled(false)` 立即清掉旧瞄准与未消费的指针观察；清客户端尚未送进模拟的命令队列，已被规则接受的动作不回滚。菜单阻挡背景 HUD／商店与场景点击，保自身焦点和关闭入口；不能只把一个面板画在战场上。
+2. **进入设置先撤操作权限**：`controls.setEnabled(false)` 立即清掉旧瞄准与未消费的指针观察；清客户端尚未送进模拟的命令队列，已被规则接受的动作不回滚。菜单阻挡背景 HUD／商店与场景点击，保自身焦点和关闭入口；不能只把一个面板画在战场上。若一并采用下方[瞄准提示候选](#aim-notice-handoff)，还须透传条件撤销回调。
 3. **一行对应稳定 action ID**：Q/W/E/R 是技能槽身份，不是当前显示键。行显示 `bindingLabel(bindings.draft[action])`；选“更改”调用 `beginCapture(action)`，之后把该行的键盘事件交 `capture(event)`。捕获时消费被处理的事件，防止 Space 同时激活按钮；Tab 先 `cancelCapture()` 再正常导航，切行／失去该行焦点也结束捕获。浏览器失焦会由 controls 清瞄准并取消捕获，保留已编辑草稿。
 4. **冲突不静默抢键**：`capture`／`edit` 返回 `{ok:false,reason:'conflict',action}`，显示占用动作并让玩家重选。明确选“交换”后才调用 `edit(target,key,'swap')` 并 `cancelCapture()`；交换把原键交给另一动作，不留下无键动作。Esc 在捕获中只结束捕获；设置层 Esc 走取消／关闭，不偷偷应用。
 5. **应用、取消、默认分开**：`apply()` 成功才更新有效键位；失败保留草稿和原键位并显示 `notice`，留在设置。`cancel()` 回到当前有效值；`defaults()` 只把默认填入草稿，之后应用才删除存储覆盖；不要仅因 `dirty=false` 禁用应用，显式恢复默认仍可能需要清掉不可用的旧覆盖。关闭／返回前取消捕获，只在当前对局仍有操作资格时 `setEnabled(true)`，不要靠关闭旧面板复活已销毁 controls。
@@ -71,6 +71,21 @@ controls 的第六参数 `focusCamera: () => void` 与 HUD 的 `onLock(locked: b
 - 开／关设置先更新 `settingsOpen`，清 `commands`；`controls.setEnabled(!open && !document.hidden && !stopped && snapshot.status === 'running')`。随后 `world.leavePointer()`、`clock.reset()`、重置帧时间；`critical-v1` 音频还接 `sound.setPaused(open || document.hidden)`。
 - 设置组件自己调用 `bindings.apply()`。成功后先 `onApplied`：`help.textContent = controlsHelp(bindings, temporaryFollow)`、`heroSelection.refresh()`、`hud.update(snapshot, playerId)`；然后关闭对话框、调用 `onOpenChange(false)` 并还焦点。失败只显示 `bindings.notice`，不刷新消费者、不关闭，不用宿主再 apply 一次。
 - 销毁时原 lifetime 负责 `settings.dispose()` 与 `controls.dispose()`。关闭回调不能只写 `setEnabled(true)`，否则隐藏、终局或已停止的对局会被错误重新启用。
+
+<a id="aim-notice-handoff"></a>
+### 候选增量：瞄准提示随输入一起交接
+
+**只撤销本次瞄准仍占用的提示，不把关闭设置写成清空 HUD。** 上面的固定改键基线不含这项修复；接入包含 `332cbfe` 的战斗候选时，第五参数 `say` 要完整转发到 HUD：
+
+```ts
+const say = (text: string, onlyIfCurrent?: string) => hud.say(text, onlyIfCurrent);
+```
+
+Controls 记录当前瞄准文本，结束模式时调用 `say('', aimMessage)`；HUD 比较当前显示文本，匹配才撤回，否则不改原回执和到期时间。把适配器仍写成 `text => hud.say(text)` 会丢掉条件并清除后来到达的真实拒绝；类型检查接受少参数回调，不能替代这条消费者断言。成功排队、Esc 取消结果及终局结果仍走原流程。该实现只适用于当前单输入所有者；如果多个发布者会生成相同文本，或翻译异步改写文本，应使用明确的消息身份，不把字符串比较当成通用所有权协议。
+
+按真实 client 验“Q 瞄准→设置／失焦／隐藏／Stop→恢复→只点画布不施法→重新选 Q 才可施法”；再验“Q 点击→Q 点击→E 瞄准→推进一步收到 `alreadyCasting`→失焦”，拒绝必须保留到自身期限，而不是被取消 E 抹掉。无效目标后的重新瞄准文案也随同一模式撤回。用现有 `npx vitest run tests/client/keyboard-client.test.ts` 走这些回归，不能只对 Controls 的空 `say` 替身断言。
+
+依据：[Controls 条件撤销](https://github.com/dbvv1/MOBA-Like/blob/332cbfe64312a5699653ee436cd14c9f6fada564/src/input/controls.ts)、[client 透传](https://github.com/dbvv1/MOBA-Like/blob/332cbfe64312a5699653ee436cd14c9f6fada564/src/client.ts)、[HUD 条件执行](https://github.com/dbvv1/MOBA-Like/blob/332cbfe64312a5699653ee436cd14c9f6fada564/src/ui/hud.ts)与[完整消费者断言](https://github.com/dbvv1/MOBA-Like/blob/332cbfe64312a5699653ee436cd14c9f6fada564/tests/client/keyboard-client.test.ts)，核实 2026-11-07；本次只复核既有源码和测试定义。候选尚未合 main／部署，JSDOM／渲染／音频／导航与 dialog 替身不证明浏览器焦点、阅读或辅助播报通过。
 
 ## 保留的契约与边界
 
