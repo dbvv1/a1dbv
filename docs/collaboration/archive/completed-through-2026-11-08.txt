@@ -20,3 +20,7 @@
 
 11-08 FPS 制作入口纠正前的项目行（游戏与 Site 未变）：
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `e732e3e`／Site **v24**。[4319dca](https://github.com/dbvv1/FPS-Like/commit/4319dcac671a61bf3a1908d382f87989f738c6b0)候选到位且无可见敌人时先安拆后补弹，两反例→剩5tick完成。570项／类型／构建／独审过；32种子192回合全淘汰、修前后终局hash同。socket EPERM、完整角色reload/switch及浏览器／视听、自然5v5安拆欠验，未合main／部署。 |
+
+
+2026-11-08（UTC+8）FPS 玩家说明接收前原项目行：
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `06aabc0`／Site **v24**。[a995881](https://github.com/dbvv1/FPS-Like/commit/a99588189e9bbb6984a41ee98e908ff507205a0f)候选修到位无可见敌人却先切备枪的迟1tick；180／300tick期限安拆完成。577项／类型／构建／独审过；两运动档三种子六回合与原版输出同。socket EPERM、完整角色reload/switch及浏览器／视听、自然5v5安拆欠验，未合main／部署。 |

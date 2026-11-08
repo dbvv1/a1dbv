@@ -875,6 +875,8 @@ MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 
 
 来源：[MOBA 条件撤销原修复](https://github.com/dbvv1/MOBA-Like/commit/332cbfe64312a5699653ee436cd14c9f6fada564)；[现有完整旁置范围](https://github.com/dbvv1/MOBA-Like/blob/90d4fad0885847d53aa96a33debb766b9237c28b/docs/verification/death-trial-integration.md)将赏金、瞄准清理及死亡源一并限在原 Q/W 试验入口；[同一候选的命令回执接线](https://github.com/dbvv1/MOBA-Like/blob/f4c8857a6073d9dd4cd75a76330c7497f5165139/docs/verification/submitted-command-lifetime.md)在真实 client／Controls／LocalMatch 先复现三种丢弃和队列溢出，再通过 659 项回归与独立审查，默认／quiet 保旧。FPS [真实消费者与回归](https://github.com/dbvv1/FPS-Like/blob/c3dc63535126c5ab11427235799581af7d190d6d/docs/training-integration.md)已在原训练候选接入，47 项相关回归通过；只核对应消费者，不是全量或视觉验收。两案均未合 main／部署，真实可读性、辅助播报与视听品质仍待验；核实 2026-11-07。
 
+**操作说明写清资格、持续条件和中断后的恢复动作。** FPS 训练赛的“按住 E”还要求安放者持有信标、拆除者属于防守方，二者都在交互范围内、停稳且不在换弹。移动清进度；开枪、开始换弹或切到另一把枪会清掉交互状态。Controls 忽略重复 keydown，因此需松开 E 后重新按住，才能重新提交交互命令。现有[玩家说明](https://github.com/dbvv1/FPS-Like/blob/876fb20d441759c51dc8387aaca69d86ba77d927/README.md)据此补全恢复动作，并区分安放与获胜、修改难度与重开生效，以及旧版角色展示和六回合入口。让新读者仅看说明回答开局、交互恢复、胜负和入口兼容性问题，检查是否遗漏实际操作条件；说明审查不能代替浏览器操控或玩家效果验证。核实 2026-11-08。[案例源码／读者审查]
+
 震动短脉冲有时限，旧命中不补播；换设备／退局取消所属玩家旧工作，旧设备可达则发停止。Unity 1.20.1 PauseHaptics 保速度、不挡后写，Reset 清除；UE 按 PlayerController 的 Tag／循环／Play While Paused 管理。先停持续写入者，不误停别人。
 
 来源：[一手] [输入交接](../../docs/research/wp10-content.md#21)、[蓄力计量](05-gameplay-architecture.md#7-战斗与技能先统一结算再决定-gas)、[反馈依据](../../docs/research/wp10-content.md#22)。
