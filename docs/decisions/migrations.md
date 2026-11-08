@@ -25,6 +25,7 @@
 | 大量相同语法／API 写法 | 官方 codemod 或已有语法规则先试代表性文件，Agent 处理规则外语义 | 核已改、未改、警告和例外；再验相关行为。零命中先查是否根本无需改写 |
 | JS→TS、重命名、跨文件引用 | 用类型／框架工具定位改动；有预览先核编辑清单，再跑严格检查 | 开发与发布入口都找到正确文件，类型符合真实返回值，构建产物能运行 |
 | 依赖大版本升级 | 先核已有迁移与跨过的版本指南；用项目声明的包管理器更新依赖和锁文件 | 真实 client 能构造、请求与消费者契约保留，锁文件可复用；已有失败与新增失败分开 |
+| 同一依赖分阶段切换，部分环境仍跑旧版 | [先核每个环境实际解析的 runtime 与 adapter](#导入已换新运行时可能还没换)，保留并行期必要检查 | 各环境产物与消费者对应预期版本；全部支持范围切完，才撤旧版与临时检查 |
 | 协议升级，要兼容两代客户端 | 分别固定旧／新协议，运行项目真实入口，有构建步骤先构建；已有实现只接目标 server 的差量 | 两代真实调用各自通过，旧版失败路径与状态隔离保留；自动回退后的成功不能证明新协议可用 |
 | 带持久数据的结构变化 | 保留受支持迁移器，先确认写入者、事务边界与恢复点 | 关闭后重新打开，业务行和 schema 都符合预期；失败回滚与后续读写分别验证 |
 
@@ -41,6 +42,25 @@ MCP sequentialthinking 的同一 SDK 2.3.1 下，旧入口能服务旧协议，�
 **照这个顺序做：固定两代协议 → 验基线消费者 → 接必要入口差量 → 有构建先构建，重启真实入口 → 重跑相同消费者。** TypeScript SDK 2.3.1 固定新版使用 `mode: { pin: "2026-07-28" }`；Python mcp 2.3.0 则用 `mode="2026-07-28"`，旧代用 `mode="legacy"`。`auto` 能回退，只验请求成功会漏掉新版仍不支持；Python 显式新版模式还可能合成 discovery 信息，所以要同时核实际 `tools/list` 和工具调用，不能只看客户端版本字段。Python time 无需 TypeScript 式重建，按项目安装后重启 `python -m mcp_server_time`；原生套件另核控制台入口。
 
 **依据与复跑入口**：[固定版本、命令和真实 stdio 消费者](../../experiments/mcp-protocol-migration/README.md)，2026-11-07：作者完成 sequentialthinking；time 首轮读者的语言／启动入口卡点修正后，另一独立云读者只照修订页，在 Python 3.10.22、mcp 2.3.0 下实做基线与四文件迁移。两代工具调用、错误分层与新进程连接通过，基线 122／候选 133 项原生测试及静态、构建、覆盖门槛通过，零 skip。[本机 V2](../collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)缺依赖及已安装控制台入口，且禁止安装；两代真实 stdio、原生测试及 Ruff／Pyright 均未运行（`taskDone=false`），云端结果不替代它。这里只证明两个 server 的局部复现，不是新的上游采用；独立安装 wheel、HTTP、LLM 客户端及全发布门槛未验。
+
+### 导入已换新：运行时可能还没换
+
+**👀 分阶段升级时，先让 Agent 查清每个环境真正运行哪一版，再决定能否用新 API。** Sentry 曾先改为 React Router V8 的导入路径，却通过兼容层继续运行 V6；下一阶段的构建默认仅本机开发用 V8，生产与 preview 仍用 V6，应用测试和类型检查另按两版跑。只看 import 或一份 `package.json`，都会选错行为和检查。
+
+1. **沿真实入口查解析。** 列出项目实际使用的开发、构建、preview、CI 与测试入口，追构建 alias、测试 resolver、类型映射和配套 adapter；写清每个入口对应的 runtime、允许的 API 与检查命令。测试 runner 的版本覆盖单独核。共用代码须兼容所有仍支持的 runtime；新版独有 API 只用于已验证的新版专用路径，或等相关入口全部切换后再用。
+2. **每版检查产物与消费者。** 对照预期主版本，核产物有没有混入另一版、adapter 是否匹配；依赖共享 context 时再核实例身份。Sentry 的构建测试还加载产物，检查路由参数、查询串与返回导航；这比只看类型检查或应用启动更接近原目标。
+3. **全部受支持入口切完，再清迁移支架。** 清旧依赖、别名、兼容映射及专为双版本增加的 runner／CI 检查，同时改共享指令；保留业务回归、分片和仍有消费者的兼容行为。最后切换与清理可在同一补丁内完成，不能只因双跑成本高就提前删旧支持。
+
+把下面这段补到本次迁移任务中，不给单版本升级增加双矩阵：
+
+```text
+先列本项目各入口的实际 runtime、adapter、允许 API 和原生检查命令，标明解析依据。
+导入改名不等于行为升级。按仍支持的版本验证构建产物和一个真实消费者，
+包括失败路径；只有全部受支持入口切到新版，才删除双版本支架并更新共享指令。
+交回各入口已验／未验项，不把静态映射当运行结果。
+```
+
+**依据**：[Sentry 首阶段指令](https://github.com/getsentry/sentry/blob/8891ab865ca741f83cbcd20349bd21c03ad92ffc/static/AGENTS.md#L30-L39)、[阶段二环境选择](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.ts#L8-L39)与[构建消费者断言](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.test.ts#L28-L162)、[双版应用测试](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/testCi.js#L18-L31)与[类型检查](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/typecheck.ts#L56-L81)、[完成切换并撤除支架](https://github.com/getsentry/sentry/commit/de3060f736c6dd55836bfae104336a967ec41d8d)。已有候选原核实 2026-11-03，2026-11-08 复核固定源码；这是已完成迁移的历史机制，不是建议 Sentry 继续 V6。本仓未运行该迁移或完成此分支的新读者实做，未验证净收益。
 
 ### 规则零命中：保留仍兼容的生成代码
 
