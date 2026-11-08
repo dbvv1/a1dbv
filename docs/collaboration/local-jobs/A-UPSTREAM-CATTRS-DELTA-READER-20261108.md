@@ -1,7 +1,7 @@
 # A-UPSTREAM-CATTRS-DELTA-READER-20261108 · 新提案出现后的贡献判断
 id: A-UPSTREAM-CATTRS-DELTA-READER-20261108
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7f54b4c5deb57b08f9cd0fb56af6967116ff023d
@@ -35,4 +35,9 @@ page: docs/decisions/upstream-contributions.md@3f445adee874b68045fe718576ef26787
 接收端按文档范围跑 check_repo、check_public、空白与新增提交身份检查；保留其他历史。通常 60–90 分钟、最多两小时，沿共享最多四任务合同；不另开调度，不依赖 dot 桌面在线。Git 发布只证明可被领取，不证明已经执行。
 
 ## 当前结果
-首次 ready；全远端与 main 未见同题卡／结果分支，新结果路径未占用，不重派旧卡。实际活动与空槽仍由接收端核，未称已退出或开始执行。修订页与地图保留 🟡。
+
+- 读者照页完成只读核查：cattrs 无 AGENTS.md/PR 模板，等价入口为 CONTRIBUTING.md、.github/AI_POLICY.md、.github/ISSUE_TEMPLATE.md；main=e9239b7 与最新发布 v26.2.1 均无 Decimal；#761 open 无 label，#764(head 8c04cdb5)/#822(head 2e883761) 均 open/unmerged/mergeable=false 且只覆盖 json+pyyaml，故不能收起五后端候选；结论为先重放 current main、补 HISTORY.md 并把测试并入 tests/test_preconf.py，由本人协调 #822/#764 后再投稿，不新开第三条 PR。taskDone=true；pageStuck 2 处：页面未写禁止 apply/运行时“是否覆盖/能否干净应用”只能是静态或 unknown，也未写协调评论受项目 AI 政策与本卡禁评论限制及由谁执行。未运行验收：just lint/test/cov/docs、候选补丁 apply 及候选在 current main 的实际通过情况均 unknown（本卡禁跑），不以核对者返回代替通过。openIssues：候选测试顶部无条件 from msgspec import to_builtins，PyPy 直接并入 tests/test_preconf.py 会 collection 失败，需加 skip 或拆分后端；读者写 #822 base=e9239b7 但 head 父提交是 bde101a（落后 6 提交），rebase 依据应写后者；CONTRIBUTING 第 3 条指向仓库中不存在的 README.rst，读者只写“更新文档”；pyyaml 行为候选测试已用 Decimal(str(v)) 固化，真正待决定是保留该特例还是采用 #822 的统一 Decimal(v)；读者下一步先重放后协调与页面字面顺序相反；读者多读 evidence/input-guards.json 超出固定候选输入并已自报，未影响判断。
+- 产物：[37b1ba8](https://github.com/dbvv1/a1dbv/commit/37b1ba8e2a9e9fd01e1eeec72c5abdc685b6f1b3)，分支 `relay/a-upstream-cattrs-delta-reader-20261108`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人修正 result.md/过程记录中的上述遗漏（PyPy skip、#822 父提交、README.rst、pyyaml 取舍、协调顺序），决定是否回灌页面口径，并安排本人重放与 #822/#764 协调；不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
