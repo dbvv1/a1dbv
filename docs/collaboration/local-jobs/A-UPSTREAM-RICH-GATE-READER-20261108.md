@@ -1,7 +1,7 @@
 # A-UPSTREAM-RICH-GATE-READER-20261108 · 重复方案出现后如何推进旧候选
 id: A-UPSTREAM-RICH-GATE-READER-20261108
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c91ee9a1b62fff3c380ee47664222ca1281c88c
@@ -33,4 +33,9 @@ page: docs/decisions/upstream-contributions.md@0c91ee9a1b62fff3c380ee47664222ca1
 通常 60–90 分钟、最多两小时，沿共享最多四任务及原恢复合同；不另开调度、不依赖 dot 桌面在线。Git 发布只证明可领取，不证明本次已执行。
 
 ## 当前结果
-待既有接收端核条件后领取；只有公开任务与完整附页，不代表已运行新读者。旧候选与原结果未改，不新增上游发言或投稿。
+
+- reader-test 一轮完成：读者按附页与 Rich 现行规则给出决定——暂不投稿、不再造第四份同题实现，等 @willmcgugan 在 #4246 明确批准已提出的 amount==0 早退方案后，再由符合规则并获准发言的唯一协调者提交，现有候选保持原样。核对确认 #4246 仍 open/Needs triage、三条同题评论无维护者回复、current main 的 right_crop 仍无 guard、候选核心实现与三条评论相同仅多测试增量。openIssues 为空；未运行验收（禁做）：补丁应用、Rich 测试、current main 复现保持未验证；GitHub Discussions 未穷尽、full tree API 504 已列为 unknown。check_repo、check_public、git diff --check 均通过，页面与任务文件未改。
+- 产物：[825c3e1](https://github.com/dbvv1/a1dbv/commit/825c3e168f0a86192c2a5250b2e11df889d2f219)，分支 `relay/a-upstream-rich-gate-reader-20261108`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对所验范围通过，交负责人接收。
+- 下一步：负责人接收并回写本卡、按流程快进回 main；实质推进须等 @willmcgugan 批准方案并确定唯一协调者，之前不新增上游动作。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
