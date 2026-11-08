@@ -1,0 +1,201 @@
+diff --git a/skills/bmad/scripts/migrate_v6.py b/skills/bmad/scripts/migrate_v6.py
+index 30da4d8..66edadd 100644
+--- a/skills/bmad/scripts/migrate_v6.py
++++ b/skills/bmad/scripts/migrate_v6.py
+@@ -443,8 +443,10 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+     spec = parse_spec(read_for_fold(folder / f"{folder.name}.md", project_root))
+     loose = folder.parent == store
+     if loose:
+-        home = store / "backlog"
+-        ticket = home / f"story-{slug}.md"
++        ticket = store / "backlog" / f"story-{slug}.md"
++        home = ticket.with_suffix("")
++        if home.exists():
++            raise FoldProblem(f"{relative(home, project_root)} already exists")
+         if ticket.exists():
+             raise FoldProblem(f"{relative(ticket, project_root)} already exists")
+     else:
+@@ -497,8 +499,10 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+
+     # References to the folder, wherever they are: `spec-<name>/spec-<name>.md` becomes the ticket, `spec-<name>/x` the
+     # moved companion. A suffix rewrite keeps relative and absolute forms right, since the folder's parent is unchanged.
+-    new_prefix = "backlog/" if loose else ""
+-    rewrites = [(f"{folder.name}/{folder.name}.md", f"{new_prefix}{ticket.name}")]
++    new_prefix = f"backlog/{home.name}/" if loose else ""
++    rewrites = [(f"{folder.name}/{folder.name}.md", relative(ticket, folder.parent))]
++    if loose:
++        rewrites.append((f"{folder.name}/{MEMLOG}", f"{new_prefix}{MEMLOG}"))
+     rewrites += [(f"{folder.name}/{path.name}", f"{new_prefix}{path.name}") for path in moving]
+     # Every rewrite is read and computed first, so a file that cannot be read stops the fold before anything changes.
+     writes: dict[Path, str] = {}
+@@ -526,12 +530,12 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+         path.write_text(text, encoding="utf-8")
+     rewritten = [relative(path, project_root) for path in writes]
+
+-    references, unresolved = companion_references(spec["companions"], folder, home, project_root, store)
+-    sources = [rebase(item, folder, home, project_root, store) for item in spec["sources"]]
+-    companions = [companion_path(item, folder, home, project_root, store) for item in spec["companions"]]
++    references, unresolved = companion_references(spec["companions"], folder, home, project_root, store, ticket.parent)
++    sources = [rebase(item, folder, home, project_root, store, ticket.parent) for item in spec["sources"]]
++    companions = [companion_path(item, folder, home, project_root, store, ticket.parent) for item in spec["companions"]]
+     requirements = own_lines + [f"- {ids[f'CAP-{n}']} (CAP-{n}): {line}" for n, line in spec["capabilities"].items()]
+     if loose:
+-        text = story_text(spec, home, slug, requirements, references, sources, companions)
++        text = story_text(spec, ticket.parent, slug, requirements, references, sources, companions)
+     else:
+         text = folded_ticket_text(
+             ticket.read_text(encoding="utf-8"),
+@@ -933,7 +937,7 @@ def story_text(
+
+
+ def companion_references(
+-    items: list[str], folder: Path, home: Path, project_root: Path, store: Path
++    items: list[str], folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path
+ ) -> tuple[list[str], list[str]]:
+     """A References line per companion: `companion — <name>` for one moving beside the ticket, else typed by its
+     file name with the path rebased to the ticket's folder. A path that resolves nowhere is kept as written."""
+@@ -946,14 +950,16 @@ def companion_references(
+             lines.append(f"- companion — {item}")
+             continue
+         if target.is_relative_to(folder.resolve()):
+-            lines.append(f"- companion — {target.relative_to(folder.resolve()).as_posix()}")
++            lines.append(
++                f"- companion — {Path(os.path.relpath(moved_path(target, folder, home), ticket_home)).as_posix()}"
++            )
+             continue
+         kind = COMPANION_TYPES.get(target.name) or re.split(r"[-_.]", target.stem, maxsplit=1)[0].lower() or "companion"
+-        lines.append(f"- {kind} — {rebase(item, folder, home, project_root, store)}")
++        lines.append(f"- {kind} — {rebase(item, folder, home, project_root, store, ticket_home)}")
+     return lines, unresolved
+
+
+-def companion_path(item: str, folder: Path, home: Path, project_root: Path, store: Path) -> str:
++def companion_path(item: str, folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path) -> str:
+     """The companion as `companions:` lists it: a path from the project root when it resolves there, else as rebased."""
+     target = resolve_companion(item, folder, project_root, store)
+     if target is None:
+@@ -961,7 +967,7 @@ def companion_path(item: str, folder: Path, home: Path, project_root: Path, stor
+     target = moved_path(target, folder, home)
+     if target.is_relative_to(project_root.resolve()):
+         return target.relative_to(project_root.resolve()).as_posix()
+-    return rebase(item, folder, home, project_root, store)
++    return rebase(item, folder, home, project_root, store, ticket_home)
+
+
+ def resolve_companion(item: str, folder: Path, project_root: Path, store: Path) -> Path | None:
+@@ -979,17 +985,17 @@ def moved_path(target: Path, folder: Path, home: Path) -> Path:
+     return target
+
+
+-def rebase(item: str, folder: Path, home: Path, project_root: Path, store: Path) -> str:
++def rebase(item: str, folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path) -> str:
+     """The path as the ticket's folder sees it: a path from beside it, a path from the project root, else relative."""
+     target = resolve_companion(item, folder, project_root, store)
+     if target is None:
+         return item
+     target = moved_path(target, folder, home)
+-    if target.is_relative_to(home.resolve()):
+-        return target.relative_to(home.resolve()).as_posix()
++    if target.is_relative_to(ticket_home.resolve()):
++        return target.relative_to(ticket_home.resolve()).as_posix()
+     if target.is_relative_to(project_root.resolve()):
+         return target.relative_to(project_root.resolve()).as_posix()
+-    return Path(os.path.relpath(target, home.resolve())).as_posix()
++    return Path(os.path.relpath(target, ticket_home.resolve())).as_posix()
+
+
+ def memlog_body(path: Path) -> str:
+diff --git a/tools/tests/test_migrate_v6.py b/tools/tests/test_migrate_v6.py
+index b645fbc..558e267 100644
+--- a/tools/tests/test_migrate_v6.py
++++ b/tools/tests/test_migrate_v6.py
+@@ -712,7 +712,7 @@ class FoldSpecsTests(unittest.TestCase):
+         self.assertTrue(
+             text.startswith(
+                 '---\nid: 5\ntype: story\ntitle: "Caddie advice"\nparent: none\ncovers: []\nsources: []\n'
+-                "companions: [_bmad-output/backlog/notes.md]\nafter: []\n"
++                "companions: [_bmad-output/backlog/story-caddie/notes.md]\nafter: []\n"
+                 "refined: false\nhitl: false\nrisk: low\n---\n\n# Caddie advice\n\n## Description\n\n"
+                 "Players leave when the ball flies wrong.\n\n## Requirements\n\n- R1 (CAP-1): "
+             ),
+@@ -720,12 +720,12 @@ class FoldSpecsTests(unittest.TestCase):
+         )
+         self.assertIn("## Constraints\n\n- Simulation runs", text)
+         self.assertIn(
+-            "## Boundaries\n\n- Non-goal: Wind.\n\n## References\n\n- companion — notes.md\n\n## Notes\n\n- Assumption:",
++            "## Boundaries\n\n- Non-goal: Wind.\n\n## References\n\n- companion — story-caddie/notes.md\n\n## Notes\n\n- Assumption:",
+             text,
+         )
+         self.assertNotIn("## Outcome", text)
+-        self.assertEqual((self.store / "backlog" / "notes.md").read_text(encoding="utf-8"), "notes\n")
+-        entries = memlog_entries(self.store / "backlog" / ".memlog.md")
++        self.assertEqual((self.store / "backlog" / "story-caddie" / "notes.md").read_text(encoding="utf-8"), "notes\n")
++        entries = memlog_entries(self.store / "backlog" / "story-caddie" / ".memlog.md")
+         self.assertEqual(
+             entries[:3],
+             ["- (capability) CAP-1 plausible arc", "- (decision) metric units", "- (capability) CAP-2 launch angle"],
+@@ -738,6 +738,64 @@ class FoldSpecsTests(unittest.TestCase):
+         self.assert_references_resolve(story)
+         self.assert_references_resolve(self.initiative / "initiative-golf.md")
+
++    def test_loose_specs_keep_separate_histories_and_same_named_companions(self):
++        backlog = self.store / "backlog"
++        write(backlog / ".memlog.md", "existing backlog history\n")
++        write(backlog / "DESIGN.md", "existing backlog design\n")
++        for slug in ("pay", "ship"):
++            folder = self.store / f"spec-{slug}"
++            write(
++                folder / f"spec-{slug}.md",
++                spec_frontmatter(companions="[DESIGN.md]", sources="[]")
++                + f"# {slug}\n\n## Capabilities\n\n- **CAP-1** {slug} things\n",
++            )
++            write(folder / ".memlog.md", f"---\ntopic: {slug}\n---\n- (idea) {slug} only\n")
++            write(folder / "DESIGN.md", f"# {slug} design\n[spec](spec-{slug}.md) CAP-1\n[shared](../shared.md)\n")
++        write(self.store / "shared.md", "shared\n")
++        write(
++            self.store / "index.md",
++            "[pay](spec-pay/spec-pay.md) [design](spec-pay/DESIGN.md) [log](spec-pay/.memlog.md)\n",
++        )
++
++        report = self.fold()
++
++        self.assertEqual(report["problems"], [])
++        self.assertEqual(len(report["folded"]), 2)
++        for slug, other in (("pay", "ship"), ("ship", "pay")):
++            home = backlog / f"story-{slug}"
++            log = (home / ".memlog.md").read_text()
++            self.assertIn(f"topic: {slug}\n", log)
++            self.assertIn(f"{slug} only", log)
++            self.assertNotIn(f"{other} only", log)
++            self.assertEqual(
++                (home / "DESIGN.md").read_text(),
++                f"# {slug} design\n[spec](../story-{slug}.md) R1\n[shared](../../shared.md)\n",
++            )
++            story = backlog / f"story-{slug}.md"
++            self.assert_references_resolve(story)
++            self.assertIn(f"companions: [_bmad-output/backlog/story-{slug}/DESIGN.md]", story.read_text())
++        self.assertEqual((backlog / ".memlog.md").read_text(), "existing backlog history\n")
++        self.assertEqual((backlog / "DESIGN.md").read_text(), "existing backlog design\n")
++        self.assertEqual(
++            (self.store / "index.md").read_text(),
++            "[pay](backlog/story-pay.md) [design](backlog/story-pay/DESIGN.md) [log](backlog/story-pay/.memlog.md)\n",
++        )
++        before = snapshot(self.project)
++        self.assertEqual(self.fold(), {"mode": "fold-specs", "folded": [], "problems": []})
++        self.assertEqual(snapshot(self.project), before)
++
++    def test_existing_loose_story_asset_folder_is_not_merged(self):
++        loose = self.store / "spec-caddie"
++        write(loose / "spec-caddie.md", spec_frontmatter(companions="[]", sources="[]") + SPEC_BODY)
++        write(self.store / "backlog" / "story-caddie" / ".memlog.md", "existing history\n")
++        before = snapshot(self.project)
++
++        report = self.fold()
++
++        self.assertEqual(report["folded"], [])
++        self.assertIn("already exists", report["problems"][0]["problem"])
++        self.assertEqual(snapshot(self.project), before)
++
+     def test_a_loose_story_takes_the_backlog_next_id_when_it_is_higher(self):
+         loose = self.store / "spec-caddie"
+         write(loose / "spec-caddie.md", spec_frontmatter(companions="[]", sources="[]") + SPEC_BODY)

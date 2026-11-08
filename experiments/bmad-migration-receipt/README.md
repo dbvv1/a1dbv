@@ -40,7 +40,7 @@ BMAD-METHOD 是约 5.49 万 Star 的结构化 AI 开发项目，源码为 MIT，
 
 冲突预检失败可以保持全树原样，运行到末尾才失败则不同。本地候选的 `rmdir` 会保留晚到／遗漏文件并报错，但前面的 ticket 改写、memlog 合并、部分移动乃至 spec 主文件删除可能已发生；它不是事务或自动恢复工具。单测用局部 move 故障注入核这个停点，未验证真实并发／进程中断。
 
-保留内容会把同名隐藏元数据变成明确冲突，不会替读者合并或丢掉 `.DS_Store`。多个 loose specs 共用 backlog memlog／伴随件冲突是另一开放问题 #3143，本次未修；不把这份候选作为全量升级方案。当前公开的是选择与实证，未发布上游补丁、安装指南或新默认。
+保留内容会把同名隐藏元数据变成明确冲突，不会替读者合并或丢掉 `.DS_Store`。多个 loose specs 共用 backlog memlog／伴随件冲突是另一问题 #3143，11-02 的上述候选未修；11-08 的[独立修复](#loose-story-reader)另列，不把两者当作已合并或全量升级方案。
 
 ## 检查、失败与保全
 
@@ -58,3 +58,31 @@ BMAD-METHOD 是约 5.49 万 Star 的结构化 AI 开发项目，源码为 MIT，
 依赖准备初次因环境没有项目默认 Python 3.11 停止，明确选用满足 `>=3.11` 的现有 Python 3.12.14 后，按 frozen lock 在独立环境安装了开发依赖。消费者的补充校验器一度把成功 `status` 的可选 `problems` 当作必有字段；原错误保留，只修 accessor，未改生产源码或夹具。源码、完整输入、原失败、候选及 Git bundle 已离线归档并回读校验；原归档未审核为可公开上传。
 
 **依据**：官方 [项目与预览说明](https://github.com/bmad-code-org/BMAD-METHOD/tree/bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41)、[迁移脚本](https://github.com/bmad-code-org/BMAD-METHOD/blob/499008ea97c53436e7c7fa598a4a25e7bb869e07/skills/bmad/scripts/migrate_v6.py)、[完整备份与迁移契约](https://github.com/bmad-code-org/BMAD-METHOD/blob/499008ea97c53436e7c7fa598a4a25e7bb869e07/skills/bmod-method/migration-1.toml)、[真实使用者 #3142](https://github.com/bmad-code-org/BMAD-METHOD/issues/3142)与相邻未解决的 [#3143](https://github.com/bmad-code-org/BMAD-METHOD/issues/3143)，加本仓隔离真实消费。核实 2026-11-02；定向覆盖，不据 Star 或一次试验推荐整套方法。固定版本与结果见 [results.json](results.json)，长程页仍为 🟡。
+
+<a id="loose-story-reader"></a>
+## 11-08：不同故事的日志与附件各有归属
+
+**🧪 只解决 #3143 的新迁移：保留平铺的 `backlog/story-<slug>.md`，把日志与附件放进同名 `backlog/story-<slug>/`。** 现有附件目录会明确拒绝，不合并旧历史；已经混在一起的日志不能凭这份补丁自动拆回。
+
+新上下文读者按 [Agent 选择页](../../docs/01-agents/README.md)保留现有云端入口，在固定 dev `a867e1604b365d48ea03cbd109da1066ba0c84bc` 上通过原 CLI 复现：第二个 `DESIGN.md` 冲突，改名后日志又混入第一个 topic。[两文件补丁](loose-stories.patch)分开附件目标和 ticket 的相对引用基准；原嵌套 initiative 的位置不变。
+
+**从本目录复制到新的源码副本后验证，不应用到已有脏树。** 需要 Git、uv 和 Python 3.11+；本次 Linux／Python 3.11.17。依赖准备使用官方仓库及项目冻结锁文件，缓存可放当前工作区。
+
+```sh
+PATCH="$PWD/loose-stories.patch"
+git clone --branch dev https://github.com/bmad-code-org/BMAD-METHOD.git source
+git -C source checkout a867e1604b365d48ea03cbd109da1066ba0c84bc
+git -C source apply "$PATCH"
+cd source
+export UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python"
+uv sync --frozen
+uv run --frozen python -B -m pytest -n 0 tools/tests/test_migrate_v6.py
+```
+
+31 项迁移测试通过；两个新回归配原生产代码均失败。非读者在另一份源码与三个不同故事上另跑真实 CLI：同名附件全迁入，原 backlog 的 ID／日志保留，来源与链接正确；`tickets.py status/find` 找回四个故事（含原有一项），`mark` 后 `find` 读回正确计划。以迁移报告返回的 memlog 所在目录作为 workspace，用 `memlog.py append` 追加，各自日志互不污染；重复迁移不改树，目录冲突保全整树，缺输入退出 1。
+
+读者全量 Python 检查为 **1186 tests＋198 subtests 通过，无 skip**，项目完整 `tools/quality.py` 也通过，包括代码／文档检查、验证器和文档站构建。初次失败源于默认缓存／Astro 配置目录不可写和可选 tiktoken 缺失；改用工作区缓存与配置目录、在隔离 venv 安装该可选依赖后重跑，未改项目锁文件。以上是本地检查，不是 hosted CI。
+
+**这是迁移存储与引用修复，不是完整工作流升级。** 没运行 LLM 驱动的 SPEC 流程；旧 prose 的 `<ticket folder>` 是否能让后续 Agent 自动找到新日志目录仍待验，本次消费者使用报告中的 memlog 位置。也不包含上文 #3142 的隐藏文件保全、旧混合日志修复、Windows 或线上验收；没有提交上游。派生补丁按 [原 MIT 许可](LICENSE)提供，许可中引用的[贡献者](https://github.com/bmad-code-org/BMAD-METHOD/blob/a867e1604b365d48ea03cbd109da1066ba0c84bc/CONTRIBUTORS.md)与[商标说明](https://github.com/bmad-code-org/BMAD-METHOD/blob/a867e1604b365d48ea03cbd109da1066ba0c84bc/TRADEMARK.md)保留上游入口。
+
+**依据**：[#3143 原需求](https://github.com/bmad-code-org/BMAD-METHOD/issues/3143)、[固定 dev 源码](https://github.com/bmad-code-org/BMAD-METHOD/blob/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/migrate_v6.py)及本次真实 CLI、原生测试与独立消费；2026-11-08 核实。原问题仍 open，定点 PR 搜索未找到对应修复，不等于不存在未公开的实现。
