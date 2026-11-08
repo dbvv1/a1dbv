@@ -253,7 +253,7 @@ Unity RC 4.2.5／runtime 4.0.4 的接线是：初始化时选环境，登录已�
 
 **✅ 本地命令接缝已进入旁置可玩案例；要接现有六席，复用 `commandFrame`，不要再写一个排序器。** [MOBA 主线采用](https://github.com/dbvv1/MOBA-Like/commit/8ade2d1012370692de31f3883a85338171dbcab3)已把 `candidate.html` 的玩家与机器人输入送入 `Simulation.commandFrame` → `sim.step`。下面采用固定 `7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64`，而非上文 TCP 小样的 `3bcda00f`；该源支持内容版本 `[1,2,7,8,9,10,11,12]`，本次用 12。
 
-**先从真实任务目录核共享指令，再接原模拟。** 按[共享指令页](../../docs/decisions/instruction-files.md#第二步核对加载入口与当前上下文)核 MOBA 根 `AGENTS.md`／`CLAUDE.md` 的实际加载与当前可见内容，再沿该页“第三步”将 `src/sim/` 确定性契约对应到本次输入／回放检查。手动读过文件只记为任务中读取，不冒充启动自动加载。下方六席读者原先没有采用该入口；这里补的是后续任务入口，不是共享方案的新读者验收。
+**先从真实任务目录核共享指令，再接原模拟。** 按[共享指令页](../../docs/decisions/instruction-files.md#第二步核对加载入口与当前上下文)核 MOBA 根 `AGENTS.md`／`CLAUDE.md` 的实际加载与当前可见内容，再沿该页“第三步”将 `src/sim/` 确定性契约对应到本次输入／回放检查。手动读过文件只记为任务中读取，不冒充启动自动加载。11-08 新读者已按该入口手动读取固定源指令，将确定性与命令边界对应到下方真实消费者；启动自动加载及双工具自然开发采用仍未验。
 
 #### 1. 按模拟拥有的席位造完整下一帧
 
@@ -287,7 +287,9 @@ const results = sim.step(frame);
 
 **用交回的[原脚本](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/run.mjs)，不要重建演示模拟。** 准备上述固定 MOBA 源码及与其锁文件一致的已有依赖。原运行用 Node 22.23.2；两端锁定同一运行时、内容和导航数据。脚本依次创建两个独立 Detour 实例，再创建 seed 901／contentVersion 12／每队三人的两个 `Simulation`，不监听端口。
 
-可从任意目录执行，先把前两条路径赋值中的占位符换成**已有仓库目录**：a1dbv 必须含本页链接的产物，MOBA 必须是上述固定源。`tsx` 从 MOBA 工作目录解析，脚本用绝对路径，输出另存，不覆盖交回证据：
+当前 MOBA 检出不是固定源时，在该仓库运行 `git worktree add --detach <新目录> 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64`，不切换正在工作的目录；按新工作树的锁文件准备依赖。
+
+可从任意目录执行，先把前两条路径赋值中的占位符换成**已有仓库目录**：a1dbv 必须含本页链接的产物，MOBA 必须是上述固定源。`tsx` 从 MOBA 工作目录解析，脚本用绝对路径；每次输出放入新的临时目录，原证据目录可保持只读：
 
 ```sh
 set -eu
@@ -297,11 +299,13 @@ ARTIFACT="$A1_ROOT/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-A
 TARGET=7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 test "$(git -C "$MOBA_SOURCE" rev-parse HEAD)" = "$TARGET"
 git -C "$MOBA_SOURCE" diff --quiet HEAD -- src/sim src/content package.json package-lock.json
+OUTPUT_DIR="$(mktemp -d)"
+printf '本次输出：%s/run-output.json\n' "$OUTPUT_DIR"
 (
   cd "$MOBA_SOURCE"
   node --version
   MOBA_SOURCE="$MOBA_SOURCE" MOBA_TARGET_COMMIT="$TARGET" \
-    node --import tsx "$ARTIFACT/run.mjs" > "$ARTIFACT/run-output.recheck.json"
+    node --import tsx "$ARTIFACT/run.mjs" > "$OUTPUT_DIR/run-output.json"
 )
 ```
 
@@ -311,7 +315,7 @@ git -C "$MOBA_SOURCE" diff --quiet HEAD -- src/sim src/content package.json pack
 - **拒收与去重**：`failureProbes.allPass`、`validFrameAfterProbesAdvanced`、`dedupe.pass` 均为 true。主跑 tick 20 重送 seat 0 的 move；另起两个模拟、先空跑五帧的 dedupe 探针重送 seat 0 的 W，只产生一条结果并扣一次法力。主跑 tick 6 是 seat 1 的正常 W，不是该探针。
 - **购买单独延长**：本输入序列只靠被动金币，30 Hz 下每秒 2 金币，600 tick 约 40，买不起最低价 600 的 `wayfarer_boots`。购买在本 tick 的经济更新前处理，因此先在 tick 9000 结束时积到 600，再于 tick 9001 得到 `accepted: true`；tick 30 的 `notEnoughGold` 是正确结果。继续到 9081 tick，核 `extension` 的总 tick 与逐 tick 比较数均为 9081、两类 mismatch 都为 0、`firstMismatch = null`，并核 `receipts.tick9001` 的扣款／items 和 tick 9002 的 W 法力／冷却变化。不要改金币、价格或内容版本凑成 600 tick 购买成功；有击杀赏金的其他输入序列另算。
 
-依据：[固定源类型](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/types.ts)、[消费与经济实现](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/simulation.ts)与[读者原始报告](https://github.com/dbvv1/a1dbv/blob/a5501970d0ad492e42be64f3e70b8521a77178e4/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md)，2026-11-06 接收；[负责人接收勘误](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md#负责人接收勘误)保留读者未做项。本轮修页后未另请新读者实做，9,081 tick 仍为 running；网络／浏览器／跨设备／完整终局未验，CPU 一致性不是品质提升。
+依据：[固定源类型](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/types.ts)、[消费与经济实现](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/simulation.ts)与[读者原始报告](https://github.com/dbvv1/a1dbv/blob/a5501970d0ad492e42be64f3e70b8521a77178e4/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md)，2026-11-06 接收；[负责人接收勘误](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md#负责人接收勘误)保留读者未做项。2026-11-08 新读者用 Node 24.22.1 在独立固定源按页复跑通过，除 source 元数据外与原输出逐字段一致，原证据未改。9,081 tick 仍为 running；网络／浏览器／跨设备／完整终局未验，CPU 一致性不是品质提升。
 
 此前 `npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。这份历史完整局不是上述六席序列的终局证明。冻结默认入口 `default-src` 尚未采用；本次接的是旁置版本的本地输入合同。
 
