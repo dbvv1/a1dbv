@@ -17,3 +17,6 @@
 11-08 B 接收已采用图标制作链的 LF 修复前状态（运行资产／网站／品质分不变）：
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `7e1986f`／Site **v22**。[f4c8857](https://github.com/dbvv1/MOBA-Like/blob/f4c8857a6073d9dd4cd75a76330c7497f5165139/docs/verification/submitted-command-lifetime.md)原完整Q/W旁置续修死亡／丢弃待发输入的过时回执与队列拒收。659项／构建／独审过；默认／quiet保旧，未合main。旧Canvas见Q/W／重生；隔离浏览器启动socket EPERM、不重试，新源码未验页面。3D／同机位／听感盲评及原调用终态待验。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [成套重导出](../../domains/game-dev/assets/3d.md#asset-family-rebuild)已接；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)命中[部分接入](../../domains/game-dev/assets/materials.md#source-hit-marker)，通路未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，画面未验。开放音频未听未用，Nature 恢复未知。3D：网关三源实测见 [3D 页](../../domains/game-dev/assets/3d.md)，本机`gen3d`／`glbprep`可用；按实测采用 3–5 件标准件。 |
+
+11-08 FPS 制作入口纠正前的项目行（游戏与 Site 未变）：
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `e732e3e`／Site **v24**。[4319dca](https://github.com/dbvv1/FPS-Like/commit/4319dcac671a61bf3a1908d382f87989f738c6b0)候选到位且无可见敌人时先安拆后补弹，两反例→剩5tick完成。570项／类型／构建／独审过；32种子192回合全淘汰、修前后终局hash同。socket EPERM、完整角色reload/switch及浏览器／视听、自然5v5安拆欠验，未合main／部署。 |

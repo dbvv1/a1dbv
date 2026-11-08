@@ -40,3 +40,7 @@ result_branch: relay/b-pipe-model-guide-correction-20261106
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：负责人接收本清单并更新任务状态；非作者按新节复查后可安排视觉验收（本轮未做）。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 指导层固定接收
+
+2026-11-08，部分接收固定 `0c13e02` 的实际消费差量，压缩写入 [3D 正文](../../../domains/game-dev/assets/3d.md#asset-family-rebuild)，并修正 [FPS 原制作入口](https://github.com/dbvv1/FPS-Like/blob/06aabc06c1638ac27b73e429a34492c7b9f85f2b/assets/environment/standards-v1/README.md)：首页已消费、临时输出不自动接入、重导出与运行字节校验一起核、保整批回退。未接收长篇过程、跨版本字节保证或新的视觉结论。非作者源码／新文阅读通过；12 项文件系统、13 项既有 Node 回归及实际加载器四路 CPU 核对通过。没有重建、替换或上传模型，没有新增工具／卡；旧 Blender 和原读者观察不改写为本次实跑。原调用终态仍 unknown，保留原卡状态，不重派或清锁。
