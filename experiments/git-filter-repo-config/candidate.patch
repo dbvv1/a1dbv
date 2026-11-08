@@ -1,0 +1,50 @@
+diff --git a/git-filter-repo b/git-filter-repo
+index 31ebad4..a9479a7 100755
+--- a/git-filter-repo
++++ b/git-filter-repo
+@@ -1713,2 +1713,2 @@ class GitUtils(object):
+-    return dict(item.split(b'\n', maxsplit=1)
+-                for item in output.strip().split(b"\0") if item)
++    return dict(item.partition(b'\n')[::2]
++                for item in output.split(b"\0") if item)
+diff --git a/t/t9391-filter-repo-lib-usage.sh b/t/t9391-filter-repo-lib-usage.sh
+index 3a86961..4d4da8e 100755
+--- a/t/t9391-filter-repo-lib-usage.sh
++++ b/t/t9391-filter-repo-lib-usage.sh
+@@ -258,0 +259,36 @@ test_expect_success 'clean-ignore with emoji in filenames' '
++test_expect_success 'config settings support valueless and ordinary values' '
++	git init config_settings &&
++	(
++		cd config_settings &&
++		mkdir keep &&
++		echo keep >keep/file &&
++		echo drop >drop &&
++		git add . &&
++		git commit -m initial &&
++		printf "[filter \"lfs\"]\n\trequired\n" >>.git/config &&
++		git config fixture.empty "" &&
++		git config fixture.whitespace "  padded  " &&
++		git config fixture.multiline "first
++second" &&
++		git config --add fixture.duplicate first &&
++		git config --add fixture.duplicate last &&
++		python3 -c "
++import os
++import git_filter_repo as fr
++settings = fr.GitUtils.get_config_settings(b\".\")
++assert settings[b\"filter.lfs.required\"] == b\"\"
++assert settings[b\"fixture.empty\"] == b\"\"
++assert settings[b\"fixture.whitespace\"] == b\"  padded  \"
++assert settings[b\"fixture.multiline\"] == b\"first\\nsecond\"
++assert settings[b\"fixture.duplicate\"] == b\"last\"
++assert b\"fixture.missing\" not in settings
++os.environ[\"GIT_CONFIG\"] = os.devnull
++assert fr.GitUtils.get_config_settings(b\".\") == {}
++" &&
++		"$TEST_DIRECTORY/../git-filter-repo" --force --path keep/ &&
++		echo keep/file >expect &&
++		git ls-tree -r --name-only HEAD >actual &&
++		test_cmp expect actual
++	)
++'
++
