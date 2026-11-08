@@ -1,0 +1,38 @@
+
+> miniflare-published-declaration-consumer@1.0.0 check
+> tsc --project tsconfig.json --pretty false
+
+node_modules/miniflare/dist/src/index.d.ts(2,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(3,34): error TS2307: Cannot find module '@cloudflare/workers-shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(4,37): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(7,53): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(8,49): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(10,73): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(11,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(12,37): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(13,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(16,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(20,55): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(21,83): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(22,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(23,65): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(26,46): error TS2307: Cannot find module '@cloudflare/config' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(27,36): error TS2307: Cannot find module './shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(28,25): error TS2307: Cannot find module '@puppeteer/browsers' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(29,39): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(30,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(31,57): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(35,43): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(42,51): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(43,75): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(47,45): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(51,35): error TS2307: Cannot find module '@cloudflare/workers-shared' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(52,34): error TS2307: Cannot find module '@cloudflare/config' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(54,77): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(55,49): error TS2307: Cannot find module '@cloudflare/workers-types' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(56,59): error TS2307: Cannot find module '@cloudflare/workers-types' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(57,55): error TS2307: Cannot find module '@cloudflare/workers-types/experimental' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(60,37): error TS2307: Cannot find module '@cloudflare/config' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(62,35): error TS2307: Cannot find module '@cloudflare/config' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(63,19): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+node_modules/miniflare/dist/src/index.d.ts(8128,434): error TS2370: A rest parameter must be of an array type.

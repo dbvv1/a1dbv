@@ -91,7 +91,9 @@ test "$old_exit" -eq 1
 分别报告目标问题、其他诊断和未运行行为，不用 workspace 链接或跳过库检查掩盖失败。
 ```
 
-**依据**：[npm pack](https://docs.npmjs.com/cli/v11/commands/npm-pack/)与[生命周期](https://docs.npmjs.com/cli/v11/using-npm/scripts/)，原核实 2026-11-05；此分支只在发布内容可能改变消费者时使用，不新增全仓门禁。
+**真实包说明为什么不能只验 main。** Miniflare 的固定 beta 包能安装，但新读者的严格 TypeScript 消费者仍在已安装声明中报 `./shared` TS2307；tarball 中确实没有相应文件。读者没有关闭库检查来消除报错，保留其他诊断另列，因而能回答“这个发布包是否满足我的声明消费要求”。包验收失败，仍然完成了核查任务；不据此判断其运行时好坏。
+
+**依据与复跑**：[npm pack](https://docs.npmjs.com/cli/v11/commands/npm-pack/)与[生命周期](https://docs.npmjs.com/cli/v11/using-npm/scripts/)，原核实 2026-11-05；[Miniflare 固定发布物、独立消费者与新读者结果](../../experiments/miniflare-release-consumer/README.md#新读者的真实包消费)，2026-11-08 云端读者实际照做，非读者重跑并核包身份。仅验固定 beta 的声明路线；本地 prepack、运行时和 Windows 未验，不新增全仓门禁或改地图评级。
 
 ## 失败后修实现，不把契约修没
 

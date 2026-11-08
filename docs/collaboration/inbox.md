@@ -28,7 +28,7 @@
 
 **11-05 已补当前发布渠道的真实消费者。** [固定版本、锁文件与复跑入口](../../experiments/miniflare-release-consumer/README.md)：当时 npm `latest` 为 4.20260730.0、`beta` 为 5.20261103.0-beta，独立消费者安装均退出 0，原 TypeScript 6.0.3 检查均退出 2，分别在 3／1 处复现 `./shared` TS2307；另 49／34 条诊断未归因。两版 tgz 均无 shared 前缀文件，声明与安装内容逐字节一致。需要库声明检查时，这两版仍未满足该消费者门槛，不能据稳定版标签或 main 构建成功宣称已修；未验其他 TypeScript、运行时或未来版本，不据此推荐降级或开启 `skipLibCheck` 掩盖错误。
 
-**先核脚本测了什么。** QMD 固定 `package-smoke` 构建并运行工作区 dist／wrapper，没有打包安装；这不代表其整套 CI 没有其他检查。pi-quiver 的实际测试则 pack→临时安装→运行已安装 bin，并验版本与文档转换；本仓未运行这两套测试。`--dry-run` 清单与 help 成功都不等于完整消费者验证。候选只补已有测试／交付入口；**第二位未读材料的本机读者按此操作仍待验证，不升默认、不改答案页。**
+**先核脚本测了什么。** QMD 固定 `package-smoke` 构建并运行工作区 dist／wrapper，没有打包安装；这不代表其整套 CI 没有其他检查。pi-quiver 的实际测试则 pack→临时安装→运行已安装 bin，并验版本与文档转换；本仓未运行这两套测试。`--dry-run` 清单与 help 成功都不等于完整消费者验证。✅ 11-08 新读者在独立云端照完整验证页完成固定 beta 的 pack→安装→声明消费，负责人另验包身份并重跑；已回流[按真实发布包验收](../decisions/verification.md#npm-包交付安装实际-tarball再验调用方)。本机 Windows、本地 prepack 与运行时仍未验，不提升地图或新增统一门禁。
 
 **依据**：[npm pack 官方契约](https://docs.npmjs.com/cli/v11/commands/npm-pack/)、[生命周期文档](https://docs.npmjs.com/cli/v11/using-npm/scripts/)；[Cloudflare 用户报告与源码构建／发布包复核分歧 #15377](https://github.com/cloudflare/workers-sdk/issues/15377)；[QMD 固定脚本](https://github.com/tobi/qmd/blob/86d2365d17fc682e491c2c53d1e4a884aee8682a/scripts/package-smoke.mjs)、[pi-quiver 固定产物消费测试](https://github.com/jjuraszek/pi-quiver/blob/ec46ad942df2010cf887270a980446b0a513fda3/test/packed-install.test.ts)。核实、固定发布物静态检查与真实 TypeScript 消费复现：2026-11-05。
 
