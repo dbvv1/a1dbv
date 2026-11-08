@@ -13,6 +13,8 @@
 规则沉默或访问失败的事项保留未知，不补成“允许”。
 查看 issue 的最新状态、关联 PR、讨论与项目要求的准入状态；
 对照当前目标分支的差分与源码，按输入、输出和兼容契约判断旧补丁是否已被覆盖；
+核旧分支的实际父提交或 merge-base，PR 元数据的 base tip 不代表分支起点；
+只做静态核对时，将可应用性和当前版本测试结果保留为未验证。
 分清只供某个功能绕过限制的做法、通用修复，以及仍需验证的共存路径。
 区分：项目是否接这类贡献、是否允许使用 AI、谁必须亲自写／提交、
 CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前工具是否获准发出。
@@ -41,7 +43,7 @@ CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前�
 
 ## 有旧补丁时：先核上游，再决定续做
 
-**查清关闭原因，再按输入、输出和兼容契约核“是否覆盖”。** issue 颜色或是否改了同一文件都不够。 已合入的实现解决了同一行为，就收起重复部分；它若只为某个功能绕过限制，则保留通用路径的独立缺口，先核两种做法怎样共存。关联 PR 尚未合并时，先协调重叠和剩余差量，不把提案当成已修复或排他占用。更新旧分支时，文本冲突与行为冲突分开查，补跨功能回归；干净合并也不能证明旧契约仍成立。
+**查清关闭原因，再按输入、输出和兼容契约核“是否覆盖”。** issue 颜色或是否改了同一文件都不够。 已合入的实现解决了同一行为，就收起重复部分；它若只为某个功能绕过限制，则保留通用路径的独立缺口，先核两种做法怎样共存。关联 PR 尚未合并时，先由符合项目规则且获准发言的人协调重叠和剩余差量，再按确定的范围续做；只读任务把协调交回，不代发评论。提案既不是已修复，也不代表排他占用。更新旧分支时，文本冲突与行为冲突分开查，补跨功能回归；干净合并也不能证明旧契约仍成立。
 
 本仓 Goose LiteLLM 候选原来缺的是：给代理别名补视觉能力，并在请求格式化前生效、保留显式布尔配置。10 月 30 日核到上游 [#13239](https://github.com/aaif-goose/goose/pull/13239) 已合入相应实现，因而停止重投旧修复，保留历史补丁与回归结果。当前分支已修与用户安装的 release 已修要分别核；旧测试也只对应当时的候选。
 
@@ -54,6 +56,12 @@ CLA／DCO／vouch 等个人步骤、验证要求、后续响应，以及当前�
 **Datasette：列统计的内联方案没有替代服务端参数类型。** 已合入的 #3038 把参数写成 SQL 字面量，供列统计查询使用；#3015 的 `_typed_params=1`／`::int` 则是服务端绑定提案，仍为 draft。读者核对两者后发现，不能因改了同一段代码就收起旧提案：应沿原 PR 更新当前上游，并保留 `named_parameter_values` 按 SQL 基名键控的模板契约，另处理 typed 表单回填。对已发布分支，当前任务只授权快进，就合并上游后补交，不用 rebase／强推改写历史。列统计与 typed 查询的共存回归、设计取舍和该提交的 CI 仍须分别解决。
 
 **依据**：[Datasette #3038](https://github.com/simonw/datasette/pull/3038)、[#3015](https://github.com/simonw/datasette/pull/3015)、[固定模板契约](https://github.com/simonw/datasette/blob/3cb0f1b/docs/template_context.rst)、[订正后的读者结论](../collaboration/local-jobs/artifacts/A-UPSTREAM-DATASETTE-DELTA-READER-20261107/result.md)；读者观察 2026-11-07，接收复核至 2026-11-08。已收判断与页面卡点，读者隔离未独立证实，修页后照做仍待；没有运行新组合或代替上游 CI，页面及地图保持 🟡。
+
+**cattrs：保留五后端候选，先协调已有提案的剩余范围。** Decimal 的 #764 与新 #822 均未合并，只改 json／PyYAML；维护者在 #764 还要求覆盖 ujson、orjson、msgspec，并保留已正确的原生路径。当前 main 与 v26.2.1 的这五个 preconf 都未注册 Decimal hook，不能把新 PR 当成候选已被覆盖。cattrs 禁止无监督 Agent 和 LLM 生成的 review comment，贡献者须理解并承担全部改动；当前下一步由符合这些要求的人协调两条提案，不自动再开第三条。#822 的父提交是 `bde101a5`，并非 API 返回的目标分支 tip `e9239b7`；更新分支要核真实祖先与差量，快进授权下不擅自 rebase 已发布历史。
+
+**确定续做范围后，测试先适配目标项目，再补验变动路径。** 本仓旧候选测试顶层导入 `msgspec`，同时枚举 `orjson`；上游 PyPy 不安装这两个依赖，直接把文件并入测试集会在收集或执行时失败。沿现有条件导入、参数级跳过及 `*_cpython.py` 布局安排测试，保留 PyPy 上仍可运行的其他后端，不能只给顶层 import 之后的测试加 skip。PyYAML 候选已用测试固定 `Decimal(str(v))`，#822 则选 `Decimal(v)`：要协调的是数字输入契约，不是重新补一条同样的测试；两者都不能恢复 float 解析前丢失的精度。候选还缺 `HISTORY.md` 条目；贡献指南提到的 `README.rst` 已不存在，应沿实际 `README.md`／文档导航核对应位置，不能把失效路径当成已满足。
+
+**依据**：[cattrs 贡献规则](https://github.com/python-attrs/cattrs/blob/e9239b7082206f18e3cec873b11451aff35beb9c/CONTRIBUTING.md)、[AI 政策](https://github.com/python-attrs/cattrs/blob/e9239b7082206f18e3cec873b11451aff35beb9c/.github/AI_POLICY.md)、[维护者反馈](https://github.com/python-attrs/cattrs/pull/764#issuecomment-4826035821)、[#822 固定差量及父提交](https://github.com/python-attrs/cattrs/commit/2e883761ca61b076c3de45a5d976952226347c2c)、[可选依赖](https://github.com/python-attrs/cattrs/blob/e9239b7082206f18e3cec873b11451aff35beb9c/pyproject.toml)、[上游测试布局](https://github.com/python-attrs/cattrs/blob/e9239b7082206f18e3cec873b11451aff35beb9c/tests/test_preconf.py)、[本仓固定回归](https://github.com/dbvv1/a1dbv/blob/7f54b4c5deb57b08f9cd0fb56af6967116ff023d/experiments/cattrs-decimal/test_decimal_preconf.py)。源码与提案复核 2026-11-08；旧结果仅对应 `bde101a5`／Python 3.12.14。当前变化涉及 msgspec 的 deque／字段处理及依赖，仍须补验相关运行、目标 Python 矩阵、lint、文档与合并覆盖率；本轮未应用补丁或运行新版，实际读者附页与隔离未独立证实，页面保持 🟡。
 
 ## 条件满足后：交可审结果，继续负责回应
 
