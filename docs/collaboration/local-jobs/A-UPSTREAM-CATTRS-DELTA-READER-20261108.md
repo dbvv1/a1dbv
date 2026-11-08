@@ -1,7 +1,7 @@
 # A-UPSTREAM-CATTRS-DELTA-READER-20261108 · 新提案出现后的贡献判断
 id: A-UPSTREAM-CATTRS-DELTA-READER-20261108
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7f54b4c5deb57b08f9cd0fb56af6967116ff023d
