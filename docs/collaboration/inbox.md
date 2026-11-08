@@ -6,14 +6,14 @@
 
 ### 2026-11-05：Ruff 清理生成导入，回实际消费者验收
 
-🧪 **Agent 清理生成代码时，别只接收 F401 的“全部修复”。** [Ruff 0.17.3／OpenAI SDK 3.46.0 三组消费者](../../experiments/ruff-import-consumer/README.md)：原文件正常；从模块副本的 `__all__` 删除兼容 alias 后，自动清理退出 0 却删掉仍被使用的原名，实际导入失败；分开 import 的对照恢复本例消费者，另跑 F821 也能抓住错误。导出删除是受控前置修改，不是原版 SDK 故障；未验完整 SDK／真实 API，现有上游 PR 尚未合入，不重复投稿。先读 diff、核导出契约并运行项目消费者，不升统一门禁。实测：2026-11-05。
+🧪 **Agent 清理生成代码时，别只接收 F401 的“全部修复”。** [Ruff 0.17.3／OpenAI SDK 3.46.0 三组消费者](../../experiments/ruff-import-consumer/README.md)：原文件正常；从模块副本的 `__all__` 删除兼容 alias 后，自动清理退出 0 却删掉仍被使用的原名，实际导入失败；分开 import 的对照恢复本例消费者，另跑 F821 也能抓住错误。导出删除是受控前置修改，不是原版 SDK 故障；未验完整 SDK／真实 API，现有上游 PR 尚未合入，不重复投稿。先读 diff、核导出契约并运行项目消费者，不升统一门禁。实测：2026-11-05。✅ 已回流[自动清理的消费者验收](../decisions/verification.md#自动清理导入导出报告归零后再跑原消费者)。
 
 
 ### 2026-11-05：unused export 自动修复，复扫归零还要验消费者
 
 🧪 **已用 Knip 清理导出时，给 Agent 同时交“公开导出”和“局部绑定”的保留边界，修后运行原消费者，不以空报告验收。** [已发布的真实用户最小复现与独立复跑](../../experiments/knip-workspace-entry/export-fix/README.md)：固定 Knip 6.44.1 正确报告 `localOnly` 未被外部导入，但 `--fix --fix-type exports` 删除了仍被模块内部函数使用的解构绑定；修复命令和复扫均退出 0，消费者却退出 1、报 `ReferenceError`。保留局部解构、仅单独导出仍需公开的名称，消费者恢复输出 `44`，Knip 仍为 0、空报告。它与[旧 workspace 入口误报](../../experiments/knip-workspace-entry/README.md)不同，不靠补 entry 或 ignore 解决。
 
-只在确认没有外部调用方需要该导出时采用这项局部改法；公开包的消费者未必在本地分析图中。材料是用户公开最小复现，不是完整产品事故；未验其他解构、Bun、模型收益或上游修复 PR，不新增默认门禁。**依据**：[用户 #2298](https://github.com/webpro-nl/knip/issues/2298)、[固定输入、官方实现与消费者命令](../../experiments/knip-workspace-entry/export-fix/README.md#来源与状态)。实跑及来源核实 2026-11-05；本条接收已有结果，不当作新的试验或答案页读者验收。
+只在确认没有外部调用方需要该导出时采用这项局部改法；公开包的消费者未必在本地分析图中。材料是用户公开最小复现，不是完整产品事故；未验其他解构、Bun、模型收益或上游修复 PR，不新增默认门禁。**依据**：[用户 #2298](https://github.com/webpro-nl/knip/issues/2298)、[固定输入、官方实现与消费者命令](../../experiments/knip-workspace-entry/export-fix/README.md#来源与状态)。原实跑及来源核实 2026-11-05。✅ 11-08 新读者照[验证页](../decisions/verification.md#自动清理导入导出报告归零后再跑原消费者)完成此公开复现副本的清理，三阶段消费者与最终导出另经复验；已回流答案，不把原轮复跑倒算为读者验收。
 
 ### 2026-11-05：Rust API 变更，用下游编译核 lint，不把 warning 当破坏
 
