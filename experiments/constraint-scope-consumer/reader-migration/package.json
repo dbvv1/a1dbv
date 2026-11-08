@@ -1,0 +1,11 @@
+{
+  "name": "independent-constraint-reader",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test.mjs && node test-schema-target.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.15"
+  }
+}
