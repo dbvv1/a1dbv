@@ -1,0 +1,3 @@
+2026-11-09（UTC+8）续修 FPS 终局目标提示前的状态；被新行取代，产品任务未完成。
+
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。候选[c17d455](https://github.com/dbvv1/FPS-Like/commit/c17d455af93c7726e099fe3696d88d5c8067859b)修偏弹伤及后方队友，保玩家友伤；580项＋adapter29／构建／独审过，48回合无友伤。hard seed7超时已核合法守点，非导航故障。socket EPERM不重试，完整角色reload/switch、浏览器／视听与自然5v5安拆仍缺，未合main／部署。 |
