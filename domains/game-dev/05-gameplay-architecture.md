@@ -204,9 +204,9 @@ flowchart LR
 
 <a id="bot-ammo-recovery"></a>
 
-**候选补充，尚未进入 main／Site：武器偏好要服从实际资源。** 训练 Bot 原先在首选枪全空后反复请求无效换弹，即使备枪可用也不切换。固定候选 `5b5d864` 保留仍有弹或可换弹的首选枪，完全耗尽才选可用备枪，后续 tick 不切回空枪，换局补给后恢复偏好。两枪全空时停发无效射击／换弹；敌人可见时仍原地瞄准，不会因此自动撤退或继续拆弹。
+**候选补充，尚未进入 main／Site：资源不足时，既要选替代动作，也要解除已无效的优先级。** 训练 Bot 在首选枪全空后使用仍有弹或可换弹的备枪，后续 tick 不切回空枪，换局补给后恢复偏好。同一候选 `ff1d23c` 进一步允许两枪全空、且现有计划已准许在当前位置安放／拆除的机器人持续交互，不再仅因敌人可见而举空枪等待。有任一枪可用或可换弹时仍优先交战；交互范围外不新增推进、撤退或绕行策略。
 
-**让 Agent 用真实命令耗尽资源，再验替代动作是否稳定。** 双向切枪、备枪需换弹、原切枪冷却、真实伤害和换局恢复都要覆盖；普通对局未必触发耗弹，胜率不变也不能证明这条恢复路径正确。此候选的 500 局训练 1v1 与旧 Bot 报告和最终 hash 相同，进攻胜率仍为 64.6%，未达 40%–60% 目标；它不代表 5v5 平衡或玩家体验通过。实现与回归：[固定 Bot](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/src/candidates/offline-training-v1/sim/bot.ts)、[真实耗弹测试](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/tests/offline-training-v1/bot.test.ts)、[已有实测范围](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/docs/training-integration.md)。来源与源码复核：2026-11-07；浏览器／视听仍未验。[候选源码／CPU]
+**让 Agent 用真实命令耗尽资源，再验替代动作与完成边界。** 双向切枪、备枪需换弹、原冷却、真实伤害和换局恢复都要覆盖；目标交互还要验正常完成、严格距离边界及没有职责的角色。安放后回合仍可继续，测试应以目标已完成收口，不能继续要求旧交互。真实 Game 新回归确认安放／拆除 180／300 tick；非作者另验正常与编队控制器 28 例，未改路径的命令与旧版一致。普通对局未必触发耗弹：500 局训练 1v1 报告和全部最终 hash 与前版相同，进攻胜率仍 64.6%，未达 40%–60% 目标；自然 5v5 零交互欠项仍在。实现与回归：[固定 Bot](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/src/candidates/offline-training-v1/sim/bot.ts)、[真实耗弹测试](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/tests/offline-training-v1/bot.test.ts)、[实测范围](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/docs/training-integration.md)。来源与源码复核：2026-11-08；浏览器／视听仍未验，不升级战术或品质结论。[候选源码／CPU]
 
 #### 调参数：先确定玩家应获得什么机会
 
