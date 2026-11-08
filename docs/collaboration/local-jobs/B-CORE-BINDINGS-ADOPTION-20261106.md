@@ -36,8 +36,9 @@ page: experiments/moba-keybindings/README.md@bbb068cbdc97617856763414ace1d9d828b
 
 ## 当前结果
 
-- **接收决定（2026-11-06）**：接收第二组 W↔R、S→G 的 CPU DOM／真实 Controls 与 Simulation 行为证据；已补[正文](../../../experiments/moba-keybindings/README.md)的第二组操作、选择器、真实回调与失败替身入口。原读者 taskDone=true 只限该运行范围，独立性自述有冲突，新版正文未再经首次独立照做。
+- **接收决定（2026-11-06）**：接收第二组 W↔R、S→G 的 CPU DOM／真实 Controls 与 Simulation 行为证据；已补[正文](../../../experiments/moba-keybindings/README.md)的第二组操作、选择器、真实回调与失败替身入口。原读者 taskDone=true 只限该运行范围，独立性自述有冲突；新版正文的新读者结果见下方，不改写原调用。
 - [原交回 e1ea6f0](https://github.com/dbvv1/a1dbv/commit/e1ea6f0cd925b5e98832601d30cbaa94640c328d)；[接收版与勘误](artifacts/B-CORE-BINDINGS-ADOPTION-20261106/result.md)保留原证据和范围，补 mkdir／复制路径，纠正现成替身、新对局、逻辑键、cast 时序与 title 等表述。原测试 Fixture.store 注记已修，运行时断言不增。
 - 接收者在同固定源 7e1986f 的独立副本复跑 5 文件47项与网页类型检查通过；另显式检查外加测试类型通过。新增组合没有 onOpenChange 接线，菜单禁用／清队列沿用真实 client 既有回归，W/R HUD title 未直接断言。
 - 未运行：浏览器／dev／socket、实际 localStorage刷新、焦点／设备与完整对局；不改产品、不重新运行本机读者，不作画面或手感结论。原调用退出仍无新回执。
-- 剩余入口：新版页面首次独立照做及真实浏览器／设备按既有待验批次处理，不重复派本卡。
+- 11-08 独立云端新读者按修订页完成第二组接线：固定 a829005，真实组件与 Simulation，46 项及网页／新用例类型检查通过，新增 HUD title 前缀断言；[消费者与复跑入口](../../../experiments/moba-keybindings/README.md#从第二组改键核完整消费者)已保留并经负责人复验。未重派本机原卡，原调用退出仍未知。
+- 剩余入口：真实浏览器／刷新／焦点与设备按既有待验批次处理，不重复派本卡。

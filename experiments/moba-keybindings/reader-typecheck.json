@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.web.json",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "vitest/globals",
+      "vite/client"
+    ]
+  },
+  "include": [
+    "tests/client/reader-second-change.test.ts"
+  ],
+  "exclude": []
+}

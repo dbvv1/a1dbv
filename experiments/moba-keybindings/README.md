@@ -41,9 +41,18 @@ npm run typecheck:web
 | 核提示，再开一局／刷新 | `[data-skills] button` 的显示键、页脚 `#controls-help` 和 `#hero-select` 的技能提示均读 Q/R/E/W，帮助显示 G: stop；绑定保留 |
 | Restore defaults → Save & apply | `[data-binding-defaults]` 后再保存，才恢复默认并删除存储覆盖 |
 
-**CPU 复验从相同存储的新 owner 和新 Simulation 开始，不把它称为真实刷新。** [已回交的第二组用例](../../docs/collaboration/local-jobs/artifacts/B-CORE-BINDINGS-ADOPTION-20261106/bindings-adoption-u1.test.ts)放到上述 MOBA 副本的 `tests/client/` 后，运行 `npx vitest run tests/client/bindings-adoption-u1.test.ts`；2 项通过，加原 45 项共 47。它走真实 Controls／Simulation 和设置 DOM；设置禁用输入／清队列仍由 `keyboard-client.test.ts` 的真实 client 用例证明，新增组合没有覆盖该回调，也没有直接断言交换后按钮的 title。连续施放先等上一条 `castSlot` 清空，否则 `alreadyCasting` 是正常玩法拒绝。
+**CPU 接线检查用真实组件和新对局，不把它称为浏览器刷新。** 新读者已在固定 `a829005` 上独立组装[第二组改键消费者](reader-second-change.test.ts)：设置 DOM → Controls → Simulation，同时连接 HUD、帮助和英雄提示；W/R 交换后按钮文本与 title 前缀都随有效值改变。把 `A1` 设为本知识库的绝对路径，在上述 MOBA 副本运行：
 
-保存失败的入口见 `tests/client/keyboard-client.test.ts`：临时 `vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota'); })`，在设置页改键并保存，核对话框仍开、有效值及 HUD/help 保持旧值，随后取消并还原 spy。新组合用例用同一 `StoragePort` 合同的内存替身；这不是实际 localStorage 配额测试。
+```sh
+cp "$A1/experiments/moba-keybindings/reader-second-change.test.ts" tests/client/
+cp "$A1/experiments/moba-keybindings/reader-typecheck.json" tsconfig.reader.json
+npx vitest run tests/client/reader-second-change.test.ts
+npx tsc -p tsconfig.reader.json
+```
+
+新用例 1 项通过，加原 45 项共 46 项；网页与测试文件的类型检查分别通过。它验证取消草稿、明确交换、一次保存、真实施法／停止、同存储新 owner＋新 Simulation、失败保旧值和恢复默认。连续施放先等上一条 `castSlot` 清空，否则 `alreadyCasting` 是正常玩法拒绝。此用例从正文签名自行接回调，不直接导入整个 client；隐藏／停止守卫、预存队列清理、时钟和音频仍看原 `keyboard-client.test.ts`，不能据此补报完整生命周期或浏览器通过。
+
+保存失败使用同一 `StoragePort` 合同的内存替身，使 `setItem` 抛错后核有效动作、旧存储和提示保留。真实 client 的替身入口仍在 `tests/client/keyboard-client.test.ts`：临时让 `Storage.prototype.setItem` 抛错，核对话框仍开、HUD/help 保旧，取消后还原 spy；两者都不是实际 localStorage 配额测试。独立照做及负责人复验：2026-11-08，Node 24.22.1；原[两项交回用例](../../docs/collaboration/local-jobs/artifacts/B-CORE-BINDINGS-ADOPTION-20261106/bindings-adoption-u1.test.ts)保留作历史证据。
 
 ## 移植接线：一份对象串起操作与提示
 
@@ -98,7 +107,8 @@ Controls 记录当前瞄准文本，结束模式时调用 `say('', aimMessage)`�
 | 证据 | 能采用什么 | 还要验什么 |
 |---|---|---|
 | 固定源 45 项 CPU／DOM 测试＋网页类型检查，2026-11-03 | 草稿／有效值分离、明确交换、同步提示、真实命令消费与持久化可作接入起点 | 原生 dialog 焦点／背景 inertness、实际设备与手感 |
-| 第二组读者交回与接收复跑：5 文件 47 项、网页类型检查，2026-11-06 | W↔R＋S→G、取消／一次保存、真实技能消费、同存储新 owner、失败保旧值；原始交回与勘误见[记录](../../docs/collaboration/local-jobs/artifacts/B-CORE-BINDINGS-ADOPTION-20261106/result.md) | 新版指引尚未再经首次独立照做；交换后 title、真实刷新／焦点与设备仍未验 |
+| 第二组读者交回与接收复跑：5 文件 47 项、网页类型检查，2026-11-06 | W↔R＋S→G、取消／一次保存、真实技能消费、同存储新 owner、失败保旧值；原始交回与勘误见[记录](../../docs/collaboration/local-jobs/artifacts/B-CORE-BINDINGS-ADOPTION-20261106/result.md) | 该轮组合未断言交换后 title；真实刷新／焦点与设备仍未验 |
+| 新读者按修订页独立接线：固定 a829005，46 项 CPU／DOM、网页与新用例类型检查，2026-11-08 | 第二组改键可照正文接入真实组件；新增 title 前缀、失败保旧值和新对局消费断言，负责人复跑通过 | 原生 dialog、实际刷新／配额、设备与听感未验；可选瞄准提示候选不在本次范围 |
 | [2026-10-28 浏览器报告](https://github.com/dbvv1/MOBA-Like/blob/261034a790c7eec9e493db9745dfcb0dbd66e2c7/docs/quality/smoke/B-MOBA-BACKLOG-SMOKE-20261028/2026-10-28T16-59-50-659Z-192910/report.json)，固定源 `935bf8e` | 实际 Q→F、F 开启瞄准、保存对局后刷新续玩仍显示 F；保存／恢复 tick 77→100 | 该次未浏览器实测旧键拒绝、冲突交换与全部取消分支；不算当前版本复跑 |
 
 历史浏览器使用 software／SwiftShader；它验证界面和输入接线，不给硬件画面、手感或原生引擎评级。移植后用自己的当前交付树走完上面的正常流程，再核旧键无效、保存失败与焦点返回。
