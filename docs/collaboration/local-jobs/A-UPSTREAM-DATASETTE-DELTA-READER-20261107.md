@@ -1,7 +1,7 @@
 # A-UPSTREAM-DATASETTE-DELTA-READER-20261107 · 新上游改动后的投稿判断
 id: A-UPSTREAM-DATASETTE-DELTA-READER-20261107
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e2628b9f12629796406c8eda7fd453107f5b1801
@@ -36,8 +36,7 @@ page: docs/decisions/upstream-contributions.md@a25b151c8cfbe38121d6de604a485146a
 
 ## 当前结果
 
-- reader-test 一轮观察完成：读者照 a25b151c 页面完成 Datasette 投稿前核查，结论为继续 #3015、先做有边界 rebase 并解决 tests/test_playwright.py 两处冲突、补跨特性回归与受影响检查；#3038 已合入且改同一段代码但用前端字面量内联绕开字符串绑定，未实现 #2946 的通用机制，独立缺口仍在。独立核对确认附页与固定版本逐行一致（diff 0）、PR 元数据与 main@3cb0f1b 一致、merge-tree 仅 test_playwright.py 冲突、QueryContext.named_parameter_values 被换成 typed 键违反 docs/template_context.rst 稳定契约，taskDone=true。openIssues：参考副本 input.txt 实际已存在（83bce683），result.md『接收端独立 input 产物缺失』表述不准；『main 上不存在这些符号』过绝对（_typed_params 仅测试名子串）；1.0a41 未标明 prerelease；缺模型/effort 栏。pageStuck 5 条（CONTRIBUTING/AGENTS/PR 模板不存在、『覆盖』在已合并但另一做法下无定义两处、规则沉默保留未知位置偏），另 1 条为任务只读边界。未运行 Datasette Python/Playwright/浏览器/应用，未复核 #3015 本地测试数字，未实际 rebase/push/评论/批准 CI；目标验收不据此通过。
-- 产物：[45a20ea](https://github.com/dbvv1/a1dbv/commit/45a20ead8bf0952e5515a40812b0e6915223a5bb)，分支 `relay/a-upstream-datasette-delta-reader-20261107`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人处理：(1) 修正 result.md 中 input.txt 缺失表述、符号过绝对与 prerelease 标注，补模型/effort 栏；(2) 将页面『覆盖』判定缺口（已合并但用另一做法绕开）交页面维护者补规则；(3) 投稿下一步按 result.md 由补丁作者执行 rebase，设计方向与 6 个 action_required CI 批准待 simonw 决定。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- 部分接收[订正结果](artifacts/A-UPSTREAM-DATASETTE-DELTA-READER-20261107/result.md)：#3038 的列统计内联未覆盖 #3015 的服务端绑定目标；采用等价贡献规则入口、行为覆盖与跨功能契约卡点，已修答案页。原结果 `45a20ea` 保留，越出写域的额外 reader-tests 产物不合入。
+- input.txt 已随 `83bce683` 发布，附页与 `a25b151c` 逐字节一致；原工作树基线较旧，不是接收端缺产物。已订正符号、预发布版、模型／effort 未知及已发布分支不得 rebase／强推的建议。
+- 未独立证实读者隔离；修页后照做、Datasette 新组合运行、上游 CI 与新版 Qwen 验证均未完成。页面／地图保持 🟡，不重派原卡，socket 拒绝未解除；原 HTTPS 脚本仍未运行，不重试被拒动作。
+- 唯一下一步：沿原 #3015 准备保留历史的上游合并与模板契约修正，核独占写者后再实施；设计选择及六项 action_required CI 仍待维护者。当前仅发布判断与正文，无产品或上游写入。
