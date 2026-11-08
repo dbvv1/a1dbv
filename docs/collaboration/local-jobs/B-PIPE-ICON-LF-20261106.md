@@ -2,7 +2,7 @@
 id: B-PIPE-ICON-LF-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-pipe-icon-lf-20261106
@@ -40,3 +40,9 @@ result_branch: relay/b-pipe-icon-lf-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：Receiver commits these files; remaining acceptance needs a CairoSVG/system-Cairo environment for the 12 render tests and PNG/preview export, plus non-author visual review (both unrun).
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人固定接收 · 2026-11-08
+
+原固定产物5267080已快进接入MOBA main。采用路径是实际HUD的`abilityViewModel`→`iconUrl`→双主题六类SVG，以及场内bright/control；不是新素材或独立工具。云端按原依赖补跑5项文本、15项真实Cairo导出／失败回归、完整568项、双构建与9项真实表现消费者，全部通过；两主题36个运行图重出与入库字节一致。独立非作者核267条manifest与39个运行资产／消费者文件不变。
+
+环境为Python3.12.14、CairoSVG2.8.2、Pillow12.0.0、Cairo1.18.4；Windows换行仍仅规则模拟，未跑Windows系统。原本机失败不改写为当时通过；本轮不声称浏览器、视觉品质或原Workflow外层终态已核。Site v22不变，不重派、不清锁。
