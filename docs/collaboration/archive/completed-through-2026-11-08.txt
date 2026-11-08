@@ -7,3 +7,6 @@
 
 11-08 B 续补空弹目标交互前的 FPS 状态（被新行取代，产品未完成）：
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24**。[5b5d864](https://github.com/dbvv1/FPS-Like/blob/5b5d864bee0c71554cc1480c5d67f6c7a114161d/docs/training-integration.md)原训练候选续修Bot耗弹备枪；完整549项、adapter29／双类型／生产构建过。500局训练1v1攻方64.6%，平衡未达。socket EPERM、完整角色reload/switch及浏览器／视听待验，未合main／部署。 |
+
+11-08 B 续修拆除负责人前的 FPS 状态（被新行取代，产品未完成）：
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24**。[ff1d23c](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/docs/training-integration.md)候选补全空弹就地安放／拆除；554项、adapter29／双类型／构建／独审过。500局训练1v1攻方64.6%，平衡未达、自然5v5仍无交互。socket EPERM、完整角色reload/switch及浏览器／视听待验，未合main／部署。 |

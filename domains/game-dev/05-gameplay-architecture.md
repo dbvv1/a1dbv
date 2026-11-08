@@ -202,11 +202,17 @@ flowchart LR
 
 **采用边界：默认 5v5 尚未采用听声调查，不能据此宣称完整搜索循环。** Bot 虽保存声音线索，但有 `squadPlan` 时优先走编队目的地；仅非编队分支使用 4 秒内的最后线索去调查。既有 [Bot 测试](https://github.com/dbvv1/FPS-Like/blob/2b7ac87288f9595d3b1346b521a7eb456db108c9/tests/offline-training-v1/bot.test.ts)覆盖只听见不射击、失视停火等规则，[编队测试](https://github.com/dbvv1/FPS-Like/blob/2b7ac87288f9595d3b1346b521a7eb456db108c9/tests/offline-training-v1/squads.test.ts)覆盖隐藏敌人换位不改观察／计划、唯一负责人及死亡移交；这些不是玩家公平感的结论。上述实现已在网页默认版本采用，本次仅作源码与既有证据回写，未新增运行验收；客户端渲染、调试快照仍可访问完整世界，因此这里只证明离线 Bot 的决策输入边界，不证明联网反作弊或 Unity／UE 引擎落地。
 
+<a id="bot-objective-ownership"></a>
+
+**拆除交互已经开始，就保留负责人；距离只用于空缺时选人。** 训练编队候选暴露了真实回合反例：两名健康防守者、没有存活敌人，距爆炸还有 305 tick，拆除需要 300 tick，另一名掩护队友走近却使负责人反复换手 18 次，读条被重置，最终爆炸。Game 本来已保护仍合法的当前交互，问题是计划层命令它主动放弃。修复从 Game 的实际交互派生本队角色 ID／种类，包含玩家负责人，其他机器人继续掩护；释放、移动、换弹、切枪或死亡让交互结束后，再选最近存活 Bot。不要另建一个只记“我想拆弹”的共享锁，也不需要共享敌方交互或起止时间。
+
+**让 Agent 验证最终胜负和取消后的接替，不只验计划标签。** 同一真实命令场景修后 0 次换手、连续 300 tick 拆完，距爆炸剩 5 tick；默认安放／拆除／引爆时长和交战优先级均未改。回归另覆盖玩家负责人、五类中断、观察缺失／失效、敌我隔离与深副本，非作者复跑确认。实现：[有限观察](https://github.com/dbvv1/FPS-Like/blob/38569ecf62a28dc1fbf2f3f0f64cd836abbf7738/src/candidates/offline-training-v1/sim/game.ts)、[负责人计划](https://github.com/dbvv1/FPS-Like/blob/38569ecf62a28dc1fbf2f3f0f64cd836abbf7738/src/candidates/offline-training-v1/sim/squads.ts)、[真实交互回归](https://github.com/dbvv1/FPS-Like/blob/38569ecf62a28dc1fbf2f3f0f64cd836abbf7738/tests/offline-training-v1/squad-handoff.test.ts)。核实 2026-11-08；仅原训练候选，尚未进 main／Site，浏览器与实际手感未验。[候选源码／CPU]
+
 <a id="bot-ammo-recovery"></a>
 
 **候选补充，尚未进入 main／Site：资源不足时，既要选替代动作，也要解除已无效的优先级。** 训练 Bot 在首选枪全空后使用仍有弹或可换弹的备枪，后续 tick 不切回空枪，换局补给后恢复偏好。同一候选 `ff1d23c` 进一步允许两枪全空、且现有计划已准许在当前位置安放／拆除的机器人持续交互，不再仅因敌人可见而举空枪等待。有任一枪可用或可换弹时仍优先交战；交互范围外不新增推进、撤退或绕行策略。
 
-**让 Agent 用真实命令耗尽资源，再验替代动作与完成边界。** 双向切枪、备枪需换弹、原冷却、真实伤害和换局恢复都要覆盖；目标交互还要验正常完成、严格距离边界及没有职责的角色。安放后回合仍可继续，测试应以目标已完成收口，不能继续要求旧交互。真实 Game 新回归确认安放／拆除 180／300 tick；非作者另验正常与编队控制器 28 例，未改路径的命令与旧版一致。普通对局未必触发耗弹：500 局训练 1v1 报告和全部最终 hash 与前版相同，进攻胜率仍 64.6%，未达 40%–60% 目标；自然 5v5 零交互欠项仍在。实现与回归：[固定 Bot](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/src/candidates/offline-training-v1/sim/bot.ts)、[真实耗弹测试](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/tests/offline-training-v1/bot.test.ts)、[实测范围](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/docs/training-integration.md)。来源与源码复核：2026-11-08；浏览器／视听仍未验，不升级战术或品质结论。[候选源码／CPU]
+**让 Agent 用真实命令耗尽资源，再验替代动作与完成边界。** 双向切枪、备枪需换弹、原冷却、真实伤害和换局恢复都要覆盖；目标交互还要验正常完成、严格距离边界及没有职责的角色。安放后回合仍可继续，测试应以目标已完成收口，不能继续要求旧交互。真实 Game 新回归确认安放／拆除 180／300 tick；非作者另验正常与编队控制器 28 例，未改路径的命令与旧版一致。普通对局未必触发耗弹：500 局训练 1v1 报告和全部最终 hash 与前版相同，进攻胜率仍 64.6%，未达 40%–60% 目标；原九机器人加静止玩家的八种子矩阵全部淘汰、没有交互，不证明完整安拆闭环。实现与回归：[固定 Bot](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/src/candidates/offline-training-v1/sim/bot.ts)、[真实耗弹测试](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/tests/offline-training-v1/bot.test.ts)、[实测范围](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/docs/training-integration.md)。来源与源码复核：2026-11-08；浏览器／视听仍未验，不升级战术或品质结论。[候选源码／CPU]
 
 #### 调参数：先确定玩家应获得什么机会
 
