@@ -1,7 +1,7 @@
 # A-UPSTREAM-RICH-GATE-READER-20261108 · 重复方案出现后如何推进旧候选
 id: A-UPSTREAM-RICH-GATE-READER-20261108
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c91ee9a1b62fff3c380ee47664222ca1281c88c
