@@ -24,6 +24,7 @@
 |---|---|---|
 | 大量相同语法／API 写法 | 官方 codemod 或已有语法规则先试代表性文件，Agent 处理规则外语义 | 核已改、未改、警告和例外；再验相关行为。零命中先查是否根本无需改写 |
 | JS→TS、重命名、跨文件引用 | 用类型／框架工具定位改动；有预览先核编辑清单，再跑严格检查 | 开发与发布入口都找到正确文件，类型符合真实返回值，构建产物能运行 |
+| 发布库的公开 API 变化 | 先用语言生态的兼容检查定位，再用同一旧调用方对照两个版本 | 编译破坏与行为变化分开核；warning、库自身构建成功或改检查基线都不能代替消费者兼容 |
 | 依赖大版本升级 | 先核已有迁移与跨过的版本指南；用项目声明的包管理器更新依赖和锁文件 | 真实 client 能构造、请求与消费者契约保留，锁文件可复用；已有失败与新增失败分开 |
 | 同一依赖分阶段切换，部分环境仍跑旧版 | [先核每个环境实际解析的 runtime 与 adapter](#导入已换新运行时可能还没换)，保留并行期必要检查 | 各环境产物与消费者对应预期版本；全部支持范围切完，才撤旧版与临时检查 |
 | 协议升级，要兼容两代客户端 | 分别固定旧／新协议，运行项目真实入口，有构建步骤先构建；已有实现只接目标 server 的差量 | 两代真实调用各自通过，旧版失败路径与状态隔离保留；自动回退后的成功不能证明新协议可用 |
@@ -63,6 +64,14 @@ MCP sequentialthinking 的同一 SDK 2.3.1 下，旧入口能服务旧协议，�
 ```
 
 **依据**：[Sentry 首阶段指令](https://github.com/getsentry/sentry/blob/8891ab865ca741f83cbcd20349bd21c03ad92ffc/static/AGENTS.md#L30-L39)、[阶段二环境选择](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.ts#L8-L39)与[构建消费者断言](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.test.ts#L28-L162)、[双版应用测试](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/testCi.js#L18-L31)与[类型检查](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/typecheck.ts#L56-L81)、[完成切换并撤除支架](https://github.com/getsentry/sentry/commit/de3060f736c6dd55836bfae104336a967ec41d8d)。已有候选原核实 2026-11-03，2026-11-08 复核固定源码；这是已完成迁移的历史机制，不是建议 Sentry 继续 V6。本仓未运行该迁移或完成此分支的新读者实做，未验证净收益。
+
+### 公开 API：库能构建，旧调用方仍可能坏
+
+**让 Agent 改公开 API 时，把原消费者的输入、调用方式与检查命令一起交给它。** 在两个独立消费者副本里保留同一源码与检查命令，只切换目标库版本并更新相应锁文件。Rust 库已安装 cargo-semver-checks 时，从新版库目录运行 `cargo semver-checks -p <crate> --baseline-root <旧版源码目录> --color never`（先替换占位符，含空格的路径加引号），再分别进入消费者目录运行 `cargo check --locked`。固定源码、工具链和所需 features；多 crate 各选自己的基线。工具未覆盖或跳过的检查仍是未验，纯内部改动不用统一增加这一关。
+
+**编译错误按原调用定位，行为警告回真实输入验证。** librouting 的 `lr-bgp` 新增公开枚举分支后，自身构建成功，但原 23 分支穷尽匹配消费者从通过变为 E0004；同次 PartialOrd warning 却未证明旧值排序改变：显式 discriminant 下，278 个旧值的 77,284 对比较结果一致。不能为消警告擅自改排序、加兜底分支或抬高检查基线；要保兼容就调整库侧方案并重验原消费者；已决定接受破坏性升级，再迁移调用方并保留回归。
+
+**依据与复跑入口**：[固定版本、同一消费者与两类结果](../../experiments/rust-semver-consumer/README.md)，2026-11-05 Linux 实测；cargo-semver-checks 0.51.0、Rust 1.99.0，工具报 1 fail／1 warn／31 skip。消费者是针对真实 API 写的最小下游探针，不是已有第三方应用；只验证固定历史两版、一个 crate 和所列 features，未证明完整工作区或运行时兼容，也未完成本分支的独立照做验收。
 
 ### 规则零命中：保留仍兼容的生成代码
 

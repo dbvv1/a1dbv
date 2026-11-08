@@ -17,7 +17,7 @@
 
 ### 2026-11-05：Rust API 变更，用下游编译核 lint，不把 warning 当破坏
 
-🧪 **让 Agent 修改发布库的公开 API 时，先跑 cargo-semver-checks 定位，再用同一消费者对照旧版与新版。** [librouting 固定历史实试与复跑材料](../../experiments/rust-semver-consumer/README.md)：0.51.0 报 1 fail、1 warn；23 分支消费者旧版编译退出 0、新版退出 101（E0004），确认新增枚举分支破坏穷尽匹配。但 PartialOrd 的位置警告没有证明旧值排序改变：全部 278 个旧值的 77,284 个有序对两版输出一致，显式 discriminant 不能按源码位置推断。仅测一个 crate 与固定版本，31 条检查跳过，未验完整工作区、所有 feature 组合或运行时；不升默认。已有来源条目的过强排序结论已纠正，原合成类型变更设想未执行。✅ 实试回流。
+🧪 **让 Agent 修改发布库的公开 API 时，先跑 cargo-semver-checks 定位，再用同一消费者对照旧版与新版。** [librouting 固定历史实试与复跑材料](../../experiments/rust-semver-consumer/README.md)：0.51.0 报 1 fail、1 warn；23 分支消费者旧版编译退出 0、新版退出 101（E0004），确认新增枚举分支破坏穷尽匹配。但 PartialOrd 的位置警告没有证明旧值排序改变：全部 278 个旧值的 77,284 个有序对两版输出一致，显式 discriminant 不能按源码位置推断。仅测一个 crate 与固定版本，31 条检查跳过，未验完整工作区、所有 feature 组合或运行时；不升默认。已有来源条目的过强排序结论已纠正，原合成类型变更设想未执行。✅ 已回流[公开 API 迁移的消费者验收](../decisions/migrations.md#公开-api库能构建旧调用方仍可能坏)；沿用 11-05 实测，未补称新读者执行。
 
 
 ### 2026-11-05：改包导出与发布内容，验真正 tarball 的消费者
