@@ -38,6 +38,12 @@ Apply 提交一次历史记录，不为每个按键生成记录；尚未提交�
 
 可借用的接收方式是同时看输入草稿、URL、摘要和实际结果，而不只断言一个标签变了。本轮仅覆盖桌面这条使用路径，未验移动端或模型收益；源码反馈促成的修改与真实批注促成的修改仍分开记录。[本仓实试／经验]
 
+## pnpm 安装后：从消费包找 Skill，不要求顶层提升
+
+**真实 pnpm 隔离布局下，仍从消费包定位 Skill。** 2026-11-08，新云端读者按 [Skills 答案页](../../docs/decisions/skills-and-plugins.md)的原样命令，从 `react-router 1.170.46` 找到 `router-core 1.171.39`，读出完整 `search-params` 正文；同一安装从顶层直接解析 `router-core` 则报 `MODULE_NOT_FOUND`。pnpm 11.25.0 的本次 `isolated` 布局启用了私有提升、未启用公共提升，不是“所有依赖均不提升”。
+
+应用源码与 npm 锁文件未变，读者与非读者分别跑过原 8 项 Router＋React DOM 测试、构建与类型检查，均通过，见[固定输入与接收记录](pnpm-reader-acceptance.json)。准备环境时，`pnpm import` 曾让一个 TypeScript alias 偏离原锁版本，需在测试副本定点约束后全新安装、重跑；这属于环境准备，不是页面已教过的包管理器迁移。正式应用仍用 npm，不收转换锁或新增依赖。本次只补手动读取与应用回归，自动发现、模型采用、浏览器和其他平台不在新增验证范围。
+
 ## 真正可借用的三处选择
 
 1. **共享状态放在父路由。** `/posts` 的 `validateSearch` 将不可信 URL 值收窄为可用值，子详情继承相同 schema。组件从 `Route.useSearch()` 读取，不另建一份 React 状态当真源。
@@ -56,7 +62,7 @@ Apply 提交一次历史记录，不为每个按键生成记录；尚未提交�
 npm ls @tanstack/react-router @tanstack/router-core @tanstack/intent
 ```
 
-再从这个消费包解析传递依赖并只读配方。下面的 Node 从 `@tanstack/react-router` 自身的安装位置解析 `@tanstack/router-core`，不假设 npm 把传递依赖提升到顶层；入口已独立核过合成提升、嵌套与符号链接布局，真实 pnpm 安装未独立复验：
+再从这个消费包解析传递依赖并只读配方。下面的 Node 从 `@tanstack/react-router` 自身的安装位置解析 `@tanstack/router-core`，不假设 npm 把传递依赖提升到顶层；入口已独立核过合成提升、嵌套与符号链接布局，并补过真实 pnpm 隔离安装验证：
 
 ```sh
 node --input-type=commonjs <<'NODE'

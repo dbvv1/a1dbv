@@ -1,0 +1,210 @@
+{
+  "observed_at": "2026-11-08",
+  "base_commit": "585c128ebf86277d419370ff21d28ab83952f7f1",
+  "scope": "Manual installed-Skill retrieval and unchanged existing Posts app regression in one real isolated pnpm layout",
+  "guide": {
+    "path": "docs/decisions/skills-and-plugins.md",
+    "sha256": "329f1626aaa02cb4aa98e50618deec152bf2eb23f12559b63401e72c8e9fbc43"
+  },
+  "runtime": {
+    "node": "24.22.1",
+    "pnpm": "11.25.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "layout": {
+    "nodeLinker": "isolated",
+    "hoistPattern": [
+      "*"
+    ],
+    "publicHoistPattern": [],
+    "topRouterSymlink": true,
+    "routerPackage": "app/node_modules/.pnpm/@tanstack+react-router@1.170.46_react-dom@19.3.1_react@19.3.1__react@19.3.1/node_modules/@tanstack/react-router/package.json",
+    "corePackage": "app/node_modules/.pnpm/@tanstack+router-core@1.171.39/node_modules/@tanstack/router-core/package.json",
+    "rootCoreResolve": "MODULE_NOT_FOUND"
+  },
+  "skill": {
+    "packageVersion": "1.171.39",
+    "metadataLibraryVersion": "1.171.15",
+    "sha256": "e886e5c3285309a0e95c52e30e73d4ff52cffc366f0d97d02003b9696e8a8804",
+    "bytes": 9210,
+    "exitCode": 0
+  },
+  "identity_comparison": {
+    "installedCount": 135,
+    "unexpectedIdentities": [],
+    "missingNonoptionalIdentities": [],
+    "aliases": {
+      "@typescript/native": {
+        "name": "typescript",
+        "version": "7.0.2",
+        "path": "app/node_modules/.pnpm/typescript@7.0.2/node_modules/typescript/package.json"
+      },
+      "typescript": {
+        "name": "@typescript/typescript6",
+        "version": "6.0.2",
+        "path": "app/node_modules/.pnpm/@typescript+typescript6@6.0.2/node_modules/@typescript/typescript6/package.json"
+      },
+      "typescript > @typescript/old": {
+        "name": "typescript",
+        "version": "6.0.3",
+        "path": "app/node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/package.json"
+      }
+    }
+  },
+  "optional_lock_entries_absent": 71,
+  "inputs": [
+    {
+      "relative": "index.html",
+      "hash": "c461a81246b9d1cd972bb10485a8538bc599820e87f0dffaac0c957b8e6bea8e",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "package-lock.json",
+      "hash": "d712b5e09f55b82901debd0fbf7a61f3b87df52133ae310b5ebe11eb7361be38",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "package.json",
+      "hash": "b62ae8ae6db41ed385e44dccf0d66cb52c340c07f21fdb8c01c1bde73aa6b6e2",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/main.tsx",
+      "hash": "00e9ad93c98e0240b12f44d78d4f6ccf2562ff5362b1903c5245f3fabeb16075",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/posts-search.ts",
+      "hash": "e34592f65d5f5d8c4543f9e72ae819b95eb34cd893bbde19bcef0889f0e33218",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/posts.lazy.tsx",
+      "hash": "a5388948e94a54c9f65ab5612cfd3411cd24068c89e0389638992f1d853626d6",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/posts.ts",
+      "hash": "70f114d21a5fc44027b103a7e0e8fd9fc078a89dc50c0808d48bfcf7d7dbc45e",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/router.tsx",
+      "hash": "b3802be0cac69b3c8435601c05e1288e886692c661e57921b24dc404dc0cba9f",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/styles.css",
+      "hash": "1405a2d7a1303a8fb954ae36003c67f376ccd71d90952035b8ee1687d7b44f76",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "src/vite-env.d.ts",
+      "hash": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "tests/posts.test.tsx",
+      "hash": "e57c526a6367eba676e9e48eb52bae8f7d79e8e48bccf504528e9e77ed5df453",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "tests/setup.ts",
+      "hash": "f3703ee50dde9d3ae24f079f9b7e8b6e273d9fd3ca5c88ee16b4286a5f0fd253",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "tsconfig.json",
+      "hash": "1ed8417d20772e4d9393e8fe36b9145637c1a58750cf10e69f0fcfb06ee50f63",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "vite.config.js",
+      "hash": "6c40e9a106e480dfa13fb9a133289689ab33289f546a3bbfd8d8f6427a29dc11",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    },
+    {
+      "relative": "vitest.config.js",
+      "hash": "d7396e43fa6924ce9ed269b6bd946d919880e6c9c4fac675e8563f543ca95267",
+      "copyUnchanged": true,
+      "sourceEqual": true
+    }
+  ],
+  "setup": {
+    "registry": "https://registry.npmjs.org",
+    "scripts": "All dependency installations used --ignore-scripts.",
+    "generated_pnpm_lock_sha256": "ab46b67364a97f3f2f789d9cdb57bfa92ca01ef8add7a4636db2611c4bd25c1c",
+    "local_pnpm_workspace_yaml": "overrides:\n  '@typescript/old': 'npm:typescript@6.0.3'\n",
+    "exceptions": [
+      "pnpm import rejected --registry; registry selected through process environment instead.",
+      "Default pnpm data directory was unavailable (ENOENT); process-local XDG data/cache/state paths were used inside this private workspace.",
+      "pnpm import changed alias @typescript/old from locked typescript 6.0.3 to 6.0.2. Initial tests/build passed but did not qualify as exact-lock validation.",
+      "Private pnpm-workspace.yaml override pinned @typescript/old to npm:typescript@6.0.3; old node_modules retained outside app; clean frozen installation and all checks rerun.",
+      "Conversion and override are test-specific assistance, not a page instruction or proposed app migration. All copied npm inputs preserved byte-for-byte."
+    ],
+    "source_changes": "None. Conversion lock and override stayed in the isolated validation copy; npm remains the application default."
+  },
+  "reader_results": [
+    {
+      "action": "Clean frozen pnpm install",
+      "exit_code": 0
+    },
+    {
+      "action": "Verbatim guide Node locator",
+      "exit_code": 0,
+      "skill_bytes": 9210
+    },
+    {
+      "action": "pnpm test",
+      "exit_code": 0,
+      "test_files_passed": 1,
+      "tests_passed": 8,
+      "tests_skipped": 0
+    },
+    {
+      "action": "pnpm build (vite build && tsc --noEmit)",
+      "exit_code": 0,
+      "transformed_modules": 118
+    },
+    {
+      "action": "Copied inputs and original source hash comparison",
+      "exit_code": 0,
+      "files": 15
+    }
+  ],
+  "independent_acceptance": {
+    "review": "A separate non-reader inspected the logs, original package lock, source hashes and locator; independently reran the locator, layout identity audit, pnpm test and pnpm run build in the final installed tree.",
+    "locator_matches_page_verbatim": true,
+    "input_hashes_match_original_and_copy": 15,
+    "tests_passed": 8,
+    "tests_skipped": 0,
+    "build_and_tsc_exit_code": 0,
+    "layout_mismatches": [],
+    "root_core_resolution": "MODULE_NOT_FOUND",
+    "limits": "Independent commands reused the reader-prepared final installation, not another independently prepared environment."
+  },
+  "limits": [
+    "Controlled HTTP and jsdom, not live Chrome/backend.",
+    "No new UI or adoption; no automated Skill discovery or causal/model-benefit proof.",
+    "One Linux pnpm isolated layout, with private hoisting enabled.",
+    "Package tree and conversion lock are private test artifacts, not a new app default.",
+    "Fresh cloud-reader validation, not local receiver execution or recovery.",
+    "The shared Skills page and map rating are unchanged; no new browser or native client acceptance.",
+    "Build outputs changed between initial and corrected installations; byte-identical artifacts were not an acceptance claim."
+  ]
+}
