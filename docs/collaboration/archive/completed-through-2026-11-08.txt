@@ -10,3 +10,6 @@
 
 11-08 B 续修拆除负责人前的 FPS 状态（被新行取代，产品未完成）：
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24**。[ff1d23c](https://github.com/dbvv1/FPS-Like/blob/ff1d23c86eaeb9a4dc7130114414df23bf277580/docs/training-integration.md)候选补全空弹就地安放／拆除；554项、adapter29／双类型／构建／独审过。500局训练1v1攻方64.6%，平衡未达、自然5v5仍无交互。socket EPERM、完整角色reload/switch及浏览器／视听待验，未合main／部署。 |
+
+11-08 B 续修到位目标与主动补弹顺序前的 FPS 状态（被新行取代，产品未完成）：
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `fa8740d`／Site **v24**。[38569ec](https://github.com/dbvv1/FPS-Like/blob/38569ecf62a28dc1fbf2f3f0f64cd836abbf7738/docs/training-integration.md)候选修拆除换手：18次重置爆炸→0换手、300tick拆完。561项、adapter29／类型／构建／独审过；500局1v1仍64.6%。socket EPERM、完整角色reload/switch及浏览器／视听、自然5v5安拆欠验，未合main／部署。 |
