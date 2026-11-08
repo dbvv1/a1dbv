@@ -233,7 +233,7 @@ Foremerge 核对的是调用方给定提交包含已接受内容，**不验证�
 
 ### 2026-10-27：游戏拍摄边界已按新决定对齐
 
-✅ **画面拍摄与 smoke 在 dot 云端完成，不占本机**。默认版本验收统一按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)，云端软件图可用；[capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)保留 gpu／software／unknown 分类、每轮独占目录与 manifest。既有 cancelled 卡不恢复，预览清理沿原卡单独验收。
+✅ **需要 WebGL2 的拍摄与 smoke 按 11-04 决定下发本机，其余浏览器检查留在云端**；本条 10-27 的云端安排已被[游戏细则§7](game-taskbook.md#7-下发本机模型的游戏任务)替代。默认版本验收按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)，[capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md)保留 gpu／software／unknown 分类、每轮独占目录与 manifest。原调用 unknown 或拍摄槽未核空时不另派；既有 cancelled 卡不恢复，明确拒绝不重试或换入口。
 
 ### 2026-10-28：MCP 迁移，先固定消费者再读接口差异
 
