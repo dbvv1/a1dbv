@@ -39,9 +39,11 @@
 
 MCP sequentialthinking 的同一 SDK 2.3.1 下，旧入口能服务旧协议，新版需接入 `serveStdio`。固定 #5131 的单 server 差量后，构建产物在旧／新协议下都能保留两轮 thought、拒绝缺参数并从新连接重新计数；迁移前固定新版会明确拒绝，原生 101 项测试通过并不代表支持新协议。
 
-**照这个顺序做：固定两代协议 → 验基线消费者 → 接必要入口差量 → 有构建先构建，重启真实入口 → 重跑相同消费者。** TypeScript SDK 2.3.1 固定新版使用 `mode: { pin: "2026-07-28" }`；Python mcp 2.3.0 则用 `mode="2026-07-28"`，旧代用 `mode="legacy"`。`auto` 能回退，只验请求成功会漏掉新版仍不支持；Python 显式新版模式还可能合成 discovery 信息，所以要同时核实际 `tools/list` 和工具调用，不能只看客户端版本字段。Python time 无需 TypeScript 式重建，按项目安装后重启 `python -m mcp_server_time`；原生套件另核控制台入口。
+**照这个顺序做：固定两代协议 → 验基线消费者 → 接必要入口差量 → 有构建先构建，重启真实入口 → 重跑相同消费者。** TypeScript SDK 2.3.1 固定新版使用 `mode: { pin: "2026-07-28" }`；Python mcp 2.3.0 则用 `mode="2026-07-28"`，旧代用 `mode="legacy"`。`auto` 能回退，只验请求成功会漏掉新版仍不支持；Python 显式新版模式还可能合成 discovery 信息，所以要同时核实际 `tools/list` 和工具调用，不能只看客户端版本字段。
 
-**依据与复跑入口**：[固定版本、命令和真实 stdio 消费者](../../experiments/mcp-protocol-migration/README.md)，2026-11-07：作者完成 sequentialthinking；time 首轮读者的语言／启动入口卡点修正后，另一独立云读者只照修订页，在 Python 3.10.22、mcp 2.3.0 下实做基线与四文件迁移。两代工具调用、错误分层与新进程连接通过，基线 122／候选 133 项原生测试及静态、构建、覆盖门槛通过，零 skip。[本机 V2](../collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)缺依赖及已安装控制台入口，且禁止安装；两代真实 stdio、原生测试及 Ruff／Pyright 均未运行（`taskDone=false`），云端结果不替代它。这里只证明两个 server 的局部复现，不是新的上游采用；独立安装 wheel、HTTP、LLM 客户端及全发布门槛未验。
+**按实际交付形式验收。** Python time 开发态的 editable 安装可在修改后直接重启 `python -m mcp_server_time`；按 wheel 交付时，必须重建并在独立环境安装该 wheel。验收时离开源码目录、清除 `PYTHONPATH` 并核实际导入位置，再分别测试模块与控制台入口，避免用源码通过替代发行包通过。
+
+**依据与复跑入口**：[固定版本、命令和真实 stdio 消费者](../../experiments/mcp-protocol-migration/README.md)，2026-11-07：作者完成 sequentialthinking；time 首轮读者的语言／启动入口卡点修正后，另一独立云读者只照修订页，在 Python 3.10.22、mcp 2.3.0 下实做基线与四文件迁移。两代工具调用、错误分层与新进程连接通过，基线 122／候选 133 项原生测试及静态、构建、覆盖门槛通过，零 skip。[本机 V2](../collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)缺依赖及已安装控制台入口，且禁止安装；两代真实 stdio、原生测试及 Ruff／Pyright 均未运行（`taskDone=false`），云端结果不替代它。2026-11-08 又在独立环境安装 time 两版 wheel，候选的模块与控制台入口均通过两代消费者，基线仍明确拒绝新版；两包版本号相同，须核实际安装产物。这里只证明两个 server 的局部复现，不是新的上游采用；HTTP、LLM 客户端及全发布门槛未验。
 
 ### 导入已换新：运行时可能还没换
 

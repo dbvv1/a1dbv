@@ -42,7 +42,7 @@ git diff -- package.json package-lock.json
 
 ## Python time：接读者结果，再补完整原生验证
 
-**Python 同样要固定两代 client，但选项写法不同：mcp 2.3.0 用 `mode="legacy"` 和 `mode="2026-07-28"`。** 不套 TypeScript 的 `{ pin: ... }`。启动项目真实入口；本项目以 editable 安装运行 `python -m mcp_server_time`，不需要 TypeScript 式重建，但须重启进程。原生 suite 另核已安装的 `mcp-server-time` 控制台脚本。
+**Python 同样要固定两代 client，但选项写法不同：mcp 2.3.0 用 `mode="legacy"` 和 `mode="2026-07-28"`。** 不套 TypeScript 的 `{ pin: ... }`。启动项目真实入口；下方先以 editable 安装运行 `python -m mcp_server_time`，修改后重启进程；按 wheel 交付时仍须重建、独立安装，见末节。原生 suite 另核已安装的 `mcp-server-time` 控制台脚本。
 
 未参与页面写作的读者只照固定迁移答案与项目材料，接收 #5126 的 time 四文件差量，完成两代 stdio、基线固定新版失败、工具／输入契约及失败路径。其 Windows 缓存环境缺测试依赖，不能据此判完整通过；负责人在 Linux 用原锁文件独立补验。需 Git、uv、Python 3.12、Node／npm（coverage 及 pyright 需要）和公开 PyPI／npm 网络；固定项目声明 >=3.10，负责人首次补验为 3.12.14；后续独立云读者另按 `.python-version` 的 3.10 实做，结果见下。
 
@@ -83,6 +83,83 @@ git diff -- pyproject.toml uv.lock
 
 复跑这一轮时，把上文 `UV_PYTHON` 改为 `3.10`，准备命令用 `uv sync --frozen --all-extras --dev`，后续原生命令沿用。受限云目录还需分别把 `UV_CACHE_DIR`、`UV_PYTHON_INSTALL_DIR`、`PYRIGHT_PYTHON_CACHE_DIR` 与 `npm_config_cache` 指向任务自己的可写目录：仅设置 uv 缓存不会重定向 Pyright 的 npm 包装器缓存。该读者两侧首次 Pyright 因默认缓存目录不可写而失败，改用支持的独立缓存后重跑均为 0 errors；未放宽检查或改变系统权限。
 
-本次只补上修订页的云端冷读与 Python 3.10 证据。[本机 V2](../../docs/collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)仍缺真实安装、测试依赖和控制台入口，禁止安装条件未变，`taskDone=false`；云读者不替代它，也不提升读者地图评级。构建产物的独立 wheel 安装与运行仍未验。
+本次只补上修订页的云端冷读与 Python 3.10 证据。[本机 V2](../../docs/collaboration/local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md)仍缺真实安装、测试依赖和控制台入口，禁止安装条件未变，`taskDone=false`；云读者不替代它，也不提升读者地图评级。独立 wheel 消费者随后补验，见下节。
 
 **依据与完整结果**：[读者交付及接收说明](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/result.md)、[双环境结果与命令](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/verification.json)、[Python SDK 2.3.0 固定模式实现](https://github.com/modelcontextprotocol/python-sdk/blob/v2.3.0/src/mcp/client/client.py#L452-L467)、[真实需求 #4853](https://github.com/modelcontextprotocol/servers/issues/4853)、[已合实现 #5126](https://github.com/modelcontextprotocol/servers/pull/5126)。原始四文件补丁遵循[上游许可](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/SERVERS-LICENSE.txt)。云端冷读核实 2026-11-07；固定修订页 SHA-256 为 `3c47c5f82ea1d074e17d4483880919381577a8c3ad45cc10661bf5bc96375497`，10226 字节。未验 Windows 原生全套、HTTP、其他 server、LLM 客户端、全仓发布门槛；未修改上游分支或部署。
+
+
+## wheel 交付：离开源码，再验实际安装包
+
+**editable 安装可直接读到修改后的源码，wheel 消费者读的是上次构建的包。** 用同一个版本号也不能区分两者：本轮基线与四文件迁移后的 wheel 都叫 `mcp-server-time 2026.10.10`，但前者只支持旧协议，后者支持两代。把发布产物安装到新环境，核导入与发行元数据来自该环境，再跑真实入口。
+
+下面从已应用上文四文件补丁的 `src/time` 开始；使用新的树外目录，运行依赖从原锁导出，不让安装过程顺便换 SDK。基线对照时在未打补丁的固定副本重复构建与安装，另用一个消费环境。
+
+```sh
+ARTIFACTS=$(mktemp -d)
+export UV_PYTHON=3.10
+uv export --frozen --no-dev --no-emit-project --output-file "$ARTIFACTS/runtime.txt"
+uv build --wheel --out-dir "$ARTIFACTS/wheels"
+uv venv --python 3.10 "$ARTIFACTS/consumer"
+uv pip install --python "$ARTIFACTS/consumer/bin/python" --require-hashes -r "$ARTIFACTS/runtime.txt"
+uv pip install --python "$ARTIFACTS/consumer/bin/python" --no-deps "$ARTIFACTS"/wheels/*.whl
+uv pip check --python "$ARTIFACTS/consumer/bin/python"
+# 把下段保存为 $ARTIFACTS/installed-smoke.py。
+cd "$ARTIFACTS"
+env -u PYTHONPATH ./consumer/bin/python installed-smoke.py
+```
+
+以下候选 smoke 实际运行模块与控制台入口，各验两代工具列表、相同 schema 和时间转换；打印四行 `PASS`。它不代替错误路径或全发布门槛。
+
+```python
+"""Run with the wheel venv's Python, outside checkout, PYTHONPATH unset."""
+import asyncio
+import importlib.metadata as md
+import json
+import os
+from pathlib import Path
+import sys
+import sysconfig
+import mcp_server_time
+from mcp import Client
+from mcp.client.stdio import StdioServerParameters
+
+async def main():
+    assert 'PYTHONPATH' not in os.environ
+    site = Path(sysconfig.get_paths()['purelib']).resolve()
+    assert Path(mcp_server_time.__file__).resolve().is_relative_to(site)
+    assert Path(md.distribution('mcp-server-time').locate_file('')).resolve() == site
+    commands = [(sys.executable, ['-m', 'mcp_server_time']),
+                (str(Path(sys.executable).parent / 'mcp-server-time'), [])]
+    for command, args in commands:
+        schemas = []
+        for mode, version in [('legacy', '2025-11-25'), ('2026-07-28', '2026-07-28')]:
+            params = StdioServerParameters(command=command, args=args + ['--local-timezone', 'UTC'], env=dict(os.environ))
+            async with Client(params, mode=mode, read_timeout_seconds=20) as client:
+                assert client.session.protocol_version == version
+                listed = await client.list_tools()
+                assert [t.name for t in listed.tools] == ['get_current_time', 'convert_time']
+                schemas.append([t.model_dump(by_alias=True, exclude_none=True) for t in listed.tools])
+                result = await client.call_tool('convert_time', {'source_timezone': 'UTC', 'time': '12:00', 'target_timezone': 'Etc/GMT-5'})
+                assert not result.is_error
+                data = json.loads(''.join(b.text for b in result.content if b.type == 'text'))
+                assert data['target']['datetime'].endswith('T17:00:00+05:00')
+                assert data['time_difference'] == '+5.0h'
+            print(Path(command).name, mode, 'PASS')
+        assert schemas[0] == schemas[1]
+
+asyncio.run(main())
+```
+
+**2026-11-08 独立补验**：Linux／Python 3.10.22、mcp 2.3.0；两侧使用相同 `uv.lock` 运行依赖与 Hatchling 1.33.0 构建环境。安装后 `uv pip check` 各核 32 个发行包通过。两侧包字节与对应 wheel 一致，`direct_url.json` 指向各自 wheel，环境无 `.pth`／`.egg-link`；在源码外且没有 `PYTHONPATH` 时，模块、SDK 与发行元数据均来自新环境的 `site-packages`。
+
+- **基线两个入口**：旧代各 9 项契约断言通过；固定新版的实际 `tools/list` 返回 `-32602`，原始 `server/discover` 返回 `-32601` 且进程正常退出，不是安装或启动失败。
+- **候选两个入口**：各 20 项既有消费者断言通过，包括两代转换、完整工具契约一致、无效时区／缺参数／未知工具的 `isError`、`ping`／`resources/list` 的准确 JSON-RPC 错误、原始 discovery 与关闭后的新进程连接。两侧两个入口的无效 `--local-timezone` 均 exit 1、无 traceback；上面的最小 smoke 另实跑四项通过。
+
+本次使用[既有探针](../../docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/probe-time-eras.py)的消费者与断言函数，传入独立安装的命令和干净环境；没有调用会注入源码 `PYTHONPATH` 的 `main_async()`。以下哈希绑定本次实测的包，不表示其他构建工具版本一定重现相同字节。
+
+| 产物 | SHA-256 |
+|---|---|
+| 固定基线 wheel | `9b377d218c7a05e3da38e5f04a5ccfaf82f95b60956244b6b6c9c92dbb2ce061` |
+| 四文件补丁后的 wheel | `cbaac1fc7ae67f77dbbd8fded224237b057f22127e77463ad5a946aab966e0b0` |
+
+**范围**：接收的是这两个固定 wheel 的真实 stdio 消费者，不是新读者实做或本机 V2 通过。源码及锁文件未变，前节 122／133 项原生测试是原轮次证据，本轮未重跑；sdist 独立安装、Windows、HTTP、LLM 客户端与全仓发布门槛未验。固定基线、候选四文件与许可入口沿用前节。
