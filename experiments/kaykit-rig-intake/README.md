@@ -31,3 +31,26 @@ Node 24.22.1 实跑：GLTFLoader 加载两个原字节文件，AnimationMixer �
 **检查边界**：两类 reload 的真实 Three 解析／采样及文件身份通过；零参数退出 2，缺文件与坏哈希均非零。GPU、贴图、接触、手感、完整动作组及运行时采用均未验。FPS main `6157235`、Site v24 不变。
 
 **依据**：固定分支 [CPU-PARSE.md](https://github.com/dbvv1/FPS-Like/blob/78a892c6cf057ddb63b4fc21daafdd7e4313453a/asset-pipeline/character-action-sources/CPU-PARSE.md)、[小样来源与原许可](https://github.com/dbvv1/FPS-Like/blob/78a892c6cf057ddb63b4fc21daafdd7e4313453a/asset-pipeline/character-action-sources/sample/kaykit/PROVENANCE.md)；本目录探针实跑，2026-11-09。原样本许可材料只沿固定记录，本轮未另核作者网站。
+
+
+## 父节点轨道修正：仅接收 CPU 坐标合同
+
+`remap.mjs` 提供固定小样的窄适配：克隆动作，只把 `Rig_Medium` 三条轨道的目标改为 Knight 的 `Rig`，保留所有轨道的时间、数值与插值方式，不改原 GLB 或原 clip。适配先核唯一节点、完整 position/quaternion/scale 三通道、相同骨层级、root 直属父节点和场景单位变换；缺项、歧义或结构不匹配直接拒绝。它不是跨角色通用重定向器，也不把单纯改名当验收结果。
+
+```sh
+node experiments/kaykit-rig-intake/verify-remap.mjs <sample/kaykit> <node_modules>
+```
+
+Node 24.22.1／Three 0.186.1 对同一固定原件完成真实 GLTFLoader → AnimationMixer → SkinnedMesh CPU 消费：两类 reload 的全部源关键帧、相邻关键帧中点及 60Hz 网格（含结尾）合计 331 个采样。每帧比较 **24 个动画节点的完整世界矩阵**，包括两手插槽；矩阵最大差值为 0。另对 Knight 六片网格的全部顶点，用原角色 inverse-bind 与源骨架的世界矩阵独立计算蒙皮参考，和 Three 的 `applyBoneTransform` 世界坐标比较。两组分别 523,956／706,040 次顶点评估，最大误差为 1.80e-15／1.81e-15，门槛为 1e-6。这个参考验证坐标和蒙皮计算一致，不是造型、身体穿插或枪械接触质量评价。
+
+12 个负例覆盖缺模型、缺父轨道、错误 root 父层级、缺骨、重名骨和非单位场景变换，均拒绝；输入 clip 的序列化内容未变，克隆轨道的时间／数值／插值保持一致。零参数退出 2；缺文件、坏哈希非零。旧 `probe.mjs` 的未适配反例继续保留，不改成成功断言。
+
+**产品接收仍未通过。** FPS 固定 `61572353` 的真实 `ContentSetAssets`／`ContentOpponent` 对原 Knight 先因缺 `enemy-root` 拒绝；所有者进入 fallback、rifle／actor 为空，dispose 后进入 disposed，现有 `content-set` 19 项通过。这仅证明旧消费者安全拒绝该源；消费者的刚性网格合同还明确拒绝 SkinnedMesh，本轮不放宽它。该消费者复验使用 Three 0.186.1、tsx 4.23.15。复跑需固定 FPS `61572353accd159b5f8effaa3212e35d3224cc67` checkout 及对应依赖，`<tsx-loader>` 为已安装 tsx 的 `dist/loader.mjs`：
+
+```sh
+node --import <tsx-loader> experiments/kaykit-rig-intake/consumer-probe.mjs <FPS-checkout> <sample/kaykit>
+```
+
+探针校验原 Knight SHA，显式注入已解析资源，以隔离真实适配器／所有者合同；它不经过生产 fetch／哈希通路，不给 Knight 新增生产 pin。实际接入需要独立的蒙皮角色／骨架克隆与动作命名适配，不给原刚性接口改名伪装通过。
+
+**剩余门槛**：这里只核两类 reload 的固定坐标与 CPU 蒙皮，不包含贴图解码、浏览器／GPU、完整 idle→run→reload→death 过渡、枪／弹匣接触、动作观感与手感；无新 GLB、默认角色替换、产品 main 或部署。实测：2026-11-09。
