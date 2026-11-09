@@ -399,7 +399,9 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 <a id="death-contact-consumer"></a>
 **修脚底穿地后，用实际动画器重采样，不只验导出文件。** 先核源 clip 的起始时间、运行时平移与末帧冻结，再用生产动画消费者测世界空间蒙皮顶点；按骨名对齐，不按节点索引。MOBA Veyra 的源 clip 从 1/30 秒起，消费者移到零；两阵营各 61 个整帧／半帧采样中，旧脚最低约 -5.19 cm，候选约 -0.013 cm，且其他四动作的 key 时间、插值和数值及实例隔离均通过。测试还须直接覆盖材质分类：法器材质无条件排除，与“队伍材质且主导骨是持物手”不是同一条件，否则当前素材会遮住判断错误。
 
-本例已接收真实消费者测试，默认加载器仍指向旧 heroes release。采用前固定旧源基线、同步作者配方与 manifest／pin，最后在游戏机位验死亡剪影与整场可读性；CPU 接触合格不能代替这一关。依据：[生产消费者测试与接收记录](https://github.com/dbvv1/MOBA-Like/blob/6750585/docs/verification/veyra-contact-consumer.md)，源包与生产动画器实跑，2026-11-09；浏览器、GPU 与 Blender 重导未验。
+**替换运行资源前，把修正所依赖的旧源固定到提交与逐文件摘要。** 只复制当前发布目录不够：目录后来换成修正版，重新计算偏移会接近零；若同时信任该目录的 manifest，错误基线也能自洽。将两阵营旧源、GLB 与 manifest 的五份摘要独立固定，提取时先验全批，再写独立快照；缺文件、摘要不符或现有快照损坏就停止，不覆盖原件。
+
+本例已接收真实消费者测试，默认加载器仍指向旧 heroes release。[离线固定源入口](https://github.com/dbvv1/MOBA-Like/blob/c907194/asset-pipeline/veyra-death-contact/README.md#0-pin-the-b489ed3-baseline-before-overwriting-the-heroes-release)已进入产品，原五文件身份与缺失／损坏回归通过；下一步同步作者配方与 manifest／pin，最后在游戏机位验死亡剪影与整场可读性；CPU 接触合格不能代替这一关。依据：[生产消费者测试与接收记录](https://github.com/dbvv1/MOBA-Like/blob/6750585/docs/verification/veyra-contact-consumer.md)，源包与生产动画器实跑，2026-11-09；浏览器、GPU 与 Blender 重导未验。
 
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 

@@ -45,4 +45,4 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 
 接收测试与文档到产品 main [6750585](https://github.com/dbvv1/MOBA-Like/commit/6750585)，不切默认／部署。独审修正材质分类优先级并补反例，非死亡轨补时间／插值比较，收窄网格精度结论。当前 main 基线上 89 文件／580 项、双构建、源包 reproduce／0.005 容差与 Python32 通过；旧 audio-skill 失败本次未复现。已回流[实际动画器接触验收](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
 
-真实默认采用仍待固定旧源、配方／pin 更新与画面门槛；未跑浏览器／GPU／音频／Blender。原调用退出与 Star 槽 unknown 不变，不重派或清锁。
+旧源准备已接入 [c907194](https://github.com/dbvv1/MOBA-Like/commit/c907194)：原提交五文件独立摘要、离线提取和消费前核验，快照仅本地；默认与固定源两路 Python39、产品580、内容包7、构建及接触检查通过，独审通过。真实默认采用仍待配方／pin 更新与画面门槛；未跑浏览器／GPU／音频／Blender。原调用退出与 Star 槽 unknown 不变，不重派或清锁。
