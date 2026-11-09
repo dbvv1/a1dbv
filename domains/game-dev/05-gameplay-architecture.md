@@ -119,6 +119,8 @@ flowchart LR
 
 **让 Agent 验真实入口，而非只测新建的记录类。** 本例的 `tests/offline-training-v1/match.test.ts` 用实际 Game 跑六回合，验证三回合换边、3:3 平局、重复观察只记一次、观察不改模拟哈希和返回摘要不泄漏可变引用；`tests/offline-training-v1/client-match.test.ts` 执行真实客户端源码，确认第六回合后的按钮回调创建新 Game、比分与记录归零、没有第七回合，也没有偷偷重锁输入。后者替换了 DOM／视图／控制等环境依赖，因此仍需浏览器检查半场提示、结果可读性、暂停与连续点击，不能称已试玩。
 
+**跨模块对照用一条正式命令带。** [FPS 交火时间线](https://github.com/dbvv1/FPS-Like/blob/6157235/docs/verification/feedback-timeline.md)把移动、墙／敌／友命中、换弹中拒绝射击、切枪打断、结算与下一回合串起来：反馈按发射当时的 impact 分类，比赛统计按 hit 指向的队伍计数，不能用结算后的 HP 重判旧命中。结算动画事件的寿命和菜单打开时刻分开验，暂停按钮可能提前打开菜单。四项 CPU 回归已进入 main；30/60/120Hz 仅是取样模型，页面给实际操作对照而非浏览器回放入口，未增视听验收。核实 2026-11-09。
+
 **实现起点与范围**：[已发布源码 `19f718eb`](https://github.com/dbvv1/FPS-Like/tree/19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f/src/candidates/offline-training-v1) 中的 `session/match.ts`、`client.ts`、`sim/game.ts` 与上述两份测试。六回合规则和终局重开已有 CPU 测试，原小节的四项独立重跑记录保留；浏览器证据另看已接收的 [smoke 报告](https://github.com/dbvv1/FPS-Like/blob/1125fc428dcc0f22be976258fb105a0596ef46a3/docs/quality/smoke/B-FPS-OFFLINE-SMOKE-20261028/19f718ebd557-E2mXmf/report.json)：RTX 5070 下核到 9 个机器人／10 名角色、自然首回合结束、下一回合保留记录，以及现有“重新开始”清空整场记录和比分。[网站 v14 旁置入口](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1)已交付，原默认入口保留；六回合整场、半场换边、终局再玩与真人视听手感仍未验，地图维持“可用”。[UE GameMode／GameState](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-mode-and-game-state-in-unreal-engine)、[Unity LoadSceneAsync](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html)、[Godot Autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html)为官方机制对照；PaddleBall／Boss Room 固定源码比较沿本节已有研究，不重复引入整套框架。核实 2026-10-28（UTC）。
 
 
