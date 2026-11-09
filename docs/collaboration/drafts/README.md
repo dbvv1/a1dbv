@@ -7,7 +7,7 @@
 
 ## 当前评审版本
 
-- **当前版本：** [AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev3-draft.md](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev2-draft.md)
+- **当前版本：** [AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev3-draft.md](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev3-draft.md)
 - 前序版本：[AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-draft.md](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-draft.md)（保留历史，不再作为当前评审入口）
 - v1.4-rev3 状态：待 Codex 工程可行性复核、Claude 核心方向复核（额度恢复后）及用户确认。
 
