@@ -8,3 +8,8 @@
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。原训练[候选57060c2](https://github.com/dbvv1/FPS-Like/commit/57060c2a6d09571baef408e9f1bca4fb93cb77be)续修安拆结算后仍要求交互的HUD；584项＋adapter29／双类型／构建／独审过，偏弹护友与合法守点保留。socket EPERM不重试；完整角色reload/switch、浏览器／视听与自然5v5安拆仍缺，未合main／部署。 |
 
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `5254991`／Site **v22**。[候选935e8a2](https://github.com/dbvv1/MOBA-Like/commit/935e8a24afaa8a7303e0de2a8776dd0918e0b6f9)已保历史整合main的图标LF修复／保档指引，Q/W死亡／丢弃输入回执修复保留。合后659项＋LF5项／构建／类型过；默认／quiet保旧，未合main。旧Canvas见Q/W／重生；浏览器socket EPERM不重试，新源码页面未验。3D／同机位／听感盲评及原调用终态待验。 |
+
+
+2026-11-09（UTC+8）Veyra候选配方切到固定原源前的状态；运行资源与品质门槛未变。
+
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `c907194`／Site **v22**。[Veyra消费者](local-jobs/B-MOBA-HERO-CLIP-CONSUMER-20261106.md)与旧源固定已接收；580项／Python39过，配方接续／默认与画面仍待。[Esc候选](local-jobs/B-MOBA-QUEUED-SKILLS-20261106.md)`00f82c7`未合／部署；验证及缺口见卡，品质不变。原终态unknown；socket及DevTools拒绝不重试。 |
