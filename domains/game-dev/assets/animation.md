@@ -396,6 +396,11 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 
 **攻击和受击由真实事件驱动，动作结束不反过来决定伤害。** 原剑盾英雄采用 `death > hurt > attack > idle/walk`；远程 Veyra 的已提交释放与普通受击分层，做法见下段。每步事件按 `(tick, ordinal)` 去重，reset 清游标。`castStarted` 建前摇，`castResolved` 或 `basicAttack` 启动出手；`castCancelled` 只取消相应 cast。只有 `heroDamaged.hpDamage>0` 才播身体受击，全护盾吸收不假装身体受伤。模拟死亡、选敌、伤害与复活都不等待动画；不存在权威命中事件时，不从冷却、castSlot 或 HP 差补造。
 
+<a id="death-contact-consumer"></a>
+**修脚底穿地后，用实际动画器重采样，不只验导出文件。** 先核源 clip 的起始时间、运行时平移与末帧冻结，再用生产动画消费者测世界空间蒙皮顶点；按骨名对齐，不按节点索引。MOBA Veyra 的源 clip 从 1/30 秒起，消费者移到零；两阵营各 61 个整帧／半帧采样中，旧脚最低约 -5.19 cm，候选约 -0.013 cm，且其他四动作的 key 时间、插值和数值及实例隔离均通过。测试还须直接覆盖材质分类：法器材质无条件排除，与“队伍材质且主导骨是持物手”不是同一条件，否则当前素材会遮住判断错误。
+
+本例已接收真实消费者测试，默认加载器仍指向旧 heroes release。采用前固定旧源基线、同步作者配方与 manifest／pin，最后在游戏机位验死亡剪影与整场可读性；CPU 接触合格不能代替这一关。依据：[生产消费者测试与接收记录](https://github.com/dbvv1/MOBA-Like/blob/6750585/docs/verification/veyra-contact-consumer.md)，源包与生产动画器实跑，2026-11-09；浏览器、GPU 与 Blender 重导未验。
+
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 
 **已提交短释放期间保主手臂，普通受击只做低权重躯干叠加；真实控制和死亡仍优先。** Veyra 使用 `recoilLayer:'torso-additive'`，从原 hurt 躯干轨相对 idle 参考姿势求增量；短释放期间压低这层权重，避免连续普通伤害反复抹掉发起姿势；短释放结束后恢复原受击覆盖策略。真实 cast 等 resolve 才释放；即时普攻从真实提交开始，没有视觉伪造的伤害前准备。若多逻辑步跨过主姿势，只在当前动作原生命周期内、第一次实际 draw 时补呈现一次；取消、控制、死亡或过期即丢弃，sync 不算已画，也不积压历史动作。正常 1／3 tick 采样与连续受击反例都要核，不能只针对低帧率调时长。

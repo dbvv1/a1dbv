@@ -2,12 +2,12 @@
 id: B-MOBA-HERO-CLIP-CONSUMER-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-hero-clip-consumer-20261106
 
-工作线：MOBA。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：MOBA。本卡测试与文档已接收；原调用终态未核，不据 accepted 推断本机空闲。
 
 ## 目标
 已接收 Veyra death-contact 源候选后，先验证真实 Three.js 动画消费者能否保留其接触修正，避免只读 GLB 元数据便声称进入游戏。
@@ -40,3 +40,9 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：待负责人决定是否按 README Adoption 纳入默认（写入范围外）并安排画面/死亡接地观感的人工验收；本单元无阻塞。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 11-09 负责人接收决定
+
+接收测试与文档到产品 main [6750585](https://github.com/dbvv1/MOBA-Like/commit/6750585)，不切默认／部署。独审修正材质分类优先级并补反例，非死亡轨补时间／插值比较，收窄网格精度结论。当前 main 基线上 89 文件／580 项、双构建、源包 reproduce／0.005 容差与 Python32 通过；旧 audio-skill 失败本次未复现。已回流[实际动画器接触验收](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
+
+真实默认采用仍待固定旧源、配方／pin 更新与画面门槛；未跑浏览器／GPU／音频／Blender。原调用退出与 Star 槽 unknown 不变，不重派或清锁。
