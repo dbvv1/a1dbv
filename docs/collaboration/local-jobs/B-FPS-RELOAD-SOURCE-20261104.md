@@ -2,12 +2,12 @@
 id: B-FPS-RELOAD-SOURCE-20261104
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 36fde4bb6a2e8f9652528fdea648d0a90190db79
 result_branch: relay/b-fps-reload-source-20261104
 
-工作线：FPS-Like。本卡为独立排队单元，尚未认领。
+工作线：FPS-Like。部分接收固定小样事实；直接接入结论已被固定 Three 版本下直接复用的反例否定，不重派本卡。
 
 ## 目标
 为训练赛现有敌人只有 head/spine/leg-l/leg-r/weapon 五个刚性组、没有独立肩臂/弹匣的真实缺口，寻找能承载跑动、蹲行与换弹的成套合法角色动作源，避免伪造“移动整把枪就是换弹”。
@@ -35,3 +35,7 @@ result_branch: relay/b-fps-reload-source-20261104
 - 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
 - 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+
+## 11-09 接收决定
+
+部分接收；[两类 reload 的真实 Three 复验](../../../experiments/kaykit-rig-intake/README.md)否定同名骨直接兼容：各漏三条 Rig_Medium 父节点轨道，目标头部高度约 0.037／-0.079，源约 1.236。432 项扩展清单不合入，不重复素材；固定样本保留原分支。已回写动画正文的父节点／root 验收方法。产品 main／Site 不变；贴图、完整动作组、枪／弹匣、GPU 与消费者接入未验。原外层终态仍未知，本次仅独立读取已提交原字节，无重派、清锁或新出图。

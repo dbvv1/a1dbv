@@ -51,6 +51,8 @@ flowchart TD
 
 角色尺寸不因替换 clip 改动；速度提高时先看实际步幅和接触相位，再做有限变速。站姿没有正确肩托、手指包握或负重重心，先补适配动作，不能只把支撑手拖到枪管上就宣称动作完成。
 
+**同名骨动作复用还要核骨架父节点与 root 的坐标合同。** FPS 的 [KayKit 固定小样实测](../../../experiments/kaykit-rig-intake/README.md)中，Three 能加载原文件，但重导出动作指向 `Rig_Medium`，角色只有 `Rig`；两类 reload 各漏三条父节点轨道，片段中点的头部世界高度由约 1.236 降到 0.037／-0.079。先检查所有轨道绑定及父节点旋转、采样源与目标的世界坐标，再核实际网格和手枪接触；不能用同名骨清单或加载成功直接批准采用。当前保留原角色，坐标修正、贴图和画面仍待验。**[经验，2026-11-09]**
+
 **依据**：[一手] [Unity 6.3 动画导入](https://docs.unity3d.com/6000.3/Documentation/Manual/class-AnimationClip.html)、[内建 IK 回调](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoBehaviour.OnAnimatorIK.html)；[研究] [WP4 同骨架取舍](../../../docs/research/2026-10-14-game-wp4-animation.md#同骨架复用补研先保原动作再决定转换)；核实 2026-10-25，未运行引擎。
 
 ### 第二步组合：武器配置换内容，层决定谁覆盖谁
