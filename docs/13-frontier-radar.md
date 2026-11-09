@@ -97,6 +97,7 @@
 
 | 项目／做法 | 为什么值得看、适合谁 | 关注证据 | 本仓试用结果 | 坑与评级 |
 |---|---|---|---|---|
+| [原生侧问：解释、调查与改方向分开](decisions/context-management.md#编码途中想问一句先选侧问改变要求仍回主线) | 编码继续时问清决定或比较方案；Claude `/btw` 解释已有上下文，Cursor 本地 `/side` 可持续调查并 `@` 接回 | 两家官方契约；独立作者 Cursor 3.22.7 短对话操作，来源见入口 | 未试用；核读 2026-11-09，非本周新发布功能 | 👀 Claude 侧问无工具；Cursor 侧聊不支持 Cloud Agents，带父背景；改变执行要求仍回主线 |
 | [ECC search-first](decisions/skills-and-plugins.md#ecc-search-first) | 将仓内优先搜索与复用判断压成窄 Skill，适合 Agent 经常先造新组件的场景 | 294,952★快照；官方 Skill 与使用者 #3680，原轮激活／因果未确认 | [真实 Inspector 问题事后对照](../experiments/ecc-search-first/README.md)：两方法同选仓内小改；现有 parser 16/17 匹配、空值反例复核；2026-11-02 | 🧪 只读方法／函数探针，未装整包；无新增采用或提速证据，不替换 Top 5 |
 | [Skill 安装成功却断链](decisions/skills-and-plugins.md#skills-linked-parent) | dotfiles＋多客户端时验实际路径，确认断链再对单个 Skill 用 copy | skills #481 与既有未合并 PR；[本轮发现范围](../experiments/skills-linked-parent/README.md#这轮来源发现为什么选它) | 1.7.4 四布局六步：双客户端断链、重装无效、copy恢复；单客户端／共享根别名正常；2026-10-31 | 🧪 非作者复跑；只验正文读取，非模型采用。另有 [Cursor 同步存储／Automation 提醒](decisions/skills-and-plugins.md#cursor-synced-skill-owner)，未试用 |
 | [Vitest 升级后跨文件漏 env](15-task-playbooks.md#vitest-reused-worker-env) | Agent 修连片失败前先核 worker 状态：默认隔离对照，必要时每文件入口复位 | 真实后端测试用户 #11423；官方 setup／env 语义与未合并 PR | 4.1.11／5.0.5、同 Node／Vite 七组：新版8文件2worker漏值；setup与默认隔离全过，两版单worker均漏；2026-10-31 | 🧪 unstubEnvs 不恢复直接赋值；独立新目录复跑，字符串哨兵，非数据库／模型验收 |
