@@ -45,7 +45,7 @@
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [图标LF](../../domains/game-dev/assets/2d.md#icon-family-rebuild)已进MOBA main，Cairo／HUD消费者过；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)命中[部分接入](../../domains/game-dev/assets/materials.md#source-hit-marker)，通路未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，画面未验。开放音频未听未用，Nature 恢复未知。[3D](../../domains/game-dev/assets/3d.md)：网关三源实测，本机`gen3d`／`glbprep`可用；采用3–5件标准件。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [三份探索处置](b-work-20261106.md#三份实例探索处置)：仅收 Bichitos 触控识别与 Solhex 章节计时机制，发布迭代本轮不收，不扩表。原场景氛围来源已入[制作链](../../domains/game-dev/assets/materials.md#scene-atmosphere-revision)。均不新增品质推荐；Void Balls 启动失败、Warpact 未玩及原实机欠项保留，不重派。 |
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；12图双盲评2→2，正式分未建。院落／灯塔通路 `eeaf46d` 仅过CPU独审，无浏览器／新图评分；原上传待批准。[原唯一拍摄](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)外层仍unknown，不重拍／清锁。原403及手感／听感欠项保留。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。原训练[候选827c655](https://github.com/dbvv1/FPS-Like/commit/827c6556d51113565851337f636792721a50f6a8)续修自然终局冻结的换弹提示／进度；589项／类型／构建及独审过，保安拆结果与友伤修复。Canvas六回合／换边／终局重开实过，复验日志未见应用异常、失败请求仍欠；完整角色reload/switch、视听与自然5v5安拆未过，未合main／部署。socket拒绝不重试。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。原训练[候选827c655](https://github.com/dbvv1/FPS-Like/commit/827c6556d51113565851337f636792721a50f6a8)修终局换弹提示，589项／类型／构建／独审过。Canvas六回合／换边／重开及两档真实开火、换弹、切枪中断／重复切枪已验；原运动暂停／继续过，未见应用异常。完整GLB动作、资源失败、视听与自然安拆仍缺；未合main／部署，socket拒绝不重试。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
