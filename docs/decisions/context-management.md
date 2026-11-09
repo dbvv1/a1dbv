@@ -4,20 +4,19 @@
 
 ## 第一步：给任务入口，让 Agent 按需找原文
 
-**说清目标、保留行为和起点，沿实现与检查补足信息。** 下面这项本仓任务可直接照做；换项目时换目标与入口。
+**把当前要完成的改动、必须保留的行为和一个可定位的入口交给 Agent，不先贴整仓文件或安排一轮无目标的通读。** 已有 issue、失败测试或未完成补丁就从那里继续；把下面的方括号换成自己的任务。
 
 ```text
-核对本仓文档检查器是否检查 Markdown 链接里的 #锚点；不修改检查器。
-遵守项目指令，从 scripts/check_repo.py 和 tests/test_check_repo.py 入手。
-先看链接解析实现与相关用例，缺信息再扩大搜索。
-交回支持范围、源码位置、实际验证命令和结果，不把检查通过报成所有链接均有效。
+在 [项目] 完成 [这次功能或修复]，保留 [现有行为与禁改范围]。
+当前入口是 [文件／符号／issue]；复现步骤或失败输出是 [具体输入与结果]。
+先读项目指令，再沿实际调用和相关测试找必要上下文；缺信息才扩大搜索。
+已有补丁先核当前 diff 和已返回结果，只接剩余工作。
+按项目原检查和真实使用路径验收，交回改动、依据与已验／未验项。
 ```
 
-从仓库根目录运行 `python3 -m unittest discover -s tests -p 'test_check_repo.py' -v`，已验证 9 项通过。`check()` 与 `test_existing_and_external_links` 表明：本地链接仍检查文件路径是否存在，但不验证 `#` 后的锚点；纯 `#锚点` 和外链跳过。这个实例验证检查器行为，未测上下文收益；全量迁移或审查仍须按依赖扩大覆盖。
+**补充会改变实现的事实，而不是重复整段历史。** 新约束直接说明替换了哪项旧要求；报错保留触发输入、关键错误和日志位置。Agent 找不到调用方、失败根因或验收入口时，再定点补读。全仓迁移或系统审查仍按任务范围扩大覆盖，不能把“少读”当目标。
 
-**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26；[检查器](../../scripts/check_repo.py)与[测试](../../tests/test_check_repo.py)，复跑 2026-10-28。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。
-
-**代码关系图给阅读起点，不替代源码验收。** [Graphify 本仓实试](../../experiments/graphify-code-map/README.md)能定位交付门禁的实现和测试，但没连出 argv 到子进程脚本的关系，也不能证明 skip／symlink 分支的行为；无路径不等于无执行。此次 code-only 图跳过 606 个非代码文件，不能当知识库全文索引。它只补充按需定位，不改变原生上下文默认或本页 🟡；核实 2026-11-02。
+**依据**：[官方／团队实践] [OpenAI 按任务路由](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、[Cursor 按需取回及撤掉强制探索委派](https://cursor.com/blog/improved-token-efficiency)，核实 2026-10-26。常驻规则见[指令文件](instruction-files.md)，委派与在途任务见[长任务](long-tasks.md)。已有[检查器定位](https://github.com/dbvv1/a1dbv/blob/b318ca9ea8525ccb2dd837572823893a99b2dc25/docs/decisions/context-management.md#第一步给任务入口让-agent-按需找原文)与[Graphify 试用](../../experiments/graphify-code-map/README.md)保留各自验证范围，不证明上下文收益。
 
 ### 编码途中想问一句：先选侧问，改变要求仍回主线
 
