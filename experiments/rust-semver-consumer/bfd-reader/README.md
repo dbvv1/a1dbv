@@ -31,6 +31,39 @@ cargo-semver-checks 0.51.0 的裸命令、显式 `--default-features`、显式 `
 
 第 26 项 `deterministic_simple_password_trace` 是新写的观察探针，使用旧公开 API 与原测试输入，记录两版输出；不是历史应用代码。两消费者共用同一文件，SHA256 为 `b6b19be9aa2fa1ee36f81113d563f092e04eaeb00cc9ac6fd2e5816cc620556b`。这是从真实项目提取的最小下游探针，不是已部署的第三方应用；测试口令来自公开夹具，不使用真实凭据、网络或路由服务。保留上游 MIT OR Apache-2.0 两份许可。
 
+## 当前版本的修复候选：保留消费者配置，不强开默认功能
+
+**当前上游仍有同一编译故障；[候选补丁](current-std-fix.patch)恢复了原 `std`-only 消费者。** 固定上游 [`f7c39906`](https://github.com/TES286-org/librouting/tree/f7c39906f430f9099c5db5a4b529cbc43a11963f) 的包版本为 1.8.0，原样编译仍报上述两个 E0599。补丁不改公开签名或报文格式，默认认证保持；未编入 crypto 却配置了 keyed auth 时，拒绝新报文收发，不降级认证。已有输出队列保留，重试计时与事件反映实际行为，清除不支持的配置后恢复。
+
+| 本次检查（Linux x86_64，Rust／Cargo 1.99.1） | 结果 |
+|---|---|
+| 原样 default／修复后 default／修复后 `std`-only：未改动的原消费者 | 各 26 项通过，轨迹与上文历史哈希相同；原样 `std`-only 编译失败、测试未运行 |
+| 修复后原生 default／仅 `keyed-auth` | 各 59 项通过 |
+| 修复后原生 `std`-only／无默认 feature | 各 44 项通过，包含拒绝、空／截断输入、计时、队列、超时与恢复回归 |
+| 四组 package Clippy、fmt、文档检查、workspace build | 通过 |
+| workspace Clippy | 失败于未改动的 `crates/lr-cli/src/daemon_ospf3_tests.rs:637`：`useless_format` |
+
+**补丁已独立审查，仍是本地候选。** 非作者复跑原生与原消费者，另核新回归；所有执行的测试零失败、零 ignored。未运行整工作区测试、MSRV、其他目标、真实网络互通、ABI／发行门禁；关闭默认 feature 的宿主构建不证明 `no_std`。上游[贡献规则](https://github.com/TES286-org/librouting/blob/f7c39906f430f9099c5db5a4b529cbc43a11963f/CONTRIBUTING.md#how-to-land-a-change)要求非平凡改动先讨论，本次没有 issue／PR 或上游采用，不据此改变读者地图评级。核实与运行：2026-11-09。
+
+### 复跑当前候选
+
+在本目录的新副本中准备下文的 `source` 克隆及官方 Rust 1.99.1，再执行。两份 `consumer-current*` 保留原消费者与 feature 声明，只更新目标依赖版本及相应锁文件；不要把它们的锁文件换回历史 1.2.0。
+
+```sh
+export RUSTUP_TOOLCHAIN=1.99.1
+mkdir current
+git -C source archive f7c39906f430f9099c5db5a4b529cbc43a11963f | tar -x -C current
+(cd current && git apply --check ../current-std-fix.patch && git apply ../current-std-fix.patch)
+for consumer in consumer-current consumer-current-std; do
+  (cd "$consumer" && cargo check --locked --all-targets)
+  (cd "$consumer" && BFD_TRACE="../$consumer.trace" cargo test --locked)
+done
+cmp consumer-current.trace consumer-current-std.trace
+(cd current && cargo test -p lr-bfd --locked --no-default-features --features std)
+```
+
+补丁 SHA256：`42ef4978cb542eb47e44b6bbf80972f251ee796ae4b019024abe40be2fb8627f`。先核补丁和固定源码；已有工作目录不要覆盖。
+
 ## 复跑
 
 先准备官方 Rust 1.99.0；固定工具另用 crates.io 的 cargo-semver-checks 0.51.0。依赖装在任务隔离目录，不改全局配置。在本目录执行：

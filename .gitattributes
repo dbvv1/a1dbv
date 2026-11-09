@@ -28,3 +28,4 @@ experiments/candidate-reset-recovery/goose/change.patch whitespace=-blank-at-eol
 experiments/instruction-file-lint/change.patch whitespace=-blank-at-eol
 
 docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-20261107/migration.patch whitespace=-blank-at-eol
+experiments/rust-semver-consumer/bfd-reader/current-std-fix.patch whitespace=-blank-at-eol

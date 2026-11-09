@@ -1,0 +1,313 @@
+diff --git a/crates/lr-bfd/src/keyed_auth.rs b/crates/lr-bfd/src/keyed_auth.rs
+index 1522019..bf2e3e6 100644
+--- a/crates/lr-bfd/src/keyed_auth.rs
++++ b/crates/lr-bfd/src/keyed_auth.rs
+@@ -421,6 +421,7 @@ impl BfdKeyedAuth {
+ /// "an unsigned 32-bit circular number space"). The range wraps through
+ /// 0; `lo > hi` (modulo 2^32) denotes a range that crosses the
+ /// boundary.
++#[cfg(feature = "keyed-auth")]
+ fn in_circular_range(seq: u32, lo: u32, hi: u32) -> bool {
+     let span = hi.wrapping_sub(lo);
+     let off = seq.wrapping_sub(lo);
+diff --git a/crates/lr-bfd/src/session.rs b/crates/lr-bfd/src/session.rs
+index 8efc042..3966a53 100644
+--- a/crates/lr-bfd/src/session.rs
++++ b/crates/lr-bfd/src/session.rs
+@@ -182,8 +182,8 @@ pub struct BfdSession {
+     /// Meticulous Keyed MD5, Keyed SHA1, Meticulous Keyed SHA1).
+     /// Installed via [`BfdSession::set_keyed_auth`]; takes precedence
+     /// over `cfg.auth_key` (Simple Password) when present. `None`
+-    /// without the `keyed-auth` feature — the field still exists so
+-    /// session construction is feature-invariant.
++    /// by default. Without the `keyed-auth` feature, an installed key
++    /// disables new packet enqueueing and acceptance (fail closed).
+     keyed_auth: Option<BfdKeyedAuth>,
+ }
+ 
+@@ -320,8 +320,9 @@ impl BfdSession {
+                 TimerId(id) if id == timer_ids::TX.0 => {
+                     self.tx_armed = false;
+                     if self.tx_allowed() {
+-                        self.enqueue_packet(now, false);
+-                        events.push(BfdSessionEvent::OutboundQueued);
++                        if self.enqueue_packet(now, false) {
++                            events.push(BfdSessionEvent::OutboundQueued);
++                        }
+                         self.arm_tx_timer(now);
+                     }
+                 }
+@@ -377,6 +378,10 @@ impl BfdSession {
+     /// installed — installing a new key rotates the auth material, so
+     /// the anti-replay window from the previous key must not carry
+     /// over (RFC 5880 §6.7.3 / §6.7.4 implicit on key rollover).
++    ///
++    /// Without the `keyed-auth` feature, installing a key fails closed:
++    /// no new control packets are queued or accepted until it is cleared.
++    /// Previously queued output is not removed.
+     pub fn set_keyed_auth(&mut self, ka: Option<BfdKeyedAuth>) {
+         self.keyed_auth = ka;
+     }
+@@ -624,15 +629,16 @@ impl BfdSession {
+ 
+         // --- Announce a state change immediately (§6.8.7 SHOULD:
+         // "transmit when the contents would differ"). ---
+-        if prev != self.state && self.tx_allowed() {
+-            self.enqueue_packet(now, false);
++        if prev != self.state && self.tx_allowed() && self.enqueue_packet(now, false) {
+             self.pending_events.push(BfdSessionEvent::OutboundQueued);
+         }
+ 
+         // --- Respond to a Poll with Final "as soon as practicable"
+         // (§6.8.6, §6.8.7), independent of the periodic timer. ---
+-        if pkt.flags.contains(PacketFlags::POLL) && self.state != State::AdminDown {
+-            self.enqueue_packet(now, true);
++        if pkt.flags.contains(PacketFlags::POLL)
++            && self.state != State::AdminDown
++            && self.enqueue_packet(now, true)
++        {
+             self.pending_events.push(BfdSessionEvent::OutboundQueued);
+         }
+         core::mem::take(&mut self.pending_events)
+@@ -654,7 +660,17 @@ impl BfdSession {
+         let mismatch = |events: &mut Vec<BfdSessionEvent>| {
+             events.push(BfdSessionEvent::AuthFailed);
+         };
++        // Never fall back to Simple Password when crypto is unavailable.
++        #[cfg(not(feature = "keyed-auth"))]
++        {
++            let _ = raw_bytes;
++            if self.keyed_auth.is_some() {
++                mismatch(&mut self.pending_events);
++                return false;
++            }
++        }
+         // Keyed-hash auth takes precedence when installed.
++        #[cfg(feature = "keyed-auth")]
+         if let Some(ka) = self.keyed_auth.as_mut() {
+             let Some(section) = pkt.auth.as_ref() else {
+                 mismatch(&mut self.pending_events);
+@@ -730,7 +746,13 @@ impl BfdSession {
+         });
+     }
+ 
+-    fn enqueue_packet(&mut self, now: Instant, final_bit: bool) {
++    fn enqueue_packet(&mut self, now: Instant, final_bit: bool) -> bool {
++        // RFC 5880 §6.7.3 / §6.7.4: never emit the shared key in place
++        // of a digest when cryptographic signing is unavailable.
++        #[cfg(not(feature = "keyed-auth"))]
++        if self.keyed_auth.is_some() {
++            return false;
++        }
+         let mut flags = PacketFlags::empty();
+         if self.poll_active {
+             flags |= PacketFlags::POLL;
+@@ -744,7 +766,6 @@ impl BfdSession {
+         // produces the auth section with the shared key in the digest
+         // field, then `sign_packet` overwrites the key with the
+         // computed MD5/SHA1 digest in place.
+-        let keyed = self.keyed_auth.is_some();
+         let auth = if let Some(ka) = self.keyed_auth.as_ref() {
+             flags |= PacketFlags::AUTH;
+             Some(ka.auth_section_for_tx())
+@@ -771,14 +792,15 @@ impl BfdSession {
+         let mut w = WriteBuf::new(&mut buf);
+         if self.codec.encode(&p, &mut w).is_ok() {
+             let n = w.position();
+-            if keyed {
+-                if let Some(ka) = self.keyed_auth.as_mut() {
+-                    ka.sign_packet(&mut buf[..n]);
+-                    ka.advance_xmit_seq();
+-                }
++            #[cfg(feature = "keyed-auth")]
++            if let Some(ka) = self.keyed_auth.as_mut() {
++                ka.sign_packet(&mut buf[..n]);
++                ka.advance_xmit_seq();
+             }
+             self.out_buf.extend_from_slice(&buf[..n]);
++            return true;
+         }
++        false
+     }
+ 
+     /// Arm the periodic transmission timer at the negotiated interval
+@@ -815,6 +837,14 @@ impl BfdSession {
+         let normal = now.0 + interval_ms;
+         let deadline = self.last_tx_ms.saturating_add(interval_ms);
+         let fire_at = normal.min(deadline.max(now.0));
++        // Suppressed sends do not update last_tx_ms. Keep retrying at the
++        // normal cadence rather than rearming an already-expired deadline.
++        #[cfg(not(feature = "keyed-auth"))]
++        let fire_at = if self.keyed_auth.is_some() {
++            normal
++        } else {
++            fire_at
++        };
+         self.timers
+             .arm(now, timer_ids::TX, TimerSpec::once(fire_at - now.0));
+         self.tx_armed = true;
+diff --git a/crates/lr-bfd/src/session_tests.rs b/crates/lr-bfd/src/session_tests.rs
+index 709eec2..09d801d 100644
+--- a/crates/lr-bfd/src/session_tests.rs
++++ b/crates/lr-bfd/src/session_tests.rs
+@@ -604,6 +604,7 @@ fn keyed_md5_auth() -> BfdKeyedAuth {
+     BfdKeyedAuth::new(5, KeyedAuthAlgorithm::KeyedMd5, b"shared-secret".to_vec()).unwrap()
+ }
+ 
++#[cfg(feature = "keyed-auth")]
+ fn keyed_sha1_meticulous_auth() -> BfdKeyedAuth {
+     BfdKeyedAuth::new(
+         3,
+@@ -617,6 +618,7 @@ fn keyed_sha1_meticulous_auth() -> BfdKeyedAuth {
+ /// outbound packet carries the A bit and the auth section with the
+ /// peer-derivable digest (the shared key is never on the wire). The
+ /// digest on the wire is NOT the key.
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn keyed_md5_signed_outbound_carries_digest_not_key() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -638,6 +640,7 @@ fn keyed_md5_signed_outbound_carries_digest_not_key() {
+ /// Two sessions with mirrored keyed-hash auth reach Up together — the
+ /// full BFD handshake (Down → Init → Up) runs under keyed MD5 with
+ /// per-packet sequence advancement on both sides.
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn two_sessions_reach_up_with_keyed_md5() {
+     let mut a = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -671,6 +674,7 @@ fn two_sessions_reach_up_with_keyed_md5() {
+ /// anti-replay rule (seq > last) does not deadlock two conforming
+ /// peers because each side's transmit sequence advances on every
+ /// packet.
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn two_sessions_reach_up_with_meticulous_sha1() {
+     let mut a = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -703,6 +707,7 @@ fn two_sessions_reach_up_with_meticulous_sha1() {
+ /// A packet whose digest has been tampered with is rejected with
+ /// `AuthFailed` and does not advance the FSM (RFC 5880 §6.7.3 /
+ /// §6.7.4: "the digest does not match ... MUST be discarded").
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn keyed_md5_tampered_digest_rejected() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -726,6 +731,7 @@ fn keyed_md5_tampered_digest_rejected() {
+ /// A packet signed with the wrong shared key is rejected even when
+ /// the auth type and key ID match (RFC 5880 §6.7.3 / §6.7.4: the
+ /// receiver recomputes the digest with its own configured key).
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn keyed_md5_wrong_secret_rejected() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -752,6 +758,7 @@ fn keyed_md5_wrong_secret_rejected() {
+ /// A packet with the wrong key ID is rejected even when the digest
+ /// would otherwise verify (RFC 5880 §6.7.3 / §6.7.4: "the Auth Key ID
+ /// field does not match ... MUST be discarded").
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn keyed_md5_wrong_key_id_rejected() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -771,6 +778,7 @@ fn keyed_md5_wrong_key_id_rejected() {
+ /// A packet with no auth section while keyed-hash auth is installed
+ /// is rejected (RFC 5880 §6.7.3 / §6.7.4: "does not contain an
+ /// Authentication Section ... MUST be discarded").
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn keyed_md5_missing_section_rejected() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -787,6 +795,7 @@ fn keyed_md5_missing_section_rejected() {
+ /// the session to its Simple Password (or unauthenticated) baseline:
+ /// subsequent packets carry no keyed-hash section and packets that
+ /// do carry one are rejected.
++#[cfg(feature = "keyed-auth")]
+ #[test]
+ fn clearing_keyed_auth_reverts_to_no_auth() {
+     let mut s = BfdSession::new(cfg_100ms(), 0x11111111);
+@@ -819,3 +828,88 @@ fn keyed_auth_accessor_returns_installed_state() {
+     assert_eq!(ka.algorithm(), KeyedAuthAlgorithm::KeyedMd5);
+     assert_eq!(ka.xmit_seq(), 0);
+ }
++
++/// Without crypto, installed keyed auth must neither leak the key nor
++/// silently fall back to the configured Simple Password (RFC 5880 §6.7).
++#[cfg(not(feature = "keyed-auth"))]
++#[test]
++fn unsupported_keyed_auth_fails_closed_and_clearing_restores_password() {
++    for algorithm in [
++        KeyedAuthAlgorithm::KeyedMd5,
++        KeyedAuthAlgorithm::MeticulousKeyedMd5,
++        KeyedAuthAlgorithm::KeyedSha1,
++        KeyedAuthAlgorithm::MeticulousKeyedSha1,
++    ] {
++        for password in [
++            None,
++            Some(crate::auth::AuthKey::new(7, b"password".to_vec())),
++        ] {
++            let mut cfg = cfg_100ms();
++            cfg.auth_key = password;
++            let mut s = BfdSession::new(cfg.clone(), 0x11111111);
++            let mut peer = BfdSession::new(cfg, 0x22222222);
++            peer.start(Instant(0));
++            let wire = peer.drain_outgoing();
++            assert!(!wire.is_empty());
++            s.set_keyed_auth(Some(
++                BfdKeyedAuth::new(5, algorithm, b"shared-secret".to_vec()).unwrap(),
++            ));
++            assert!(!s
++                .start(Instant(0))
++                .contains(&BfdSessionEvent::OutboundQueued));
++            assert!(s.drain_outgoing().is_empty());
++            assert!(s.feed_bytes(Instant(1), &[]).is_empty());
++            assert!(s.feed_bytes(Instant(2), &[0]).is_empty());
++            let events = s.feed_bytes(Instant(3), &wire);
++            assert!(events.contains(&BfdSessionEvent::AuthFailed));
++            assert_eq!(s.state(), State::Down);
++            assert!(!s
++                .tick(Instant(2000))
++                .contains(&BfdSessionEvent::OutboundQueued));
++            assert!(s.drain_outgoing().is_empty());
++            let rng = s.rng;
++            assert!(s.tick(Instant(2000)).is_empty());
++            assert_eq!(s.rng, rng, "no immediate retry at the same instant");
++            assert_eq!(s.last_tx_ms, 0, "no transmission occurred");
++            let auth = s.keyed_auth().unwrap();
++            assert_eq!(auth.xmit_seq(), 0);
++            assert!(!auth.rcv_auth_seq_known());
++            s.set_keyed_auth(None);
++            let events = s.feed_bytes(Instant(2001), &wire);
++            assert!(!events.contains(&BfdSessionEvent::AuthFailed));
++            assert_eq!(s.state(), State::Init);
++            s.tick(Instant(4000));
++            let out = s.drain_outgoing();
++            assert!(!out.is_empty());
++            assert_eq!(decode_first(&out).auth, decode_first(&wire).auth);
++        }
++    }
++}
++
++#[cfg(not(feature = "keyed-auth"))]
++#[test]
++fn unsupported_keyed_auth_preserves_queue_and_detection_then_recovers_on_tick() {
++    let mut s = make_session();
++    let wire = encode_packet(&make_packet(State::Down, 0x22222222, 0));
++    s.feed_bytes(Instant(1), &wire);
++    assert_eq!(s.state(), State::Init);
++    let queued = s.out_buf.clone();
++    assert!(!queued.is_empty());
++    s.set_keyed_auth(Some(keyed_md5_auth()));
++    assert_eq!(s.drain_outgoing(), queued);
++    let events = s.feed_bytes(Instant(299), &wire);
++    assert!(events.contains(&BfdSessionEvent::AuthFailed));
++    assert!(s.tick(Instant(302)).contains(&BfdSessionEvent::Timeout));
++    assert_eq!(s.state(), State::Down);
++    assert!(s.drain_outgoing().is_empty());
++    assert!(!s
++        .tick(Instant(2000))
++        .contains(&BfdSessionEvent::OutboundQueued));
++    s.set_keyed_auth(None);
++    assert!(s
++        .tick(Instant(4000))
++        .contains(&BfdSessionEvent::OutboundQueued));
++    let out = s.drain_outgoing();
++    assert!(!out.is_empty());
++    assert!(decode_first(&out).auth.is_none());
++}

@@ -75,9 +75,9 @@ MCP sequentialthinking 的同一 SDK 2.3.1 下，旧入口能服务旧协议，�
 
 **依据与复跑入口**：[固定版本、同一消费者与两类结果](../../experiments/rust-semver-consumer/README.md)，2026-11-05 Linux 实测；cargo-semver-checks 0.51.0、Rust 1.99.0，工具报 1 fail／1 warn／31 skip。消费者是针对真实 API 写的最小下游探针，不是已有第三方应用；只验证固定历史两版、一个 crate 和所列 features，未证明完整工作区或运行时兼容。
 
-**默认升级通过后，还要保住旧调用方的显式配置。** 独立读者实做 librouting 的 `lr-bfd`：增加默认 `keyed-auth` 后，同一旧 Simple Password 消费者两版均编译通过、26 项测试通过，报文字节与状态轨迹一致；独立接收另验原来受支持的 `std`-only 构建，基线通过，新版却因调用被 feature 关闭的方法而编译失败。应保留这个消费者的原配置并处理库侧兼容，不能靠打开默认功能把失败改成通过。
+**默认升级通过后，还要保住旧调用方的显式配置。** 独立读者实做 librouting 的 `lr-bfd`：增加默认 `keyed-auth` 后，同一旧 Simple Password 消费者两版均编译通过、26 项测试通过，报文字节与状态轨迹一致；原来受支持的 `std`-only 构建却因调用被 feature 关闭的方法而失败。该故障在当前固定 1.8.0 源码仍存在；[库侧修复候选](../../experiments/rust-semver-consumer/bfd-reader/README.md#当前版本的修复候选保留消费者配置不强开默认功能)保留原消费者配置，使 `std`-only 恢复通过且默认轨迹不变。未编入的新能力被配置时，要保留明确的拒绝与恢复，不能只删掉签名调用或强开默认功能来消除编译错误。
 
-**依据**：[固定源码、提取消费者、feature 选择与复跑](../../experiments/rust-semver-consumer/bfd-reader/README.md)，2026-11-08 独立云端实做与接收；工具参数由安装的 0.51.0 `--help` 核对。消费者来自真实旧版测试，外加一项明确标出的观察探针；没有修改库或验证当前最新版，仍保留本机读者与完整迁移范围欠项。
+**依据**：[固定源码、提取消费者、feature 选择与复跑](../../experiments/rust-semver-consumer/bfd-reader/README.md)，2026-11-08 独立云端实做与接收，工具参数由安装的 0.51.0 `--help` 核对；2026-11-09 当前源码修复与独审，两种原消费者各 26 项通过。消费者来自真实旧版测试，外加一项明确标出的观察探针。修复未投稿；workspace Clippy 仍有无关既有失败，完整工作区、发行与本机读者门槛保留。
 
 ### 规则零命中：保留仍兼容的生成代码
 

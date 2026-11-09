@@ -1,0 +1,13 @@
+[package]
+name = "bfd-historical-consumer"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[[test]]
+name = "historical"
+path = "../historical.rs"
+
+[dependencies]
+lr-bfd = { path = "../current/crates/lr-bfd", default-features = false, features = ["std"] }
+lr-core = { path = "../current/crates/lr-core" }
