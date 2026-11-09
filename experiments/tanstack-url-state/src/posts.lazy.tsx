@@ -49,7 +49,18 @@ function PostsLayoutComponent() {
           </label>
           <p id="posts-apply-help">Edits take effect only after you select Apply.</p>
           <button type="submit" aria-describedby="posts-apply-help" className="border p-1">Apply</button>
-          <Link to="/posts" search={postsSearchDefaults}>Clear filters</Link>
+          <Link
+            to="/posts"
+            search={postsSearchDefaults}
+            onClick={(event) => {
+              if (event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey || event.defaultPrevented) return
+              // Same-search navigation keeps this form mounted, so discard its drafts explicitly.
+              // Changed search still remounts it with the destination's applied defaults.
+              event.currentTarget.closest('form')?.reset()
+            }}
+          >
+            Clear filters
+          </Link>
         </form>
         <div className="flex flex-wrap gap-x-2">
           <p role="status">{visiblePosts.length} of {posts.length} posts</p>

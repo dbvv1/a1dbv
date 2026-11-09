@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryHistory, RouterProvider } from '@tanstack/react-router'
 import { createAppRouter } from '../src/router'
@@ -49,6 +49,51 @@ async function apply(user: ReturnType<typeof userEvent.setup>, q: string, sort =
 }
 
 describe('URL-backed Posts consumer flow (real Router + React DOM, controlled HTTP)', () => {
+  it('clears unapplied drafts when the applied URL already has default filters', async () => {
+    const { user, history } = await start('/posts')
+    await user.type(screen.getByRole('searchbox'), 'draft')
+    await user.selectOptions(screen.getByRole('combobox'), 'desc')
+    expect(history.location.search).toBe('')
+    expectAppliedSummary('All titles', 'A to Z')
+    await user.click(screen.getByRole('link', { name: 'Clear filters' }))
+    await waitFor(() => expect(screen.getByRole('searchbox')).toHaveValue(''))
+    expect(screen.getByRole('combobox')).toHaveValue('asc')
+    expect(history.location.search).toBe('')
+    expectAppliedSummary('All titles', 'A to Z')
+    expect(titles()).toHaveLength(4)
+
+    await user.type(screen.getByRole('searchbox'), 'another draft')
+    await user.selectOptions(screen.getByRole('combobox'), 'desc')
+    screen.getByRole('link', { name: 'Clear filters' }).focus()
+    await user.keyboard('{Enter}')
+    await waitFor(() => expect(screen.getByRole('searchbox')).toHaveValue(''))
+    expect(screen.getByRole('combobox')).toHaveValue('asc')
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(history.location.search).toBe('')
+    expect(titles()).toEqual(['Alpha report', 'Beta report', 'Delta report', 'Gamma note'])
+  })
+
+  it('keeps drafts in this tab when Clear filters is activated with a modifier or non-primary button', async () => {
+    const { user, history } = await start('/posts')
+    await user.type(screen.getByRole('searchbox'), 'draft')
+    await user.selectOptions(screen.getByRole('combobox'), 'desc')
+    const clear = screen.getByRole('link', { name: 'Clear filters' })
+    expect(clear).toHaveAttribute('href', '/posts')
+    // Keep jsdom from attempting native navigation after React handles the event.
+    const preventNativeNavigation = (event: Event) => event.preventDefault()
+    document.addEventListener('click', preventNativeNavigation)
+    try {
+      for (const options of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { altKey: true }, { button: 1 }]) {
+        fireEvent.click(clear, options)
+        expect(screen.getByRole('searchbox')).toHaveValue('draft')
+        expect(screen.getByRole('combobox')).toHaveValue('desc')
+        expect(history.location.href).toBe('/posts')
+      }
+    } finally {
+      document.removeEventListener('click', preventNativeNavigation)
+    }
+  })
+
   it('keeps edited inputs as drafts until Apply updates the summary, results and URL together', async () => {
     const { user, history } = await start('/posts?q=report&sort=desc')
     const appliedURL = history.location.href
