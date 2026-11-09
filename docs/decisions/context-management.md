@@ -57,6 +57,7 @@ git hash-object --no-filters received-page.md
 | 眼前发生了什么 | 现在怎么做 |
 |---|---|
 | 漏约定、引用旧文件 | 重读当前权威文件与调用方，指出被取代的决定；压缩不能补回从未读过的事实 |
+| 自建 Agents SDK 的 Chat Completions Agent，调用工具后突然丢历史或报 tool 配对错误 | 先核是否误开服务端会话续接；[去掉服务端状态参数，显式回传完整历史](#agents-chat-history)，别先调压缩阈值 |
 | 搜索为零，却知道源码存在 | 核客户端版本、工作树／HEAD 和忽略规则；搜索已知文件里的符号，与直接读取对照。确认获准读取且没有有意排除后，才对该文件用 shell `grep` 复核；权限拒绝不换入口绕过 |
 | 同题正常推进，历史占空间 | 沿用自动压缩；手动压缩时保留最新约束、失败测试、已排除方案与下一步，压缩后核对 |
 | 压缩完又满、不停全量重读 | 查大文件、工具输出与启动加载项，缩小实际纳入范围；日志保留错误段和文件入口。只分块却仍读全量，不能减少总量；必要的全量审查仍须覆盖 |
@@ -127,3 +128,27 @@ git hash-object --no-filters received-page.md
 **依据**：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Claude 引用](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories)与[压缩重载](https://code.claude.com/docs/en/context-window#what-survives-compaction)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)、[既有恢复包](../20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)，核实 2026-10-26。 Claude 文件引用限额与压缩重读范围于 2026-11-04 复核官方文档；未实跑客户端，不据此提升本页评级。
 
 **优先核限制：任务得分稳定，摘要仍可能丢掉工作方法和禁改范围。** [10 月压缩研究](https://arxiv.org/html/2610.31778v1) §4.2／§5 与[改造版 OpenCode](https://github.com/aisa-group/compaction/blob/main/docs/COMPACTION.md)，核实 2026-10-28。该研究的任务实验仅含少量任务及 Opus 4.6、GPT-5.3-Codex、GPT-5.4 等模型，1M 模型只用到窗口的 16%–38%；44 条真实会话用 LLM 判分，未测约束丢失对最终结果的影响。本仓未复现，不据此设通用阈值。
+
+<a id="agents-chat-history"></a>
+
+### 自建 Agents SDK：Chat Completions 用本地历史，Responses 才用服务端续接
+
+**🧪 使用 `OpenAIChatCompletionsModel` 时，从 `Runner` 调用中去掉 `conversation_id`、`previous_response_id`，保持 `auto_previous_response_id=False`；下一轮把 `result.to_input_list()` 加上新用户消息传回。** 这条手动路线适合应用已持有完整历史的情况；不要同时再接自动保存历史的 `session`。已有 Chat 模型和工具的 `agent` 可这样续聊：
+
+```python
+from agents import Runner
+
+result = await Runner.run(agent, "第一条用户消息")
+next_input = result.to_input_list() + [
+  {"role": "user", "content": "接着上一轮继续"}
+]
+result = await Runner.run(agent, next_input)
+```
+
+**不要只回传 `final_output`，也不要只留下工具结果。** `to_input_list()` 带上本轮输入、工具调用、对应工具结果与最终回复。用 `Runner.run_streamed()` 时，先消费完 `result.stream_events()`，再取同一份历史。验收看实际发出的请求：工具后的下一次 Chat 请求应同时有原用户消息、带 `tool_calls` 的 assistant 消息与匹配 `tool_call_id` 的 tool 消息；下一轮还应有最终回复和新的用户消息。
+
+**适配器说“忽略服务端参数”，不表示 Runner 没裁历史。** 在下列固定 SDK 提交，三种服务端设置都会使普通与流式运行的第二次 Chat 请求只剩 tool 消息。`strict_feature_validation=True` 能在发请求前挡住两个显式 ID，但不能可靠挡住 `auto_previous_response_id`：普通运行仍丢历史，流式运行到第二次请求前才报错。去掉这些设置是避开该组合的办法，不是 SDK 修复。
+
+需要服务端续接时选支持它的 OpenAI Responses API 路线，并按其契约只传增量；不要把上面的完整历史同时叠加进去。已经只存在服务端的旧历史，也不会因改用 `to_input_list()` 自动回到本地。
+
+**依据与实测**：[官方状态策略](https://github.com/openai/openai-agents-python/blob/1fc77bbc8ac1446690f6ba62dd0d52779bdcf43f/docs/running_agents.md#choose-a-memory-strategy)、[真实使用者 #5454](https://github.com/openai/openai-agents-python/issues/5454)、[Chat 参数校验](https://github.com/openai/openai-agents-python/blob/1fc77bbc8ac1446690f6ba62dd0d52779bdcf43f/src/agents/models/openai_chatcompletions.py#L543-L574)，核实 2026-11-09。本仓在该提交用公开 `Runner`、真实适配器和 HTTP mock 复现上述丢历史，并在普通／流式两种模式验证工具往返后再接一轮用户输入；Responses 的 8 项对照保留原有完整历史／服务端增量语义。测试使用合成消息，未调用在线模型；不证明原生 CLI 压缩或生产接续已修复。
