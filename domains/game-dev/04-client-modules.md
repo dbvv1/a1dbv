@@ -867,6 +867,10 @@ MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 
 
 来源：[源码／CPU 回归] MOBA 固定版本 [输入目标与控件归属](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/commands.ts)、[失焦与隐藏取消](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/controls.ts)、[真实消费者测试](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/tests/client/targeting-controls.test.ts)，核实 2026-10-28。
 
+**技能按钮激活后，把键盘焦点交回玩法。** MOBA 普通页面实测点 Q 后焦点仍停在按钮，控件过滤把提示承诺的 Esc 也挡掉了。修复只在 HUD 技能点击回调后聚焦画布，不放开所有 UI 的玩法快捷键；仅 Tab 到按钮仍由 UI 持有键盘。验收要从按钮实际点击开始，再按 Esc、左击画布并重复，确认不扣蓝、不进入旧施法；另验自身技能只提交一次，以及设置关闭后仍回设置按钮。
+
+[修复与真实 client 回归](https://github.com/dbvv1/MOBA-Like/commit/00f82c7134cd4d83507912a5cf266a7eb35f944a)已进入原候选。默认、完整 Q/W 与 quiet 三路回归先复现旧焦点失败，修复后 686 项、两构建与非作者源码审查通过；同树干净构建的普通浏览器确认 Q/W、重复取消、取消后左击与设置焦点，三入口 Canvas2D 均超过 300 tick。新 context、失败请求、完整 smoke、WebGL 与视听仍未通过，不换默认或增加品质分。核实 2026-11-09。[案例实测]
+
 **取消输入时也撤回失效的操作指令，但保留后来到达的权威回执。** MOBA 的实际 client 曾在设置、失焦、隐藏与 Stop 后清掉瞄准，却仍要求“左击施法”；统一战斗候选现让 Controls 沿同一退出路径请求撤销，HUD 仅在当前文本仍等于该次瞄准提示时执行。连续两次 Q 点击后先进入 E 瞄准，下一逻辑步才到达的 `alreadyCasting` 拒绝不能被 E 的取消抹掉。中间适配器必须透传可选的 `onlyIfCurrent`，只转发新文本会把条件撤销变成无条件清空；具体接线见[改键页的提示交接增量](../../experiments/moba-keybindings/README.md#aim-notice-handoff)。这是当前单输入所有者的窄实现，文本相等不代表通用消息身份。
 
 **命令提示要区分本地待发、模拟排队、实际执行和取消。** 设置／隐藏／失焦会清空本地待发队列；若点 Q 后还未推进一帧，不能留下“命令已排队”。持有队列的 client 在清空前通知 Controls，只撤对应命令的回执；已执行的移动不随后来取消的购物命令撤回。模拟排队后仍可能被 Stop、眩晕或释放时的目标失效取消；在真正丢弃处报告，不凭“队列已空”或“现在眩晕”猜测，同一 tick 可能先正常释放再受控。只撤失效命令的旧提示，保留较新拒绝；死亡／终局按角色生命周期清理。队列达到上限时先确认接收再更新回执，本例拒收第 33 条时保留 Q 瞄准，消费后重新点击可施法。
