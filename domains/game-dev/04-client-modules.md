@@ -867,6 +867,8 @@ MOBA 的同单元修正已接入原材质候选分支，真实 `createControls` 
 
 来源：[源码／CPU 回归] MOBA 固定版本 [输入目标与控件归属](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/commands.ts)、[失焦与隐藏取消](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/src/input/controls.ts)、[真实消费者测试](https://github.com/dbvv1/MOBA-Like/blob/e2fdf2d2c9c3ecc2ce354aafdd08b9a0541c33c6/tests/client/targeting-controls.test.ts)，核实 2026-10-28。
 
+**取消操作要在下一次选择之前验。** [MOBA 的 v12 连续输入回归](https://github.com/dbvv1/MOBA-Like/blob/fc1657af6d8f2c86588fdd4e2854e3e68e59c23b/docs/verification/queued-skills-sequence.md)接收时发现，W→Esc→Q 即使 Esc 失效也能通过，因为 Q 会覆盖旧瞄准；改为 Esc 后先点有效地面，确认旧 W 不发命令，再验新 Q 释放。重放同时比较当步表现事件，不能只用不含事件的玩法 hash 证明反馈没丢。生产 Controls、真实 Detour 与六段模拟通过，仍是合成输入及 legacy 命令路径，不代替浏览器按钮焦点或当前命令信封验收；未改产品运行行为。核实与采用：2026-11-09。
+
 **技能按钮激活后，把键盘焦点交回玩法。** MOBA 普通页面实测点 Q 后焦点仍停在按钮，控件过滤把提示承诺的 Esc 也挡掉了。修复只在 HUD 技能点击回调后聚焦画布，不放开所有 UI 的玩法快捷键；仅 Tab 到按钮仍由 UI 持有键盘。验收要从按钮实际点击开始，再按 Esc、左击画布并重复，确认不扣蓝、不进入旧施法；另验自身技能只提交一次，以及设置关闭后仍回设置按钮。
 
 [修复与真实 client 回归](https://github.com/dbvv1/MOBA-Like/commit/00f82c7134cd4d83507912a5cf266a7eb35f944a)已进入原候选。默认、完整 Q/W 与 quiet 三路回归先复现旧焦点失败，修复后 686 项、两构建与非作者源码审查通过；同树干净构建的普通浏览器确认 Q/W、重复取消、取消后左击与设置焦点，三入口 Canvas2D 均超过 300 tick。新 context、失败请求、完整 smoke、WebGL 与视听仍未通过，不换默认或增加品质分。核实 2026-11-09。[案例实测]

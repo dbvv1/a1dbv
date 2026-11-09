@@ -40,3 +40,9 @@ result_branch: relay/b-moba-queued-skills-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：负责人接收并提交本次两文件；tests/client/audio-skill.test.ts 的既有失败与本单元无关，需另单处理；操作手感与画面/音频验收仍待人工判断。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人接收 · 2026-11-09
+
+- 测试与精简说明已接产品 main [fc1657a](https://github.com/dbvv1/MOBA-Like/commit/fc1657af6d8f2c86588fdd4e2854e3e68e59c23b)，未改运行源码、默认、资源或网站。独审发现 Esc 后直接 Q 会遮住取消失败，且旧重放未比较表现事件；现先点有效地面确认不发命令，再按 Q，并在采样时直接比较事件，cadence 1 覆盖每 tick。
+- 独立源码／最终说明审查、574项、两构建及470文件公开扫描通过；历史 audio-skill 失败本轮未复现，不解释成所有平台已修。v12显式旁置、合成输入与legacy命令边界保留，浏览器／视听／手感未验，不计品质提升。采用回写[输入回归](../../../domains/game-dev/04-client-modules.md#接入手柄暂停与多人菜单)。
+- 原外层调用终态仍未核清，保留 review_ready；本次接收不据分支／测试完成释放槽位、重派或解除隔离。
