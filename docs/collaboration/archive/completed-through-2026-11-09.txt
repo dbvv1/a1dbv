@@ -1,3 +1,10 @@
 2026-11-09（UTC+8）续修 FPS 终局目标提示前的状态；被新行取代，产品任务未完成。
 
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。候选[c17d455](https://github.com/dbvv1/FPS-Like/commit/c17d455af93c7726e099fe3696d88d5c8067859b)修偏弹伤及后方队友，保玩家友伤；580项＋adapter29／构建／独审过，48回合无友伤。hard seed7超时已核合法守点，非导航故障。socket EPERM不重试，完整角色reload/switch、浏览器／视听与自然5v5安拆仍缺，未合main／部署。 |
+
+
+2026-11-09（UTC+8）修复已取消操作的残留提示前的状态；产品验收仍未完成。
+
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `876fb20`／Site **v24**。原训练[候选57060c2](https://github.com/dbvv1/FPS-Like/commit/57060c2a6d09571baef408e9f1bca4fb93cb77be)续修安拆结算后仍要求交互的HUD；584项＋adapter29／双类型／构建／独审过，偏弹护友与合法守点保留。socket EPERM不重试；完整角色reload/switch、浏览器／视听与自然5v5安拆仍缺，未合main／部署。 |
+
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `5254991`／Site **v22**。[候选935e8a2](https://github.com/dbvv1/MOBA-Like/commit/935e8a24afaa8a7303e0de2a8776dd0918e0b6f9)已保历史整合main的图标LF修复／保档指引，Q/W死亡／丢弃输入回执修复保留。合后659项＋LF5项／构建／类型过；默认／quiet保旧，未合main。旧Canvas见Q/W／重生；浏览器socket EPERM不重试，新源码页面未验。3D／同机位／听感盲评及原调用终态待验。 |
