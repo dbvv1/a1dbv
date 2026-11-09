@@ -65,19 +65,28 @@ MCP sequentialthinking 的同一 SDK 2.3.1 下，旧入口能服务旧协议，�
 
 **依据**：[Sentry 首阶段指令](https://github.com/getsentry/sentry/blob/8891ab865ca741f83cbcd20349bd21c03ad92ffc/static/AGENTS.md#L30-L39)、[阶段二环境选择](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.ts#L8-L39)与[构建消费者断言](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.test.ts#L28-L162)、[双版应用测试](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/testCi.js#L18-L31)与[类型检查](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/scripts/typecheck.ts#L56-L81)、[完成切换并撤除支架](https://github.com/getsentry/sentry/commit/de3060f736c6dd55836bfae104336a967ec41d8d)。已有候选原核实 2026-11-03，2026-11-08 复核固定源码；这是已完成迁移的历史机制，不是建议 Sentry 继续 V6。本仓未运行该迁移或完成此分支的新读者实做，未验证净收益。
 
-### 公开 API：库能构建，旧调用方仍可能坏
+<a id="公开-api库能构建旧调用方仍可能坏"></a>
 
-**让 Agent 改公开 API 时，把原消费者的输入、依赖声明、调用方式与检查命令一起交给它。** 在两个独立消费者副本里保留同一源码与检查命令，只切换目标库版本并更新相应锁文件。Rust 库已安装 cargo-semver-checks 时，从新版库目录运行 `cargo semver-checks -p <crate> --baseline-root <旧版源码目录> --default-features --color never`（替换占位符，含空格的路径加引号），再分别进入消费者目录运行 `cargo check --locked`。消费者位于集成测试或 example 时，明确检查对应 target；本例用 `cargo check --locked --all-targets`，再运行实际测试。固定源码、工具链和依赖 feature 策略；多 crate 各选自己的基线。工具未覆盖或跳过的检查仍是未验，纯内部改动不用统一增加这一关。
+### 公开 API：给 Agent 原调用方，不只给库的测试
 
-**默认依赖与显式关闭默认值的调用方分开验。** cargo-semver-checks 0.51.0 的裸命令按启发式选 features；上例 `--default-features` 才按各版默认值检查。已有消费者关闭默认值时，按它的实际选项另验；工具的 `--only-explicit-features --features <原选项>` 可对应显式集合，不把新版独有选项传给旧版。默认值在升级中也可能变化，记录解析出的集合，并运行对应消费者。
+**需要保兼容时，让 Agent 在改动前固定一个真实调用方，再用同一输入、配置与断言验旧版和新版。** 这样能约束它为消除编译错误而改消费者、放宽断言或打开默认功能的做法。项目已有兼容检查就沿用；纯内部重构、没有公开消费者契约时，不统一加一套版本兼容流程。
 
-**编译错误按原调用定位，行为警告回真实输入验证。** librouting 的 `lr-bgp` 新增公开枚举分支后，自身构建成功，但原 23 分支穷尽匹配消费者从通过变为 E0004；同次 PartialOrd warning 却未证明旧值排序改变：显式 discriminant 下，278 个旧值的 77,284 对比较结果一致。不能为消警告擅自改排序、加兜底分支或抬高检查基线；要保兼容就调整库侧方案并重验原消费者；已决定接受破坏性升级，再迁移调用方并保留回归。
+把以下要求补进当前迁移任务，消费者取自本项目实际支持的调用方式：
 
-**依据与复跑入口**：[固定版本、同一消费者与两类结果](../../experiments/rust-semver-consumer/README.md)，2026-11-05 Linux 实测；cargo-semver-checks 0.51.0、Rust 1.99.0，工具报 1 fail／1 warn／31 skip。消费者是针对真实 API 写的最小下游探针，不是已有第三方应用；只验证固定历史两版、一个 crate 和所列 features，未证明完整工作区或运行时兼容。
+```text
+先固定现有消费者源码、依赖选项、target 和原生检查命令，记录旧版结果。
+迁移后用相同消费者复验；把 API 扫描结果与真实编译、行为结果分开。
+默认配置和已有消费者的显式配置分别检查，不为通过而强开新功能。
+出现 warning 先用原输入核影响，不直接改行为或抬高检查基线。
+若原契约失败，交回最小失败与处理选择；只有任务明确允许破坏性升级，
+才修改调用方，并保留新旧行为及迁移说明。
+```
 
-**默认升级通过后，还要保住旧调用方的显式配置。** 独立读者实做 librouting 的 `lr-bfd`：增加默认 `keyed-auth` 后，同一旧 Simple Password 消费者两版均编译通过、26 项测试通过，报文字节与状态轨迹一致；原来受支持的 `std`-only 构建却因调用被 feature 关闭的方法而失败。该故障在当前固定 1.8.0 源码仍存在；[库侧修复候选](../../experiments/rust-semver-consumer/bfd-reader/README.md#当前版本的修复候选保留消费者配置不强开默认功能)保留原消费者配置，使 `std`-only 恢复通过且默认轨迹不变。未编入的新能力被配置时，要保留明确的拒绝与恢复，不能只删掉签名调用或强开默认功能来消除编译错误。
+**Rust 项目已有 cargo-semver-checks 时**，可先运行 `cargo semver-checks -p <crate> --baseline-root <旧版源码目录> --default-features --color never`，固定工具链，在旧／新消费者副本只切换库版本并更新各自锁文件，再跑原检查与测试。替换占位符，含空格的路径加引号。集成测试或 example 要选对应 target，例如 `cargo check --locked --all-targets`；已有显式 feature 的消费者另验其原选项。0.51.0 的裸命令会启发式选 features，不能当作默认配置的精确对照；跳过项仍是未验。
 
-**依据**：[固定源码、提取消费者、feature 选择与复跑](../../experiments/rust-semver-consumer/bfd-reader/README.md)，2026-11-08 独立云端实做与接收，工具参数由安装的 0.51.0 `--help` 核对；2026-11-09 当前源码修复与独审，两种原消费者各 26 项通过。消费者来自真实旧版测试，外加一项明确标出的观察探针。修复未投稿；workspace Clippy 仍有无关既有失败，完整工作区、发行与本机读者门槛保留。
+**实测支持的是这个验收选择，不是对样例库的推荐。** librouting 历史样例里，库自身能构建，旧枚举匹配调用却编译失败；排序 warning 经原输入对照未显示行为变化。另一消费者默认配置通过，原来支持的 `std`-only 配置却失败。因此应保留真实调用与配置，而不是只相信库的自测或扫描。路由认证、队列和计时器的修复细节留在实验中，不是学习本页或使用 Agent 的前提。
+
+**依据与复跑入口**：[公开 API 对照](../../experiments/rust-semver-consumer/README.md)，2026-11-05 Linux 实测（Rust 1.99.0、cargo-semver-checks 0.51.0）；[显式配置对照与旁置修复](../../experiments/rust-semver-consumer/bfd-reader/README.md)，2026-11-08 独立云端实做、11-09 修复复核。前者是最小下游探针，后者来自旧版测试，另加观察探针；只支持所列版本、target 和 features，未证明 Agent 选型或净提效、完整发行兼容或上游采用。本机新读者门槛仍未完成。
 
 ### 规则零命中：保留仍兼容的生成代码
 
