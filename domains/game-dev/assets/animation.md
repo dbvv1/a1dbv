@@ -501,3 +501,15 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 **可直接用**：固定案例下运行 `node --import tsx tools/check-kaykit-contact.ts "$FIXED_KAYKIT_SAMPLE" > contact.json`。目录放已取得的`Knight.glb`与`Med_CombatRanged.glb`；缺文件/hash错误/缺关键节点会失败，不联网补源。工具输出完整库存和三动作各五个相位；两遍输出一致，独立复算一个真实手位差0。单位按glTF声明，实际人体比例、纹理解码、握持画面尚未验，不能增加覆盖。[经验]
 
 案例脚注：[固定源诊断与结果](https://github.com/dbvv1/FPS-Like/tree/2e6559f9d8f4bfcd1e9f6c34f8d3c386128bd69f/asset-pipeline/kaykit-contact)，2026-11-10，专项3项与typecheck通过。
+
+### 复用已有枪械：先分离，再定骨挂接
+
+**目标**：已有第一人称枪械可给第三人称角色使用，不重新搜包，也不把玩家手臂一并挂到角色手上。
+
+**做法**：从固定GLB按节点身份保留枪体、独立弹匣/枪栓和原挂点，排除手臂子树；保留根坐标、材质和量化声明，用真实GLTFLoader重新加载并逐点对照源。挂点的角色随数据保留：本例`grip`是`support-palm-contact`，不是主手握把；第一人称camera restMount不用于骨挂接。几何复用之后仍需定角色尺寸/主手变换和瞄准、开火、换弹同框验收。
+
+**失败反例**：CLI允许源、GLB输出、manifest共用路径，命令可成功却覆盖原素材或把JSON写成GLB。先拒绝路径别名与目录目标，再验证临时产物，处理普通发布失败时恢复已有文件；不把两次rename描述成崩溃原子事务。
+
+**直接使用**：FPS仓库`asset-pipeline/kaykit-rx24/weapon-only.glb`可由GLTFLoader载入；重建用`node --import tsx asset-pipeline/kaykit-rx24/extract.ts --src assets/content-set/fp-arms-rx24.glb --out asset-pipeline/kaykit-rx24/weapon-only.glb --manifest asset-pipeline/kaykit-rx24/manifest.json`。
+
+案例脚注：[RX24配方与静态产物](https://github.com/dbvv1/FPS-Like/tree/841386e0f584b0989106c369831f0ba3efcbe17e/asset-pipeline/kaykit-rx24)，2026-11-10：1958三角、5874顶点，非作者根空间逐点误差0；仅CPU资产验收，未入View、未验握持或画面，不增加内容覆盖。

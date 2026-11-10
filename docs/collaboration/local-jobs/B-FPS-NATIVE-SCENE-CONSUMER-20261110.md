@@ -26,3 +26,5 @@ result_branch: relay/b-fps-native-scene-consumer-20261110
 ## 当前决定
 
 固定源诊断在Knight中未识别出步枪/独立弹匣，Med_CombatRanged无网格；handslot不是枪械。暂停此卡的场景接线，不把无枪骑士与持枪射击语义一起上屏。枪械来源先复用本仓RX24（见B-FPS-RX24-WEAPON-ONLY-20261110），恢复须完成武器独立导出，dot-B定配套挂点/尺寸和同框验收目标，再改规格；本卡不派执行、不占ready配额。保留已有骨架/快照CPU成果，不删除原包或其他候选。
+
+武器独立导出已接收 `841386e0f584b0989106c369831f0ba3efcbe17e`（1958三角、121224字节），几何前置已消除；仍不能把support-palm-contact当主手骨挂点。剩余由dot-B确定主手/枪轴、尺寸与三动作同框验收目标后重新定型，不据静态几何接受解禁View。

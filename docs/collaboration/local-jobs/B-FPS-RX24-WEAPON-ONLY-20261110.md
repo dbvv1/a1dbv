@@ -2,7 +2,7 @@
 id: B-FPS-RX24-WEAPON-ONLY-20261110
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5e7d814895bf20b0583c2f65c3de588a708790
 result_branch: relay/b-fps-rx24-weapon-only-20261110
@@ -29,3 +29,7 @@ result_branch: relay/b-fps-rx24-weapon-only-20261110
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：dot-B to define the weapon mount contract (hand/bone, offset, rotation) before unblocking the native-scene card; run same-camera Knight grip/contact/style acceptance separately.
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## dot-B 接收决定
+
+接收武器静态几何与可重建配方到原蒙皮候选 `841386e0f584b0989106c369831f0ba3efcbe17e`，不换默认、不部署。非作者用独立 GLTFLoader 逐点复核5874顶点，根空间最大误差0，独立弹匣/枪栓及muzzle/grip保留；grip仍仅是支撑掌点。原CLI相同输出路径会覆盖源或把JSON当GLB的失败已复现并修复，新增路径冲突与发布失败测试。真实GPU、与Knight挂接/装卸/穿插/风格未验；scene卡仍blocked，覆盖0/77不变。
