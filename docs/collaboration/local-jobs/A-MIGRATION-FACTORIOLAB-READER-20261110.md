@@ -1,6 +1,6 @@
 id: A-MIGRATION-FACTORIOLAB-READER-20261110
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: be3c57b9de7f97baf01d96d0392dda896b8506d9
