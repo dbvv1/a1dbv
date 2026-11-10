@@ -2,7 +2,7 @@
 id: B-PIPE-RIGID-GROUNDING-READER-20261110
 owner: dot-B
 kind: reader-test
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: main
 result_branch: relay/b-pipe-rigid-grounding-reader-20261110
