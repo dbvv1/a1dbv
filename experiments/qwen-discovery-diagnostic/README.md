@@ -15,6 +15,14 @@ cd packages/core
   -t 'diagnostic|keeps optional missing tools method|keeps usable prompts after|all-collision server|discoverAndReturn throws "No prompts or tools found" when both empty|undefined tools'
 ```
 
+可直接运行已提供的 stdio 服务与三路 CLI 验证（POSIX，Python 3.11+、Node 与已构建的 Qwen）：
+
+```sh
+python3 reproduce.py /path/to/built/qwen-code
+```
+
+该入口为每种情况建立独立临时 HOME 与工作目录，不继承账号凭据；保留三份输出，只验证当前编译后的 CLI，不安装依赖、不访问模型。超时终止本次子进程组。缺少构建产物时直接停止。
+
 实际协议复现条件：使用一次性 stdio JSON-RPC 服务器，`initialize` 返回协议 `2025-06-18`、`capabilities.tools = {}`；`tools/list` 返回错误 `-32603`、消息 `DIAGNOSTIC_FIXTURE: tool catalog unavailable`；其他未实现方法返回 `-32601`。将其配置为一次性工作目录的 MCP 服务器，运行构建产物 `node packages/cli/dist/index.js mcp reconnect --all`。无需真实模型、账号或远端 MCP。
 
 | 路径 | 原始模块 | 补丁后 |
