@@ -1,6 +1,6 @@
 id: A-MIGRATION-FACTORIOLAB-READER-20261110
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: be3c57b9de7f97baf01d96d0392dda896b8506d9
@@ -14,7 +14,13 @@ page: docs/decisions/migrations.md@be3c57b9de7f97baf01d96d0392dda896b8506d9
 3. 仅写 docs/collaboration/local-jobs/artifacts/A-MIGRATION-FACTORIOLAB-READER-20261110/result.md，含固定输入、实际命令/退出、diff范围、卡点、未验；不改答案页或产品默认分支，不发上游通信，不写用户路径/私密日志。代码修改仅任务临时隔离副本，交回必要公开差量，不携带依赖或产品数据。
 4. 接收端共享最多4任务/1GPU，60–90分钟单元、2小时上限；按合同回写卡与结果分支，不自动合main。旧写者未知不接管，无合格新读者则待领取；非读者核原始产物、当前页与任务本身的验收，不因命令成功升✅。若缺依赖，区分执行条件与页面卡点，不反复重试。
 ## 当前结果
-待领取；尚无实际执行或验收。
+
+- 读者按页做到依赖准备与迁移面确认：浅取固定提交 f785e10，核对 README/package.json/angular.json/karma.conf.js/CI 与两个消费者（button.spec、migration.spec 未改）；因仓库无 node_modules 且任务禁止安装/更新依赖及 npx，npm run test:ci、npm test、npm run build 均在 ng 启动前退出 1，未执行真实迁移、未改产品代码，工作树 diff 为空，消费者哈希不变。taskDone=false；真实迁移、同一消费者前后对照、构建产物均未运行验收，不能据此判页面通过。pageStuck 5 条（4 条 page：依赖准备/缺依赖验收/官方 codemod 前提/构建验收均未覆盖『禁止安装』情形；1 条 model：读者先跑测试后核 node_modules）。openIssues：http-xhr-backend 预计命中还含 src/data/release.spec.ts、src/translate/translate.spec.ts；change-detection-eager 还含 form-field.spec.ts 的 TestFormField、tooltip.spec.ts 的 TestTooltip；@vitest/coverage-v8 是根直接 devDependency ^4.1.5，与 vitest 5 存在 peer 错配需手工对齐；@schematics/angular 迁移清单漏列 use-application-builder、trust-proxy-headers；tests.yml 与 build.yml 被合并成一条五步序列的表述偏差。
+- 产物：[020a36f](https://github.com/dbvv1/a1dbv/commit/020a36f78a2f4f8c6cad3cf400cc90b01ca5744a)，分支 `relay/a-migration-factoriolab-reader-20261110`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人需决定是否授权依赖安装以执行真实迁移，或按缺项保留候选并补充页面对『禁止安装时如何停止/哪些不能算通过』的判据；同时回填上述预计命中与依赖错漏到页面或记录。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
 ## 当前页面全文
 相对链接以 docs/decisions/ 为基准。
 ````markdown
