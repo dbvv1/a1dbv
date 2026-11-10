@@ -1,0 +1,150 @@
+diff --git a/packages/core/src/tools/mcp-client.test.ts b/packages/core/src/tools/mcp-client.test.ts
+index 1e483b6..c9c50c1 100644
+--- a/packages/core/src/tools/mcp-client.test.ts
++++ b/packages/core/src/tools/mcp-client.test.ts
+@@ -2023,0 +2024,113 @@ lOTTGqPpwFUbw2EMOOpFYuIyzGMIpUNMBjE2gvJiqFQ=
++    it.each([new Error('diagnostic-marker'), 'diagnostic-marker'])(
++      'preserves non-duplicate tools-list diagnostic %s',
++      async (failure) => {
++        const listTools = vi.fn().mockRejectedValue(failure);
++        promptServer([], { listTools });
++        mockGenAiDiscovery();
++        const client = await connectedClient('diagnostic-review-server');
++        await expect(
++          client.discoverAndReturn(cfgWithResources()),
++        ).rejects.toThrow('diagnostic-marker');
++        expect(listTools).toHaveBeenCalled();
++        expect(getMCPServerLastError('diagnostic-review-server')).toBe(
++          'diagnostic-marker',
++        );
++        removeMCPServerStatus('diagnostic-review-server');
++      },
++    );
++
++    it('preserves modern undeclared-tools request diagnostic', async () => {
++      const request = vi
++        .fn()
++        .mockRejectedValue(new Error('modern-request-diagnostic'));
++      const listTools = vi.fn();
++      mockStdioClient({
++        getProtocolEra: vi.fn().mockReturnValue('modern'),
++        getServerCapabilities: vi.fn().mockReturnValue({}),
++        listTools,
++        request,
++      });
++      mockGenAiDiscovery();
++      const client = await connectedClient('modern-diagnostic-review');
++      await expect(
++        client.discoverAndReturn(cfgWithResources()),
++      ).rejects.toThrow('modern-request-diagnostic');
++      expect(request).toHaveBeenCalledWith(
++        { method: 'tools/list', params: {} },
++        expect.anything(),
++      );
++      expect(listTools).not.toHaveBeenCalled();
++      expect(getMCPServerLastError('modern-diagnostic-review')).toBe(
++        'modern-request-diagnostic',
++      );
++      removeMCPServerStatus('modern-diagnostic-review');
++    });
++
++    it('distinguishes undefined tools-list rejection from an empty server', async () => {
++      const listTools = vi.fn().mockRejectedValue(undefined);
++      promptServer([], { listTools });
++      mockGenAiDiscovery();
++      const client = await connectedClient('undefined-diagnostic-review');
++      await expect(
++        client.discoverAndReturn(cfgWithResources()),
++      ).rejects.toThrow('undefined');
++      expect(listTools).toHaveBeenCalled();
++      expect(getMCPServerLastError('undefined-diagnostic-review')).toBe(
++        'undefined',
++      );
++      removeMCPServerStatus('undefined-diagnostic-review');
++    });
++
++    it('preserves standalone tools-list diagnostic', async () => {
++      const listTools = vi
++        .fn()
++        .mockRejectedValue(new Error('standalone-diagnostic'));
++      const close = vi.fn();
++      promptServer([], { listTools, close });
++      mockGenAiDiscovery();
++      await connectAndDiscover(
++        'standalone-diagnostic-review',
++        { command: 'test-command' },
++        toolReg(),
++        promptReg(),
++        false,
++        workspace(),
++        cfgWithResources(),
++      );
++      expect(listTools).toHaveBeenCalled();
++      expect(close).toHaveBeenCalled();
++      expect(mockDebugLogger.error).toHaveBeenCalledWith(
++        "Error connecting to MCP server 'standalone-diagnostic-review': standalone-diagnostic",
++      );
++      expect(getMCPServerStatus('standalone-diagnostic-review')).toBe(
++        MCPServerStatus.DISCONNECTED,
++      );
++      removeMCPServerStatus('standalone-diagnostic-review');
++    });
++
++    it('keeps optional missing tools method as an empty server', async () => {
++      promptServer([], {
++        listTools: vi
++          .fn()
++          .mockRejectedValue({ code: -32601, message: 'Method not found' }),
++      });
++      mockGenAiDiscovery();
++      const client = await connectedClient('optional-missing-review');
++      await expect(
++        client.discoverAndReturn(cfgWithResources()),
++      ).rejects.toThrow('No prompts, tools, or resources found on the server.');
++      removeMCPServerStatus('optional-missing-review');
++    });
++
++    it('keeps usable prompts after tools-list diagnostic failure', async () => {
++      promptServer([{ name: 'available-prompt', description: 'works' }], {
++        listTools: vi.fn().mockRejectedValue(new Error('tool-failure')),
++      });
++      mockGenAiDiscovery();
++      const client = await connectedClient('partial-success-review');
++      const result = await client.discoverAndReturn(cfgWithResources());
++      expect(result.prompts).toHaveLength(1);
++      expect(result.tools).toEqual([]);
++      removeMCPServerStatus('partial-success-review');
++    });
++
+diff --git a/packages/core/src/tools/mcp-client.ts b/packages/core/src/tools/mcp-client.ts
+index b68712e..0bd1c75 100644
+--- a/packages/core/src/tools/mcp-client.ts
++++ b/packages/core/src/tools/mcp-client.ts
+@@ -807 +807 @@ export class McpClient {
+-      // permanent errors and returns [], so Promise.all never rejects here.
++      // permanent errors (tools also retain their cause), so Promise.all never rejects here.
+@@ -827 +827,4 @@ export class McpClient {
+-        throw new Error('No prompts, tools, or resources found on the server.');
++        throw (
++          toolDiscovery.discoveryError ??
++          new Error('No prompts, tools, or resources found on the server.')
++        );
+@@ -1583 +1586,4 @@ export async function connectAndDiscover(
+-      throw new Error('No prompts, tools, or resources found on the server.');
++      throw (
++        toolDiscovery.discoveryError ??
++        new Error('No prompts, tools, or resources found on the server.')
++      );
+@@ -1657,0 +1664 @@ type ToolDiscoveryResult = {
++  discoveryError?: Error;
+@@ -1888 +1895,9 @@ async function discoverToolsWithMetadata(
+-    return { tools: [], hadVisibilityFilteredTools: false };
++    return {
++      tools: [],
++      hadVisibilityFilteredTools: false,
++      discoveryError: isMethodNotFound(error)
++        ? undefined
++        : error instanceof Error
++          ? error
++          : new Error(getErrorMessage(error)),
++    };
