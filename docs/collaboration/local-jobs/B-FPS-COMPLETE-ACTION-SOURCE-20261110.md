@@ -2,7 +2,7 @@
 id: B-FPS-COMPLETE-ACTION-SOURCE-20261110
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e142c074b06236d65ec1383f9677678ef3f0c0af
 result_branch: relay/b-fps-complete-action-source-20261110
