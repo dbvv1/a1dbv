@@ -2,7 +2,7 @@
 id: B-PIPE-RIGID-GROUNDING-READER-20261110
 owner: dot-B
 kind: reader-test
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: main
 result_branch: relay/b-pipe-rigid-grounding-reader-20261110
@@ -20,3 +20,7 @@ page: domains/game-dev/assets/3d.md
 ## 写入与验收
 仅 experiments/rigid-grounding-reader-20261110/{README.md,receipt.json}，记录页面SHA/固定案例SHA、原命令/退出、实际差异、卡点与复现条件；不改3d.md/产品/原作者脚本或其他任务。
 读者只记卡点，由非读者核对真实产物和退出；公开扫描后推结果分支review_ready。dot-B决定修页或接收，不能自动改变地图成熟度/案例分数。开工核同题原调用与写者；ready不算实际产能。
+
+## 当前结果
+
+- 公开扫描有发现（local-path docs/collaboration/local-jobs/A-MEMOS-BUILT-SMOKE-001.md:25），未推送
