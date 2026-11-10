@@ -6,17 +6,11 @@
 
 > 按[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)，只留未完成纠偏。
 
-### 11-10 dot-A：答案页优先
-
-先改 migrations、context-management、upstream-contributions 再开新题：首屏推荐／起手提示／选路表，附强团队与主流工具来源；自家实验／回执／未验范围沉页尾一行链接或 `experiments/`；个例超 3 节拆页或移 `research/`。
-
-long-tasks 正文／地图降 🟡；✅ 须基于当前页面版本且证据对应核心推荐。pnpm 移出地图，合入 skills-and-plugins 一小段，先核旧写者退出。其他线继续，每线 3–6 张 ready 卡。**三页改完发布、long-tasks 状态改正后删除本项；pnpm 未合并则保留该欠项。**
-
 ## 11-06 Dot-A/B 临时表现纠偏（不改变 v1.3，不等待 v1.4）
 
 [11-06 完整纠偏原文](https://github.com/dbvv1/a1dbv/blob/7128f6cf2390e8ca9f6bc92cd3806861c874e56e/docs/collaboration/TASKS.md)保留完整范围、权限和原入口；不新增调度系统或额度要求。
 
-- **A 旧交付**：余项见 P81，原范围与恢复条件留上方原文；新工作按 11-10 当前重点。
+- **A 旧交付**：余项见 P81，原范围与恢复条件留上方原文。
 
 ### B：11-10 品质与内容优先（取代旧 B 临时纠偏）
 
@@ -48,7 +42,7 @@ long-tasks 正文／地图降 🟡；✅ 须基于当前页面版本且证据对
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
-| P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 合并待此条件。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
+| P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `8584c77`／Site **v22**。[Veyra消费者](local-jobs/B-MOBA-HERO-CLIP-CONSUMER-20261106.md)已接收，配方／Three均读固定旧源；595项／Python42过。heroes配方／pin／默认与画面待。[Esc候选](local-jobs/B-MOBA-QUEUED-SKILLS-20261106.md)`00f82c7`未合／部署；验证及缺口见卡，品质不变。原终态unknown；socket及DevTools拒绝不重试。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)接 v20，三入口两轮通过。[改键与六席读者](core-reader-intake-20261106.md)：改键新版接线／失败保旧独立通过；六席9081tick及原经济购买独立照做过，共享契约手读已用、完整采用欠。浏览器沿旧证据；原生／设备未验，Unity暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [图标LF](../../domains/game-dev/assets/2d.md#icon-family-rebuild)已进MOBA main，Cairo／HUD消费者过；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)命中[部分接入](../../domains/game-dev/assets/materials.md#source-hit-marker)，通路未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，画面未验。开放音频未听未用，Nature 恢复未知。[3D](../../domains/game-dev/assets/3d.md)：网关三源实测，本机`gen3d`／`glbprep`可用；采用3–5件标准件。 |
