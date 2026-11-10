@@ -2,7 +2,7 @@
 id: B-FPS-RX24-WEAPON-ONLY-20261110
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5e7d814895bf20b0583c2f65c3de588a708790
 result_branch: relay/b-fps-rx24-weapon-only-20261110
