@@ -2,7 +2,7 @@
 id: B-STAR-FENCE-SUPPORT-20261110
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 409868b028a38006658a5202d952a1784ffce3ed
 result_branch: relay/b-star-fence-support-20261110
