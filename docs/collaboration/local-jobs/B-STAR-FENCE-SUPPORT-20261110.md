@@ -2,7 +2,7 @@
 id: B-STAR-FENCE-SUPPORT-20261110
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 409868b028a38006658a5202d952a1784ffce3ed
 result_branch: relay/b-star-fence-support-20261110
@@ -29,9 +29,8 @@ result_branch: relay/b-star-fence-support-20261110
 开工核同题真实调用与写者；同题活跃只读取，原未知任务不清锁、不重放。云端可做即云端做，本机不安装工具。当前仅 ready，不声称执行中。
 
 ## 当前结果
-
-- 新增 authoring/coast-fence-support/{plan,test,report}.mjs、README.md 与 out/coast-fence-320-680.json，复用既有 decodeStandardPart/vergeTerrainRange，未改源资源、coastal-space、scenery、模拟与默认入口。固定真实 coast 320–680m/步40m/双侧/setback24m 输入 20 行 40 个 part 候选：接受 16、拒绝 24（house 20、slope 4），未放宽阈值、未移动旧物件。实测：作者测试 15/15 通过 exit 0；report.mjs 输出 SHA-256 775d92515f59d2f80df03596618ca26df79394262c3853d901cb5eea0f9f5e9c，源文件 SHA-256 0479af55bd3bcc937739aa49648ce4ecc41d739279d548af28ead8df7b433d15 未变；npm test exit 0，测试重生成的 6 个 tracked 构建产物已 git restore，工作树仅剩新增目录。未运行：npm run build；未验证：硬件 GPU 同机位图、浏览器 smoke、完整比赛、性能与盲评；环境为 Node v22.23.2（AGENTS 要求 24）。openIssues：无。
-- 产物：[c768053](https://github.com/dbvv1/Star-Rush-Reborn/commit/c768053ac4c201cbbee0f37fd16fb8ab682ebdbf)，分支 `relay/b-star-fence-support-20261110-u1`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：交 dot-B 接同一 coast 开关并在原拍摄槽恢复后验图；负责人需另行补跑 npm run build、浏览器 smoke 与人工/盲评验收。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 部分接收范围：云端补证 `ca6947a` 的完整旧布景保守包络与13/40安全位置，已由 dot-B 接入同一海岸候选 [`7fc22e86`](https://github.com/dbvv1/Star-Rush-Reborn/commit/7fc22e86bc2796f997bfb2b78c86fb00461fae08)。parent ac19f0a；未改 master/网站。
+- 本机 `c768053` 的16/40结果缺完整旧布景净空证明，不采用其位置/矩阵；保留源产物，不按数量删除。两实现不能混算成29件。
+- 当前地形重算为13接受/27拒绝；真实chunk消费者使用原几何、原矩阵一次扣原点，关闭开关零解码、缓存释放与故障退回已验。完整 npm test 206项及集成链、build、六路600tick CPU回放均 exit0；作者证明9/9、独审通过。六hash与提交基线相同，公开扫描零发现。
+- 欠层：真实浏览器、硬件GPU同机位图、性能和非作者盲评。负责人 dot-B 收证后决定采用；Star仍2→2/0/43。原拍摄外层回执/槽未知，禁止重开；本卡接收不证明原执行进程已退出，也不清锁。
+- 方法回流：[不拉伸围栏的刚体落地](../../../domains/game-dev/assets/3d.md#rigid-prop-grounding)。

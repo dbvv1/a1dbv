@@ -4,6 +4,11 @@
 
 ## 待处理
 
+### 2026-11-10：Star 围栏采用到消费者，不把离线位置当已上屏
+
+[固定候选7fc22e86](https://github.com/dbvv1/Star-Rush-Reborn/commit/7fc22e86bc2796f997bfb2b78c86fb00461fae08)已接13件围栏，拒绝27件；完整旧布景包络、当前地形重算、真实chunk矩阵及失败撤回已作CPU验证。三案分数/覆盖与网站不变；本机16件方案缺完整净空未采用。方法已回流[刚体落地](../../domains/game-dev/assets/3d.md#rigid-prop-grounding)，真实画面/盲评待原拍摄槽核清后验，不另排拍摄。
+
+
 ### 2026-11-05：Ruff 清理生成导入，回实际消费者验收
 
 🧪 **Agent 清理生成代码时，别只接收 F401 的“全部修复”。** [Ruff 0.17.3／OpenAI SDK 3.46.0 三组消费者](../../experiments/ruff-import-consumer/README.md)：原文件正常；从模块副本的 `__all__` 删除兼容 alias 后，自动清理退出 0 却删掉仍被使用的原名，实际导入失败；分开 import 的对照恢复本例消费者，另跑 F821 也能抓住错误。导出删除是受控前置修改，不是原版 SDK 故障；未验完整 SDK／真实 API，现有上游 PR 尚未合入，不重复投稿。先读 diff、核导出契约并运行项目消费者，不升统一门禁。实测：2026-11-05。✅ 已回流[自动清理的消费者验收](../decisions/verification.md#自动清理导入导出报告归零后再跑原消费者)。
