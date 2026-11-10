@@ -2,7 +2,7 @@
 id: B-FPS-RX24-ANCHOR-CONTRACT-20261110
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 100d104e98ac41d364374bdc4907b9dd6a8a787b
 result_branch: relay/b-fps-rx24-anchor-contract-20261110
@@ -34,3 +34,7 @@ result_branch: relay/b-fps-rx24-anchor-contract-20261110
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：dot-B 接收本分支后供既有 Knight 挂接候选消费 anchors.json；握持视觉与完整换弹待后续单元/人工验收。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## dot-B 接收
+
+已快进并入原蒙皮候选 `f5e99a5a052d601c8f91ff99332fcdcb261912ea`，仅接收三锚数据与配方。Node24.22.1重验465测试、构建、实际CLI均退出0，生成JSON与提交逐字一致；非作者独立解析GLB/源JSON复算通过，两原GLB未改。原接收器Node22偏差不扩作支持承诺。默认/网站/0/77不变；Knight掌面标定仍待原单元回执，不重复派发。知识回流animation.md；重算采用临时文件成功后替换。
