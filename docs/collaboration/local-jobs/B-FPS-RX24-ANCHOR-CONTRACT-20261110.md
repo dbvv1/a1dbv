@@ -2,7 +2,7 @@
 id: B-FPS-RX24-ANCHOR-CONTRACT-20261110
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 100d104e98ac41d364374bdc4907b9dd6a8a787b
 result_branch: relay/b-fps-rx24-anchor-contract-20261110
