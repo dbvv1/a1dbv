@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-11-10：先用固定角色已有动作，不等另一个完整包
+
+FPS[候选afb6fec](https://github.com/dbvv1/FPS-Like/commit/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e)已消费固定Knight原生瞄准/开火/换弹；443测试、构建及真实GLB CPU检查通过，非作者复核。来源卡7992f4c仅部分接收：原包库存可核，274条广搜自报、第三方许可结论不整体采纳；另包清单未取回不阻止消费现有原生动作。默认/网站/0/77未变；枪弹匣接触/实际姿态/过渡未验。方法回流[动画原生动作](../../domains/game-dev/assets/animation.md#native-ranged-first)。
+
 ### 2026-11-10：Star 围栏采用到消费者，不把离线位置当已上屏
 
 [固定候选7fc22e86](https://github.com/dbvv1/Star-Rush-Reborn/commit/7fc22e86bc2796f997bfb2b78c86fb00461fae08)已接13件围栏，拒绝27件；完整旧布景包络、当前地形重算、真实chunk矩阵及失败撤回已作CPU验证。三案分数/覆盖与网站不变；本机16件方案缺完整净空未采用。方法已回流[刚体落地](../../domains/game-dev/assets/3d.md#rigid-prop-grounding)，真实画面/盲评待原拍摄槽核清后验，不另排拍摄。

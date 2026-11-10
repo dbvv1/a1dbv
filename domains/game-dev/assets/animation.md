@@ -462,3 +462,17 @@ FPS [独立消费者候选](https://github.com/dbvv1/FPS-Like/commit/770f60464e3
 FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621a6764bae43d68c1e4f33d28105dd0cf0)把真实 GameState 的换弹起止时间映射到既有单手／双手源片段的绝对相位。重复快照不推进动作，回退重新采样；切枪取消、完成或失效状态恢复静止姿态，不写模拟状态。真实 Game 的步进与 Three 蒙皮验证了换弹和取消，死亡／终局等使用复制快照，不冒充整局证据。
 
 这个切片解决的是动作时钟和复位，不是完整角色：只具备两条已核源动作，换弹之外的静止姿态不能作为可玩表现方案。候选未注册到 View，默认和网站不变；下一步接可选场景消费者并补齐动作与枪械接触，再验浏览器、同机位图与非作者判断，不能用 CPU 对照替代画面验收。
+
+
+<a id="native-ranged-first"></a>
+### 没有完整动作包时，先消费角色原生动作
+
+**目标**：没有美术也能先完成一个可采样的瞄准→开火→换弹候选，而不是因为另一个包清单未知就全部等待。
+
+**做法**：先解析已固定原角色 GLB 的 animation 列表；同一 GLTFLoader 返回的 scene 与 animations 配套使用。FPS 的 Knight 自带 `2H_Ranged_Aiming`、`2H_Ranged_Shoot`、`2H_Ranged_Reload`；显式把 `nativeAnimations: target.animations` 传给既有蒙皮消费者，按绝对相位 `sample('native-fire-two-hand', 0.25)`，不重定向、不改源曲线。文件来源依固定 hash 加载合同保证，绑定检查本身不能识别动画来源。仍沿用旧 reload 输入，不是另一套独立消费者。
+
+**失败反例**：另一个免费包的 CombatRanged 清单未取回，并不证明当前角色缺开火/换弹。反方向也不能夸大：只有这些身体动作和手部挂点，不能声称枪、弹匣接触及角色风格已完成；先保默认，画面与过渡另验，不用新 IK 掩盖供给缺口。
+
+**直接运行**：在固定 FPS 候选运行 `npm run check:kaykit -- <fixed-sample-directory>`，随后 `npm test`、`npm run build`。真实源三动作274相位样本与独立mixer最大矩阵差0，含倒回和重启；另验原生play/update与旧reload互切、stop恢复。CPU不能代替观看，也不增加内容覆盖。
+
+案例脚注：[FPS afb6fec](https://github.com/dbvv1/FPS-Like/commit/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e)，[可运行用法及缺口](https://github.com/dbvv1/FPS-Like/blob/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e/docs/native-ranged-candidate.md)。

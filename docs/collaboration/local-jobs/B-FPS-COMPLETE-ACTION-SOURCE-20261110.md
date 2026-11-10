@@ -2,7 +2,7 @@
 id: B-FPS-COMPLETE-ACTION-SOURCE-20261110
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e142c074b06236d65ec1383f9677678ef3f0c0af
 result_branch: relay/b-fps-complete-action-source-20261110
@@ -37,3 +37,10 @@ FPS 已有独立蒙皮实例和两类 reload 坐标合同，但完整持枪 idle
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：由 dot-B 决定保留原角色并安排 KayKit 作者确认 walk/combat 覆盖或另开换供给卡；裁决 QAL 再分发边界；真实角色同框图后再做视觉采用；接收端完成提交、推送与本结果分支 review_ready。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+
+
+## dot-B 接收决定（2026-11-10）
+
+部分采用，保留默认角色。直接核固定 GLB：Knight76 clips/41关节含原生双手瞄准/开火/换弹，MovementAdvanced13 clips含Running_HoldingRifle；未有枪/弹匣/手指节点。7992f4c 中约274条广搜自报与第三方许可解释不整体当已核；本卡“未证明完整端到端免费供给”不等于“没有可消费原生动作”。不发起作者联系、不重试失败来源。
+
+已在 FPS 既有蒙皮候选 afb6fec 接入可选三原生动作，443测试/构建/真实源CPU通过。继续补验的具体缺口：dot-B负责后续事件消费与装备节点合同；真实姿态、剑盾处理、过渡、枪/弹匣接触须有实际画面，完整smoke与非作者盲评后才能换默认。本次未接View、未部署、0/77不变。知识已回写animation.md原生动作段；不全量合入377行探索记录。
