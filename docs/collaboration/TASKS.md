@@ -6,11 +6,18 @@
 
 > 按[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)，只留未完成纠偏。
 
+### 11-10 dot-A：答案页优先
+
+先改 migrations、context-management、upstream-contributions 再开新题：首屏推荐／起手提示／选路表，附强团队与主流工具来源；自家实验／回执／未验范围沉页尾一行链接或 `experiments/`；个例超 3 节拆页或移 `research/`。
+
+long-tasks 正文／地图降 🟡；✅ 须基于当前页面版本且证据对应核心推荐。pnpm 移出地图，合入 skills-and-plugins 一小段，先核旧写者退出。其他线继续，每线 3–6 张 ready 卡。**三页改完发布、long-tasks 状态改正后删除本项；pnpm 未合并则保留该欠项。**
+
 ## 11-06 Dot-A/B 临时表现纠偏（不改变 v1.3，不等待 v1.4）
 
 [11-06 完整纠偏原文](https://github.com/dbvv1/a1dbv/blob/7128f6cf2390e8ca9f6bc92cd3806861c874e56e/docs/collaboration/TASKS.md)保留完整范围、权限和原入口；不新增调度系统或额度要求。
 
-- **A 先收旧交付**：核全量review_ready（快照8）：接收／一次补验／部分接收／拒绝。优先账号上下文、Compaction独审、Sentry价值；不重做19fdff08，仅补POSIX／Windows边界。处置前停广扫／Hook／模板新卡，只允一个无依赖正文单元。回报逐项决定、正式采用、恢复条件与唯一下一项；Git状态不证明停工。
+- **A 旧交付**：余项见 P81，原范围与恢复条件留上方原文；新工作按 11-10 当前重点。
+
 ### B：11-10 品质与内容优先（取代旧 B 临时纠偏）
 
 - **Star 唯一品质首要闭环**：dot-B／Star 品质执行先建同机位目标及 1–5 分锚图，由非作者选定；既有本机接收端仅 headless 硬件 GPU 固定出图，整层改机械重复／岸坡折面／光照中最大扣分项，再同机位重拍、后台双非作者盲评并写记分卡。至少一机位带图 **2→3** 才算完成。保留 SwiftShader 档；原槽位／调用未知只停对应拍摄，不重启取消项或绕拒绝。
@@ -19,6 +26,7 @@
 - **完成条件**：Star 带同机位图的分数变化＋全部超 72 小时候选有决定。决定不是补验通过；本轮品质／网站未变。
 
 **超期处置**：[9 单元逐项决定、缺口与负责人](b-work-20261106.md#11-10-超期候选采用决定)：8 项补验，Rapier 放弃本阶段默认目标、保留入口；被替代旧版不单独采用，取消项不恢复。无换默认。
+
 
 - **共同采用欠项**：下次帧同步／存档实用共享指令、模型或依赖页之一；自然UI变更由新读者照浏览器页实操，不以截图／DOM替代。沿上方原文入口，结果写提交后删。
 
@@ -34,14 +42,13 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- 11-06 main `1af556cd`：A 卡 83 accepted／13 cancelled／8 review_ready（含 [Sentry](local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md)）／5 blocked，0 ready/running。仅 Git 静态状态，本机活动 unknown，非退出证明。
 
 ## 项目板
 
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
-| P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md) 待接收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md) 部分接收，留五后端／本人协调；终态／附页隔离／新版未验。[Memos #6502](https://github.com/usememos/memos/pull/6502) 冲突，仅跟反馈；QA cancelled。[投稿页](../decisions/upstream-contributions.md) 🟡；Qwen v0.26.6 修重名，旧 14 例 6 过时／8 待验，409 非新版；socket 仍拒绝。Skills 附全文待新读者，先核退出／空槽；本机禁装，[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交 Claude 核心。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。pnpm 答案已接，采用待验。 |
+| P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 合并待此条件。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `8584c77`／Site **v22**。[Veyra消费者](local-jobs/B-MOBA-HERO-CLIP-CONSUMER-20261106.md)已接收，配方／Three均读固定旧源；595项／Python42过。heroes配方／pin／默认与画面待。[Esc候选](local-jobs/B-MOBA-QUEUED-SKILLS-20261106.md)`00f82c7`未合／部署；验证及缺口见卡，品质不变。原终态unknown；socket及DevTools拒绝不重试。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)接 v20，三入口两轮通过。[改键与六席读者](core-reader-intake-20261106.md)：改键新版接线／失败保旧独立通过；六席9081tick及原经济购买独立照做过，共享契约手读已用、完整采用欠。浏览器沿旧证据；原生／设备未验，Unity暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [图标LF](../../domains/game-dev/assets/2d.md#icon-family-rebuild)已进MOBA main，Cairo／HUD消费者过；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)命中[部分接入](../../domains/game-dev/assets/materials.md#source-hit-marker)，通路未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，画面未验。开放音频未听未用，Nature 恢复未知。[3D](../../domains/game-dev/assets/3d.md)：网关三源实测，本机`gen3d`／`glbprep`可用；采用3–5件标准件。 |

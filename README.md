@@ -5,7 +5,7 @@
 <a id="按目标开始阅读"></a>
 ## 读者问题 → 答案
 
-**按你现在要解决的问题找答案。** ✅ 新读者实做可用且核心推荐有真实采用；🟡 已有答案，实做或真实采用待补；⏳ 整理中。
+**按你现在要解决的问题找答案。** ✅ 基于当前页面版本的新读者实做可用，且证据对应核心推荐的真实采用；🟡 已有答案，实做或真实采用待补；⏳ 整理中。
 
 | 问题 | 先看 | 状态 |
 |---|---|---|
@@ -14,10 +14,10 @@
 | CLAUDE.md／AGENTS.md 怎么写 | [共享规则、加载首验与真实团队样例](docs/decisions/instruction-files.md) | 🟡 |
 | 怎样让 Agent 自己验证、别只报完成 | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | ✅ 真实用户路径／输出读回 |
 | 上下文怎么管、会话越聊越笨怎么办 | [按症状压缩、重开与恢复检查点](docs/decisions/context-management.md) | 🟡 |
-| 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md)；[pnpm 包内 Skill 分发与失败恢复](docs/decisions/pnpm-skill-distribution.md) | 🟡 |
+| 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | 🟡 |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ 既有授权接入查 CI |
 | Codex 过度防御、过度工程怎么治 | [按触发输入与契约收敛改动](docs/decisions/codex-overengineering.md) | ✅ 新读者完成真实脚本修复 |
-| 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | ✅ 新读者实做／定时接回验收已采用 |
+| 子代理怎么组织，长任务怎么无人值守 | [委派、整合验收与中断续接](docs/decisions/long-tasks.md) | 🟡 当前页面核心推荐待实做；已有本机一次接回 |
 | 怎么审 AI 写的代码 | [按真实差异与原需求审查、逐条接收](docs/09-review-and-quality.md#现在就审一份改动)、[REVIEW 模板](templates/generic/REVIEW.md) | ✅ 真实补丁评审 |
 | 权限、沙箱与 Hooks 怎么配 | [工作区自主执行与必要边界](docs/decisions/permissions-and-hooks.md) | 🟡 |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ 因果定位／回归 |
