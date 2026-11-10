@@ -2,7 +2,7 @@
 id: B-FPS-RX24-WEAPON-ONLY-20261110
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 9a5e7d814895bf20b0583c2f65c3de588a708790
 result_branch: relay/b-fps-rx24-weapon-only-20261110
@@ -21,3 +21,11 @@ result_branch: relay/b-fps-rx24-weapon-only-20261110
 
 ## 验收
 相关测试、typecheck、源/输出公开扫描及确定性检查退出0；记录实际命令。独立审查根空间顶点与挂点至少各一项。只推本卡分支。此卡不占原未知拍摄槽、不运行浏览器；阵容图、与Knight真实握持/装卸/穿插及风格匹配留后续同机位验收，不计覆盖或品质。dot-B先决定挂接合同再解除native-scene卡阻塞；本卡ready不等于正在执行。
+
+## 当前结果
+
+- Implemented deterministic RX-24 weapon-only extraction: fixed-SHA source gate, unique rx24-root node/chain and support-hand/trigger-hand subtree exclusion, root-space matrices with 0 measured error, 1958 triangles/5874 vertices/121224 bytes GLB (SHA-256 66a2872e...4087a), manifest with per-node matrices/mounts and verbatim grip role support-palm-contact, README and real-GLTFLoader tests. Verified: extract rebuild determinism, tests/kaykit-rx24.test.ts 6/6, npm test 450/450, npm run typecheck all exit 0; source GLB and LICENSE unchanged. No open issues. Browser/smoke/GPU not run per card scope; Knight grip/insertion/framing/style contact acceptance deferred to follow-up same-camera verification.
+- 产物：[eefdfe3](https://github.com/dbvv1/FPS-Like/commit/eefdfe39c682d61c2b5088b684482eddb9085594)，分支 `relay/b-fps-rx24-weapon-only-20261110`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：dot-B to define the weapon mount contract (hand/bone, offset, rotation) before unblocking the native-scene card; run same-camera Knight grip/contact/style acceptance separately.
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
