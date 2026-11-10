@@ -489,3 +489,15 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 **直接运行**：`npm test` 与 `npm run check:kaykit -- <fixed-sample-directory>`；后者用真实固定GLB走实际Game的开火→换弹→切枪，并核重复快照的姿态与模拟hash不变。未接生产View、未跑浏览器，也未提高内容覆盖。
 
 案例脚注：[FPS 9a5e7d8](https://github.com/dbvv1/FPS-Like/commit/9a5e7d814895bf20b0583c2f65c3de588a708790)。
+
+### 动作名和手部挂点不等于配套枪械
+
+**目标**：在投入角色场景接线前，知道已有源是否真的提供武器和独立弹匣，而不把“换弹clip播放正常”误作完整内容。
+
+**做法**：锁定GLB hash，检查全部node→mesh/skin/material及父链，再采样手骨与挂点世界矩阵。固定Knight的15个网格节点是剑、盾及身体装备；固定Med_CombatRanged没有网格。它们有手部挂点和原生射击动作，但本轮未识别出枪/弹匣几何。缺物件时接触距离必须记null和原因，不记0；挂点只是后续组合输入，不是通过。先复用项目已验来源的独立枪/弹匣，去掉第一人称手臂后再定持枪合同，不必重找整个人。
+
+**失败反例**：把`handslot.r`当枪，或把骨点到AABB的距离当掌面接触。前者没有被握物件，后者不能排除手掌穿插、朝向错误或错误的装卸过程。GLTFLoader还会规范化带点节点名；应核其保存的原名映射，不吞掉缺节点错误。
+
+**可直接用**：固定案例下运行 `node --import tsx tools/check-kaykit-contact.ts "$FIXED_KAYKIT_SAMPLE" > contact.json`。目录放已取得的`Knight.glb`与`Med_CombatRanged.glb`；缺文件/hash错误/缺关键节点会失败，不联网补源。工具输出完整库存和三动作各五个相位；两遍输出一致，独立复算一个真实手位差0。单位按glTF声明，实际人体比例、纹理解码、握持画面尚未验，不能增加覆盖。[经验]
+
+案例脚注：[固定源诊断与结果](https://github.com/dbvv1/FPS-Like/tree/2e6559f9d8f4bfcd1e9f6c34f8d3c386128bd69f/asset-pipeline/kaykit-contact)，2026-11-10，专项3项与typecheck通过。
