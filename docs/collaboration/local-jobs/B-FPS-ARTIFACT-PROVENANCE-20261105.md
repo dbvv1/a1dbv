@@ -2,7 +2,7 @@
 id: B-FPS-ARTIFACT-PROVENANCE-20261105
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-artifact-provenance-20261105
@@ -37,3 +37,7 @@ result_branch: relay/b-fps-artifact-provenance-20261105
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：负责人接收并合入结果分支；无本单元遗留缺口，无需重跑模型。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 固定产物接收
+
+2026-11-10：三个文本文件接入产品 main `b895bcbffbd86b503b8f11f66e9132564e970169`。保留现行制作 README 的默认入口、二改与消费者要求。Python 3.12 深嵌合法 JSON 可解析后应报结构错误，修正仅接受语法错误的测试并独立覆盖 RecursionError；28 项与原 12 项 CPU 测试通过，非作者复核通过。原历史包如实返回 exit 1：资产字节完整、来源清单过时；不改历史清单、模型或运行源码。方法回流 3D 制作页；0/77、Site v24 不变。accepted 仅指固定产物处置，原 Workflow 外层退出仍未获新回执，不重派、不清锁。
