@@ -34,7 +34,7 @@
 | 存档、本地化、设置与可访问性 | [04](04-client-modules.md) | 可用 |
 | 调试、日志、遥测与崩溃 | [04 发行后诊断](04-client-modules.md) | 可用 |
 | 内容制作工具与编辑器扩展 | [Unity 内容工具](unity/05-content-authoring-tools.md) | 可用 |
-| 引擎接入（Unity 优先、Unreal 对照） | [01 引擎接入](01-engine-integration.md)、[Unity](unity/README.md)、[Unreal](unreal/README.md) | 可用 |
+| 引擎接入知识参照（Unity／Unreal） | [01 引擎接入](01-engine-integration.md)、[Unity](unity/README.md)、[Unreal](unreal/README.md) | 可用 |
 | 平台与发布 | [04](04-client-modules.md) | 可用 |
 | 服务端：联网同步、房间、账号与云存档 | [07 联网与服务端](07-networking-and-server.md) | 可用 |
 
