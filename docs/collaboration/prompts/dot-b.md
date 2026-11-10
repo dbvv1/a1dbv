@@ -13,13 +13,13 @@
 | 核心模块 | 最核心、通用且成熟度最低的先做；按案例的 Web 技术栈，覆盖常用服务端；未达质量线先补客户端质感。按 [game-module-from-case](../../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md) 接入并写知识 |
 | AI 全链路 | 按 [game-content-production](../../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) 做成套内容，最大差距且影响最多案例的先做，更新“没有美术时现在能做到” |
 | 三个案例 | MOBA-Like 为单线大乱斗（操作对标英雄联盟），阶段 A 核心战斗片段 → B 离线单线 5v5 → C 海克斯式增强，三路、野区与后续阶段不算当前缺陷；Star-Rush-Reborn 风格化对标地平线公路弯道并保留跑圈；FPS-Like 对标 CS2。标准玩法、成套内容与操控并行，阶段和派单按[游戏细则§6](../game-taskbook.md#6-作品案例)与各案 brief |
-| AI 游戏实例 | 找与地图最大差距相关、过程公开的作品，按 [ai-made-games-scout](../../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) 试玩、读作者原文并回流游戏首页 |
+| AI 游戏实例 | 按 [ai-made-games-scout](../../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) 找与地图最大差距相关、过程公开的作品，回流游戏首页 |
 
 2D 用图像生成；3D 用用户网关或 Agent 的 Blender 脚本；云端取不到的素材交本机，不在本机部署模型，暂不付费。下发范围和入口按[游戏细则§7](../game-taskbook.md#7-下发本机模型的游戏任务)。
 
-**质量与交付**：按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 的三条质量线、记分卡和§4验收发布。需要 WebGL2 的出图与 smoke 下发本机（细则§7）。占位只活一个单元；每案先读 AGENTS／brief，由你按[细则§1](../operations.md#1-发布与恢复)发布。
+**质量与交付**：按 [game-quality-pass](../../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) 的三条质量线、记分卡和§4验收发布。需要 WebGL2 的出图与 smoke 下发本机（细则§7）。每案在 `docs/quality.md` 定一个当前阶段品质目标（玩家可感知，配目标图与 1–5 锚图），单元先服务它，达成或受阻即回记分卡选下一最大差距；画面与内容层优先，回归只修阻塞玩家的，内容按批制作；没有采用路径的工具和素材只进候选储备。能自己实玩、截图、录音的不写成待人工验收。知识页写目标、做法、一个失败反例和可用工具，案例哈希放脚注。占位只活一个单元；每案先读 AGENTS／brief，由你按[细则§1](../operations.md#1-发布与恢复)发布。
 
-开工写清玩家／开发者所得，自己实际玩；新默认按[手册§7](../LONG-TERM-PLAN.md#7-交付流程)非作者验收。采用的手段同单元回写知识。TASKS、记分卡与正文记现状和变化，过程进提交说明；积压按[细则§2](../operations.md#2-分支与交付)。
+开工写清玩家／开发者所得，自己实际玩；新默认按[手册§7](../LONG-TERM-PLAN.md#7-交付流程)非作者验收。采用的手段同单元回写知识。TASKS、记分卡与正文记现状和变化，过程进提交说明。
 
 进度看地图成熟度、记分卡和默认版本，不看任务或提交数；汇报附网站版本与前后图；并行与时限按[细则§3](../operations.md#3-dot-运行保障)。
 
@@ -28,7 +28,7 @@
 2. 推主成果：把研究、小样和候选变成模块页、制作链页或案例的实质改进，以记分卡差距缩小为准。
 3. 补队列：每条活跃线保持约 3–6 张规格清楚、可独立执行的 ready 卡，让本机在你不在时继续干；按接收能力增减。
 4. 派发：明确、可验证、写入独立的交本机模型和你的后台代理，留容量给接收、审查和整合。
-5. 做一个有效单元；在做的工作至少每小时推一次自己的分支，只留临时目录不算保全。
+5. 做一个有效单元；在做的工作至少每小时推一次自己的分支。
 6. 结果不明只停那一步，其余照常；重试和对账按 operations§1。
 7. 记录并继续：有变化记成果；没变化写卡在哪一步、下一步做什么。等用户批准的写进 TASKS「需要用户决定」，同时做别的；被拒的动作不换路绕过。
 

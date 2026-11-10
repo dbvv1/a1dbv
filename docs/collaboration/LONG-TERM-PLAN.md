@@ -8,15 +8,15 @@
 
 ## 2. 每次交付前问五个问题
 
-沿用锚点的前沿、增量、实证、诚实、好懂五问，审查范围按§7；选题时核最近交付是否进入读者入口或可玩版本，偏题即改。
+沿用锚点五问，审查范围按§7；核最近交付是否进入读者入口或可玩版本，偏题即改。
 
 ## 3. 怎么探索
 
-方法用 [explore-frontier](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)。dot-A 24 小时内处理[收件箱](inbox.md)，漏检补原始渠道；每周对照外部热门讨论／newsletter，漏检、发现时差及来源名册记[探索证据](../research/2026-10-15-exploration-evidence.md#p46按团队追踪来源与漏检校准)，25 留方法结论。
+方法用 [explore-frontier](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)。dot-A 24 小时内处理[收件箱](inbox.md)，漏检补原始渠道；每周对照外部热门讨论／newsletter，漏检、发现时差及来源名册记[探索证据](../research/2026-10-15-exploration-evidence.md)，25 留方法结论。
 
 ## 4. 做什么
 
-方向见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)。A 不代管 B，按上周来源的采用分配发现、试用、写作。
+方向见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)。A 不代管 B。
 
 完成、受阻或收益下降时按[细则§2.1](operations.md#21-跨执行者的发现与交接)同步选题。当前承诺优先，探索不等欠项清零；窄题低收益就收口，地图和收件箱无项则广扫。
 
@@ -28,7 +28,7 @@
 
 可视化按 [AGENTS](../../AGENTS.md)；知识图解与截图选择按[漫画提示词](prompts/acg-knowledge-comic.md#本仓知识图解规范)。
 
-研究记录开头三行给结论；脚本和夹具只在实际运行时写。验证细节、过程与回执放提交说明，不进正文和 TASKS，不另建证明账本。TASKS 保持 10 KB 内，只留当前重点、分工、项目板和待决定／待验事项，旧行按[细则§1](operations.md#1-发布与恢复)归档。
+研究记录开头三行给结论；脚本和夹具只在实际运行时写。验证细节、过程与回执放提交说明，不进正文和 TASKS，不另建证明账本。TASKS 只留当前重点、分工、项目板和待决定／待验事项，保持 10 KB 内，旧行归档。
 
 ## 6. 节奏与反馈
 
@@ -36,7 +36,7 @@
 
 每周未参与写作的新上下文对照外部强实践，审方向、关键增量、指导偏题和防御式写法，不重审旧内容；外部十件事每两周对照。
 
-**指导层（2026-11-04 用户指定）**：权责见 [SPEC §2、§8](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.3.md#2-权责)，游戏指导会话协助 B；Codex 不向 dot 指导，审计退回防御式写法。Git 交接与单写者按[细则§2](operations.md#2-分支与交付)。
+**指导层（2026-11-04 用户指定）**：权责见 [SPEC §2、§8](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.3.md#2-权责)，游戏指导会话协助 B；Codex 不向 dot 指导。Git 交接与单写者按[细则§2](operations.md#2-分支与交付)。
 
 | 层 | 内容 | 修改方式 |
 |---|---|---|
@@ -62,7 +62,7 @@
 
 ## 8. 边界
 
-权限与公开安全见 [AGENTS](../../AGENTS.md)；红线记 TASKS，已问不重问，拒绝不绕过，独立项继续。
+权限与公开安全见 [AGENTS](../../AGENTS.md)；已问不重问，拒绝不绕过。
 
 <a id="9-两周路线10-23-至-11-06"></a>
 
@@ -70,4 +70,4 @@
 
 A 以本仓脚本／模板、dot 运行及案例编码为试验场，经 TASKS“共同”交 B 采用，不验游戏品质。案例由 B 发布，候选与换默认按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)。
 
-验收受限只停对应环节：独立部分先做成可用版本，人听、看、玩的记 TASKS“待人工验收”；感知判断决定实现时不盲调。潮汐邮差保留为窄例。
+潮汐邮差保留为窄例。
