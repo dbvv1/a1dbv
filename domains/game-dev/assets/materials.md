@@ -4,6 +4,34 @@
 
 > 整招可编辑源与采用边界补核：2026-10-24；技能特效生产模块与官方参数／事件契约补核：2026-10-25（UTC+8）。两轮均仅资料／源码与官方 API 阅读，未运行候选或引擎。
 
+## 没有美术时：按一整层交付材质，而不是逐张抽图
+
+**目标：** 一次交同风格的地表、墙面、路肩材质族，配 3–5 件标准件；同机位下读形清楚、尺度统一、重复不过分显眼。保留作者源和参数，让二改只影响目标表面。
+
+**做法：**
+1. 从本作目标图固定配色、粗糙度范围、纹理尺度与允许的细节密度。优先一套合法配套材质；没有相应结构才用 Blender 参数图或生成源，不能把三张不同风格的漂亮图拼成一层。
+2. 颜色、normal／height、roughness 共用同一结构与坐标。颜色按 sRGB，数据图按线性；先无额外压缩接对 shader 槽、法线方向与尺度，再谈压缩。
+3. 先做两面墙／两块地面。第一版统一风格，第二版只改其中一面：结构改变回作者源重导，roughness 因子改变只改参数。核对未改对象、源与共享资源不被串改。
+4. 扩到整层并保留旧开关，以真实目标渲染器同机位前后图验收；机械重复先改变布局、可读的大形和有限变体，不靠满屏高频纹理遮掩。非作者盲评不过就继续补验或放弃，不按“已出贴图”换默认。
+
+**一个失败反例：** 原创砖墙旧配方的坡面远小于一个 texel；贴图尺寸、法线单位长度和“有变化”检查都过了，实际 normal 仍丢掉一侧坡向。只加 normal 强度补不回丢掉的结构。修法是让源坡面适合分辨率，并把导出的消费者图与同镜头作者源比较。该例是 Blender CPU 预览，不是游戏 GPU 品质结论。[^materials-practical-case]
+
+**可直接用的工具／命令：** 已有 Blender 4.3.2 时，从本仓根运行以下原创参数源小样；输出目录必须不存在，重跑换名，不覆盖旧成果。
+
+```sh
+blender --background --factory-startup --threads 2 --python-exit-code 1 \
+  --python experiments/material-authoring/build.py -- \
+  --recipe experiments/material-authoring/recipe.json \
+  --output experiments/material-authoring/generated-practical
+blender --background --factory-startup --threads 2 --python-exit-code 1 \
+  --python experiments/material-authoring/verify.py -- \
+  --output experiments/material-authoring/generated-practical
+```
+
+输出包括可编辑源、配套通道及 `source.png`／`before.png`／`after.png`；[运行与采用说明](../../../experiments/material-authoring/README.md)列出采样门槛与目标引擎仍需验证的部分。交给 AI 的任务须指定“哪一整层、哪些标准件、哪个机位、只改哪些参数”，而不是只要一组材质图片。本节复用已有案例，不计新增游戏画面分。
+
+[^materials-practical-case]: 原创参数源与采样修复：a1dbv `f4ca179b1af8db82093b2b4d366a219979eb3423`，[固定案例](https://github.com/dbvv1/a1dbv/tree/f4ca179b1af8db82093b2b4d366a219979eb3423/experiments/material-authoring)。2026-10-26 Blender 4.3.2／Cycles CPU 实测；未证明 Unity／UE、游戏 WebGL2 或最低设备验收。
+
 ## 30 秒决策
 
 | 你现在需要 | 先做什么 | 什么情况下撤回 |
