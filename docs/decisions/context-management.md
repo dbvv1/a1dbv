@@ -42,6 +42,8 @@
 
 依据：[Claude 命令](https://code.claude.com/docs/en/commands)与[压缩配置](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[Codex 命令](https://learn.chatgpt.com/docs/developer-commands)与[配置](https://learn.chatgpt.com/docs/config-file/config-reference)，核实 2026-10-26。
 
+<a id="跨压缩或新会话检查点保留下一步用得上的内容"></a>
+
 ## 跨压缩或新会话：保留下一步需要的事实
 
 复用现有任务记录，短任务直接留消息；不保存密钥和私人对话全文。
@@ -63,6 +65,8 @@
 摘要中的“用户批准”也需要真实用户来源；外部材料经过摘要不会获得新权限。已有真实批准不因压缩自动失效。
 
 依据：[Codex 固定压缩提示](https://github.com/openai/codex/blob/c3d3b142d10f4316b46e35aad7e5317e7e506cb7/codex-rs/prompts/templates/compact/prompt.md)、[Codex 文件入口](https://learn.chatgpt.com/docs/developer-commands#interactive-shortcuts)（核实 2026-10-26）；[Claude 引用](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories)与[压缩重读范围](https://code.claude.com/docs/en/context-window#what-survives-compaction)（复核 2026-11-04）；[授权来源](../03-context-engineering.md#压缩后保留授权来源)。
+
+<a id="编码途中想问一句先选侧问改变要求仍回主线"></a>
 
 ## 侧问不改变主任务
 
