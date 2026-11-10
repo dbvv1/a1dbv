@@ -2,7 +2,7 @@
 id: B-STAR-SHOULDER-PALETTE-20261110
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7fc22e86bc2796f997bfb2b78c86fb00461fae08
 result_branch: relay/b-star-shoulder-palette-20261110
