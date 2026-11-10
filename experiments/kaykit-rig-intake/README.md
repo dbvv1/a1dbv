@@ -54,3 +54,11 @@ node --import <tsx-loader> experiments/kaykit-rig-intake/consumer-probe.mjs <FPS
 探针校验原 Knight SHA，显式注入已解析资源，以隔离真实适配器／所有者合同；它不经过生产 fetch／哈希通路，不给 Knight 新增生产 pin。实际接入需要独立的蒙皮角色／骨架克隆与动作命名适配，不给原刚性接口改名伪装通过。
 
 **剩余门槛**：这里只核两类 reload 的固定坐标与 CPU 蒙皮，不包含贴图解码、浏览器／GPU、完整 idle→run→reload→death 过渡、枪／弹匣接触、动作观感与手感；无新 GLB、默认角色替换、产品 main 或部署。实测：2026-11-09。
+
+## 独立蒙皮实例消费者：已保全，未接玩法
+
+FPS [17a7b53](https://github.com/dbvv1/FPS-Like/commit/17a7b53e197066e3a0c730db937a700a33a6067f) 在独立分支实现 `KayKitSkinnedCharacter`，以官方 `SkeletonUtils.clone` 克隆骨架，再独立复制 inverse-bind 矩阵；几何、材质与纹理仍由加载方只读共享并管理寿命。两种 reload 使用上面的父轨道合同，实例分别拥有 mixer、动作和骨架调色板；切换、停止、销毁以及异步失败不影响另一实例或原源。世界位置放在父容器上，避免 stop 恢复局部姿态时覆盖放置。旧刚性消费者与默认游戏不变。
+
+固定原 GLB 的真实消费者通过 173 个 60Hz 采样，全部动画节点矩阵最大差为 0；六片网格首／中／末顶点共 3,114 次蒙皮比较，最大误差 1.12e-15。全部骨与 inverse-bind／调色板隔离、源对象和矩阵缓存不变、6 个实例调色板释放且共享资源未释放，均有实际断言。438 项测试、构建、公开扫描与非作者复验通过；缺参数、缺文件和坏哈希均失败，未跳过。命令与资源所有权见[产品消费者说明](https://github.com/dbvv1/FPS-Like/blob/17a7b53e197066e3a0c730db937a700a33a6067f/docs/skinned-character-consumer.md)。
+
+这只移除了独立蒙皮实例生命周期的接入阻塞；尚未接 `View`，不提升动画模块成熟度或品质分。完整动作组、动态包围体／可见性、纹理／GPU、枪与弹匣接触、玩法事件同步和真实游玩仍待接收。产品 main `6157235` 与 Site v24 不变。实测：2026-11-10。
