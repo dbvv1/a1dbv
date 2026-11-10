@@ -2,7 +2,7 @@
 id: B-STAR-SHOULDER-PALETTE-20261110
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7fc22e86bc2796f997bfb2b78c86fb00461fae08
 result_branch: relay/b-star-shoulder-palette-20261110
@@ -22,3 +22,11 @@ result_branch: relay/b-star-shoulder-palette-20261110
 ## 交回
 全套相关单测、构建及六路600tick关闭开关hash；记录命令退出。相关真实浏览器/完整smoke/同机位前后图和双非作者盲评由dot-B在原槽核清后做，本任务未跑不得计分/覆盖或部署。
 公开扫描并只推本结果分支。开工先核原同题写者/调用，无实际退出则不重复启动；race.js在本单元单写者，其他代理可做不重叠目录。完成接收后dot-B统一原候选分支。
+
+## 当前结果
+
+- build 单元完成：新增 coast-shoulder-client.js，在既有 coast 开关（roadDriving、circuit、coast-reborn、s∈[300,710]）内仅将 7.65–11/8.6–11 肩面重着色为 #c4b99f、11 处竖壁为 #a59f89，其余路面/路缘/标线/平台逐字不变；以 mesh 为键保存改色前完整 sourceData 快照，disableCoastalSpace 时先 dispose 再 update 精确回退，保留 node/indices。race.js、coastal-space.js、build.mjs 接入，新增 tests/coast-shoulder-palette.test.mjs 4 项并并入 npm test，更新 scene-authoring 源哈希。实测：新测试 4/4 通过、git diff --check 通过（实施者/审查者另报 210/210 单测、npm run build 与六路 600 tick 通过）。openIssues 为空；未运行验收：Node 24（本机仅 22.23.2）、真实浏览器/完整 smoke/SwiftShader/GPU、同机位前后图与双非作者盲评，均留 dot-B；worktree 中 dist/** 与 worker/index.js 为构建生成改动，未列入清单、请勿提交。
+- 产物：[4b2a887](https://github.com/dbvv1/Star-Rush-Reborn/commit/4b2a88782ca5d7bdb28753fd25216a156a1ac1a3)，分支 `relay/b-star-shoulder-palette-20261110`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：dot-B 在真实浏览器原槽复核视觉与盲评，并确认 package.json/tests/scene-authoring.mjs 两处配套改动；提交时只取清单文件，忽略 dist/** 与 worker/index.js 的生成改动。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
