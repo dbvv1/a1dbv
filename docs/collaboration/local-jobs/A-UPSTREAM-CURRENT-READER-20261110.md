@@ -1,6 +1,6 @@
 id: A-UPSTREAM-CURRENT-READER-20261110
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: dc45976eeb083d498f90152035c0fa0a9ee1878c
