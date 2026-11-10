@@ -428,3 +428,7 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 **何时换来源或收窄：** 需要手指握持、近景表演、全身重心参与或不兼容体型，而有限程序改源仍不能达到目标相机要求时，优先完整合格动作供给；别叠更复杂控制器掩盖素材缺口。本文当前实证是 Three 网页消费者，原生 Unity／Unreal 与生成服务未运行；整体战斗仍未达到 LoL 参照品质。软件检查通过与历史页面崩溃／旧版 GPU exit 9 的范围见 [3D 同次采用](3d.md#moba-battle-supply)，不据一次通过推断全设备稳定。
 
 **依据与范围：** [本仓原创 CC0 源／实际消费者与二改] MOBA [b4dff100 资源源与验证](https://github.com/dbvv1/MOBA-Like/tree/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/asset-pipeline/battle)、[同版英雄表现](https://github.com/dbvv1/MOBA-Like/tree/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/asset-pipeline/presentation)、[主循环接线](https://github.com/dbvv1/MOBA-Like/blob/b4dff1007527a2f8bfae81ca4749e90321f7bd7f/src/render/world.ts)，2026-10-26 UTC；[旧样本实际范围与固定来源] [WP4 同例](../../../docs/research/2026-10-14-game-wp4-animation.md#程序化占位角色源与运行资产的实测差别)，保留原源→GLB、刃长、分层与反应动作实验入口。当前角色原始 rig 与派生资源按各自 CC0 文件，包内来源／哈希集中于产品，不将第三方来源既有 403 或未取得角色写成已解决。
+
+### 蒙皮姿态变化后的剔除边界
+
+FPS [独立消费者候选](https://github.com/dbvv1/FPS-Like/commit/770f60464e397336794f1f109f0b3e77c1da96b5)每次构造、播放、更新和停止后，先刷新父容器世界变换，再计算实例 SkinnedMesh 的包围盒和球，不修改共享 geometry 的静态包围体。CPU 视锥反例验证姿态从屏外移入、父容器移动、重播和停止；固定原始 GLB 173 帧、642868 个顶点均在边界内。每次刷新有两遍顶点计算，尚未做运行时性能测量。候选未接 View，也未验 GPU 剔除、纹理或完整动作与枪械接触，不能作为画面通过。
