@@ -94,3 +94,9 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 **保留旧行，失败回滚后重新打开，再验成功与重复执行。** 如果第二项约束因已有非法数据失败，核第一项 DDL 是否一并回滚，不由 Agent 擅自删数据换通过。本例独立 SQL 管理自己的事务，失败后需 `ROLLBACK` 才能继续；已有事务型迁移框架时，沿它的原生入口，不嵌套照抄 `BEGIN`／`COMMIT`。目标表已存在同名但错误定义的约束须另审，重复运行不证明定义正确。
 
 **依据与直接入口**：[修订 SQL、锁定依赖与持久化消费者](../../experiments/constraint-scope-consumer/reader-migration/README.md)，2026-11-08：独立云端读者按本页完成 Supabase [#83](https://github.com/supabase/agent-skills/issues/83) 的既有缺陷，接收后 27 项断言通过并独立复跑；覆盖两种约束、非法旧数据回滚、缺表、正常关闭后重开、合法后续写入与幂等。页面提供路线，SQL 细节来自读者已有知识；使用 PostgreSQL 18.6 的 PGlite 0.5.15 WASM，原生服务、生产并发与框架集成未验，不代表本机读者门槛已通过。
+
+### 迁移器通过：分开核检查配置与测试环境
+
+2026-11-10 云端以 [Factoriolab 迁移前 f785e10](https://github.com/factoriolab/factoriolab/tree/f785e10becb84afd1fe546ac5b4098271207aabd) 重放 Angular 21→22 官方迁移：固定相容依赖后运行 CLI／core `--migrate-only`，迁移与开发构建通过；官方脚本将两项 extended diagnostics 设为 suppress，不能据此称检查强度完全不变。
+
+同两份原消费者 `button.spec.ts` 与 `state/router/migration.spec.ts`，在原 Angular 21.2.12／CLI 21.2.10 与后态 Angular 22.2.5／CLI 22.2.6 下，各用自身官方 unit-test builder、Vitest 4.1.5／jsdom 31.0.0，前后均 29 项通过，原断言和文件哈希不变，当轮独立复核确认上述范围。这是 Node DOM 下的创建与路由迁移回归；未承接原 Karma 的 100% coverage 门槛，不是 ChromeHeadless、完整 CI 或本机新读者验收。隔离环境已重置，原产物及日志现不可回读，未提供复跑包；本页仍为 🟡。
