@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-11-10：FPS原生动作从手动采样接到真实快照
+
+[9a5e7d8](https://github.com/dbvv1/FPS-Like/commit/9a5e7d814895bf20b0583c2f65c3de588a708790)沿既有候选接静止步枪的原生瞄准/开火/换弹，不新增来源或旁置。444测试、构建、固定GLB实际Game快照与独审通过；切枪不复活旧射击，重复快照不改变姿态/模拟。未接View/浏览器，0/77与网站不变；知识回流animation.md的接受事件/快照消费。
+
 ### 2026-11-10：Star路肩颜色接入整层，默认与评分不动
 
 [候选de3116dd](https://github.com/dbvv1/Star-Rush-Reborn/commit/de3116dd0364fdc40e62f7f87fad4fa6ff7aef20)接收路肩产物4b2a887：沙灰肩面/肩壁与已有墙面同族，仅指定原表面RGB改变；已缓存chunk关闭和晚失败按原字节恢复。非作者代码审查通过；真实GPU、完整smoke和同机位双盲仍未验，2→2、0/43与网站不变。已回流[语义表面配色](../../domains/game-dev/assets/materials.md#semantic-shoulder-palette)，不把顶点色称纹理。

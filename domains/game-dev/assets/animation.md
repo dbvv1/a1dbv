@@ -476,3 +476,16 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 **直接运行**：在固定 FPS 候选运行 `npm run check:kaykit -- <fixed-sample-directory>`，随后 `npm test`、`npm run build`。真实源三动作274相位样本与独立mixer最大矩阵差0，含倒回和重启；另验原生play/update与旧reload互切、stop恢复。CPU不能代替观看，也不增加内容覆盖。
 
 案例脚注：[FPS afb6fec](https://github.com/dbvv1/FPS-Like/commit/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e)，[可运行用法及缺口](https://github.com/dbvv1/FPS-Like/blob/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e/docs/native-ranged-candidate.md)。
+
+
+### 原生动作跟已接受的开火事实，不跟按键猜测
+
+**目标**：把已选的瞄准/开火/换弹源动作变成可重复的战斗快照呈现；暂停与倒回不靠本地墙钟补帧。
+
+**做法**：显式调用 `syncKayKitNativeAction(character, state, actorId)`，取真实 `state.shots` 与该武器 `lastShot`，用源clip时长归一绝对相位。换弹优先，静止步枪无动作时持源瞄准第0相位；移动/蹲下/交互/死亡/手枪/结算恢复rest，不假装已有跑射动画。临时移动结束若仍在旧shot有效窗，恢复当前相位而非永久取消。调用者须处理朝向、装备与View，本单元没有代做IK。
+
+**失败反例**：用“按了开火”播放会把空弹、冷却与非法目标也画成开火；只看lastShot会在切枪再切回时复活旧动作。当前FPS用接受shot及原冷却终点匹配，依据步枪6tick与切枪至少12tick，拒绝被切枪覆盖的旧射击；数值变化要重验，不把该等式泛化成通用契约。
+
+**直接运行**：`npm test` 与 `npm run check:kaykit -- <fixed-sample-directory>`；后者用真实固定GLB走实际Game的开火→换弹→切枪，并核重复快照的姿态与模拟hash不变。未接生产View、未跑浏览器，也未提高内容覆盖。
+
+案例脚注：[FPS 9a5e7d8](https://github.com/dbvv1/FPS-Like/commit/9a5e7d814895bf20b0583c2f65c3de588a708790)。
