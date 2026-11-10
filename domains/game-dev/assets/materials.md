@@ -145,6 +145,16 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 **[研究] 性能迁移只在改善已确认的热点时保留。** BADLADS 作者真的将帽子、车灯与建造物的动态材质改为 CPD，却报告其测试场景收益很小；同文“帧时间减半”属于 PLOD，不能归给材质改动。[一手：[历史开发记录](https://badlads.chemicalheads.com/blog/the-large-update-part-2)] 若目标设备帧时间未改善，反而增加状态恢复、shader 特例或维护负担，就撤回迁移。传统 GPU instancing、SRP Batcher 与 GPU Resident Drawer 的条件分别核，不把任何组合当免费优化，也不为换色自建材质框架；本轮无性能实测。
 
+### 重复街屋先试整段配色，不靠删物件制造空地
+
+**目标：** 缓解同资产的颜色重复，同时保留已通过净空检查的布局。对有明确 `wall` 语义的固定源，只改墙面 RGB；每个完整街段共用邻近灰泥色，屋顶、玻璃、法线、光泽和摆放矩阵不动，不逐栋随机上色。缓存键包含源件与配色，少量变体共用网格；失败时释放所有变体，不能只清旧的源件键。
+
+**反例：** 只按源件名缓存时，后续配色会继续拿到首个网格；减少建筑数量则可能把本已空的地表变得更空，并改变原完整排的保护假设。此处选择保留30栋、三种街段配色和最多9个共享网格，不把换色称为消除了轮廓／间距重复。
+
+**直接复验：** 在案例固定版本运行 `node --test tests/coast-street-runtime.test.mjs`，核每个配色只有命名墙面RGB变化、真实Three颜色buffer与Canvas颜色分支、原布局及失败回退。CPU消费者检查不等于GPU画面或浏览器性能通过；硬件同机位图与非作者评审否定收益时撤回配色层。[^coast-wall-groups]
+
+[^coast-wall-groups]: [Star 候选源码与测试](https://github.com/dbvv1/Star-Rush-Reborn/commit/96dc343c636dc301b088289dcd2229090398835c)。本轮专项14项与非作者代码审查通过；未换默认、未部署、未取得新图或评分，内容0/43不变。
+
 ### 静态岩壁缺 UV：先试投影，不急着重生整件资产
 
 **🧪 静态岩石、洞壁等重复表面，可先用许可清楚的平铺材质＋原生三平面投影。** 它按位置与表面朝向采样，不要求为这层表面颜色手工展开 UV；适合改岩壁形状后仍想复用同一材质尺度的场景。Unity Shader Graph 有 Triplanar，Unreal 有 WorldAlignedTexture／WorldAlignedNormal，先用原生节点，不另建材质框架。[一手／研究；[固定实现与作者案例](../../../docs/research/2026-10-14-game-wp5-material-effects.md#静态重复表面的无-uv-替代)]
