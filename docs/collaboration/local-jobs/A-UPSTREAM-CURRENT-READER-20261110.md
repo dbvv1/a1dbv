@@ -1,6 +1,6 @@
 id: A-UPSTREAM-CURRENT-READER-20261110
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: dc45976eeb083d498f90152035c0fa0a9ee1878c
@@ -14,7 +14,13 @@ page: docs/decisions/upstream-contributions.md@dc45976eeb083d498f90152035c0fa0a9
 只新写 docs/collaboration/local-jobs/artifacts/A-UPSTREAM-CURRENT-READER-20261110/result.md；不改正文/补丁/旧任务/产品。接收端按合同回写本卡与结果分支；不自动合main。单元60–90分钟、上限2小时，沿已有4并行/1GPU限额；旧调用未知不接管，本任务不重试旧任务。
 非读者核源码、所读版本、原始返回与实际结论，区分页面卡点和执行能力；只验当前页的投稿前核心选路，不视为已投稿/合并或自动升级✅。check_repo/check_public/空白与提交身份通过后交回。没有新读者或共享槽条件则保留待领取，不捏造执行。
 ## 当前结果
-待领取；由既有接收端确认独立新读者与共享资源后执行。去向由 dot-A 接收决定。
+
+- reader-test 单轮观察完成：按附页与固定来源选路为“收起重名恢复重复部分 + 协调剩余非重名 conversion 诊断差量 + 准入”，结论是现在不能直接投稿；taskDone=true，pageStuck 记录 5 条页面缺口，未运行验收（未跑测试、构建、模型或 CLI，完整 preflight 未复跑，候选状态仍来自任务卡）。openIssues：result.md 对 getMCPServerLastError 记录范围表述偏宽（仅 discoverAndReturn catch 记录）；漏 Qwen CONTRIBUTING §5/§6 的 /docs 更新与 before/after demo；下一步把评论已关闭 #15741 列为首选、新开 issue 仅作备选，应按 CONTRIBUTING 改为新开 issue 主路径；页面副本“3213 字符完全一致”不精确（首处 3214 字符逐字节一致，第二处多一前导换行）；Windows 未验证非硬性阻断，真正阻断是完整 preflight/全量测试未过与缺少可关联 open issue。
+- 产物：[10c592c](https://github.com/dbvv1/a1dbv/commit/10c592cacc9aece883eb9066d904dc333a0dfd8f)，分支 `relay/a-upstream-current-reader-20261110`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：由 dot-A 接收决定去向；负责人可据上述 openIssues 决定是否修订 result.md 或沉淀页面缺口（尤其 closed issue + merged PR 下剩余差量的协调入口、定向子集与全量测试判据），本轮不自动重读；未投稿、未合 main。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
 ## 当前页面全文（固定版本如 page）
 以下原文相对链接以 docs/decisions/ 为基准，不以任务卡目录为基准。
 ````markdown
