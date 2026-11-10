@@ -4,6 +4,10 @@
 
 ## 待处理
 
+### 2026-11-10：Star路肩颜色接入整层，默认与评分不动
+
+[候选de3116dd](https://github.com/dbvv1/Star-Rush-Reborn/commit/de3116dd0364fdc40e62f7f87fad4fa6ff7aef20)接收路肩产物4b2a887：沙灰肩面/肩壁与已有墙面同族，仅指定原表面RGB改变；已缓存chunk关闭和晚失败按原字节恢复。非作者代码审查通过；真实GPU、完整smoke和同机位双盲仍未验，2→2、0/43与网站不变。已回流[语义表面配色](../../domains/game-dev/assets/materials.md#semantic-shoulder-palette)，不把顶点色称纹理。
+
 ### 2026-11-10：先用固定角色已有动作，不等另一个完整包
 
 FPS[候选afb6fec](https://github.com/dbvv1/FPS-Like/commit/afb6fec462dacfb5854cd6e1b387bbfd77e1d72e)已消费固定Knight原生瞄准/开火/换弹；443测试、构建及真实GLB CPU检查通过，非作者复核。来源卡7992f4c仅部分接收：原包库存可核，274条广搜自报、第三方许可结论不整体采纳；另包清单未取回不阻止消费现有原生动作。默认/网站/0/77未变；枪弹匣接触/实际姿态/过渡未验。方法回流[动画原生动作](../../domains/game-dev/assets/animation.md#native-ranged-first)。

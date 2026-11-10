@@ -2,7 +2,7 @@
 id: B-STAR-SHOULDER-PALETTE-20261110
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7fc22e86bc2796f997bfb2b78c86fb00461fae08
 result_branch: relay/b-star-shoulder-palette-20261110
@@ -30,3 +30,8 @@ result_branch: relay/b-star-shoulder-palette-20261110
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：dot-B 在真实浏览器原槽复核视觉与盲评，并确认 package.json/tests/scene-authoring.mjs 两处配套改动；提交时只取清单文件，忽略 dist/** 与 worker/index.js 的生成改动。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+
+## dot-B 接收决定（2026-11-10）
+
+采用到原coast候选de3116dd，不换默认、不新增旁置。Node24.22.1复跑210单测与集成链、生产构建、六路600tick CPU回放退出0；新4项验证目标表面与回退，非作者独审确认实际Three geometry/batch缓存失效顺序。package与scene-authoring源哈希配套变更已审，未提交dist/worker生成物。真实场景故障与GPU仍待验：新测试采用装饰函数桩，不冒充完整smoke。原拍摄外层unknown且本机连接offline，未开新拍摄；分数2→2、内容0/43及网站不变。知识同轮回写materials.md语义表面配色。

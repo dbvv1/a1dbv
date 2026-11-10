@@ -490,3 +490,17 @@ Unity six-way lighting 将六方向光照图在运行时按场景灯光混合，
 
 **Scenario 免费输出不进发行默认。** 当前价格页仅允许免费输出作个人／评估用途；付费商用许可也不等于输入不用于训练。自助账户数据使用与具体底模政策先按条款核，再决定是否上传项目素材。[一手；账户、训练、迁移与数据使用统一见[WP8资格表](../../../docs/research/2026-10-14-game-wp8-style-consistency.md#11-阶段-f-动态资格补核)，特效生成能力仍见WP5]
 
+
+
+<a id="semantic-shoulder-palette"></a>
+## 没有美术时，先把同层配色改在语义表面上
+
+**目标**：地表、路肩和墙面采用一组可调色族，保留沥青、路缘与标线的可读层，不因改色影响行驶几何。
+
+**做法**：在原路肩绘制语句处传肩面/肩壁颜色，不扫描最终RGB猜区域；沿原Collector只转一次线性色。Star候选肩面沙灰`#c4b99f`、肩壁`#a59f89`，现有coast开关和4m段起点300–708m内生效。位置、法线、索引及随机流不变。保留每个缓存mesh的完整原数据，关闭/失败先`mesh.dispose()`让Three几何和batch失效，再`mesh.update(original)`；保原node和indices，清登记表。这是顶点色候选，不叫贴图。
+
+**失败反例**：只改新建chunk能通过开关单测，但晚失败时旧缓存仍显示候选色。另一个错误是用最终RGB匹配，连同色标线也染掉。应测试两个已建chunk后失败，逐字还原；边界按原段选择，因此708m段延到712m，不能声称精确切在710m。
+
+**直接运行**：在Star固定候选执行`node --test tests/coast-shoulder-palette.test.mjs`、`npm test`、`npm run build`、`npm run test:side-release`。CPU检查包括目标顶点集合、其他通道/默认路径hash和晚失败回退。装饰失败测试使用桩，真实GPU缓存、整层观感和双盲还须实际验证；配色能运行不代表画面升分。
+
+案例脚注：[路肩源4b2a887](https://github.com/dbvv1/Star-Rush-Reborn/commit/4b2a88782ca5d7bdb28753fd25216a156a1ac1a3)。
