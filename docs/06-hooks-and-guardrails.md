@@ -196,6 +196,26 @@ PreToolUse 的结构化决定：
 
 **依据**：[一手] Anthropic《Claude Code auto mode》（2026-03-25；2026-10-15 重读原文）、[auto mode 回退说明](https://code.claude.com/docs/en/permission-modes#when-auto-mode-falls-back)、Codex Auto-review 官方文档与固定源码（2026-10-11 补核；未运行真实审批服务）；[社区：原文] Embrace The Red 攻击链（2026-08-31）；[社区：模拟游戏] 限时审批模拟游戏（4 万局，非生产）；[经验] 采用判断；核实 2026-10-15（UTC+8）。
 
+<a id="auto-review-unavailable"></a>
+### 升级后 auto 无法审查：先恢复审批通路
+
+**出现 `no safety verdict` 或“auto 不可用”时，先核审查通路；需要继续有人值守的工作，可切 Manual 并核有效审批规则，不先换模型、加 effort 或关闭权限检查。** 先记下 `claude --version`、当前权限模式、provider／网关入口和相关设置，再区分“没有审查结论”与“分类器给出了拒绝理由”。前者不代表动作安全，后者也不应靠换入口重试绕过。
+
+**2.1.319 有一项会改变升级选择的行为：关闭 telemetry 或 feature flags 的 auto 会话（包括部分网关路径），服务器不能检查的调用改为询问或拒绝，不再自动回退内建分类器。** 官方明确 Bedrock、Vertex、Foundry 不受这项变化影响。当前权限文档仍概括“服务器不审查会话时回退分类器”，这里按固定版本发布说明收窄，不能由一个网关故障推断所有 provider 都失效。
+
+| 你要继续做什么 | 选择与验收 |
+|---|---|
+| 继续有人值守的开发 | 2.1.319／2.1.321 的 CLI 帮助列出 `claude --permission-mode manual`，权限配置中的对应值仍是 `default`。先核有效 allow／ask：离开 auto 会恢复此前被它移除的宽 allow 规则，`Bash(*)` 等可能仍免询问；不能只凭 Manual 模式名保证逐项审批。保留原有沙箱及组织策略，已有且适合任务的 `acceptEdits` 配置无需为了排障改宽 |
+| 保留服务器端 auto 审查 | 先确认上游实际支持审核协议，再核网关是否保留相应 beta 标识、请求的 `safeguards`、响应／流事件的 `safeguard_results` 及工具调用 ID；仅透传字段不能补出上游没有的审查能力 |
+| 服务器审查确实不可用，仍希望用 auto | 🧪 在组织允许、分类器模型可调用且数据发送与费用已获授权时，可在启动新会话前评估临时设置 `CLAUDE_CODE_AUTO_MODE_SERVER=0`。这是改用 Claude Code 发出的分类器请求，会另有 token 用量；不是离线检查，也不保证分类器与主模型相同 |
+| 继续无人值守的 `-p`／CI | 没有可用审批宿主时，让需批准的动作停下并报告；`--permission-prompts none` 会拒绝它们，不会自动批准。不要把交互式 Manual 当无人值守替代方案 |
+
+**成功要看原动作与产物，并区分“工作继续了”和“auto 审查恢复了”。** Manual 下完成 Bash／Write 只证明该工作路径可用；要接收 auto 恢复，另核本次需分类器检查的目标动作确有对应审查结果。2.1.319 修复了 `/status` 在服务器审查未到达会话时仍显示 Enabled 的问题；同版还将 `-p` 因没有可用安全检查而拒绝动作时，text／JSON 输出的退出码从 0 修正为 1。CI 应一起核返回码、错误内容、预期改动和项目检查；这项修复不覆盖所有拒绝或所有输出格式。两版原生帮助还提示：print／非 TTY 下，验证失败的 settings 文件会被静默忽略，因此“没有配置报错”不证明设置生效。
+
+社区中有 z.ai 用户自报 2.1.321 设置 `SERVER=0` 后恢复，但回复仅有机器人收件确认；官方也明确不支持经网关路由到非 Claude 模型。该个例可提示排查方向，不能作为 GLM 兼容性或审查质量保证。对真正的分类器拒绝、缺失权限或组织策略限制，保留原边界并交给有权批准的人处理。
+
+**依据**：[一手] [2.1.319 固定 changelog](https://github.com/anthropics/claude-code/blob/0ed94698aa0aeee471465fc9c867c2e8434c4d68/CHANGELOG.md#L3-L40)、[无审查结论的诊断](https://code.claude.com/docs/en/errors#the-server-returned-no-safety-verdict)、[分类器费用与网关协议](https://code.claude.com/docs/en/auto-mode-classifier-billing.md)、[分类器及权限模式](https://code.claude.com/docs/en/permission-modes#server-side-classifier-review)、[官方网关支持范围](https://code.claude.com/docs/en/llm-gateway)；[社区：作者自报] [z.ai #1453](https://github.com/zai-org/feedback/issues/1453)；[本次原生入口检查] 官方 npm 2.1.319／2.1.321 Linux x64 包，各自 version、help、auto-mode help 均退出 0，仅核启动与帮助，未运行模型、分类器或真实网关；核实 2026-11-11。
+
 ## 5. 沙箱
 
 | 层级 | 做法 | 适用 |

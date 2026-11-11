@@ -125,7 +125,7 @@
 **先用原生评审、隔离与最小权限；扩展代码、托管配置和版本升级再单独核信任边界。**
 
 - `/code-review`（默认后台评审，终端 fork 继承当前历史；独立窗口不等于独立输入，详见 [09](../09-review-and-quality.md#2-评审手段)；`--max-findings` 控制数量）、`/code-review ultra` 和 `claude ultrareview`（云端多 Agent 深度评审，可在 CI 里跑）、`/security-review`、`/simplify`。
-- **Auto mode**（v2.1.283 起内建默认适用于交互终端与 VS Code，受配置和可用性影响）：规则及免审批路径先处理，其余适用动作交分类器，详见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据)。
+- **Auto mode**（v2.1.283 起内建默认适用于交互终端与 VS Code，受配置和可用性影响）：规则及免审批路径先处理，其余适用动作交分类器，详见 [06](../06-hooks-and-guardrails.md#4-auto-mode实测数据)。升级后提示审查不可用时，先按 [06 的审批通路选择](../06-hooks-and-guardrails.md#auto-review-unavailable)区分配置、网关和真正的拒绝，不靠放宽权限跑通。
 - 沙箱：macOS Seatbelt / Linux bubblewrap，可设网络白名单（`sandbox.network.strictAllowlist`），可屏蔽凭证（`sandbox.credentials`）。
 - `--safe-mode`：排查被禁用的自定义内容，托管策略仍生效，不能据此排除全部配置原因；`--restricted`：去掉执行类工具。
 - **`--bare` 不是普通 `-p` 的等价加速**：它跳过 `CLAUDE.md`、Skill、Hook、插件等自动发现；需显式提供任务所需上下文与工具，或保留普通模式。它也不复用订阅登录，切换前须确认已授权的认证与计费方式。自 2.1.286 起不发送系统提醒、不启动后台任务，超时命令停止而非转后台；详见[迁移时的选择与例外](../research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。
