@@ -640,6 +640,8 @@ FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d572
 
 该接缝来自 MOBA 默认源 `f2a1ce3` 的实际 `src/client.ts`：导航请求尚未返回就离页，之后拒绝仍会写旧 HUD、清空容器并重新开放 Restart。CPU 入口回归覆盖迟到拒绝、响应与响应体、真实 Detour 导航迟到获取后的单次销毁、缓存恢复事件、新旧请求交错及两次成功进入时旧 canvas 迟到挂载；DOM／画面／音频接缝为测试替身，未运行真实浏览器往返或 GPU，不提升作品采用等级。现有 FPS 首个等待前注册清理的做法与 MOBA lifetime 的逆序收尾均保留，增量只补启动消费者接收资格。实现与回归见候选 [client.ts](https://github.com/dbvv1/MOBA-Like/blob/f56b8cae298a7c74b9864af126a682df6a783fd3/src/client.ts)／[boot-lifetime.test.ts](https://github.com/dbvv1/MOBA-Like/blob/f56b8cae298a7c74b9864af126a682df6a783fd3/tests/client/boot-lifetime.test.ts)（2026-10-28，源码／CPU；未合默认、未部署）。
 
+**每个加载阶段都检查接收资格，不只在整套内容返回后检查。** MOBA 原整合消费者在角色加载返回后虽已取消，仍会开始战斗纹理下载；地形返回后也会再请求状态纹理，后一请求停滞就拖住旧 world。先把迟到结果登记给原 lifetime，再检查取消并进入统一收尾，下一阶段不再开始。已经发出的请求仍要返回后清理，这不是底层传输中止。实际19份GLB经生产校验、解析与world消费，复现旧版两处失败并验证修复；损坏Morrow字节时释放候选、恢复可同步快照的基线世界。GPU提交与独立纹理解码未验，不能以此认定浏览器故障路径通过。实现与回归：[原候选修复](https://github.com/dbvv1/MOBA-Like/commit/6728df0b0b28140b9db2d3b948beb99e10602ddc)，2026-11-11。[源码／CPU 接入候选]
+
 #### 资源释放：所有权、驻留、总内存分别看
 
 - **跨场景对象另有持有者。** `DontDestroyOnLoad` 不是依赖保活；优先把常驻 UI／角色依赖单独加载并持有，确需保整场景依赖才 Acquire 场景句柄并承担其驻留。加载成功的场景用 `UnloadSceneAsync` 收尾，不能套资产的 `Release` 模板。
