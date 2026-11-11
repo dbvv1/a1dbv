@@ -507,10 +507,10 @@ Unity six-way lighting 将六方向光照图在运行时按场景灯光混合，
 
 **目标**：地表、路肩和墙面采用一组可调色族，保留沥青、路缘与标线的可读层，不因改色影响行驶几何。
 
-**做法**：在原路肩绘制语句处传肩面/肩壁颜色，不扫描最终RGB猜区域；沿原Collector只转一次线性色。Star候选肩面沙灰`#c4b99f`、肩壁`#a59f89`，现有coast开关和4m段起点300–708m内生效。位置、法线、索引及随机流不变。保留每个缓存mesh的完整原数据，关闭/失败先`mesh.dispose()`让Three几何和batch失效，再`mesh.update(original)`；保原node和indices，清登记表。这是顶点色候选，不叫贴图。
+**做法**：在原路肩绘制语句处传肩面/肩壁颜色，不扫描最终RGB猜区域；沿原Collector只转一次线性色。Star候选肩面沙灰`#c4b99f`、肩壁`#a59f89`，现有coast开关和4m段起点300–708m内生效。位置、法线、索引及随机流不变。保留每个缓存mesh的完整原数据，关闭/失败先`mesh.dispose()`让Three几何和batch失效，再`mesh.update(original)`；保原node和indices，清登记表。这是顶点色候选，不叫贴图。地表改色后，还要沿原绘制语句找到覆盖它的消费者：Star道路两侧11–28m的平台原本仍用旧BIOMES色。平台顶面传原世界坐标，按对应地形三角形的重心权重采样线性RGB，墙面复用同族灰褐色；不增加几何、不改法线和随机流。只保证原顶点采样一致，大平台内部的插值不能冒充更细地形的逐点一致。
 
-**失败反例**：只改新建chunk能通过开关单测，但晚失败时旧缓存仍显示候选色。另一个错误是用最终RGB匹配，连同色标线也染掉。应测试两个已建chunk后失败，逐字还原；边界按原段选择，因此708m段延到712m，不能声称精确切在710m。
+**失败反例**：只改下层地表，覆盖在上方的平台仍显示旧色，不能据此宣称整层统一。只改新建chunk能通过开关单测，但晚失败时旧缓存仍显示候选色。另一个错误是用最终RGB匹配，连同色标线也染掉。应测试两个已建chunk后失败，逐字还原；边界按原段选择，因此708m段延到712m，不能声称精确切在710m。
 
-**直接运行**：在Star固定候选执行`node --test tests/coast-shoulder-palette.test.mjs`、`npm test`、`npm run build`、`npm run test:side-release`。CPU检查包括目标顶点集合、其他通道/默认路径hash和晚失败回退。装饰失败测试使用桩，真实GPU缓存、整层观感和双盲还须实际验证；配色能运行不代表画面升分。
+**直接运行**：在Star固定候选执行`node --test tests/coast-shoulder-palette.test.mjs`、`npm test`、`npm run build`、`npm run test:side-release`。CPU检查包括206个平台面的目标顶点集合、独立重心权重预期、其他通道/默认路径hash和晚失败时待提交与已缓存数据的回退。装饰失败测试使用桩，真实GPU缓存、整层观感和双盲还须实际验证；配色能运行不代表画面升分。
 
-案例脚注：[路肩源4b2a887](https://github.com/dbvv1/Star-Rush-Reborn/commit/4b2a88782ca5d7bdb28753fd25216a156a1ac1a3)。
+案例脚注：[平台消费者0e2b689](https://github.com/dbvv1/Star-Rush-Reborn/commit/0e2b689ad5449cac2fbf12a5c80379506093db4f)；[路肩源4b2a887](https://github.com/dbvv1/Star-Rush-Reborn/commit/4b2a88782ca5d7bdb28753fd25216a156a1ac1a3)。
