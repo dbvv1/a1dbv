@@ -18,6 +18,9 @@ naming, and refactoring suggestions are Nit at most.
 
 - Every behavior claim cites `file:line` in the source. Do not infer
   behavior from names.
+- Read the requested snapshot. For a staged review, inspect index contents
+  rather than substituting later working-tree edits; for a working-tree review,
+  include relevant untracked files. Do not stage files just to review them.
 - Check unresolved, decision-changing factual claims against the cited source
   for predicate strength, time, subject, and conditions, report support or the
   precise gap rather than an aggregate score, and skip claims outside that
@@ -44,7 +47,10 @@ findings only.
 ## Do not report
 
 - Anything CI already enforces: formatting, lint, type errors
-- Generated files: TODO (e.g. `src/gen/**`), lockfiles, vendored code
+- Mechanical churn in generated files or vendored code when source review
+  and relevant consumer checks cover it. Keep changes to dependency resolution,
+  lockfile format, runtime behavior, and shipped interfaces in scope; do not exclude
+  them by filename.
 - Missing tests for code that is not behavior (docs, config comments)
 
 ## Always check
