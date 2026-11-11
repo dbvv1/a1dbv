@@ -104,4 +104,4 @@ result = await Runner.run(agent, next_input)
 
 ---
 
-[验证范围与个例](../research/2026-11-10-context-case-evidence.md)：当前起手已用于 [Click 的真实 CLI 修复](../../experiments/click-auto-envvar-error/README.md)，本页仍为 🟡；任务入口与 SDK／Git 离线结果不证明原生压缩或新会话恢复已实测，旧读者回执不验收新版；侧问未试用。继续阅读：[常驻指令](instruction-files.md) · [长任务](long-tasks.md)。
+[验证范围与个例](../research/2026-11-10-context-case-evidence.md)：当前起手已用于 [Click 的真实 CLI 修复](../../experiments/click-auto-envvar-error/README.md)；当前检查点方法又由独立新上下文读者用于[接续 BMAD 迁移修复](../../experiments/bmad-migration-receipt/README.md#接收范围)。读者先核指定正文、公开补丁与已完成范围，再复现并修剩余的只读日志故障，原有迁移行为经独立消费者复验保留。本页仍为 🟡：这支持按检查点接续，不是 Claude／Codex 原生压缩或自动恢复的验证，也未验长期无人值守；侧问未试用。继续阅读：[常驻指令](instruction-files.md) · [长任务](long-tasks.md)。
