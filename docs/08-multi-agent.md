@@ -355,6 +355,25 @@ sys.exit(0 if origin and root in origin.parents else 1)
 
 [wheel／namespace 可复跑检查](https://github.com/dbvv1/a1dbv/blob/59e2aac70221c2c23d4b4ae611fbf2c946b55da9/experiments/python-import-provenance/README.md)：2026-11-04，Python 3.12.14、云端 POSIX，四项合成消费者检查通过；覆盖 wheel 实际导入与字节一致、同名源码遮蔽被拒、namespace 合法双根和错根子模块被拒。非作者复跑及移除负例断言的变异检查通过。它补的是两类边界的机制证据，未验原生 Windows、真实应用或整条长程路线，不刷新上段 editable 实验的范围。
 
+**运行时导入正确，还要另核静态工具检查了哪份包。** 上面的模块路径只证明 Python 的实际导入。项目已有 tox／nox 类型任务就沿用；做库的 `pyright --verifytypes` 时，核报告里的 `Package directory`、`Module directory` 和 `py.typed` 路径，再确认安装内容包含本次修改。100% 类型完整度只说明所分析的公开符号类型已知，不证明检查对象正确，也不替代行为验收。
+
+下面是 Click 的实际 Bash 入口，须已按该项目的锁文件准备含 tox 的开发环境；换项目时沿用自己的任务，不照搬 `typing` 名称：
+
+```sh
+# 在 Click 工作树根运行项目完整类型任务，安装并检查本次 wheel
+UV_CACHE_DIR="$PWD/.uv-cache" .venv/bin/tox run -e typing
+
+# 只复核上一步已创建的隔离环境，不重新安装
+PATH="$PWD/.tox/typing/bin:$PATH" \
+  .tox/typing/bin/pyright --ignoreexternal --verifytypes click
+```
+
+两次报告都应指向本项目 `.tox/typing` 中的 Click，而不是全局安装或另一个 worktree；再对照所分析包的内容与本次构建，不能只看目录名。wheel 的 `site-packages` 路径是正常结果，不用 `PYTHONPATH` 把检查改回源码。在本次真实修复中，运行时已导入候选源码，直接调用 `.venv/bin/pyright` 却检查了全局旧包；两份包都返回 100%，只有路径与内容对照揭示了失配。
+
+**不要把常规分析的环境参数直接套给库完整度模式。** 实测 Pyright 1.1.408 的 `--verifytypes` 即使带相对或绝对 `--pythonpath`，仍检查默认环境；该版本有独立的包验证入口，不转入这一设置。上面的项目任务／本次调用 PATH 已定位到候选包。不同版本重核其报告，无法确认对象就保留未验；这里不改全局环境，也不把 `--ignoreexternal` 的结果扩成外部依赖或功能通过。
+
+**依据**：[官方类型完整度指南](https://github.com/microsoft/pyright/blob/ad444cc7a0923cb6127279fb95fe0b576d96d0d7/docs/typed-libraries.md#verifying-type-completeness)、[1.1.408 独立验证入口](https://github.com/microsoft/pyright/blob/ad444cc7a0923cb6127279fb95fe0b576d96d0d7/packages/pyright-internal/src/analyzer/packageTypeVerifier.ts#L80-L111)、[Click 的项目类型任务](https://github.com/pallets/click/blob/1077444068ebd88628128f7b4c0803296668ab79/pyproject.toml#L145-L199)；[真实用户的终端 PATH 差异及维护者回复](https://github.com/microsoft/pyright/issues/7555#issuecomment-2017449893)是 2024 年机制反馈，不是近期效果数据。[Click 本地补丁](../experiments/click-auto-envvar-error/README.md)的任务入口、工具报告与安装内容核对，2026-11-11 Linux/Python 3.12 实跑；未运行其他 Pyright 版本、操作系统或线上模型。
+
 ## 来源
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents)、[Agent teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic workflows](https://code.claude.com/docs/en/workflows)、[Worktrees](https://code.claude.com/docs/en/worktrees)
