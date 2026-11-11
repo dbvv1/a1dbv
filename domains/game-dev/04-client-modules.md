@@ -723,6 +723,22 @@ SaveEnvelope
 
 来源：[研究] [续玩边界](../../docs/research/wp10-content.md#35)，2026-10-15；[保存响应、线程与退出契约](../../docs/research/wp10-content.md#36)，2026-10-16；备份契约见上文 WP10 存档工具（2026-10-14）。
 
+#### 分片保存：失败只能丢候选，不能清掉旧一代
+
+**✅ 大档拆成多片前，先把“同一次保存”落实到存储提交；分片、Worker 和压缩都不提供原子性。** 小档继续用原 DTO 路线。确需 IndexedDB 分片时，相关片和当前版本指针放在同一个数据库事务里提交；若另用 localStorage 索引，就写到新的 generation 键，完整回读通过后再发布指针，失败只清本次候选。旧一代留到新档确认可恢复后再回收。跨两种存储没有共同事务，指针更新失败必须仍能读旧一代。
+
+**反例来自哈耶克的文明固定分片写入器：** `state`、`nations` 及另外三片覆写同一组键；合成存储中让 `nations` 写入失败，清理会删掉该槽全部五片，而旧 stub 仍在。让 stub 拒写也得到同一结果。外层另有单 blob 回退，可能救回本次保存；因此这是“旧快照不能依赖分片失败清理来保住”的证据，不是已证实玩家最终丢档。
+
+另一组输入让 `social` 拒写，函数仍返回 `ok: true` 并记录 `failedSecondary`；新 `state` 与旧 `social` 同时留存。读取端按固定键合并，并不按该标记拒绝旧片。**能降级的应是可丢的日志，不是名字叫 secondary 就可丢的玩法状态。** 本例 `social` 包括 `activeBuffs`／`activeDebuffs`，`market` 包括市场数据；项目须先定必需片及允许损失的字段，再决定是否允许部分成功。成功回执、失败片重试与旧一代恢复分别验，不能只测序列化往返。
+
+交给 Agent 的二改：在旧槽已有完整档时，分别让核心片、非核心片、索引提交失败，再从存储重新组装候选；确认原档可恢复、失败候选不与旧片混合。源码检查入口如下，在该项目 checkout 执行；无须启动浏览器：
+
+```bash
+git show 99382cd4ac4ade80969d1098679c103f24acc749:src/hooks/useGameState.js | sed -n '3995,4195p;4518,4555p'
+```
+
+来源：[固定写入器](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L4003-L4190)、[分片字段与合并](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L290-L363)、[读取与外层回退](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L4259-L4293)。2026-11-11 UTC 以 Node VM 执行原文写入器及 helpers，四组为正常、非核心片拒写、核心片拒写和 stub 拒写；存储与 Worker 为替身，未运行真实 IndexedDB、完整回退或浏览器断电恢复。事务／generation 方案是实施建议，未在该作品采用；仅分析流程，不复制其无仓库级许可的实现。
+
 #### 恢复与升级：先重建关系，再交回玩家
 
 **读档在加载壳里对副本校验、逐版本迁移；失败留原档并提供备份／重试。** 槽位 metadata 可读不代表完整内容和进度有效，也不能回写默认新局覆盖它。保 `schemaVersion`／`contentVersion`，沿已有场景协调器执行：

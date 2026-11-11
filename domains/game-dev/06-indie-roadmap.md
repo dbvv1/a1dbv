@@ -155,6 +155,36 @@
 
 **来源与范围**：2026-11-11 UTC 读原文核实；Brickbrag [作者制作说明](https://news.ycombinator.com/item?id=50063065)、[细节迭代](https://news.ycombinator.com/item?id=50068156)、[建造反馈](https://news.ycombinator.com/item?id=50064516)、[商店反馈](https://news.ycombinator.com/item?id=50067118)、[手机反馈及作者回应](https://news.ycombinator.com/item?id=50068830)、[官方更新](https://brickbrag.com/changelog.html)。其[credits](https://brickbrag.com/credits.html)列 LDraw 部件为 CC BY 4.0、部分旧件 CC BY 2.0，这不是整作代码和资产的复制许可。Permit Pending [玩家错误](https://news.ycombinator.com/item?id=50171235)、[作者回退说明](https://news.ycombinator.com/item?id=50173404)、[AI／人工分工](https://news.ycombinator.com/item?id=50202645)均为社区原文；官网本轮返回 403，未重试绕过。Brickbrag 本轮进入实际游戏地址后因 WebGL context 创建失败停在加载页，未改变渲染配置或重试；两作均未进入可操作玩法、未核当前修复效果。哈耶克的文明[可玩入口](https://hkingauditore.github.io/civ-game/)本轮按上文实跑，页面更新日志显示 v2.3.64（2026-10-22）；[作者 AI 协作协议](https://github.com/HkingAuditore/civ-game/blob/master/CONTRIBUTING_AI.md)仅支持其采用 AI 协作流程的陈述。[固定启动选槽源码](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L2627-L2718)另作 Node VM 原文片段验证：手动较新、自动较新及同时间三种输入分别选手动、自动、手动；存储、定时器与加载函数为替身，不当作三次浏览器读档。上述局部实测不构成整体品质、性能或省时收益结论。
 
+### AI 制作实例：改经济规则，要验旧玩家下一回合付了多少
+
+**👀 哈耶克的文明提供了比“旧档能打开”更具体的二改验收题：税制换单位后，玩家原来的政策还是否同样有效。** 作者更新日志先在 v2.3.7 将高旧乘数钳到安全税率，再于 v2.3.8 改为用存档工资反算、力求保持旧税额；v2.3.10 又修正“岗位工资”与“实际人均收入”的差别，说明原逻辑可能让 20% 名义税率超过实际收入。它们是作者报告的玩家侧经济问题及修订，不是本仓复现了整轮经济崩盘，也不证明每次修订都由 AI 独立完成。
+
+**做法：先约定要保持的玩家结果，再让 Agent 改格式。** 给每种旧格式一份工资、就业、库存和税率均已知的存档，在相同收入与征收效率下比较下一回合的税额、补贴和余额；无工资数据、低就业率与限额触发另作政策分支，不凭一个默认比例宣称兼容。格式版本要串行升级，并在保存再读后确认不会重复换算。
+
+**固定源码的反例：幂等通过，金额仍可变化。** 对无版本头税数据，设旧乘数 2、基数 0.05、存档工资 1，第一段除以 0.10 得 1，紧接着 v2→v3 又乘 0.05，最终直接税率为 5%；按该输入的旧税额公式应为每人 0.10，而在税基仍为 1、效率为 1 且余额充足时，新公式为 0.05。单独输入 v2 的乘数 2 则得到 10%，两条起点不可混为一个“旧档”。无版本正税、v2、v3、补贴与无工资五组原文迁移均执行过，重复迁移均不变；这只能证明算式与幂等，不能证明玩家经济得以保留。旧实际发行包和完整模拟未重放，不能把此例外推为所有旧档税收减半。
+
+在固定源码 checkout 用 Node 复验这个反例，不加载 React 或改玩家数据：
+
+```bash
+node --input-type=module <<'JS'
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const source = fs.readFileSync('src/hooks/useGameState.js', 'utf8');
+const start = source.indexOf('        const loadedTaxPolicies = data.taxPolicies || {};');
+const end = source.indexOf('        setTaxPolicies({', start);
+assert(start >= 0 && end > start);
+const data = { taxPolicies: { headTaxRates: { peasant: 2 } }, market: { wages: { peasant: 1 } } };
+vm.runInNewContext(source.slice(start, end), { data, STRATA: { peasant: { headTaxBase: 0.05 } }, console });
+assert.equal(data.taxPolicies.headTaxRates.peasant, 0.05);
+console.log(data.taxPolicies);
+JS
+```
+
+把“能解析、幂等”和“保住玩家决策”分开接收：前两项可由 Agent 快速验证，后者须由制作方先明确兼容承诺，再用真实旧档和实际玩法验证；未保住时先修迁移，不继续扩税种。字节备份仍沿[恢复模块](04-client-modules.md#恢复与升级先重建关系再交回玩家)，它不能修复单位转换错误。
+
+来源：固定 `99382cd4ac4ade80969d1098679c103f24acc749` 的[作者更新日志](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/config/changelog.js#L930-L977)、[两段迁移](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L3727-L3775)、[实际模拟税基与扣款](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/logic/simulation.js#L3770-L3815)。2026-11-11 UTC 核原文、五组合成输入执行迁移；税额比较为所列条件下的公式核对，不是完整回合运行或玩家反馈统计。AI 协作与许可边界沿上节。
+
 ## G1 旗舰实战：给「潮汐邮差」真的生成资产，再改一次规则
 
 **🧪 值得直接复验：把生成原图、稳定 asset ID、规则状态分开，才能在换图和改玩法时保住旧档。** 本次实际调用生图、保留原 PNG、接入无引擎网页源码，并完成一次预先计划的折叠筏二改；v1 已独立跑通真实浏览器回路，最新 v2 仍待客户端、目标设备和真人体验接收。

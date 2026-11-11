@@ -464,7 +464,11 @@ python asset-pipeline/veyra-death-contact/tests/check_contact.py --candidate-dir
 
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 
-**已提交短释放期间保主手臂，普通受击只做低权重躯干叠加；真实控制和死亡仍优先。** Veyra 使用 `recoilLayer:'torso-additive'`，从原 hurt 躯干轨相对 idle 参考姿势求增量；短释放期间压低这层权重，避免连续普通伤害反复抹掉发起姿势；短释放结束后恢复原受击覆盖策略。真实 cast 等 resolve 才释放；即时普攻从真实提交开始，没有视觉伪造的伤害前准备。若多逻辑步跨过主姿势，只在当前动作原生命周期内、第一次实际 draw 时补呈现一次；取消、控制、死亡或过期即丢弃，sync 不算已画，也不积压历史动作。正常 1／3 tick 采样与连续受击反例都要核，不能只针对低帧率调时长。
+**已提交短释放期间保主手臂，普通受击只做低权重躯干叠加；真实控制和死亡仍优先。** Veyra 使用 `recoilLayer:'torso-additive'`，从原 hurt 躯干轨相对 idle 参考姿势求增量；短释放期间压低这层权重，避免连续普通伤害反复抹掉发起姿势；短释放结束后恢复原受击覆盖策略。Morrow 的新法器动作也须接这条消费策略：只改攻击源而保留整上身 hurt 覆盖，实战仍会吞掉前指释放。原完整试用已让两队 Morrow 复用该策略，默认与 quiet 保原；双队真实 GLB 验证手臂局部旋转保留、躯干确实反冲，不把局部旋转相同说成世界空间手部或画面不变。[^morrow-recoil]
+
+真实 cast 等 resolve 才释放；即时普攻从真实提交开始，没有视觉伪造的伤害前准备。若多逻辑步跨过主姿势，只在当前动作原生命周期内、第一次实际 draw 时补呈现一次；取消、控制、死亡或过期即丢弃，sync 不算已画，也不积压历史动作。正常 1／3 tick 采样与连续受击反例都要核，不能只针对低帧率调时长。
+
+[^morrow-recoil]: [Morrow 原消费者接线及真实源回归](https://github.com/dbvv1/MOBA-Like/commit/25044115c335763b8670f52c40935a80072af395)，2026-11-11；`npx vitest run tests/client/morrow-ranged-source.test.ts tests/client/death-source-loader.test.ts` 可复验实际加载、映射和动画层。CPU／独立代码审查通过，未验游戏画面、手感或换默认。
 
 实现从[正式源与重采样配方](https://github.com/dbvv1/MOBA-Like/tree/9311f43e1b396827bf27caebc8ab715f5cb2cc84/asset-pipeline/heroes/veyra-release)及[同版 motion／adapter](https://github.com/dbvv1/MOBA-Like/tree/9311f43e1b396827bf27caebc8ab715f5cb2cc84/asset-pipeline/presentation)开始。实际正常视距的伸臂已越出躯干、武器身份更符合远程释放，但兵群与血条仍遮挡手部；这项有限采用没有证明拥挤战斗已清楚。来源：[Quaternius UAL1 官方免费 Standard](https://quaternius.itch.io/universal-animation-library)，原件／许可／哈希随配方保存；固定消费者及正常画面核实于 2026-10-26，2026-10-27 合入。
 
@@ -518,7 +522,9 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 
 **做法**：显式调用 `syncKayKitNativeAction(character, state, actorId)`，取真实 `state.shots` 与该武器 `lastShot`，用源clip时长归一绝对相位。换弹优先；固定Knight的静止瞄准持源末帧，开火从源片段8/30秒起以原速播放剩余0.8秒，不重复举枪前摇；移动/蹲下/交互/死亡/手枪/结算恢复rest，不假装已有跑射动画。临时移动结束若仍在旧shot有效窗，恢复当前相位而非永久取消。调用者须处理朝向、装备与View，本单元没有代做IK。
 
-**失败反例**：用“按了开火”播放会把空弹、冷却与非法目标也画成开火；只看lastShot会在切枪再切回时复活旧动作。当前FPS用接受shot及原冷却终点匹配，依据步枪6tick与切枪至少12tick，拒绝被切枪覆盖的旧射击；数值变化要重验，不把该等式泛化成通用契约。
+**失败反例**：用“按了开火”播放会把空弹、冷却与非法目标也画成开火；只看lastShot会在切枪再切回时复活旧动作。当前FPS把接受shot及原冷却终点匹配收为 `currentRifleShot`，供 Knight 与既有刚体角色 View 共用；依据步枪6tick与切枪至少12tick，拒绝被切枪覆盖的旧射击。真实 Game→View→GLB 的切走再切回已复现并修正，绘制仍为 CPU 替身。手枪15tick冷却会被切枪的 `Math.max` 保留，同一等式无法识别那次切换，因此明确不处理手枪；手枪旧表现保留，取消缺口仍在。数值变化要重验，完整武器取消需要真实切换身份，不能扩大这个短冷却特例。[^rifle-view-consumer]
+
+[^rifle-view-consumer]: [共享步枪判断及实际 View 回归](https://github.com/dbvv1/FPS-Like/commit/4ed8222dd4bf6827ec4017ae112fb942bf0400dc)，2026-11-11；运行 `node --import tsx --test tests/content-set.test.ts` 可复验真实 Game、原 GLB 和 View 消费。487项测试、类型／构建与非作者审查通过；未验 GPU 或浏览器，Knight／RX24 装配仍未接 View。
 
 **选动作窗口也要核源姿态**：原实现把瞄准固定在0相位，实源手槽距1.007m；末帧约0.568m，与Shoot的8/30秒处41根骨世界矩阵误差小于1e-6。源clip完整播放正确，不代表该起点适合每次射击。只对这套固定源跳过已证实的举枪段，保原速度；不要把0.25当其他动画的通用裁切值，也不能据骨矩阵接近声称握枪或视觉过渡通过。
 

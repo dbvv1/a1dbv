@@ -11,3 +11,17 @@
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。候选`e3269fe`在保护区外平滑325岸坡顶点，海线／路廊／街屋与道具支撑不动；54专项、构建、六路CPU与独审过。D3D11工具已备，未拍新图／盲评；设备离线、[原拍摄](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)外层unknown，不重拍／清锁。 |
 
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练[`bd4e185`](b-work-20261106.md#11-09-冻结候选接收)待完整浏览器／视听。蒙皮`aeb4870`仍只供测试／工具调用，原characters-v1拒绝SkinnedMesh；撤回无产品调用者的挂载包装，本轮未改案例。先定身体／装备和地面适配，再接实际View；鞋底静止参照不证穿地，不调倍速。0/77不变，socket拒绝／原拍摄unknown不重试。 |
+
+2026-11-11（UTC+8）12:00 UTC 接收前状态；由实质交付替换，候选未完成画面验收。
+
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。原试用候选[b43428d](https://github.com/dbvv1/MOBA-Like/commit/b43428dd7b1ac212f12da84daeabb12d9e2d45d6)接双队Morrow法器／前指释放，真实4.3.2源和下载pin已验；Veyra／默认／quiet／capture保原。715测试、双构建、独审过；未合main／部署／看图，0/89不变。原终态unknown，拒绝不重试。 |
+
+| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main；前台时钟接v20，改键／六席读者已收。新增[升级保底](../../domains/game-dev/04-client-modules.md#恢复与升级先重建关系再交回玩家)：目的槽无时间戳不等于空槽，先持久保原档再迁移；六种原文片段输入与新读者过。真实跨版／Unity消费者仍欠。 |
+
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 图标LF已进MOBA；quiet材质旁置未看图。Morrow双队法器／释放由真实Blender源进入原试用，改持物与姿势、保权威时序，回流[动画制作](../../domains/game-dev/assets/animation.md#第二次修改决定是否留下)。FPS仅身体／装备准备，Star借回原车手，均未完成视听采用。开放音频未听未用；Nature恢复unknown。 |
+
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 哈耶克v2.3.64同版手动／自动档恢复已实玩；固定源码旧迁移先写槽0、删旧键再解析，损坏输入风险已复现并回流[路线图](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)。跨版迁移／后期未验，不复制无仓库许可资源；Brickbrag WebGL失败、Permit Pending 403与原调用unknown不重试。 |
+
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练`bd4e185`仍待浏览器／视听。角色候选[e69f327](https://github.com/dbvv1/FPS-Like/commit/e69f32721969a41a47de90a988974140822a37f1)在原生采样隐藏三剑四盾、保身体／头盔／披风，退出恢复；485测试、实源与构建／独审过。未接View／RX24／地面适配，不缩放／改倍速，0/77不变；原拍摄unknown与拒绝不重试。 |
+
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。候选[01258ff](https://github.com/dbvv1/Star-Rush-Reborn/commit/01258ffbaef5d456778d8e2feb1b484c7f5a1423)接回原车手及转向反馈，修捕获静默回退；27项组合回归、构建、六路CPU与两路独审过。生成参考已在，正式校准／最新实拍仍欠。设备离线、原拍摄外层unknown，不重拍／清锁。 |
