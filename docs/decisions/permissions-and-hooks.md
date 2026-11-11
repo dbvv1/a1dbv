@@ -73,6 +73,22 @@ network_access = false
 
 **依据**：[实际配置] [Anthropic SDK 精确命令](https://github.com/anthropics/claude-agent-sdk-python/blob/2d485201617258867dd0f74b9e7307056f5938fe/.claude/settings.json)；[真实取舍] [Pydantic 收窄 allow #3860](https://github.com/pydantic/pydantic-ai/pull/3860)、[撤回 ask #4396 与维护者说明](https://github.com/pydantic/pydantic-ai/pull/4396#issuecomment-3939631046)；[官方匹配与版本条件](https://code.claude.com/docs/en/sandboxing#auto-allow-mode)。核实 2026-10-28，未在本仓客户端试用。
 
+<a id="claude-settings-diagnostics"></a>
+### 配置不生效：分开查错误、作用域与实际会话
+
+**先查被拒的键和实际读取的设置源，保留原本需要的权限模式与作用范围。** 在出现问题的可信项目目录运行 `claude --version`、`claude doctor`，查看具体文件和设置诊断，再按下表继续。`doctor` 会读当前目录的配置而不弹工作区信任确认，不用它盲查陌生配置。
+
+| 卡在哪里 | 下一步与成功判据 |
+|---|---|
+| 配置写进去了，却似乎被忽略 | 读 `doctor` 的 `Invalid settings` 等正文，按原意修正键名、枚举或类型；原意不明先确认，不为过诊断换成更宽的模式或 allow 规则。**退出 0 和 stderr 为空不是配置验收**。本次 2.1.321 中，`permissions.defaultMode` 的值写成 `defualt` 或数字时，诊断均退出 0，但同文件合法的 `autoMode` 标记也未进入有效结果 |
+| 没有设置诊断，规则仍没出现 | 核官方键名与允许的设置层。2.1.321 对 `defaultMod`、`hard_denyy` 这两种拼写没有设置诊断；编辑器 JSON Schema 可补查，但它可能滞后，不能单独裁决新键是否受支持 |
+| 想确认 classifier 到底读到了什么 | 运行 `claude auto-mode config`，对照输出的 `environment`、`allow`、`soft_deny`、`hard_deny`。它只显示 auto 分类器规则，不是全部 `permissions` 或沙箱的有效值；项目 `.claude/settings.json` 与 `.claude/settings.local.json` 中的 `autoMode` 不参与此配置，支持的是用户、managed 和 `--settings` 层。先确定所需作用范围，不把仓库规则直接搬成全局规则 |
+| 诊断通过，实际操作仍不符合预期 | 回到发生问题的客户端与会话：用 `/status` 核加载源、原生权限界面核规则，再核原动作的批准／拒绝和产物。CLI 读取成功不能替桌面会话验收，分类器配置 JSON 也不证明审查服务可用；auto 通路故障按 [06](../06-hooks-and-guardrails.md#auto-review-unavailable)处理 |
+
+诊断可能初始化本地配置状态与备份；本次没有改动输入 settings 文件，但不应把它描述成绝不写盘。
+
+**依据**：[一手] [设置加载与错误处理](https://code.claude.com/docs/en/settings#confirm-what-loaded)、[分类器配置来源](https://code.claude.com/docs/en/auto-mode-config#where-the-classifier-reads-configuration)与[输出范围](https://code.claude.com/docs/en/auto-mode-config#inspect-the-defaults-and-your-effective-config)；[开源] [固定 SchemaStore 配置 schema](https://github.com/SchemaStore/schemastore/blob/bf7c6745505ccace5568dc0d7f4ae29647e9b41a/src/schemas/json/claude-code-settings.json)；[社区：原始需求] [schema 滞后与静默忽略 #94232](https://github.com/anthropics/claude-code/issues/94232)、[同配置 CLI／桌面行为不同的作者报告 #102422](https://github.com/anthropics/claude-code/issues/102422)，未复现桌面问题；[本次原生检查] 官方 Linux x64 2.1.321、隔离的合成用户／项目配置，仅核诊断与配置读取，未运行模型、权限动作或上述沙箱配置，核心路线仍待实际采用；核实 2026-11-11。
+
 ## Copilot CLI：共享配置不能代替成员的批准
 
 **团队或工作坊可共享命令说明，但不能把 Claude 的 `permissions.allow`／`ask`／`deny` 数组搬进 Copilot 的仓库设置。** 当前 `.github/copilot/settings.json` 不支持这些键，`settings.local.json` 也使用同一 schema；能读取部分 `.claude/settings.json`，不代表继承其中的权限规则。
