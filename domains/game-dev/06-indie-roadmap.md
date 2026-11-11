@@ -140,6 +140,20 @@
 
 **本节来源与范围**：Supergiant 的 Hades II 结局复盘见后文当前最高水平节所引开发者访谈（一手：受访开发者陈述，发布 2026-05-23；P77 比较核实 2026-10-22（UTC+8））；Last Pirate 与 LocalThunk 为作者报告（一手），版本与撤回边界见 WP12 存档补研（Last Pirate 核实 2026-10-21，未单列时区；LocalThunk 阶段判断经 P77 比较核实 2026-10-22（UTC+8））；均未在本轮复现，不构成量化收益或通用产能结论。
 
+### AI 制作实例：把玩家报错交给 Agent，但先更新复现路径
+
+**👀 借鉴窄修复过程，不把作者的“已修复”当当前构建验收。** 适合已有 Web 小样、收到具体玩家反馈时使用；没有真实缺陷时不为套用案例追加回归任务。
+
+- **Brickbrag：先校正教程路径，再重放卡关。** 玩家曾报告买地后不能建造、离开商店又弹回菜单、手机双击摇杆放大页面。官方 2026-10-13 更新列出对应修订，并把教程说明为“先建造，再买周围土地保护作品”。因此复验不能继续照旧摘要“先买地、再建造”操作。作者称使用 Claude Code、Three.js、Node 与 SQLite，也强调细节阶段仍需人工引导和迭代。
+- **Permit Pending：保留错误层级，限定回退方案。** 玩家报告城市加载后黑屏，错误为 `glRenderbufferStorageMultisample: Texture total allocation size is too large`，并伴随 framebuffer attachment zero size；作者回复称让 Claude 在此时回退到较低分辨率纹理。可借的是“真实错误 → 窄范围资源档调整 → 原设备复测”，不是见到 GPU 分配错误就一律缩图片。原文不足以判定实际改动的是图片、render target 还是 MSAA。
+
+**失败反例：** 把旧教程步骤当当前规则，会复验错路径；把作者自述的回退当已验证修复，会跳过真正失败的设备。已有[资源／初始化恢复机制](04-client-modules.md)可复用，不另造一套模块。
+
+可直接给 Agent 的任务：
+> 读取当前构建和官方更新，核对玩家的设备、操作与原始错误；只修改与该错误有关的一层。按更新后的路径在原设备重放，分别交回作者说明、代码变更、实际运行结果。无法访问构建时停在来源结论，不写修复通过。
+
+**来源与范围**：2026-11-11 UTC 读原文核实；Brickbrag [作者制作说明](https://news.ycombinator.com/item?id=50063065)、[细节迭代](https://news.ycombinator.com/item?id=50068156)、[建造反馈](https://news.ycombinator.com/item?id=50064516)、[商店反馈](https://news.ycombinator.com/item?id=50067118)、[手机反馈及作者回应](https://news.ycombinator.com/item?id=50068830)、[官方更新](https://brickbrag.com/changelog.html)。其[credits](https://brickbrag.com/credits.html)列 LDraw 部件为 CC BY 4.0、部分旧件 CC BY 2.0，这不是整作代码和资产的复制许可。Permit Pending [玩家错误](https://news.ycombinator.com/item?id=50171235)、[作者回退说明](https://news.ycombinator.com/item?id=50173404)、[AI／人工分工](https://news.ycombinator.com/item?id=50202645)均为社区原文；官网本轮返回 403，未重试绕过。两作均未试玩、未核当前修复效果，不构成品质、性能或省时收益结论。
+
 ## G1 旗舰实战：给「潮汐邮差」真的生成资产，再改一次规则
 
 **🧪 值得直接复验：把生成原图、稳定 asset ID、规则状态分开，才能在换图和改玩法时保住旧档。** 本次实际调用生图、保留原 PNG、接入无引擎网页源码，并完成一次预先计划的折叠筏二改；v1 已独立跑通真实浏览器回路，最新 v2 仍待客户端、目标设备和真人体验接收。
