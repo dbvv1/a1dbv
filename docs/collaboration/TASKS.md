@@ -42,12 +42,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `18b2634`／Site **v22**；仅修 smoke 的 default／quiet 入口、退役灯光与逐次重开核验，未改运行时。原角色候选 `aa2acf1` 的19GLB取消→重载／726项／两构建保留。quiet仍欠当前默认盲选、完整整局／帧耗；设备离线、原外层／槽unknown，0/89不变。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `b110172`／Site **v22**；现有smoke补自然终局、原始帧耗、同次重开输入及实际材料只读状态，609项／两构建／独审过，未开浏览器。原角色 `aa2acf1` 保留；quiet仍欠当前默认盲选、真实完整smoke／帧耗，设备离线、原外层／槽unknown，0/89不变。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [核心循环](../../domains/game-dev/05-gameplay-architecture.md#一条完整制作链先让第一局和第二局都能玩)已区分个人结果与全场收尾。Star 原修复已过独立组装客户端 CPU 接收：默认 9/9、轮胎候选 8/9 对手完赛，余 1 为仍在前进的截止 DNF；花见坂反复倒车仍是品质缺口。原发布回执未确认，远端未见修复，不重推；浏览器／帧耗欠。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [拍摄接收](../../domains/game-dev/02-verification-and-playtesting.md#5-质量上限可测的部分交给工具体验取舍交给人)补FPS真实训练消费者就绪：不再让角色／枪／命中源仍加载时出图。MOBA 19GLB＋Q/W动作释放CPU核验保留；两案下一层均为浏览器与实际画面。Star后继材料候选、音频未听、Nature恢复unknown。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)已接三案原smoke，区分自然终局、短流程与同次全程帧耗；MOBA普通诊断核实际材料，FPS不漏首页路由。下一层为合法原槽的真实浏览器／画面；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Turbo Kartz关卡二改](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)的失败定位方法已用于Star真实CPU消费者，区分AI恢复失效与道路几何，不以玩家完赛代替逐车验收；实例本作未试玩。哈耶克同版恢复、backroad制动窄采用保留；旧阻塞不重试。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master [bc29118](https://github.com/dbvv1/Star-Rush-Reborn/commit/bc2911885d3afed52f2e1ad20f0e4fa484787168)／Site **v10**。指定整层已在原开关；默认历史图的固定视觉路径等同性及三机位metadata已核，两新非作者整体均偏好整层，静态盲选通过。完整整局smoke／帧耗仍缺，设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `e2a9f1e`／Site **v24**；原训练候选 [f3ddecdd](https://github.com/dbvv1/FPS-Like/commit/f3ddecdd26cd4a702e2d81515f6fb85d06f734f0)补实际资源ready合同，617项／构建／独审过，未拍图。动作候选 `ab98193` 保留，握枪与落地合同欠，不硬接View。全场材质可独立按main同树对照，仍缺当前默认盲选、完整整局／帧耗，原槽unknown，0/77不变。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `31111d2`／Site **v10**；整层仍在原开关，当前默认三机位静态盲选通过。现有smoke补真实自动试驾整圈、连续原始帧耗、同次重开，CPU／构建／独审过；完整浏览器与帧耗仍缺。设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `276c803`／Site **v24**；现有smoke补首页／旧链接实际路由、默认对全场材质六回合及原始帧耗，437项／构建／独审过，未开浏览器。训练候选 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选与真实完整smoke／帧耗，原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收

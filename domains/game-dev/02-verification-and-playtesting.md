@@ -38,6 +38,10 @@
 
 **局限：工具的官方能力契约不等于本项目已验证。** 缺少结果就报告具体缺口，例如“逻辑序列通过，手柄返回菜单未验证”，而不是把一种入口的成功升级成全部验收通过。
 
+**完整一局按项目的自然结束条件验收，不按脚本运行了多久或出现结算页判断。** 使用正常配置，经实际输入或明确的玩家级入口，从开局推进到规定终局并记结束原因。多回合赛核回合记录和换边；有完赛收尾窗口的比赛，逐个参赛者核进度与最终状态。测试超时只能记未完成，不能充当玩法截止；缩短回合、改生命或直接装入终局情境仍是有用的状态转换回归，但不证明正常过程能走通。重开检查另核下一局实际动作，沿用[核心循环](05-gameplay-architecture.md#一条完整制作链先让第一局和第二局都能玩)的生命周期。
+
+**帧耗和完整流程绑定同一次运行。** 从开局到终局连续采样，注明采样起止、实际 renderer、分辨率及暂停／页面隐藏区间；保留长帧，不把慢帧夹到模拟步长，也不用平均 FPS 隐去尾部停顿。比较新版与当前默认时保持同档、同入口规则和同输入方案。加速模拟、固定截图和短时采样各自报告，不冒充整局渲染成本。脚本实现这些检查只代表具备取证入口，真实运行结果回来前仍记未验。[^complete-match-evidence]
+
 **本节来源与范围**：Unity CLI 帧字段见 [CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)，Input System 合成输入见 [Input testing](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)，UE 自动化与输入模拟见 [Automation Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine)、[Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)，Roblox 试玩入口见 [Studio MCP](https://create.roblox.com/docs/studio/mcp)；以上均为各引擎官方文档（一手）。能力边界与选择判断为本仓研究。引擎契约原核实 2026-10-15（UTC+8）。
 
 ## 3. 一个真实案例：答对了，为什么还走不出去？
@@ -132,3 +136,5 @@ Jeff Schomay 的 Crossword Dungeon 开发记录展示了适合状态接口的情
 **完整生产闭环的最高水平仍未知，当前推荐属于可行层。** 主流参照仍是既有引擎测试、脚本回归与真人试玩，不据个案估采用率。Agent 可整理轨迹、写回归与寻找遗漏，人保留根因核验和体验取舍；重训、误报与接口维护的总成本超过收益时，撤回自动探索而保留有效回归。上文的视听、输入、存档与目标设备检查不变。
 
 **本节来源与范围**：Play2Code／RSIGame／Spec2Game、EA RAID／TITAN／Deckhand 为作者报告，Thomas Ricouard 2026-09 为作者实践（一手）；比较与采用判断为本仓研究。详细任务、模型、样本和成本见 [WP13 §7](../../docs/research/2026-10-14-game-wp13-agent-config.md#7-自动反馈何时转真人整页验证选择校准)，二改保留条件见 [二改最高水平卡](../../docs/research/2026-10-14-game-wp13-agent-config.md#当前最高水平卡二改之后旧玩法与资产是否还成立)，完整例子见 [P32 两次需求继承设计](../../docs/research/2026-10-14-game-wp13-agent-config.md#56-从同build证据推进到真实路径与旧需求保留)，生产链条件见 [P53 比较](../../docs/research/2026-10-14-game-wp13-agent-config.md#6-p53探索发现与修复验收分账)。2026-10-22（UTC+8）复核。长期乐趣、完整设备链与总成本仍未知。
+
+[^complete-match-evidence]: 已落入原验收入口：[Star 完整圈与连续帧耗](https://github.com/dbvv1/Star-Rush-Reborn/commit/31111d244609c694ecd2a58009b12b0e6248ea30)、[FPS 当前首页／全场材质的六回合](https://github.com/dbvv1/FPS-Like/commit/276c80399e5386606fc226e54e90072a721c885b)、[MOBA 自然终局及实际材料状态](https://github.com/dbvv1/MOBA-Like/commit/b110172bb02e8687e679e810d1c4024057ab2051)。FPS 原完整链已存在，但验收器按原始 query 分类，漏掉首页及旧链接的实际重定向；现共享生产路由并拒绝固定输入带和未知入口。MOBA 用原纹理所有者、已提交帧与 context-loss 状态辨别材料是否实际激活，不只回显 URL。三项的 CPU／构建与非作者代码审查通过；Star 自动试驾、FPS 普通 UI 六回合及 MOBA 闲置玩家场景的真实浏览器运行和帧耗尚未验收。核实：2026-11-11。
