@@ -45,3 +45,5 @@ result_branch: relay/b-ai-game-release-iteration-20261106
 ## dot-B 接收决定
 
 `08a9128` 中 Brickbrag／Permit Pending 的窄修订机制已在 `6e024d74` 回流[发布后修订](../../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，现补入游戏首页。只接收已核原文及该段做法；其余长名单和广搜数字不整体采纳、不续搜。Brickbrag 复验按官方“先建造、再买周围土地”路径，Permit Pending 不把未明的资源回退实现写成统一缩图。两作未试玩／未核当前修复，原调用终态未知；保持本卡隔离，不重派、不开新实例来源卡。
+
+11-11 既有实例的浏览器补验：哈耶克的文明 v2.3.64 已完成新局建造→槽 1 保存→再建造→读回→刷新→再次手动读回。两次槽 1 读取均恢复一屋及原金币／粮木；刷新自动选择两屋自动档，已回流[槽位分验](../../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)。只接收同版新档回路，不接收旧版迁移、后期性能、完整体验或 AI 贡献比例。Brickbrag 实际入口停于 WebGL context 创建失败，三条修复未能复测；Permit Pending 原 403 未重试。未新增来源卡、未重派原调用，原终态 unknown 不变。

@@ -146,13 +146,14 @@
 
 - **Brickbrag：先校正教程路径，再重放卡关。** 玩家曾报告买地后不能建造、离开商店又弹回菜单、手机双击摇杆放大页面。官方 2026-10-13 更新列出对应修订，并把教程说明为“先建造，再买周围土地保护作品”。因此复验不能继续照旧摘要“先买地、再建造”操作。作者称使用 Claude Code、Three.js、Node 与 SQLite，也强调细节阶段仍需人工引导和迭代。
 - **Permit Pending：保留错误层级，限定回退方案。** 玩家报告城市加载后黑屏，错误为 `glRenderbufferStorageMultisample: Texture total allocation size is too large`，并伴随 framebuffer attachment zero size；作者回复称让 Claude 在此时回退到较低分辨率纹理。可借的是“真实错误 → 窄范围资源档调整 → 原设备复测”，不是见到 GPU 分配错误就一律缩图片。原文不足以判定实际改动的是图片、render target 还是 MSAA。
+- **哈耶克的文明：验恢复时，明确读的是哪个槽。** 当前网页 v2.3.64 已实跑新局的建造、暂停、手动保存与读取：小屋 1 间时存到空白槽 1，再建到 2 间；读槽 1 后回到 1 间，金币、粮食和木材同时恢复。刷新页面却自动读回两屋的自动档；再次选择槽 1，仍能恢复一屋。因此把“保存后刷新”当作手动槽恢复测试，会把不同快照混成一次结果。给 Agent 的可复用步骤是：记录槽位和一个玩家可见标记，保存后主动改变标记，再分别验证手动读取与刷新续局。此轮只验证同版新档，未验证旧版迁移、后期性能或完整策略体验；不据这条回路给作品整体品质评级。作者仓库有 AI 协作协议，但各模型的实际贡献比例仍未知。
 
-**失败反例：** 把旧教程步骤当当前规则，会复验错路径；把作者自述的回退当已验证修复，会跳过真正失败的设备。已有[资源／初始化恢复机制](04-client-modules.md)可复用，不另造一套模块。
+**失败反例：** 把旧教程步骤当当前规则，会复验错路径；把作者自述的回退当已验证修复，会跳过真正失败的设备；只看到“读取成功”而不核槽位和游戏状态，会漏掉自动档与手动档的差异。已有[资源／初始化恢复机制](04-client-modules.md)可复用，不另造一套模块。
 
 可直接给 Agent 的任务：
 > 读取当前构建和官方更新，核对玩家的设备、操作与原始错误；只修改与该错误有关的一层。按更新后的路径在原设备重放，分别交回作者说明、代码变更、实际运行结果。无法访问构建时停在来源结论，不写修复通过。
 
-**来源与范围**：2026-11-11 UTC 读原文核实；Brickbrag [作者制作说明](https://news.ycombinator.com/item?id=50063065)、[细节迭代](https://news.ycombinator.com/item?id=50068156)、[建造反馈](https://news.ycombinator.com/item?id=50064516)、[商店反馈](https://news.ycombinator.com/item?id=50067118)、[手机反馈及作者回应](https://news.ycombinator.com/item?id=50068830)、[官方更新](https://brickbrag.com/changelog.html)。其[credits](https://brickbrag.com/credits.html)列 LDraw 部件为 CC BY 4.0、部分旧件 CC BY 2.0，这不是整作代码和资产的复制许可。Permit Pending [玩家错误](https://news.ycombinator.com/item?id=50171235)、[作者回退说明](https://news.ycombinator.com/item?id=50173404)、[AI／人工分工](https://news.ycombinator.com/item?id=50202645)均为社区原文；官网本轮返回 403，未重试绕过。两作均未试玩、未核当前修复效果，不构成品质、性能或省时收益结论。
+**来源与范围**：2026-11-11 UTC 读原文核实；Brickbrag [作者制作说明](https://news.ycombinator.com/item?id=50063065)、[细节迭代](https://news.ycombinator.com/item?id=50068156)、[建造反馈](https://news.ycombinator.com/item?id=50064516)、[商店反馈](https://news.ycombinator.com/item?id=50067118)、[手机反馈及作者回应](https://news.ycombinator.com/item?id=50068830)、[官方更新](https://brickbrag.com/changelog.html)。其[credits](https://brickbrag.com/credits.html)列 LDraw 部件为 CC BY 4.0、部分旧件 CC BY 2.0，这不是整作代码和资产的复制许可。Permit Pending [玩家错误](https://news.ycombinator.com/item?id=50171235)、[作者回退说明](https://news.ycombinator.com/item?id=50173404)、[AI／人工分工](https://news.ycombinator.com/item?id=50202645)均为社区原文；官网本轮返回 403，未重试绕过。Brickbrag 本轮进入实际游戏地址后因 WebGL context 创建失败停在加载页，未改变渲染配置或重试；两作均未进入可操作玩法、未核当前修复效果。哈耶克的文明[可玩入口](https://hkingauditore.github.io/civ-game/)本轮按上文实跑，页面更新日志显示 v2.3.64（2026-10-22）；[作者 AI 协作协议](https://github.com/HkingAuditore/civ-game/blob/master/CONTRIBUTING_AI.md)仅支持其采用 AI 协作流程的陈述。上述局部实测不构成整体品质、性能或省时收益结论。
 
 ## G1 旗舰实战：给「潮汐邮差」真的生成资产，再改一次规则
 
