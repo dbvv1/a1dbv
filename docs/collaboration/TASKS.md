@@ -36,6 +36,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
+- B 现有95卡无 ready/running：先核原写者／拍摄槽；购买音效先听验，FPS先定实际接触，不凑重复卡。
 
 ## 项目板
 
@@ -43,12 +44,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。[原配方与候选](local-jobs/B-MOBA-HERO-CLIP-CONSUMER-20261106.md)：`113dbaf`沿00f82c7合最新main，实际下载／解析已核两份旧5.2死亡导出的固定pin，未换4.3重导。706项及独审过；未合main／部署，浏览器／死亡画面欠，0/89不变。原终态unknown，socket／DevTools拒绝不重试。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。[原配方与候选](local-jobs/B-MOBA-HERO-CLIP-CONSUMER-20261106.md)：`43d3be3`承接113dbaf，已核实际分支为clear-stale-command-receipt；5.2固定下载／解析已接，源包用法已纠正，未换4.3重导。706项原实现及16消费者复验／独审过；未合main／部署，死亡画面欠，0/89不变。原终态unknown，socket／DevTools拒绝不重试。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main（源码／CPU）；[FPS 前台时钟](../../domains/game-dev/04-client-modules.md#web-foreground-clock)接 v20，三入口两轮通过。[改键与六席读者](core-reader-intake-20261106.md)：改键新版接线／失败保旧独立通过；六席9081tick及原经济购买独立照做过，共享契约手读已用、完整采用欠。浏览器沿旧证据；原生／设备未验，Unity暂停。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [图标LF](../../domains/game-dev/assets/2d.md#icon-family-rebuild)已进MOBA main，Cairo／HUD消费者过；[四件源包](local-jobs/B-FPS-CONTENT-SET-001.md)命中[部分接入](../../domains/game-dev/assets/materials.md#source-hit-marker)，通路未接。MOBA [quiet 材质](../../domains/game-dev/assets/materials.md#quiet-material-family)已接旁置，画面未验。开放音频未听未用，Nature 恢复未知。[3D](../../domains/game-dev/assets/3d.md)：网关三源实测，本机`gen3d`／`glbprep`可用；采用3–5件标准件。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 既有 Bichitos／Solhex／场景氛围与主体尺度机制保留。LEVEL 第四轮仅收[失败弯段与辅助分验](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)，已核作者／源码并纠正自动转向与半径算术误读；其余长名单本轮不收、不续搜。未试玩，不新增品质推荐；旧实机欠项及原调用unknown保留。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；12图双盲2→2，0/43。coast候选[`0e2b689`](https://github.com/dbvv1/Star-Rush-Reborn/commit/0e2b689ad5449cac2fbf12a5c80379506093db4f)已将206个平台面接入同地形配色，顶点几何不变；215单测及完整CLI链、build、6路600tick过，仅CPU证据。已接academy两原图/提示词，上传已核完成，选B仅材料参考；[chase选A](b-work-20261106.md#star-chase-目标接收)保留，均非实拍/评分锚图。整层材料/标准件及院落灯塔仅过CPU，浏览器/GPU/盲评未过。设备离线；[原拍摄](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)外层unknown，不重拍/清锁；原403、手感/听感欠项保留。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练[`bd4e185`](b-work-20261106.md#11-09-冻结候选接收)待完整浏览器／视听。[蒙皮后继d7c6dff](local-jobs/B-FPS-COMPLETE-ACTION-SOURCE-20261110.md)接同源前跑与真实Game快照，481项／构建／独审过，未接View、构建输出不变。原尺寸RX24最近手槽装配仍否决，真实掌面／枪轴、完整动作／自然安拆欠。网站与0/77不变；socket拒绝不重试。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | Brickbrag／Permit Pending 已在6e024d74回流[发布后二改](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，现补游戏首页与原卡接收。LEVEL[失败弯段与辅助分验](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)保留；长名单不收不续搜。未试玩，不增品质推荐；原调用unknown保留。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。候选`02c10a1`保留206平台配色，补显式headless D3D11工具档，硬件档保sandbox/须独立证据，SwiftShader默认不变；仅CPU准备。academy B／[chase A](b-work-20261106.md#star-chase-目标接收)仅材料参考，GPU/盲评欠。设备离线、[原拍摄](local-jobs/B-STAR-QUALITY-CAPTURE-20261106.md)外层unknown；不重拍/清锁，原403/手感/听感欠项保留。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练[`bd4e185`](b-work-20261106.md#11-09-冻结候选接收)待完整浏览器／视听。[蒙皮后继c63c621](local-jobs/B-FPS-COMPLETE-ACTION-SOURCE-20261110.md)接同源前跑与真实Game快照，并核源足骨范围/真实速度；483项／构建／独审过，未改运行动作或接View。原尺寸RX24最近手槽装配仍否决，真实掌面／枪轴、完整动作／自然安拆欠。网站与0/77不变；socket拒绝不重试。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收

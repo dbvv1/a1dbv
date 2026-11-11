@@ -266,7 +266,9 @@ Rokoko Vision 3.0 已转离线录制后上传，不含手指；旧双机位／�
 
 **反例与复跑：** 按住前进撞墙，或碰撞求解器留下微小位移，都不代表正在跑；本例沿既有脚步的 1 mm 位移门槛，并限制横向修正，不将数值推广为所有控制器的阈值。运行`node --import tsx tools/check-kaykit-rifle-movement.ts <fixed-sample-directory>`，目录含已固定的 Knight、Med_CombatRanged 和 Med_MovementAdvanced 三文件。独立采样源循环之外，还要让真实 Game 以不同朝向前进、停步、开火与换弹；首尾一致只能证循环坐标，不证明脚滑、过渡或握枪合格。
 
-[^rifle-run-source]: [FPS 同一消费者与快照用法](https://github.com/dbvv1/FPS-Like/blob/d7c6dffa10d88279c2c02e68ed4bc196862a2104/docs/native-ranged-candidate.md)，2026-11-11；真实 GLB、5 个朝向共 60 个 Game 前跑快照、测试／构建与非作者复核通过。仍是可选 CPU 消费者，未注册 View，生产构建逐字节不变；不提高动作覆盖或品质分。
+**标定先找着地区间，不拿整圈脚骨摆幅当步幅。** 同一原地跑源的 root motion 为零；固定源 201 个姿态中，脚骨沿源 Z 的范围约 0.68 m、趾骨约 0.99 m，但两者包含抬脚回摆，且骨点并非鞋底接触点。真实 Game 的约 4.5 m/s 乘源周期约 0.833 s，只得到约 3.75 m 的恒速外推距离，不是实际完整周期的接地测量。不能直接相除后调倍速：先在实际姿态识别鞋底接触点和支撑区间，再比较该段足底后移与角色平移速度；没有这层证据就保留源速度，明确脚滑未验。
+
+[^rifle-run-source]: [FPS 同一消费者与快照用法](https://github.com/dbvv1/FPS-Like/blob/c63c6212f9fa03b6cd33cd916b863b2bd19c447e/docs/native-ranged-candidate.md)，2026-11-11；真实 GLB、5 个朝向共 60 个单 tick Game 位移区间、201 姿态足／趾骨采样、测试／构建与非作者复核通过。仍是可选 CPU 消费者，未注册 View；后续标定未改运行时动作、资产或模拟，不提高动作覆盖或品质分。
 
 ## 攻击后要防御：先修合法出口，再加连续性
 
@@ -450,7 +452,7 @@ python asset-pipeline/veyra-death-contact/tests/check_contact.py --candidate-dir
 
 **运行端核实际下载字节，再把同一缓冲交给解析器。** 固定旧源解决修正量复算，固定运行导出解决加载了哪一版，两者不能互代。MOBA 原候选只按 manifest 选路径；现在真实 FileLoader 下载后先核两阵营已接收 GLB 的 SHA-256 与字节数，再将该缓冲交 GLTFLoader。等长坏字节和截断在解析前失败，沿原清理／旧源恢复路径处理；不能重新下载另一份字节后仍引用前一次校验。复验用 `npm test -- tests/client/death-source-loader.test.ts tests/client/veyra-contact-consumer.test.ts`，测试驱动真实下载／解析消费者但不创建 WebGL renderer。[^veyra-download-pin]
 
-[^veyra-download-pin]: [既有候选的固定导出接线](https://github.com/dbvv1/MOBA-Like/blob/113dbaf616b6e5a3d181592b40e5464ff4c1eaef/docs/verification/death-trial-integration.md#continue-the-same-candidate-with-pinned-contact-exports)，2026-11-11。固定的是已有 Blender 5.2 death-contact GLB，并未换成另产的 Blender 4.3 重导结果；默认资源／网站不变。CPU、构建与非作者复核通过，实际浏览器、双方死亡画面与整场观感仍待验。
+[^veyra-download-pin]: [既有候选的固定导出接线](https://github.com/dbvv1/MOBA-Like/blob/43d3be3ecf2d3ce490ddab5f8f9de445b22ab98e/docs/verification/death-trial-integration.md#continue-the-same-candidate-with-pinned-contact-exports)，2026-11-11。固定的是已有 Blender 5.2 death-contact GLB，并未换成另产的 Blender 4.3 重导结果；默认资源／网站不变。CPU、构建与非作者复核通过，实际浏览器、双方死亡画面与整场观感仍待验。
 
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 

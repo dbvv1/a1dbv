@@ -50,3 +50,5 @@ FPS 已有独立蒙皮实例和两类 reload 坐标合同，但完整持枪 idle
 既有蒙皮分支已快进[d7c6dff](https://github.com/dbvv1/FPS-Like/commit/d7c6dffa10d88279c2c02e68ed4bc196862a2104)，只取已固定MovementAdvanced的Running_HoldingRifle，接原骨架父轨和真实Game相邻快照。五朝向60个前跑快照→静止瞄准／开火／换弹及独立源蒙皮过；481测试／构建／非作者复核通过。撞墙微动不当跑，侧退／跑射等缺失动作保回退；未接View或RX24装配，35个生产／模拟构建文件与原候选相同。
 
 方法回流[循环与实际位移](../../../domains/game-dev/assets/animation.md#rifle-run-snapshot)。完整供给仍未成立，源步幅与真实速度、过渡／脚滑／掌面与枪轴、实际浏览器均待；main b895bcb、Site v24、0/77不变。原来源/拍摄调用不重启，不增加新来源、旁置或领取卡。
+
+后继[c63c621](https://github.com/dbvv1/FPS-Like/commit/c63c6212f9fa03b6cd33cd916b863b2bd19c447e)已核真实Game速度与201源姿态的足／趾骨范围；483测试、构建与独审通过。原地循环的骨点摆幅包含回摆，不能按“每周期距离÷摆幅”调倍速。下一层仍须实际鞋底接触点与着地区间；本轮未改运行时、未解开View阻塞，不计完整动作或品质。

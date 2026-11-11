@@ -58,6 +58,8 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 
 ## 11-11 既有候选的资源 pin 接收
 
-接收[113dbaf](https://github.com/dbvv1/MOBA-Like/commit/113dbaf616b6e5a3d181592b40e5464ff4c1eaef)到原 `dot-b/death-existing-combat-trial-20261106`：沿90d4fad／00f82c7合入最新main配方，真实下载缓冲核两份既有Blender5.2 GLB固定摘要后再交原解析器；未替换为4.3重导产物。706测试、类型／构建、源包检查与非作者真实下载／解析反例通过，默认269项pin和原资产不变。方法已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
+接收[113dbaf](https://github.com/dbvv1/MOBA-Like/commit/113dbaf616b6e5a3d181592b40e5464ff4c1eaef)到实际承接分支 `dot-b/clear-stale-command-receipt-20261107`：沿90d4fad／00f82c7合入最新main配方，真实下载缓冲核两份既有Blender5.2 GLB固定摘要后再交原解析器；未替换为4.3重导产物。706测试、类型／构建、源包检查与非作者真实下载／解析反例通过，默认269项pin和原资产不变。方法已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
 
 main仍aade37c／Site v22／0/89；未新增入口、资源或部署。原终态、同构建浏览器smoke、双方死亡及非死亡画面仍欠，未跑GPU／声音；原调用unknown和拒绝边界不变。
+
+11-11 接收对账：`113dbaf` 实际位于 `dot-b/clear-stale-command-receipt-20261107`，旧 death-existing 分支停在 `90d4fad`；不是源对象或发布丢失。已沿实际分支快进[43d3be3](https://github.com/dbvv1/MOBA-Like/commit/43d3be3ecf2d3ce490ddab5f8f9de445b22ab98e)，修正源包README“运行未消费／4.3配方未实现”的过时说明。16真实loader／动画消费者、两队61点接触及基线检查过；仅文档，5.2运行资源与4.3隔离重导不混同，默认／网站／0/89不变。

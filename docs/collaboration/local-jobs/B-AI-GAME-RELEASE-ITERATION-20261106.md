@@ -7,7 +7,7 @@ target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-release-iteration-20261106
 
-工作线：AI 游戏实例。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：AI 游戏实例。已有来源产物及部分接收；原调用终态未核，保留 review_ready，不据文字或提交推断接收端空闲。
 
 ## 目标
 寻找 AI 大规模开发作品从首次可玩到发布后一轮真实修订的证据，借实际玩家问题决定模块/制作链下一步，不收只有首日演示的作品。
@@ -41,3 +41,7 @@ result_branch: relay/b-ai-game-release-iteration-20261106
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：按 §9.7 复测 Brickbrag 三条；将“降级路径＋最低设备回归”四段规格接到现有 FPS/MOBA/Star；补核哈耶克 LICENSE 与 Permit Pending 版本页；渠道可达时补读 itch 相关页。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+
+## dot-B 接收决定
+
+`08a9128` 中 Brickbrag／Permit Pending 的窄修订机制已在 `6e024d74` 回流[发布后修订](../../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，现补入游戏首页。只接收已核原文及该段做法；其余长名单和广搜数字不整体采纳、不续搜。Brickbrag 复验按官方“先建造、再买周围土地”路径，Permit Pending 不把未明的资源回退实现写成统一缩图。两作未试玩／未核当前修复，原调用终态未知；保持本卡隔离，不重派、不开新实例来源卡。
