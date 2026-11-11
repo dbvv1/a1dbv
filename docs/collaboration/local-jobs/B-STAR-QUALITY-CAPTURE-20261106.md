@@ -53,4 +53,4 @@ result_branch: relay/b-star-quality-capture-20261106
 
 ## 11-11 产物去向结清
 
-接收已入 master `ce7b870` 的12原图、逐拍收据和已有双非作者判断。仅材料接收；原 Workflow 失败保留，当前默认的前图、完整 smoke／帧耗仍缺，不是候选实现合入或换默认。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。
+本卡接收已入master `ce7b870`的12原图、逐拍收据和双非作者判断，原Workflow失败保留。后续dot-B已在[6d7cb5b](https://github.com/dbvv1/Star-Rush-Reborn/commit/6d7cb5b62411ae417bf724e30a695a78e1618797)将等同实拍源的整层代码合入原开关，本卡不重开；当前默认前图、完整smoke／帧耗仍缺，未换默认。本卡accepted只表示固定材料去向，不证明原调用退出；原终态unknown与相关隔离保留，不重派、清锁或重试被拒入口。

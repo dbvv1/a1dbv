@@ -2,12 +2,12 @@
 id: B-AI-GAME-INPUT-UI-20261106
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-input-ui-20261106
 
-工作线：AI 游戏实例。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：AI 游戏实例。本卡已按下方窄范围决定固定产物去向；历史执行边界保留。
 
 ## 目标
 找 AI 游戏针对真人操作反馈改好完整输入/UI循环的案例，为 MOBA/FPS 的可用性与信息层级提供实际参照，不只看生成的界面图。
@@ -39,5 +39,11 @@ result_branch: relay/b-ai-game-input-ui-20261106
 - 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/B-AI-GAME-INPUT-UI-20261106/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
 - 产物：[c6a1353](https://github.com/dbvv1/a1dbv/commit/c6a13530de676ecb6328c176f4778cdc499ae6f1)，分支 `relay/b-ai-game-input-ui-20261106`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查未通过或未完成。
-- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
+- 原交回建议（已由下方裁决取代，不再排原卡补验）：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+
+## 11-11 产物去向结清
+
+只接固定 sources.md 中 Bichitos Rumble 的宽屏触控条件与 915×412 回归机制，已由 [94a1818](https://github.com/dbvv1/a1dbv/commit/94a1818f1b4a789b2fc0615ae0ce768205b98b5e)进入[输入模块](../../../domains/game-dev/04-client-modules.md#wide-touch-detection)。其余作品、第二轮扩充与整份候选表本轮不采用，不再广搜或补同一稿。原审查未完成、缺游戏截图与未实玩边界保留；这是正文机制的部分采用，不是完整实例验收或品质推荐。
+
+本卡 `accepted` 仅指上述固定产物的窄用途，不证明原 Workflow／CLI／外层执行退出。原终态 unknown 与执行隔离保留，不清锁、不释放槽位、不重派或重试受拒入口。

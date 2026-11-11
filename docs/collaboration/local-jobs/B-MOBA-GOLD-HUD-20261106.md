@@ -2,12 +2,12 @@
 id: B-MOBA-GOLD-HUD-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-gold-hud-20261106
 
-工作线：MOBA。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：MOBA。本卡已按下方窄范围决定固定产物去向；历史执行边界保留。
 
 ## 目标
 把已采用但尚无可见消费者的 goldAwarded 变成玩家可读的金币收据；这是原接口的真实接入，不新造金币算法或音效。
@@ -38,5 +38,11 @@ src/ui/gold-receipt.ts、src/ui/hud.ts、src/client.ts；新增 tests/client/gol
 - taskDone=true（本单元实现范围）；pageStuck 不适用（非 reader-test）。已新增 src/ui/gold-receipt.ts（consume/read/reset，按 tick:ordinal 去重，同 tick 合并、混合原因显示「多项奖励」、固定 2 秒模拟时间寿命），client 每个真实 step 后立即 consume，HUD 在 data-gold 旁新增独立 [data-gold-receipt] 文本行，未改模拟/存档/声音/CSS。Workflow 内实测：定向测试 13/13、save-lifecycle 12/12、typecheck:web/build/build:web 均 exit 0、git diff --check 干净；全量 npm test 580/581，唯一失败 tests/client/audio-skill.test.ts 在基线 7e1986f 同环境复现，非本次引入。openIssues：(1) tests/client/save-lifecycle.test.ts 属写入范围外的必要 harness 绑定改动（仅注入 createGoldReceipt，未改断言），请接收端复核；(2) 全量测试因基线既有音频失败未全绿；(3) 未运行浏览器/smoke/GPU/音频与人工可读性验收，<=420px 遮挡、HUD 行高变化与读屏行为未验证。
 - 产物：[4d8408b](https://github.com/dbvv1/MOBA-Like/commit/4d8408bbd04a8d3fc5857721768a340694034464)，分支 `relay/b-moba-gold-hud-20261106`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端按清单提交并复核 save-lifecycle harness 改动；负责人安排浏览器/人工可读性与遮挡验收，并确认基线 audio-skill 失败是否按既有问题处理。
+- 原交回建议（已由下方裁决取代，不再排原卡补验）：接收端按清单提交并复核 save-lifecycle harness 改动；负责人安排浏览器/人工可读性与遮挡验收，并确认基线 audio-skill 失败是否按既有问题处理。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 11-11 产物去向结清
+
+部分接收 [4d8408b](https://github.com/dbvv1/MOBA-Like/commit/4d8408bbd04a8d3fc5857721768a340694034464) 的金币收据链；它已在原战斗整合 [068c2af](https://github.com/dbvv1/MOBA-Like/commit/068c2af0fb19990189226225c17e8457707687a6)进入真实 client/HUD，包括 save-lifecycle 的依赖注入且未改断言，不是新建候选或产品 main 接收。当前候选 `fbbb06963b4757559d13a8133302d068c95fbbee` 用 Node 24.22.1／Vitest 3.2.4 独立复验 gold-receipt、gold-client、gold-terminal-rewards、save-lifecycle 四文件，35/35 通过，工作树前后干净；未运行全量、audio-skill 或浏览器。原音频失败及其环境原因仍按历史记录，不称本次修复。窄屏遮挡、读屏和实际可见性未验，不接收视觉／品质结论；产品合入与网站门槛沿现有整合，不再续本卡补验。
+
+本卡 `accepted` 仅指上述固定产物的窄用途，不证明原 Workflow／CLI／外层执行退出。原终态 unknown 与执行隔离保留，不清锁、不释放槽位、不重派或重试受拒入口。

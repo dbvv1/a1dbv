@@ -34,7 +34,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- B 现有95卡：67 accepted、7 review_ready、8 blocked、13 cancelled，无 ready/running。9卡仅结清固定产物去向，原调用unknown不释放；[余项与三案阻塞](b-work-20261106.md#11-10-超期候选采用决定)未清零，不凑重复卡。
+- B 现有95卡：71 accepted、0 review_ready、8 blocked、16 cancelled，无ready/running。余7卡已定去向：4部分接收，装备语义失败放弃，2旧固定捕获目标由当前默认成对验收替代；历史材料／原调用unknown保留、不释放隔离。[三案执行缺口](b-work-20261106.md#11-10-超期候选采用决定)仍未清零，不凑重复卡。
 
 ## 项目板
 
@@ -46,7 +46,7 @@
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main；前台时钟接v20，改键／六席已收。[雨雪制动](../../domains/game-dev/05-gameplay-architecture.md#雨雪二改合格不等于还能在原来的位置刹车)采用真实Rapier车辆：晴雨雪均过却需36.8／51.5／78.3m；低抓地反例正确失败，新读者换Pip完成。关卡提示要按实际距离重定；未接三案或真人驾驶。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 图标LF已进MOBA；quiet材质在开关后。[动画页](../../domains/game-dev/assets/animation.md#原生动作跟已接受的开火事实不跟按键猜测)改为接受射击／实际切枪取消资格，保命中与声音历史，覆盖长冷却手枪；真源／CPU与独审过，视听未验。Star整层内容已接候选；开放音频未听未用，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 哈耶克同版恢复已实玩；新收[backroad rally移植](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例移植操控时先保存比较对象)：借原实现对照和实际驾驶验收，不拿221项绿灯代替玩家依赖的量。公开车辆已实跑，UE原源／浏览器试玩未验，资产不随代码许可整包采用。Brickbrag／Permit Pending原阻塞不重试。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；探索2→2、0/43。指定`7e87d4c`整层与当前默认对比；[后继f64b5a5](https://github.com/dbvv1/Star-Rush-Reborn/commit/f64b5a5caaf8cde7b88eb4676469eb77b082f5cf)地表／墙／路肩／平台与标准件均已接CPU消费者，本轮48项与构建过，不再无图盲调。原12图不是当前默认前图；设备离线、外层／槽unknown，缺同机位、完整smoke与帧耗。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master [6d7cb5b](https://github.com/dbvv1/Star-Rush-Reborn/commit/6d7cb5b62411ae417bf724e30a695a78e1618797)／Site **v10**。指定`7e87d4c`整层已合原开关，构建等同原实拍，192项及完整CPU消费者、六路600tick通过；后继`f64b5a5`仍在原候选。待当前默认同机位盲选、完整smoke／帧耗；旧默认图未证明执行路径等同。设备离线、外层／槽unknown，未换默认；探索2→2、0/43不变。 |
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**。原角色候选[50be6e9](https://github.com/dbvv1/FPS-Like/commit/50be6e983a48729e0e9b7e3f0aba1b0f24891a70)修手枪切回旧fire，491项／构建／真Game与GLB／独审过，玩法与hash不变。Knight／RX24未装配或接View。全场材质为指定换默认对象，缺当前默认同机位盲选、smoke／帧耗；原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
