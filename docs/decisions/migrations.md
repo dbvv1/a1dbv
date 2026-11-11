@@ -31,9 +31,9 @@
 
 来源：[Angular 官方迁移说明](https://angular.dev/reference/migrations/signal-inputs)、[TanStack 固定规则与夹具](https://github.com/TanStack/query/tree/a8af0e243af6f09d670ea2ec9849c4e3e3bc17ed/packages/query-codemods/src/v5/remove-overloads)、[真实用户的成功与遗漏反馈](https://github.com/TanStack/query/issues/6204)；原核实 2026-10-15，保留于[同题比较](../research/2026-10-12-development-maintenance.md#重复代码迁移语法规则类型分析与第二次执行)。
 
-**先试代表性单元，再并行；分析范围与修改范围分开。** Claude Code 的 fan-out 配方先用少量文件调好任务再扩量，但这不适合机械套在跨文件迁移上：Angular 的 `--path` 只限修改范围，`--analysis-dir` 却可能漏掉外部引用。文件可以独占分工，依赖分析与最后整合不能切丢；例外增多时先收窄并修规则。
+**先试真实消费者，再扩量；待迁声明与全部写入范围分开。** Claude Code 的 fan-out 配方适合先用少量文件调好任务，但跨文件迁移不能机械按文件或 tsconfig 拆开。Angular 的 `--path` 限定待迁的查询声明，目录外引用仍可能被分析和改写；`--analysis-dir` 则会裁掉分析，可能漏改外部引用。重叠配置保持完整，不靠删配置消除重复改写；迁移器报告成功后，仍须核实际 diff、构建和原消费者。
 
-来源：[Claude Code 官方 fan-out](https://code.claude.com/docs/en/best-practices#fan-out-across-files)、[Angular 分析范围选项](https://angular.dev/reference/migrations/signal-inputs#configuration-options)；原核实 2026-10-15，采用其分批与范围机制，不声称已证明 Agent 净提效。
+来源：[Claude Code 官方 fan-out](https://code.claude.com/docs/en/best-practices#fan-out-across-files)原核实 2026-10-15；[Angular 查询迁移范围](https://angular.dev/reference/migrations/signal-queries)与[跨配置迁移实测](../../experiments/angular-query-migration/README.md)核实 2026-11-11。采用其分批与范围机制，不声称已证明 Agent 净提效。
 
 <a id="导入已换新运行时可能还没换"></a>
 
@@ -53,4 +53,4 @@
 
 本页不适用于把纯内部重构统一升级成双版本兼容流程；没有持久状态的语法改写也无需数据库恢复演练。批量与并行只在迁移单元可独立接收时增加。
 
-[历史实测、读者卡点与未验范围](../research/2026-11-10-migration-case-evidence.md)：原任务证据保留；本次为结构改写，当前版本核心路线尚未通过两项真实任务及本机新读者验收，保持 🟡。
+[历史实测、读者卡点与未验范围](../research/2026-11-10-migration-case-evidence.md)：原任务证据保留；当前版本核心路线尚未通过两项真实任务及本机新读者验收，保持 🟡。
