@@ -46,7 +46,7 @@
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [核心循环](../../domains/game-dev/05-gameplay-architecture.md#一条完整制作链先让第一局和第二局都能玩)已区分个人结果与全场收尾。Star 原修复已过独立组装客户端 CPU 接收：默认 9/9、轮胎候选 8/9 对手完赛，余 1 为仍在前进的截止 DNF；花见坂反复倒车仍是品质缺口。原发布回执未确认，远端未见修复，不重推；浏览器／帧耗欠。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)已接三案原smoke，区分自然终局、短流程与同次全程帧耗；MOBA普通诊断核实际材料，FPS不漏首页路由。下一层为合法原槽的真实浏览器／画面；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Turbo Kartz关卡二改](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)的失败定位方法已用于Star真实CPU消费者，区分AI恢复失效与道路几何，不以玩家完赛代替逐车验收；实例本作未试玩。哈耶克同版恢复、backroad制动窄采用保留；旧阻塞不重试。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `31111d2`／Site **v10**；整层仍在原开关，当前默认三机位静态盲选通过。现有smoke补真实自动试驾整圈、连续原始帧耗、同次重开，CPU／构建／独审过；完整浏览器与帧耗仍缺。设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `38b56ba`／Site **v10**；整层仍在原开关，当前默认三机位静态盲选通过。整局smoke已修隐藏画质控件导致的赛前阻塞，真实DOM／设置事件反例、20项相关回归及独审过；完整浏览器与连续帧耗仍缺。设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `276c803`／Site **v24**；现有smoke补首页／旧链接实际路由、默认对全场材质六回合及原始帧耗，437项／构建／独审过，未开浏览器。训练候选 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选与真实完整smoke／帧耗，原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
