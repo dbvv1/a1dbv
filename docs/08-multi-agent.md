@@ -374,6 +374,28 @@ PATH="$PWD/.tox/typing/bin:$PATH" \
 
 **依据**：[官方类型完整度指南](https://github.com/microsoft/pyright/blob/ad444cc7a0923cb6127279fb95fe0b576d96d0d7/docs/typed-libraries.md#verifying-type-completeness)、[1.1.408 独立验证入口](https://github.com/microsoft/pyright/blob/ad444cc7a0923cb6127279fb95fe0b576d96d0d7/packages/pyright-internal/src/analyzer/packageTypeVerifier.ts#L80-L111)、[Click 的项目类型任务](https://github.com/pallets/click/blob/1077444068ebd88628128f7b4c0803296668ab79/pyproject.toml#L145-L199)；[真实用户的终端 PATH 差异及维护者回复](https://github.com/microsoft/pyright/issues/7555#issuecomment-2017449893)是 2024 年机制反馈，不是近期效果数据。[Click 本地补丁](../experiments/click-auto-envvar-error/README.md)的任务入口、工具报告与安装内容核对，2026-11-11 Linux/Python 3.12 实跑；未运行其他 Pyright 版本、操作系统或线上模型。
 
+### uv 脚本：先选项目环境还是独立脚本环境
+
+**让 Agent 先确认这次验收的是项目，还是独立分发的脚本，再选入口。** 多个 worktree 各自隔离还不够：带 PEP 723 元数据的 `uv run script.py` 会按脚本声明准备独立环境，不使用项目依赖；`uv run python script.py` 则把文件交给项目 Python，不自动安装脚本头的依赖。先读仓库运行说明、`pyproject.toml`、已有锁文件与脚本声明，再沿用项目已选的测试命令，或脚本原本的分发入口。
+
+BMAD 就把项目开发依赖与独立脚本依赖分开。在仓库根，下面两项任务应选不同入口：
+
+```sh
+# 沿项目锁复核 recon_kit 的实现，与项目测试使用同一环境
+uv run --frozen python -B skills/bmad-deep-recon/scripts/recon_kit.py citations path/to/report.md
+
+# 独立使用 token 计数工具，让 uv 读取它声明的 tiktoken 依赖
+uv run -v skills/bmad-toolsmith/scripts/count_tokens.py skills/bmad-deep-recon/SKILL.md
+```
+
+**缺脚本锁时，先核选路。** uv 0.13.6 中，去掉第一条的 `python -B` 会在 Python 启动前退出 2，因为它需要脚本自己的锁，根目录的 `uv.lock` 不适用。若本来就是独立脚本且需要固定依赖，在维护该脚本的范围内运行 `uv lock --script path/to/script.py`，审查并保存生成的 `script.py.lock`，再用 `uv run --locked path/to/script.py …`。`--locked` 检查声明与锁是否一致；`--frozen` 直接使用现有锁，不做一致性检查。不要为消掉错误就删锁检查、强改成项目 Python，或向共享 `.venv` 补包。
+
+**接收实际输出，尤其核是否降级。** 同一份 BMAD Skill 文本，在按项目锁精确同步的环境中运行计数脚本，得到 `method=fallback`、2653；独立脚本入口使用 tiktoken 0.14.0，得到 `method=tiktoken`、2472。两条都退出 0，前者却只是字符估算。粗估任务可以接受明确标出的 fallback，同口径比较 Skill 长度则应确认实际 tokenizer。已有环境若额外装过 tiktoken，项目入口也可能用上它；`uv run` 默认保留额外包，成功不证明依赖写进了项目锁。临时 `--with` 也只是叠加依赖。
+
+交回结果时，写明所用锁、解释器／依赖版本与实际方法。用当次命令的 `-v` 日志核解释器，再核该环境的包版本与模块来源；不要拿另一条 `uv run python -c …` 的项目环境替独立脚本作证。修改运行依赖后分别验脚本入口和项目测试：BMAD 的测试直接导入模块或用测试解释器起子进程，不会读取脚本的 PEP 723 依赖。
+
+**依据**：[官方脚本依赖与锁](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies)、[锁检查与同步](https://docs.astral.sh/uv/concepts/projects/sync/)、[临时额外依赖](https://docs.astral.sh/uv/concepts/projects/run/#requesting-additional-dependencies)；[BMAD 项目配置](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/pyproject.toml)与[生产计数脚本](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/skills/bmad-toolsmith/scripts/count_tokens.py)；[真实用户的缺锁仍安装报告及修复](https://github.com/astral-sh/uv/issues/18826)。2026-11-11，在 Linux、uv 0.13.6、Python 3.11.18 的独立副本实跑上述生产入口；未验证其他平台、整套项目或模型提效。
+
 ## 来源
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents)、[Agent teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic workflows](https://code.claude.com/docs/en/workflows)、[Worktrees](https://code.claude.com/docs/en/worktrees)
