@@ -1,8 +1,8 @@
 # opensrc：仓库 ref 完整性补丁（🧪 试用）
 
-**版本敏感的判断，默认用原生 Git 固定完整 commit SHA，并核对 `git rev-parse HEAD`。** `opensrc` 的缓存标签不等于源码版本证明；本补丁供想继续试用其源码检索流程的人使用。
+**只查依赖实现，先读项目实际使用的包；未安装而版本明确时，可直接读取[该版发布包已有的源码](npm-source/README.md)。** 包内缺所需源码、测试或历史时，再用原生 Git 固定完整 commit SHA，并核对 `git rev-parse HEAD`。`opensrc` 的缓存标签不等于源码版本证明；本补丁供想继续试用其源码检索流程的人使用。
 
-补丁让仓库 ref 缺失时失败，而不是把默认分支放进请求 ref 的缓存；支持完整 commit SHA。它合并两次本地修复，尚未进入上游。**2026-10-29 收口：本轮不再推进投稿，不再等待 fork；保留完整补丁与验证证据，版本固定继续优先用原生 Git。**
+补丁让仓库 ref 缺失时失败，而不是把默认分支放进请求 ref 的缓存；支持完整 commit SHA。它合并两次本地修复，尚未进入上游。**2026-10-29 收口：本轮不再推进投稿，不再等待 fork；保留完整补丁与验证证据，需要仓库版本时继续用原生 Git 固定。**
 
 ## 复用
 
@@ -26,7 +26,7 @@ cargo test --locked --manifest-path packages/opensrc/cli/Cargo.toml --test repo_
 - 真实 parser 接本地 Git 夹具：不存在的 ref 不再回退默认分支，完整 SHA 取到指定旧提交；正常分支、tag 与合法 `+main` 保持可用。
 - `test_clone_at_ref_leading_plus_is_a_literal_branch_name` 确保 `+main` 是字面分支名；`test_fetch_repo_source_rejects_empty_ref_before_cache_hit` 与 CLI 集成测试确保空值、refspec、选项和模式语法不能借缓存命中绕过校验。
 - 复现探针使用合成的已解析仓库／包元数据、真实 Git 与真实 CLI 缓存读取；没有覆盖冷启动 registry HTTP，也没有衡量模型编码效果。
-- 包版本缺 tag 时的默认分支回退仍属上游 [PR #57](https://github.com/vercel-labs/opensrc/pull/57)，本补丁不改它。既有错标缓存不重验、不迁移；试用请设置独立的 `OPENSRC_HOME`。
+- 包版本缺 tag 时的默认分支回退不在本补丁范围；上游 [PR #57](https://github.com/vercel-labs/opensrc/pull/57)已关闭、未合并（2026-11-11 核实），不能当作已修。既有错标缓存不重验、不迁移；试用请设置独立的 `OPENSRC_HOME`。
 - 最终源码已通过 123 个 Rust 单元测试、1 个 CLI 集成测试、fmt、all-targets clippy（`-D warnings`）与版本同步检查；本次只打包并复核补丁，不重跑完整套件。
 
 ## 来源与许可
