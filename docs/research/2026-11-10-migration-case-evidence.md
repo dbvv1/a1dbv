@@ -99,4 +99,4 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 
 2026-11-10 云端以 [Factoriolab 迁移前 f785e10](https://github.com/factoriolab/factoriolab/tree/f785e10becb84afd1fe546ac5b4098271207aabd) 重放 Angular 21→22 官方迁移：固定相容依赖后运行 CLI／core `--migrate-only`，迁移与开发构建通过；官方脚本将两项 extended diagnostics 设为 suppress，不能据此称检查强度完全不变。
 
-同两份原消费者 `button.spec.ts` 与 `state/router/migration.spec.ts`，在原 Angular 21.2.12／CLI 21.2.10 与后态 Angular 22.2.5／CLI 22.2.6 下，各用自身官方 unit-test builder、Vitest 4.1.5／jsdom 31.0.0，前后均 29 项通过，原断言和文件哈希不变，当轮独立复核确认上述范围。这是 Node DOM 下的创建与路由迁移回归；未承接原 Karma 的 100% coverage 门槛，不是 ChromeHeadless、完整 CI 或本机新读者验收。隔离环境已重置，原产物及日志现不可回读，未提供复跑包；本页仍为 🟡。
+同两份原消费者 `button.spec.ts` 与 `state/router/migration.spec.ts`，在原 Angular 21.2.12／CLI 21.2.10 与后态 Angular 22.2.5／CLI 22.2.6 下，各用自身官方 unit-test builder、Vitest 4.1.5／jsdom 31.0.0，前后均 29 项通过，原断言和文件哈希不变，当轮独立复核确认上述范围。这是 Node DOM 下的创建与路由迁移回归；未承接原 Karma 的 100% coverage 门槛，不是 ChromeHeadless、完整 CI 或本机新读者验收。隔离环境已重置，原产物及日志现不可回读，原双版本对照未提供复跑包；另有[迁移前 Angular 21 基线复跑入口](../../experiments/factoriolab-consumer-replay/README.md)，只重建原消费者，不重建 Angular 22 迁移；本页仍为 🟡。
