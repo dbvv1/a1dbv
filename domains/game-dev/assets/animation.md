@@ -261,6 +261,13 @@ Rokoko Vision 3.0 已转离线录制后上传，不含手指；旧双机位／�
 
 **依据**：[一手／研究] [WP4 引擎机制](../../../docs/research/2026-10-14-game-wp4-animation.md#3-引擎接入的机制依据unity优先)、[Shards 固定反证](../../../docs/research/2026-10-14-game-wp4-animation.md#e-真实游戏反证shards工具可以借鉴不能按readme全信)；原核实 2026-10-14，未引擎实测。
 
+<a id="rifle-run-snapshot"></a>
+**已有持枪跑要接实际位移，不能只接前进按键。** 先核源片段的父轨、root 与首尾，再在既有蒙皮消费者采样；motor 仍负责角色位置。FPS 固定`Running_HoldingRifle`是原地前跑，新增可选`rifleMovement`沿原父轨适配，不改源曲线。`syncKayKitRifleAction`取真实 Game 相邻快照的前向位移与权威模拟时刻，源相位按时长取余；暂停复用同一对快照。静止接回原生瞄准／开火／换弹，侧退、静步、蹲伏和移动射击／换弹仍回退，不用前跑冒充缺失动作。[^rifle-run-source]
+
+**反例与复跑：** 按住前进撞墙，或碰撞求解器留下微小位移，都不代表正在跑；本例沿既有脚步的 1 mm 位移门槛，并限制横向修正，不将数值推广为所有控制器的阈值。运行`node --import tsx tools/check-kaykit-rifle-movement.ts <fixed-sample-directory>`，目录含已固定的 Knight、Med_CombatRanged 和 Med_MovementAdvanced 三文件。独立采样源循环之外，还要让真实 Game 以不同朝向前进、停步、开火与换弹；首尾一致只能证循环坐标，不证明脚滑、过渡或握枪合格。
+
+[^rifle-run-source]: [FPS 同一消费者与快照用法](https://github.com/dbvv1/FPS-Like/blob/d7c6dffa10d88279c2c02e68ed4bc196862a2104/docs/native-ranged-candidate.md)，2026-11-11；真实 GLB、5 个朝向共 60 个 Game 前跑快照、测试／构建与非作者复核通过。仍是可选 CPU 消费者，未注册 View，生产构建逐字节不变；不提高动作覆盖或品质分。
+
 ## 攻击后要防御：先修合法出口，再加连续性
 
 **✅ 即时应对型近战先保短期意图和显式取消窗口，不把整段加速当响应修复。** 追击后改按防御先定是否替代旧请求；有预排承诺才保顺序队列。Hades II 分别修丢输入、恢复段 Dash 与取消后停顿，Wilds 发布前同时加强 hitstop、提前部分取消，说明重量与合法风险分别调。
@@ -440,6 +447,10 @@ python asset-pipeline/veyra-death-contact/tests/check_contact.py --candidate-dir
 ```
 
 两阵营完整重导已在 Blender 4.3.2 跑通，输出含可编辑源、GLB、manifest及原动作输入／许可。相对旧GLB，JSON相同，仅 death Root Y 的55字节变化；61点／阵营通过5毫米接触门槛。再跑一次 retarget，GLB逐字节不变；不启用修正的完整重建也与原运行GLB一致。这些检查可抓到“修正只在最终文件里”和“重复加偏移”两类回退。脚本要求修正输出到 `outputs/` 子目录，不自动覆盖运行源；换运行资源仍须更新资源pin并在实际游戏机位验死亡剪影和整场可读性。当前网页未采用本轮重导产物。依据：[可重跑配方与验收入口](https://github.com/dbvv1/MOBA-Like/blob/aade37cac456d898f8ed2a3bd61303891839bc3d/asset-pipeline/veyra-death-contact/README.md#rebuild-through-the-original-heroes-recipe-blender-43)，完整 Blender 重导／重复重定向及非作者源／产物复核，2026-11-11；未新增浏览器、GPU或画面验收。
+
+**运行端核实际下载字节，再把同一缓冲交给解析器。** 固定旧源解决修正量复算，固定运行导出解决加载了哪一版，两者不能互代。MOBA 原候选只按 manifest 选路径；现在真实 FileLoader 下载后先核两阵营已接收 GLB 的 SHA-256 与字节数，再将该缓冲交 GLTFLoader。等长坏字节和截断在解析前失败，沿原清理／旧源恢复路径处理；不能重新下载另一份字节后仍引用前一次校验。复验用 `npm test -- tests/client/death-source-loader.test.ts tests/client/veyra-contact-consumer.test.ts`，测试驱动真实下载／解析消费者但不创建 WebGL renderer。[^veyra-download-pin]
+
+[^veyra-download-pin]: [既有候选的固定导出接线](https://github.com/dbvv1/MOBA-Like/blob/113dbaf616b6e5a3d181592b40e5464ff4c1eaef/docs/verification/death-trial-integration.md#continue-the-same-candidate-with-pinned-contact-exports)，2026-11-11。固定的是已有 Blender 5.2 death-contact GLB，并未换成另产的 Blender 4.3 重导结果；默认资源／网站不变。CPU、构建与非作者复核通过，实际浏览器、双方死亡画面与整场观感仍待验。
 
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 

@@ -55,3 +55,9 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 ## 11-11 原 heroes 配方接收
 
 接收 [aade37c](https://github.com/dbvv1/MOBA-Like/commit/aade37cac456d898f8ed2a3bd61303891839bc3d) 的隔离配方：原 Blender 4.3 build→UAL1 retarget 可从固定旧源施加 death 修正，重复重定向不累加；明确输出到 `outputs/` 子目录，未替换运行源或GLB。两队真实完整重导、61点接触检查与非作者逐字节核对通过，无修正重导保持原GLB；方法与可用命令已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。默认、网站v22及0/89不变。下一步核既有 `90d4fad` 接线候选的原回执与浏览器／死亡画面门槛，不新开旁置；运行采用与发布资源pin仍待。原调用unknown和拒绝边界不变。
+
+## 11-11 既有候选的资源 pin 接收
+
+接收[113dbaf](https://github.com/dbvv1/MOBA-Like/commit/113dbaf616b6e5a3d181592b40e5464ff4c1eaef)到原 `dot-b/death-existing-combat-trial-20261106`：沿90d4fad／00f82c7合入最新main配方，真实下载缓冲核两份既有Blender5.2 GLB固定摘要后再交原解析器；未替换为4.3重导产物。706测试、类型／构建、源包检查与非作者真实下载／解析反例通过，默认269项pin和原资产不变。方法已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
+
+main仍aade37c／Site v22／0/89；未新增入口、资源或部署。原终态、同构建浏览器smoke、双方死亡及非死亡画面仍欠，未跑GPU／声音；原调用unknown和拒绝边界不变。

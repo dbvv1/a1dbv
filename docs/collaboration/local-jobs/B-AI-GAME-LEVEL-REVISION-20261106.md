@@ -2,12 +2,12 @@
 id: B-AI-GAME-LEVEL-REVISION-20261106
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-level-revision-20261106
 
-工作线：AI 游戏实例。本卡是静态 ready，尚无领取或执行证明；优先 Star 品质闭环，其他线独立继续。
+工作线：AI 游戏实例。已部分接收原回交，下面保留原规格与历史结果；接收决定不证明原调用退出。
 
 ## 目标
 找 AI 参与的关卡在第二次路线/遭遇修改后仍保持可玩节奏的真实作品，为三案完整内容生产提供可借制作过程。
@@ -41,3 +41,9 @@ result_branch: relay/b-ai-game-level-revision-20261106
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：负责人按 §9.2 实机试玩 Voltane（同车同输入同机位 3 圈基线）并核作者身份与逐件许可/成本；本单元产物可并入结果分支。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+
+## 11-11 接收决定
+
+第四轮 d73a11f 仅收 Turbo Kartz 的“先定位失败弯段，再分验几何、驾驶辅助和玩家教学”机制，已回流[关卡二改](../../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)。作者原文、当前页面与公开源码已核：EASY 会自动转向，四图零撞墙仅为作者声明；13.6m 小于半路宽12m的归因不成立，不照搬。
+
+不接223项候选或约100组工具长名单，不新增试玩推荐。Star现有自动驾驶的完赛断言不等于零接触或玩家体验通过；本轮未试玩或重跑驾驶测试，不提高品质/覆盖。先前 Solhex 与主体/环境共同标尺的窄接收保留，其余本轮放弃接收，不续搜。原调用终态仍未核，不重派或释放槽。
