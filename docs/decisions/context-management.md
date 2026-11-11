@@ -104,4 +104,4 @@ result = await Runner.run(agent, next_input)
 
 ---
 
-[验证范围与个例](../research/2026-11-10-context-case-evidence.md)：本页 🟡；SDK／Git 离线结果不等于当前页原生压缩与新会话推荐已实测，旧读者回执不验收新版；侧问未试用。继续阅读：[常驻指令](instruction-files.md) · [长任务](long-tasks.md)。
+[验证范围与个例](../research/2026-11-10-context-case-evidence.md)：当前起手已用于 [Click 的真实 CLI 修复](../../experiments/click-auto-envvar-error/README.md)，本页仍为 🟡；任务入口与 SDK／Git 离线结果不证明原生压缩或新会话恢复已实测，旧读者回执不验收新版；侧问未试用。继续阅读：[常驻指令](instruction-files.md) · [长任务](long-tasks.md)。

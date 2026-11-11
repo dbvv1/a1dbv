@@ -1,0 +1,156 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 92e8402..38abbcc 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -22,6 +22,8 @@ Unreleased
+ - With `echo_stdin=True`, {class}`CliRunner` echoes the `\x04` and `\x1a`
+   `<stdin>` bytes to `<stdout>` as `^D` and `^Z`, and no longer passes them to
+   the command. {pr}`3878`
++- With `show_envvar=True`, an option's error message includes the environment
++  variable derived from `auto_envvar_prefix`, matching its help text. {issue}`3914`
+
+ ## Version 8.5.1
+
+diff --git a/src/click/core.py b/src/click/core.py
+index b431725..47b7dda 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -3405,12 +3405,27 @@ class Option(Parameter):
+
+     def get_error_hint(self, ctx: Context | None) -> str:
+         result = super().get_error_hint(ctx)
+-        if self.show_envvar and self.envvar:
+-            envvars = [self.envvar] if isinstance(self.envvar, str) else self.envvar
+-            # An environment variable is allowed to feature a space or a comma on all
+-            # platforms, hence the quotes around each.
+-            var_str = ", ".join(f"'{var}'" for var in envvars)
+-            result += f" (env var: {var_str})"
++
++        if self.show_envvar:
++            envvar = self.envvar
++
++            if not envvar and (
++                self.allow_from_autoenv
++                and ctx is not None
++                and ctx.auto_envvar_prefix is not None
++                and self.name
++            ):
++                envvar = f"{ctx.auto_envvar_prefix}_{self.name.upper()}"
++
++            if envvar:
++                if isinstance(envvar, str):
++                    envvar = [envvar]
++
++                # An environment variable is allowed to feature a space or a comma on
++                # all platforms, hence the quotes around each.
++                var_str = ", ".join(f"'{var}'" for var in envvar)
++                result += f" (env var: {var_str})"
++
+         return result
+
+     def _check_name_is_normalized(self, name: str, decls: cabc.Sequence[str]) -> None:
+diff --git a/tests/test_options.py b/tests/test_options.py
+index 1d7f715..70337fa 100644
+--- a/tests/test_options.py
++++ b/tests/test_options.py
+@@ -1202,6 +1202,100 @@ def test_missing_envvar_sequence(runner, envvar, expected):
+     assert f"Error: Missing option {expected}." in result.output
+
+
++@pytest.mark.parametrize(
++    ("envvar", "expected"),
++    [
++        (None, "'MYAPP_PORT'"),
++        ([], "'MYAPP_PORT'"),
++        ((), "'MYAPP_PORT'"),
++        ("", "'MYAPP_PORT'"),
++        ("PORT", "'PORT'"),
++        (["PORT", "OTHER_PORT"], "'PORT', 'OTHER_PORT'"),
++    ],
++)
++@pytest.mark.parametrize("source", ["missing", "commandline", "environment"])
++def test_auto_envvar_error_hint(runner, envvar, expected, source):
++    @click.command(context_settings={"auto_envvar_prefix": "myapp"})
++    @click.option("--port", type=int, required=True, envvar=envvar, show_envvar=True)
++    def cli(port):
++        click.echo(port)
++
++    args = []
++    env = {"MYAPP_PORT": None, "PORT": None, "OTHER_PORT": None}
++
++    if source == "commandline":
++        args = ["--port", "invalid"]
++    elif source == "environment":
++        env["MYAPP_PORT"] = "invalid"
++
++    result = runner.invoke(cli, args, env=env)
++    assert result.exit_code == 2
++    hint = f"'--port' (env var: {expected})"
++
++    if source == "missing":
++        assert f"Error: Missing option {hint}." in result.output
++    else:
++        assert f"Error: Invalid value for {hint}:" in result.output
++
++
++@pytest.mark.parametrize(
++    ("show_envvar", "allow_from_autoenv"), [(False, True), (True, False)]
++)
++def test_auto_envvar_error_hint_disabled(runner, show_envvar, allow_from_autoenv):
++    @click.command(context_settings={"auto_envvar_prefix": "MYAPP"})
++    @click.option(
++        "--port",
++        required=True,
++        show_envvar=show_envvar,
++        allow_from_autoenv=allow_from_autoenv,
++    )
++    def cli(port):
++        pass
++
++    result = runner.invoke(cli, env={"MYAPP_PORT": None})
++    assert result.exit_code == 2
++    assert "Error: Missing option '--port'." in result.output
++
++
++def test_auto_envvar_error_hint_nested(runner):
++    @click.group(context_settings={"auto_envvar_prefix": "my-app"})
++    def cli():
++        pass
++
++    @cli.command()
++    @click.option("--listen-port", type=int, required=True, show_envvar=True)
++    def serve_app(listen_port):
++        click.echo(listen_port)
++
++    result = runner.invoke(
++        cli, ["serve-app"], env={"MY_APP_SERVE_APP_LISTEN_PORT": None}
++    )
++    assert result.exit_code == 2
++    assert (
++        "Error: Missing option '--listen-port'"
++        " (env var: 'MY_APP_SERVE_APP_LISTEN_PORT')."
++    ) in result.output
++
++    result = runner.invoke(
++        cli, ["serve-app"], env={"MY_APP_SERVE_APP_LISTEN_PORT": "8080"}
++    )
++    assert result.exit_code == 0
++    assert result.output == "8080\n"
++
++
++@pytest.mark.parametrize("envvar", [None, [], "", "PORT", ["PORT", "OTHER_PORT"]])
++def test_envvar_error_hint_without_context(envvar):
++    option = click.Option(["--port"], envvar=envvar, show_envvar=True)
++    message = click.MissingParameter(param=option).format_message()
++
++    if envvar == "PORT":
++        assert message == "Missing option '--port' (env var: 'PORT')."
++    elif envvar:
++        assert message == "Missing option '--port' (env var: 'PORT', 'OTHER_PORT')."
++    else:
++        assert message == "Missing option '--port'."
++
++
+ def test_case_insensitive_choice(runner):
+     @click.command()
+     @click.option("--foo", type=click.Choice(["Orange", "Apple"], case_sensitive=False))
