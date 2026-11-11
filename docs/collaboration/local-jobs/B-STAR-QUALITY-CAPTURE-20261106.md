@@ -2,7 +2,7 @@
 id: B-STAR-QUALITY-CAPTURE-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 7e87d4c32d5014612fcb7a8af8bc49d266d7238c
 result_branch: relay/b-star-quality-capture-20261106
@@ -39,7 +39,7 @@ result_branch: relay/b-star-quality-capture-20261106
 ## 负责人接收决定
 
 - 已在产品 master [`ce7b870`](https://github.com/dbvv1/Star-Rush-Reborn/commit/ce7b87083f48c8e8b3bf538148bfa1349d7efa29) 接收原12图、逐拍退出收据与[双非作者盲评](https://github.com/dbvv1/Star-Rush-Reborn/blob/ce7b87083f48c8e8b3bf538148bfa1349d7efa29/docs/quality/capture/B-STAR-QUALITY-CAPTURE-20261106/review/README.md)。三机位探索分均2→2，正式目标／锚图仍缺，内容0/43不变；候选实现未合入或部署，品质完成条件未达成。
-- 本卡保持 review_ready，不据逐拍 Node／BrowserServer exit0或归档包装结果认定外层原调用结束、拍摄槽空闲或解除隔离。原 Workflow 的 implement_agent_failed／reviewed=false 仍保留；后续独立接收不改写其历史状态。
+- 本卡的固定材料已接收，不据逐拍 Node／BrowserServer exit0或归档包装结果认定外层原调用结束、拍摄槽空闲或解除隔离。原 Workflow 的 implement_agent_failed／reviewed=false 仍保留；后续独立接收不改写其历史状态。
 - 11-11 [候选工具02c10a1](https://github.com/dbvv1/Star-Rush-Reborn/commit/02c10a1c6ecacdfd601490b933cabc638cf0e78d)已补显式Windows headless D3D11档，保留SwiftShader默认，硬件档保Chrome sandbox并需独立renderer证据；拒绝headful、混档和软件冒充GPU，失败先保存原始renderer。仅CPU工具准备，本卡冻结包/源码/旧输出均不改，未启动浏览器。恢复仍先核外层退出、未结工具和槽位，再冻结新一组同档源码与完整拍摄合同；不把本工具准备当本卡重新ready或硬件可用。
 - 下方是接收端的历史交回，“盲评尚未做”及“带 retryNote 重派”不再作为当前下一步。只沿原ID核对外层调用、未结工具和槽位；未确认前不重派、不重拍、不清锁、不新占拍摄槽，也不重试已拒绝的核查。独立工作照常推进。
 
@@ -50,3 +50,7 @@ result_branch: relay/b-star-quality-capture-20261106
 - 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
 - 下一步：负责人先核对 README 新增“交付前独立核验”内容与实际产物是否一致，再决定接受并补做三视角审查，或带 retryNote 重派该单元；随后仍需后台盲评并更新 Star 记分卡。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 11-11 产物去向结清
+
+接收已入 master `ce7b870` 的12原图、逐拍收据和已有双非作者判断。仅材料接收；原 Workflow 失败保留，当前默认的前图、完整 smoke／帧耗仍缺，不是候选实现合入或换默认。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

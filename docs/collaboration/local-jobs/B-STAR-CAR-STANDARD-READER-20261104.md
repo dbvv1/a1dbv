@@ -2,7 +2,7 @@
 id: B-STAR-CAR-STANDARD-READER-20261104
 owner: dot-B
 kind: reader-test
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0bd62df9be7528cc9da643ebde089063d6166da8
 result_branch: relay/b-star-car-standard-reader-20261104
@@ -36,3 +36,7 @@ page: domains/game-dev/assets/3d.md@463b4b9a95a8e6eadb98b730d8aa373a05dcbec0
 - 检查：check_public（文件与新提交身份） 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：负责人处理 6 项 openIssues 与 4 项页面范围缺口（补运动件 pivot/轴距/触地合同与四态夹具）；外观与画面验收仍需浏览器/GPU 实机。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+## 11-11 产物去向结清
+
+部分接收 `260ce7b` 的完整父链／局部坐标反例，已入 `assets/3d.md#moving-rigid-contact`。错误数值与外观推断不收；原6项问题和完整读者未通过保留，不把方法采用写成整卡实测成功。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

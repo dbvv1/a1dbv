@@ -2,7 +2,7 @@
 id: B-FPS-WEAPON-GENERATION-20261105
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-weapon-generation-20261105
@@ -37,3 +37,7 @@ result_branch: relay/b-fps-weapon-generation-20261105
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：无待补实现缺口；待负责人接收并按 relay/b-fps-weapon-generation-20261105 提交。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 11-11 产物去向结清
+
+接收 `79281f8` 的 CPU 合同，已进入原训练整合线；不重复接线。产品采用并入 `bd4e185` 训练候选的单一闭环，未合 main／完整动作与浏览器未验。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

@@ -2,12 +2,12 @@
 id: B-AI-GAME-RELEASE-ITERATION-20261106
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-ai-game-release-iteration-20261106
 
-工作线：AI 游戏实例。已有来源产物及部分接收；原调用终态未核，保留 review_ready，不据文字或提交推断接收端空闲。
+工作线：AI 游戏实例。已有来源产物及部分接收；原调用终态未核，保留执行隔离，不据文字或提交推断接收端空闲。
 
 ## 目标
 寻找 AI 大规模开发作品从首次可玩到发布后一轮真实修订的证据，借实际玩家问题决定模块/制作链下一步，不收只有首日演示的作品。
@@ -47,3 +47,7 @@ result_branch: relay/b-ai-game-release-iteration-20261106
 `08a9128` 中 Brickbrag／Permit Pending 的窄修订机制已在 `6e024d74` 回流[发布后修订](../../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，现补入游戏首页。只接收已核原文及该段做法；其余长名单和广搜数字不整体采纳、不续搜。Brickbrag 复验按官方“先建造、再买周围土地”路径，Permit Pending 不把未明的资源回退实现写成统一缩图。两作未试玩／未核当前修复，原调用终态未知；保持本卡隔离，不重派、不开新实例来源卡。
 
 11-11 既有实例的浏览器补验：哈耶克的文明 v2.3.64 已完成新局建造→槽 1 保存→再建造→读回→刷新→再次手动读回。两次槽 1 读取均恢复一屋及原金币／粮木；本次刷新选择两屋自动档；固定源码另核为从手动／自动槽按 updatedAt 选择最新档，三种原文片段输入验证过（存储／加载为替身，不是浏览器读档），已回流[槽位分验](../../../domains/game-dev/06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)。只接收同版新档回路，不接收旧版迁移、后期性能、完整体验或 AI 贡献比例。Brickbrag 实际入口停于 WebGL context 创建失败，三条修复未能复测；Permit Pending 原 403 未重试。未新增来源卡、未重派原调用，原终态 unknown 不变。
+
+## 11-11 产物去向结清
+
+部分接收 `08a9128` 已核机制及 `6e024d74` 的正文采用；长名单整体采用与续搜放弃。后继哈耶克只计同版恢复，Brickbrag／Permit Pending 的各自失败或未验保留。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

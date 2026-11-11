@@ -1010,6 +1010,36 @@ flowchart TD
 
 **Unity 先比已有跟随与 Cinemachine Follow 的分轴阻尼／绑定。** 核实3.1.7的World Up仅跟yaw可隔离部分俯仰／翻滚，但不直接套反重力道路；物理朝向、速度方向、前路目标须比较。UE职责边界沿§8；共同验出口可见、输入连续，不机械翻译组件名。原生文档见 [P112镜头](../../docs/research/wp10-motion.md#画面必须说明动作时机镜头必须说明去向)。
 
+#### 雨雪二改：合格不等于还能在原来的位置刹车
+
+**🧪 给赛车加雨雪时，先比较同车、同初速的实际制动距离，再决定限速、刹车提示和弯前可见距离。** backroad rally 的真实车辆消费者提供了可复验起点：同一 Swift 在晴、雨、雪三档都通过各自门槛，但柏油路的 `dist100` 分别为 **36.8、51.5、78.3 米**。雪地约为晴天的 2.13 倍；“全部 PASS”不能支持沿用晴天的刹车点。这是固定源码的 CPU 物理结果，不是该作品难玩或提示错误的结论。
+
+在独立目录取得下面的公开版本，使用 Node 24 与 npm；命令只运行真实 Rapier／Vehicle，不启动浏览器或监听端口：
+
+```bash
+git clone https://github.com/jason-c-dev/backroad-rally.git
+cd backroad-rally
+git checkout --detach e5542f96b9a9a2912fdaa160396054e81f022f23
+npm ci --cache .npm-cache --ignore-scripts --no-audit --no-fund
+node --import tsx tools/test/handling.ts --cars swift --kinds flick,brake --weather all
+```
+
+**怎样读结果。** 每种天气应有 4 项、4 pass、0 fail：甩尾与制动各有柏油／砂石两种路面。制动输出的 `raw` 才是此次实际距离，`dist100` 按实际入速平方归一到目标 100 km/h，不能把两列混用。Swift 柏油 `raw` 为 36.5／51.0／77.5 米；用于判定的 `dist100` 为 36.8／51.5／78.3 米，对应允许区间为 30–40／42–56／62–84 米。检查器按天气换门槛。甩尾的出弯速度也要看，不能只抄结尾 PASS。换自己的车时先检查单位、实际初速和操纵输入，不搬这些数值当通用安全距离。
+
+**把试验接回开发决定：** Agent 从现有车辆步进、场景路面和天气参数取值，先固定一种车与输入轨迹；输出各天气的实际初速、距离、恢复时间和所用门槛。人决定雨雪应要求提前刹车还是降低速度，再在现有赛道比较弯前提示／镜头可见距离是否足够；计入玩家反应与弯道需求，不能把纯直线停车距离直接当提示距离。Unity／UE 用自己的车辆组件跑同一动作，不移植 Rapier 数值或增加第二套物理。
+
+**失败时先修所承诺的操控，不放宽门槛求绿。** 保持版本与所有参数不变，仅用脚本既有入口将轮胎抓地比例从 0.82 降至 0.41：
+
+```bash
+node --import tsx tools/test/handling.ts --cars swift --kinds brake --weather all --tyre gripScale=0.41
+```
+
+该反例实跑三种天气共 6 项全部 FAIL、退出码 1，晴天柏油 `dist100` 为 70.8 米；CLI 覆盖仅作用于本进程，未改作者数据。读者接入自己的二改后应重跑基线与候选，失败只说明超出当前约定，不能据此自动决定调抓地还是调整关卡。发卡弯／动力滑移另有天气专属初速，跨天气各自通过也不等于同速转弯能力相同。
+
+**再用真实输入验手感。** 作者报告早期动力滑移通过 119 项感觉检查与 300 次自动驾驶比较，实际键盘却难以驾驶，因为机器人用模拟转向且会收油。公开版本提供 `apkeys=1/2` 的数字键驾驶对照，但仍须人用目标输入设备驾驶。此处只采用“物理量比较→关卡决定→实际输入复验”的流程，不推荐读者为自动测试换引擎，也不把作者次数当本端验证。
+
+来源与范围：2026-11-11 UTC 固定 [handling 消费者](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/tools/test/handling.ts)、[天气门槛及动作初速](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/public/data/testtrack.json)、[真实车辆](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/src/sim/vehicle.ts)与[作者测试复盘](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/06-tests.md)。本端以锁文件依赖、120 Hz 真实 Rapier 执行上述 12 项基线和 6 项反例；未运行整套测试、浏览器自动驾驶、键盘试玩或原 UE 构建。代码 MIT，整包资产权利另核；当前最高水平与三案例实际采用仍未证明。
+
 #### 给 AI 的任务：把判断需要的证据先做出来
 
 **AI 查写入者、暴露参数并记录复现，人决定驾驶承诺和感觉。** 先列输入、转向／侧力、视觉旋转与镜头目标的写入者，加可关闭的三方向／视锥显示，沿项目步进定位松键后的恢复；下例和清单共用这些轨迹，日志通过不代替试玩。

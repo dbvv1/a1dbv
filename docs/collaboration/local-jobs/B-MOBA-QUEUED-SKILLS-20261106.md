@@ -2,7 +2,7 @@
 id: B-MOBA-QUEUED-SKILLS-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: 7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64
 result_branch: relay/b-moba-queued-skills-20261106
@@ -45,4 +45,8 @@ result_branch: relay/b-moba-queued-skills-20261106
 
 - 测试与精简说明已接产品 main [fc1657a](https://github.com/dbvv1/MOBA-Like/commit/fc1657af6d8f2c86588fdd4e2854e3e68e59c23b)，未改运行源码、默认、资源或网站。独审发现 Esc 后直接 Q 会遮住取消失败，且旧重放未比较表现事件；现先点有效地面确认不发命令，再按 Q，并在采样时直接比较事件，cadence 1 覆盖每 tick。
 - 独立源码／最终说明审查、574项、两构建及470文件公开扫描通过；历史 audio-skill 失败本轮未复现，不解释成所有平台已修。v12显式旁置、合成输入与legacy命令边界保留，浏览器／视听／手感未验，不计品质提升。采用回写[输入回归](../../../domains/game-dev/04-client-modules.md#接入手柄暂停与多人菜单)。
-- 原外层调用终态仍未核清，保留 review_ready；本次接收不据分支／测试完成释放槽位、重派或解除隔离。
+- 原外层调用终态仍未核清，执行隔离保留；本次接收不据分支／测试完成释放槽位、重派或解除隔离。
+
+## 11-11 产物去向结清
+
+接收已入产品 main `fc1657a` 的正式输入回归及精简说明；浏览器输入路径的后继验收归产品，不再重复本卡。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

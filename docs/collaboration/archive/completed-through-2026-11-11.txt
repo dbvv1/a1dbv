@@ -25,3 +25,12 @@
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练`bd4e185`仍待浏览器／视听。角色候选[e69f327](https://github.com/dbvv1/FPS-Like/commit/e69f32721969a41a47de90a988974140822a37f1)在原生采样隐藏三剑四盾、保身体／头盔／披风，退出恢复；485测试、实源与构建／独审过。未接View／RX24／地面适配，不缩放／改倍速，0/77不变；原拍摄unknown与拒绝不重试。 |
 
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。候选[01258ff](https://github.com/dbvv1/Star-Rush-Reborn/commit/01258ffbaef5d456778d8e2feb1b484c7f5a1423)接回原车手及转向反馈，修捕获静默回退；27项组合回归、构建、六路CPU与两路独审过。生成参考已在，正式校准／最新实拍仍欠。设备离线、原拍摄外层unknown，不重拍／清锁。 |
+
+## 11-11 13:00 UTC B 上轮项目板（本轮成果与新换默认条件已替换）
+
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。原候选[2504411](https://github.com/dbvv1/MOBA-Like/commit/25044115c335763b8670f52c40935a80072af395)让双队Morrow短释放期普通受击只叠躯干，保法器前指释放；控制／死亡优先，默认／quiet／Veyra保原。717测试、双构建、真GLB与独审过；未看图／合main／部署，0/89不变。原终态unknown，拒绝不重试。 |
+| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main；前台时钟接v20，改键／六席已收。[分片保存](../../domains/game-dev/04-client-modules.md#分片保存失败只能丢候选不能清掉旧一代)新增原文4组失败消费：核心片拒写会清旧片，secondary可混代；外层回退未测。原文命令／新读者通过，真实跨版／浏览器事务／Unity消费者仍欠。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 图标LF已进MOBA；quiet材质旁置未看图。[动画页](../../domains/game-dev/assets/animation.md#第二次修改决定是否留下)补Morrow新源的受击层消费与FPS共享步枪事件判断，手枪长冷却不能套用；均真源／CPU，未完成视听采用。Star仍借原车手；开放音频未听未用，Nature恢复unknown。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 哈耶克v2.3.64同版恢复已实玩；[税制二改](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例改经济规则要验旧玩家下一回合付了多少)新增五组原文迁移，幂等不保证税额兼容，无版本／v2起点须分验。新读者照做通过；真实旧发行包／经济整回合未验，不复制无许可实现。Brickbrag WebGL失败、Permit Pending 403与原调用unknown不重试。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。原候选[f64b5a5](https://github.com/dbvv1/Star-Rush-Reborn/commit/f64b5a5caaf8cde7b88eb4676469eb77b082f5cf)试24栋，移除两排形成海岬开口，保原30栋完整保护包络，房屋／底座／3D植被筛选同步；CPU／构建／独审过，未拍图判优。旧车手接回与捕获回退检测保留；设备离线、原外层及槽unknown，不重拍／清锁。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练`bd4e185`待视听。原角色候选[4ed8222](https://github.com/dbvv1/FPS-Like/commit/4ed8222dd4bf6827ec4017ae112fb942bf0400dc)修既有View步枪切回后重播旧fire，与Knight共用判断；487测试／构建／真Game与GLB／独审过。手枪取消仍欠；Knight／RX24未装配或接View，不缩放／改倍速。0/77不变，拍摄unknown与拒绝不重试。 |

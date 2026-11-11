@@ -2,7 +2,7 @@
 id: B-PIPE-MODEL-GUIDE-CORRECTION-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbb068cbdc97617856763414ace1d9d828b9c9d9
 result_branch: relay/b-pipe-model-guide-correction-20261106
@@ -43,4 +43,8 @@ result_branch: relay/b-pipe-model-guide-correction-20261106
 
 ## 指导层固定接收
 
-2026-11-08，部分接收固定 `0c13e02` 的实际消费差量，压缩写入 [3D 正文](../../../domains/game-dev/assets/3d.md#asset-family-rebuild)，并修正 [FPS 原制作入口](https://github.com/dbvv1/FPS-Like/blob/06aabc06c1638ac27b73e429a34492c7b9f85f2b/assets/environment/standards-v1/README.md)：首页已消费、临时输出不自动接入、重导出与运行字节校验一起核、保整批回退。未接收长篇过程、跨版本字节保证或新的视觉结论。非作者源码／新文阅读通过；12 项文件系统、13 项既有 Node 回归及实际加载器四路 CPU 核对通过。没有重建、替换或上传模型，没有新增工具／卡；旧 Blender 和原读者观察不改写为本次实跑。原调用终态仍 unknown，保留原卡状态，不重派或清锁。
+2026-11-08，部分接收固定 `0c13e02` 的实际消费差量，压缩写入 [3D 正文](../../../domains/game-dev/assets/3d.md#asset-family-rebuild)，并修正 [FPS 原制作入口](https://github.com/dbvv1/FPS-Like/blob/06aabc06c1638ac27b73e429a34492c7b9f85f2b/assets/environment/standards-v1/README.md)：首页已消费、临时输出不自动接入、重导出与运行字节校验一起核、保整批回退。未接收长篇过程、跨版本字节保证或新的视觉结论。非作者源码／新文阅读通过；12 项文件系统、13 项既有 Node 回归及实际加载器四路 CPU 核对通过。没有重建、替换或上传模型，没有新增工具／卡；旧 Blender 和原读者观察不改写为本次实跑。原调用终态仍 unknown，保留执行隔离，不重派或清锁。
+
+## 11-11 产物去向结清
+
+部分接收已进入 3D 正文及 FPS `06aabc06` 的 `0c13e02` 消费差量；长篇过程、跨版本字节保证和新的视觉结论明确不收，不再补同一稿。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

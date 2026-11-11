@@ -34,7 +34,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- B 现有95卡无 ready/running：先核原写者／拍摄槽；购买音效先听验，FPS先定实际接触，不凑重复卡。
+- B 现有95卡：67 accepted、7 review_ready、8 blocked、13 cancelled，无 ready/running。9卡仅结清固定产物去向，原调用unknown不释放；[余项与三案阻塞](b-work-20261106.md#11-10-超期候选采用决定)未清零，不凑重复卡。
 
 ## 项目板
 
@@ -42,12 +42,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。原候选[2504411](https://github.com/dbvv1/MOBA-Like/commit/25044115c335763b8670f52c40935a80072af395)让双队Morrow短释放期普通受击只叠躯干，保法器前指释放；控制／死亡优先，默认／quiet／Veyra保原。717测试、双构建、真GLB与独审过；未看图／合main／部署，0/89不变。原终态unknown，拒绝不重试。 |
-| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main；前台时钟接v20，改键／六席已收。[分片保存](../../domains/game-dev/04-client-modules.md#分片保存失败只能丢候选不能清掉旧一代)新增原文4组失败消费：核心片拒写会清旧片，secondary可混代；外层回退未测。原文命令／新读者通过，真实跨版／浏览器事务／Unity消费者仍欠。 |
-| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 图标LF已进MOBA；quiet材质旁置未看图。[动画页](../../domains/game-dev/assets/animation.md#第二次修改决定是否留下)补Morrow新源的受击层消费与FPS共享步枪事件判断，手枪长冷却不能套用；均真源／CPU，未完成视听采用。Star仍借原车手；开放音频未听未用，Nature恢复unknown。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 哈耶克v2.3.64同版恢复已实玩；[税制二改](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例改经济规则要验旧玩家下一回合付了多少)新增五组原文迁移，幂等不保证税额兼容，无版本／v2起点须分验。新读者照做通过；真实旧发行包／经济整回合未验，不复制无许可实现。Brickbrag WebGL失败、Permit Pending 403与原调用unknown不重试。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；双盲2→2、0/43。原候选[f64b5a5](https://github.com/dbvv1/Star-Rush-Reborn/commit/f64b5a5caaf8cde7b88eb4676469eb77b082f5cf)试24栋，移除两排形成海岬开口，保原30栋完整保护包络，房屋／底座／3D植被筛选同步；CPU／构建／独审过，未拍图判优。旧车手接回与捕获回退检测保留；设备离线、原外层及槽unknown，不重拍／清锁。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**；训练`bd4e185`待视听。原角色候选[4ed8222](https://github.com/dbvv1/FPS-Like/commit/4ed8222dd4bf6827ec4017ae112fb942bf0400dc)修既有View步枪切回后重播旧fire，与Knight共用判断；487测试／构建／真Game与GLB／独审过。手枪取消仍欠；Knight／RX24未装配或接View，不缩放／改倍速。0/77不变，拍摄unknown与拒绝不重试。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `aade37c`／Site **v22**。原角色候选[2504411](https://github.com/dbvv1/MOBA-Like/commit/25044115c335763b8670f52c40935a80072af395)已接双队Morrow法器／释放／躯干受击与Veyra死亡；本轮核无遗漏新产物，不盲改。quiet为指定换默认对象，尚缺当前默认同机位盲选、完整smoke／帧耗；原终态／槽unknown、设备离线，0/89不变。 |
+| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | 07／04／05 已入 main；前台时钟接v20，改键／六席已收。[雨雪制动](../../domains/game-dev/05-gameplay-architecture.md#雨雪二改合格不等于还能在原来的位置刹车)采用真实Rapier车辆：晴雨雪均过却需36.8／51.5／78.3m；低抓地反例正确失败，新读者换Pip完成。关卡提示要按实际距离重定；未接三案或真人驾驶。 |
+| B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 图标LF已进MOBA；quiet材质在开关后。[动画页](../../domains/game-dev/assets/animation.md#原生动作跟已接受的开火事实不跟按键猜测)改为接受射击／实际切枪取消资格，保命中与声音历史，覆盖长冷却手枪；真源／CPU与独审过，视听未验。Star整层内容已接候选；开放音频未听未用，Nature恢复unknown。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 哈耶克同版恢复已实玩；新收[backroad rally移植](../../domains/game-dev/06-indie-roadmap.md#ai-制作实例移植操控时先保存比较对象)：借原实现对照和实际驾驶验收，不拿221项绿灯代替玩家依赖的量。公开车辆已实跑，UE原源／浏览器试玩未验，资产不随代码许可整包采用。Brickbrag／Permit Pending原阻塞不重试。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `ce7b870`／Site **v10**；探索2→2、0/43。指定`7e87d4c`整层与当前默认对比；[后继f64b5a5](https://github.com/dbvv1/Star-Rush-Reborn/commit/f64b5a5caaf8cde7b88eb4676469eb77b082f5cf)地表／墙／路肩／平台与标准件均已接CPU消费者，本轮48项与构建过，不再无图盲调。原12图不是当前默认前图；设备离线、外层／槽unknown，缺同机位、完整smoke与帧耗。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `b895bcb`／Site **v24**。原角色候选[50be6e9](https://github.com/dbvv1/FPS-Like/commit/50be6e983a48729e0e9b7e3f0aba1b0f24891a70)修手枪切回旧fire，491项／构建／真Game与GLB／独审过，玩法与hash不变。Knight／RX24未装配或接View。全场材质为指定换默认对象，缺当前默认同机位盲选、smoke／帧耗；原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收

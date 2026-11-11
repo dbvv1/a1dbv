@@ -185,6 +185,16 @@ JS
 
 来源：固定 `99382cd4ac4ade80969d1098679c103f24acc749` 的[作者更新日志](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/config/changelog.js#L930-L977)、[两段迁移](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/hooks/useGameState.js#L3727-L3775)、[实际模拟税基与扣款](https://github.com/HkingAuditore/civ-game/blob/99382cd4ac4ade80969d1098679c103f24acc749/src/logic/simulation.js#L3770-L3815)。2026-11-11 UTC 核原文、五组合成输入执行迁移；税额比较为所列条件下的公式核对，不是完整回合运行或玩家反馈统计。AI 协作与许可边界沿上节。
 
+### AI 制作实例：移植操控时，先保存比较对象
+
+**🧪 backroad rally 值得借的是“原实现只读、按纵向切片迁移、实际数值与手动驾驶共同验收”，不是照抄测试通过数。** 作者称 Claude Code 编写了大部分游戏，一人提供想法、决定取舍并逐版试玩；先做 UE5，再用 Three.js／Rapier 做网页版本。其复盘给出一个具体返工原因：221 项门槛全过，砂石甩尾出弯却从原作约 84 km/h 变成约 100 km/h，因为这个数值没有对应门槛。随后才将耗速差异作为操控二改目标。这些历史数据为作者自述，原 UE 项目未公开，本端没有复现跨引擎对照。
+
+**读者可以先采用公开的消费者，不必重做作者的私有生产链。** 公开 `CLAUDE.md` 明确 UE／Blender 原源不随仓库提供，转换脚本不能在普通 fork 中重建原资产；`public/` 中已转换文件才是可用输入。接手时先列“能跑的输出”和“能改的作者源”，需要新资产就提供自己的转换输入，不把转换器存在当作全链可复现。代码 MIT；音频的非商业演示说明不授权把整包资源放入商业作品。
+
+本端已将其真实车辆用于[雨雪制动比较](05-gameplay-architecture.md#雨雪二改合格不等于还能在原来的位置刹车)：同车同速的晴雨雪制动均通过，却需要不同停车距离。这让接收者能把“模型交回全绿”改为“检查玩家依赖的量是否仍合约定”，再决定天气、关卡与提示怎样一起改。命令、成功判据和失败反例都在模块页；尚未试玩本作，不新增整款品质推荐，也未将此流程接进三案例。
+
+来源：固定 `e5542f96b9a9a2912fdaa160396054e81f022f23` 的[作者过程](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/README.md)、[移植分工与资源](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/04-the-web-port.md)、[测试反例](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/06-tests.md)与[公开源边界](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/CLAUDE.md)。2026-11-11 UTC 核原文并执行模块页所述 CPU 消费者；AI 比例、原 UE 数值、主动工时与完整成本未独立审计。
+
 ## G1 旗舰实战：给「潮汐邮差」真的生成资产，再改一次规则
 
 **🧪 值得直接复验：把生成原图、稳定 asset ID、规则状态分开，才能在换图和改玩法时保住旧档。** 本次实际调用生图、保留原 PNG、接入无引擎网页源码，并完成一次预先计划的折叠筏二改；v1 已独立跑通真实浏览器回路，最新 v2 仍待客户端、目标设备和真人体验接收。

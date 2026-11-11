@@ -2,7 +2,7 @@
 id: B-FPS-SQUAD-MATCH-CENSUS-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-squad-match-census-20261106
@@ -48,3 +48,7 @@ result_branch: relay/b-fps-squad-match-census-20261106
 - 非作者按固定源独立复验3项与8种子48回合／17477tick，原405击杀中282队杀；实际seed1 R1 tick52瞄敌却击杀友方，已形成真实反例。指导层在原整合单元另修Bot目标前挡线，不写原执行工作区。
 - 修后同矩阵48回合／25594tick，友方命中／队杀0且逐tick无controller重放hash一致；观察副本变更不污染结果。518＋29项、类型／构建及独审通过；边界详见[训练交接](../b-work-20261106.md#fps-训练场整合)。目标后误伤与不主动换位保留，不能称通用零友伤或产品验收。
 - 原seed1 R4距点6.73m的53tick一直看见敌人并执行交战停车，原“最后接近／安放触发”原因未证明；全部淘汰／held interact=0不是安拆闭环通过。“首错无”只限重放无分歧。FPS main仍fa8740d／Site v24未变；未触浏览器限制，视听实玩和完整reload/switch仍缺。
+
+## 11-11 产物去向结清
+
+部分接收 `856f707` 已进入 `1b70e42` 的 observer／深克隆合同；Windows守卫偏差、旧EXPECTED与矛盾文稿不收。产品采用并入 `bd4e185` 单一训练候选。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

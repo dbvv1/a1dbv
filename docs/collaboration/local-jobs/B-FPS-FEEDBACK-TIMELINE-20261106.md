@@ -2,7 +2,7 @@
 id: B-FPS-FEEDBACK-TIMELINE-20261106
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: fa8740de3bf2f4ffaaabec5c8df09d9f4c9088c8
 result_branch: relay/b-fps-feedback-timeline-20261106
@@ -47,4 +47,8 @@ result_branch: relay/b-fps-feedback-timeline-20261106
 
 - 当前基线 `876fb20`：新增4项、全量434项、类型检查、生产构建与公开扫描通过；非作者核源码后接受。纠正统计按 hit/team 而非 impact.kind、切枪200ms锁、安放后仍需拆弹、结果事件寿命与菜单提前打开的区别。
 - CPU 命令带证明正式命令跨移动／命中／换弹打断／结算／下一回合的语义，不能在浏览器直接加载；页面只提供同类实玩动作。30/60/120Hz是取样模型，不是浏览器帧率、可见性或听感验收。
-- 原调用终态仍未知，review_ready 保留，不重派、不清锁。本次仅接收固定产物，产品品质分与网站版本不变。
+- 原调用终态仍未知，执行隔离保留，不重派、不清锁。本次仅接收固定产物，产品品质分与网站版本不变。
+
+## 11-11 产物去向结清
+
+接收已入产品 main `6157235` 的四项回归和纠正说明；不含浏览器帧率、枪感或听感。本卡 `accepted` 只表示上述范围的产物去向，不证明原调用退出；原终态 unknown 与相关隔离保留，不重派、清锁或重试被拒入口。

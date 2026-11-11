@@ -522,9 +522,11 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 
 **做法**：显式调用 `syncKayKitNativeAction(character, state, actorId)`，取真实 `state.shots` 与该武器 `lastShot`，用源clip时长归一绝对相位。换弹优先；固定Knight的静止瞄准持源末帧，开火从源片段8/30秒起以原速播放剩余0.8秒，不重复举枪前摇；移动/蹲下/交互/死亡/手枪/结算恢复rest，不假装已有跑射动画。临时移动结束若仍在旧shot有效窗，恢复当前相位而非永久取消。调用者须处理朝向、装备与View，本单元没有代做IK。
 
-**失败反例**：用“按了开火”播放会把空弹、冷却与非法目标也画成开火；只看lastShot会在切枪再切回时复活旧动作。当前FPS把接受shot及原冷却终点匹配收为 `currentRifleShot`，供 Knight 与既有刚体角色 View 共用；依据步枪6tick与切枪至少12tick，拒绝被切枪覆盖的旧射击。真实 Game→View→GLB 的切走再切回已复现并修正，绘制仍为 CPU 替身。手枪15tick冷却会被切枪的 `Math.max` 保留，同一等式无法识别那次切换，因此明确不处理手枪；手枪旧表现保留，取消缺口仍在。数值变化要重验，完整武器取消需要真实切换身份，不能扩大这个短冷却特例。[^rifle-view-consumer]
+**接受开火之后，实际切枪还要取消那次表现。** 用“按了开火”播放会把空弹、冷却与非法目标也画成开火；只看 `lastShot` 又会在切走／切回时复活旧动作。让规则层在接受射击时留下只读表现事实，在实际换武器时作废该角色先前射击的动作资格；命中结果、弹药和声音历史保留，同武器切换的空操作不取消。渲染器读当前快照，不靠“上一帧看见切枪”猜历史，这样同一帧间的两次切换也能正确处理。[^rifle-view-consumer]
 
-[^rifle-view-consumer]: [共享步枪判断及实际 View 回归](https://github.com/dbvv1/FPS-Like/commit/4ed8222dd4bf6827ec4017ae112fb942bf0400dc)，2026-11-11；运行 `node --import tsx --test tests/content-set.test.ts` 可复验真实 Game、原 GLB 和 View 消费。487项测试、类型／构建与非作者审查通过；未验 GPU 或浏览器，Knight／RX24 装配仍未接 View。
+**失败反例**：步枪冷却6tick短于切枪锁12tick，可以用冷却终点排除部分旧事件；手枪冷却15tick会被切枪的 `Math.max` 原样保留，同一等式失效。FPS 现以 `Shot.weaponActionActive` 的接受／取消事实供既有角色 View 与 Knight 共用选择器，Knight 仍只接步枪动作。旧固定快照缺该字段时，只保已证实的短冷却步枪兼容判断，旧手枪快照不补猜开火；原命令带重新模拟则会生成新事实。真实 Game→View→原 GLB 已核切回、同tick双切和后续新射击，绘制用 CPU 替身，不能据此宣称握枪或屏幕过渡合格。
+
+[^rifle-view-consumer]: [武器动作取消及实际 View 回归](https://github.com/dbvv1/FPS-Like/commit/50be6e983a48729e0e9b7e3f0aba1b0f24891a70)，2026-11-11；在该固定候选运行 `node --import tsx --test tests/shot-action.test.ts tests/content-set.test.ts`，可复验真实 Game、原 GLB 和 View 消费。491项测试、类型／构建与非作者审查通过；未验 GPU 或浏览器，Knight／RX24 装配仍未接生产 View。
 
 **选动作窗口也要核源姿态**：原实现把瞄准固定在0相位，实源手槽距1.007m；末帧约0.568m，与Shoot的8/30秒处41根骨世界矩阵误差小于1e-6。源clip完整播放正确，不代表该起点适合每次射击。只对这套固定源跳过已证实的举枪段，保原速度；不要把0.25当其他动画的通用裁切值，也不能据骨矩阵接近声称握枪或视觉过渡通过。
 
