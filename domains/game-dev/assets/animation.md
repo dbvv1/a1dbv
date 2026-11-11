@@ -426,7 +426,20 @@ blender -b --factory-startup --threads 2 --python-exit-code 1 --python asset-pip
 
 **替换运行资源前，把修正所依赖的旧源固定到提交与逐文件摘要。** 只复制当前发布目录不够：目录后来换成修正版，重新计算偏移会接近零；若同时信任该目录的 manifest，错误基线也能自洽。将两阵营旧源、GLB 与 manifest 的五份摘要独立固定，提取时先验全批，再写独立快照；缺文件、摘要不符或现有快照损坏就停止，不覆盖原件。
 
-本例的[离线固定源与候选配方](https://github.com/dbvv1/MOBA-Like/blob/8584c77/asset-pipeline/veyra-death-contact/README.md#0-pin-the-b489ed3-baseline-before-overwriting-the-heroes-release)已进入产品：Python 检查／重建默认读旧源快照，候选与 fallback manifest 同步原源路径；缺快照停止，不自动改读发布目录。覆盖替换发布目录后的独立性与失败路径，产物摘要保持。真实 Three 测试也先验五文件摘要，再直接解析已验证的旧 GLB 字节，不重读可变发布目录。新检出须显式准备离线快照，缺原提交或快照就停止；15 项反例覆盖缺文件、等长篡改与自洽的错误 manifest。换运行资源前还须同步 heroes 配方与发布 pin，再在游戏机位验死亡剪影与整场可读性；当前默认仍用旧资源，CPU 接触合格不能代替画面关。依据：[生产消费者测试与接收记录](https://github.com/dbvv1/MOBA-Like/blob/6750585/docs/verification/veyra-contact-consumer.md)，源包与生产动画器实跑，2026-11-09；浏览器、GPU 与 Blender 重导未验。
+本例的离线固定源已进入 Python 检查／重建与真实 Three 消费测试：先验五文件，再直接消费已验证字节；缺快照停止，不自动取回或改读可变发布目录。新检出先准备离线快照，缺原提交或快照不能继续。缺文件、等长篡改与自洽的错误 manifest 都有反例。依据：[生产消费者测试](https://github.com/dbvv1/MOBA-Like/blob/6750585/docs/verification/veyra-contact-consumer.md)、[固定源消费配方](https://github.com/dbvv1/MOBA-Like/blob/8584c77/asset-pipeline/veyra-death-contact/README.md#0-pin-the-b489ed3-baseline-before-overwriting-the-heroes-release)；源包／生产动画器 CPU 实跑，2026-11-09，未验浏览器画面。
+
+**把接地修正接回完整制作配方，并用“原值＋修正量”赋值。** 只改最终 GLB，下一次从角色源重建便会丢掉修正；每次在当前曲线上继续加偏移，又会让重复重定向越抬越高。本例沿原 `build.py` → UAL1 `retarget.py`，从固定旧 `.blend` 读取原 death Root Y，检查31键时间和当前值，再绝对赋值为原值加接触偏移。只改 death Root Y，不动角色外根、非死亡动作或玩法位置。
+
+使用下方固定版本的 MOBA 配方源码，并备好 `baseline-lock.json` 指定的本地旧源提交，在仓库根目录用 Blender 4.3 执行：
+
+```sh
+python asset-pipeline/veyra-death-contact/tools/baseline.py
+blender -b --disable-autoexec --python-exit-code 1 --python asset-pipeline/heroes/veyra-release/tools/build.py -- --output-dir outputs/veyra-recipe-contact
+blender -b --disable-autoexec --python-exit-code 1 --python asset-pipeline/heroes/veyra-release/tools/retarget.py -- --output-dir outputs/veyra-recipe-contact --death-contact
+python asset-pipeline/veyra-death-contact/tests/check_contact.py --candidate-dir outputs/veyra-recipe-contact --tolerance 0.005
+```
+
+两阵营完整重导已在 Blender 4.3.2 跑通，输出含可编辑源、GLB、manifest及原动作输入／许可。相对旧GLB，JSON相同，仅 death Root Y 的55字节变化；61点／阵营通过5毫米接触门槛。再跑一次 retarget，GLB逐字节不变；不启用修正的完整重建也与原运行GLB一致。这些检查可抓到“修正只在最终文件里”和“重复加偏移”两类回退。脚本要求修正输出到 `outputs/` 子目录，不自动覆盖运行源；换运行资源仍须更新资源pin并在实际游戏机位验死亡剪影和整场可读性。当前网页未采用本轮重导产物。依据：[可重跑配方与验收入口](https://github.com/dbvv1/MOBA-Like/blob/aade37cac456d898f8ed2a3bd61303891839bc3d/asset-pipeline/veyra-death-contact/README.md#rebuild-through-the-original-heroes-recipe-blender-43)，完整 Blender 重导／重复重定向及非作者源／产物复核，2026-11-11；未新增浏览器、GPU或画面验收。
 
 **出手主形不够清楚时，先换合适的成熟动作源，再决定混合政策。** Veyra 的远程即时普攻不适合继续用短剑贴身挥击；已采用植物 focus 与 CC0 UAL1 Standard 的 `Spell_Simple_Enter/Shoot/Exit`，按准备、释放、收回重采样到原十五骨骼的八个上身骨，根与腿仍归移动。先比静止姿势、轴与实际空间侧：本例源 `hand_l` 和目标 `Hand_R` 都在正 X，照左右后缀配对会映错手。改作者配方与 Blend，再导出运行 GLB；检查旧四动作、骨架与绑定、子帧和脚底，不把同骨名当兼容证明。
 

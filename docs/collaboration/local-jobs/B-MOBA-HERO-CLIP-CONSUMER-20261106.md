@@ -50,3 +50,8 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 候选源包配方已接入 [829a5f5](https://github.com/dbvv1/MOBA-Like/commit/829a5f5)：四处 Python 消费入口默认读离线固定快照，候选／fallback manifest 同步原源路径；缺快照不回退、不自动取回。Python42、产品580、双构建、接触检查及独立目录 fallback 重建通过，摘要保持；非作者复核通过。真实 Three 消费测试仍需迁移旧源对照基线，heroes 配方端口、运行采用与画面门槛仍待；本次不改运行资源、不重导 Blender、不占拍摄槽。
 
 真实 Three 旧源对照已接入 [8584c77](https://github.com/dbvv1/MOBA-Like/commit/8584c77)：解析前验证五份固定文件并直接消费已验字节，缺快照明确失败、不取回／回退／跳过；新检出需显式离线准备。595项、Python42、双构建、Web类型与非作者复核通过；额外根tsc的capture／command-buffer旧错原基线复现，不记全量类型通过。发布后整树摘要与本地测试版一致。尚欠heroes配方／发布pin、运行采用与画面关；未占拍摄槽或重试拒绝。
+
+
+## 11-11 原 heroes 配方接收
+
+接收 [aade37c](https://github.com/dbvv1/MOBA-Like/commit/aade37cac456d898f8ed2a3bd61303891839bc3d) 的隔离配方：原 Blender 4.3 build→UAL1 retarget 可从固定旧源施加 death 修正，重复重定向不累加；明确输出到 `outputs/` 子目录，未替换运行源或GLB。两队真实完整重导、61点接触检查与非作者逐字节核对通过，无修正重导保持原GLB；方法与可用命令已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。默认、网站v22及0/89不变。下一步核既有 `90d4fad` 接线候选的原回执与浏览器／死亡画面门槛，不新开旁置；运行采用与发布资源pin仍待。原调用unknown和拒绝边界不变。
