@@ -44,7 +44,10 @@ findings only.
 ## Do not report
 
 - Anything CI already enforces: formatting, lint, type errors
-- Generated files: TODO (e.g. `src/gen/**`), lockfiles, vendored code
+- Mechanical churn in generated files or vendored code when source review
+  and relevant consumer checks cover it. Keep changes to dependency resolution,
+  lockfile format, runtime behavior, and shipped interfaces in scope; do not exclude
+  them by filename.
 - Missing tests for code that is not behavior (docs, config comments)
 
 ## Always check

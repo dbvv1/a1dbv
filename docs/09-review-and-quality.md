@@ -218,6 +218,10 @@
 
 保持简短，避免稀释关键规则；起点见 [REVIEW.md 模板](../templates/generic/REVIEW.md)。
 
+**跳过机械噪音，不按文件类型排除交付行为。** 本仓模板保留锁文件解析／格式、运行行为和实际分发接口的变化；生成或 vendor 差异只有在源头审查与相关消费者检查已覆盖时才略过。例如 [uv 锁文件](../experiments/uv-lock-revision/README.md)的包身份未变，格式降级却让无 manifest 安装失败；[sqlite-chronicle 的生成 SQL](research/2026-10-12-development-feedback.md#s634)修好 BLOB 后，仍漏记含 NUL 文本的真实变化。审查这些变化时，应核实际安装或读取结果，而不只检查生成器源码。
+
+依据：uv 为 2026-11-05 历史实测；生成 SQL 于 2026-11-11 用 `python3 experiments/sqlite-chronicle-replace-check.py` 离线复跑，32 个场景匹配预期，包括版本游标漏报反例。只验四份固定 SQL，不代表整个包通过或已测得模型漏审率下降。
+
 > 注意：后台 `--fix` 修改不在会话 checkpoint 内，须用 git 回退；前台运行的修改可随 `/rewind` 撤销。是否读规则与是否执行规则须分开核验。
 
 **依据**：[一手：文档；研究：范围边界] 托管 Code Review 的规则读取契约；核实 2026-10-24。
