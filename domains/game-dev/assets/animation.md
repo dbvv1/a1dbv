@@ -527,6 +527,10 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 
 **三种语义分别消费**：`anchors.json`从真实`weaponParts`派生主掌、常态支撑掌和换弹抓匣点，并与固定GLB核对。常态两掌距0.270780m，主掌到抓匣目标0.186926m，不能混作同一个握持距离。GLB抓匣点有四位小数舍入，保留双值和误差；掌面朝向、Knight绑定及接触容差仍为null。骨槽原点不是掌面，先标定再匹配，不靠放大枪械抹平差距。
 
+**变形手套用真实表面点，不用固定骨偏移代替。** 在选定姿态记录实际三角形及重心坐标，后续每帧重新计算其蒙皮顶点；顶点混合手、腕和前臂权重时，固定手骨偏移会离开表面。再比较角色两接触点与枪械两锚的距离：刚体变换不能消除间距差。固定Knight手槽最近的表面候选相距0.562282m，对RX24的0.270780m，主手对齐后支撑点至少差0.291502m；固定骨偏移在三动作15姿态中另有最大0.017840m漂移。这里只否决这组选点，不代表已经识别真正掌面或所有配对不可行。
+
+复算命令：`node --import tsx tools/check-kaykit-rx24-contact.ts <fixed-sample-directory>`，目录放已固定的`Knight.glb`与`Med_CombatRanged.glb`；先验hash，缺源或坏源失败，不联网补源。独立逐顶点蒙皮、两点刚体拟合和15姿态复算一致，尚无浏览器／握持画面。依据：[表面候选、配方与明确拒收范围](https://github.com/dbvv1/FPS-Like/blob/aea766602680f310d48aff72094d312b36d8e3a9/asset-pipeline/kaykit-rx24/README.md#knight-接触拟合拒绝手槽最近表面方案)，固定源CPU实跑，2026-11-11。
+
 **直接使用**：FPS仓库`asset-pipeline/kaykit-rx24/weapon-only.glb`可由GLTFLoader载入；重建用`node --import tsx asset-pipeline/kaykit-rx24/extract.ts --src assets/content-set/fp-arms-rx24.glb --out asset-pipeline/kaykit-rx24/weapon-only.glb --manifest asset-pipeline/kaykit-rx24/manifest.json`。
 
 案例脚注：[RX24配方与静态产物](https://github.com/dbvv1/FPS-Like/tree/841386e0f584b0989106c369831f0ba3efcbe17e/asset-pipeline/kaykit-rx24)，2026-11-10：1958三角、5874顶点，非作者根空间逐点误差0；仅CPU资产验收，未入View、未验握持或画面，不增加内容覆盖。

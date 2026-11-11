@@ -37,4 +37,4 @@ result_branch: relay/b-fps-rx24-anchor-contract-20261110
 
 ## dot-B 接收
 
-已快进并入原蒙皮候选 `f5e99a5a052d601c8f91ff99332fcdcb261912ea`，仅接收三锚数据与配方。Node24.22.1重验465测试、构建、实际CLI均退出0，生成JSON与提交逐字一致；非作者独立解析GLB/源JSON复算通过，两原GLB未改。原接收器Node22偏差不扩作支持承诺。默认/网站/0/77不变；Knight掌面标定仍待原单元回执，不重复派发。知识回流animation.md；重算采用临时文件成功后替换。
+已快进并入原蒙皮候选 `f5e99a5a052d601c8f91ff99332fcdcb261912ea`，仅接收三锚数据与配方。Node24.22.1重验465测试、构建、实际CLI均退出0，生成JSON与提交逐字一致；非作者独立解析GLB/源JSON复算通过，两原GLB未改。原接收器Node22偏差不扩作支持承诺。默认/网站/0/77不变。后继[aea7666](https://github.com/dbvv1/FPS-Like/commit/aea766602680f310d48aff72094d312b36d8e3a9)已复算真实蒙皮表面候选，否决“手槽最近表面＋原尺寸RX24”这组装配；不是所有配对不可能，真实掌面／枪轴仍待确定，见[native-scene当前决定](B-FPS-NATIVE-SCENE-CONSUMER-20261110.md#当前决定)。知识回流animation.md；重算采用临时文件成功后替换。
