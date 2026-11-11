@@ -162,6 +162,46 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 
 **打包范围的实测反例：** Gitingest 仅 include `packages/golang/`，在完整 Termux 输入仍混入 14 个无关目录链接；现有未合入补丁保留 16 份源码并移除这些链接，见[原问题与独立云端验证](../experiments/gitingest-symlink/README.md)。这是链接元数据过滤，不是目标内容泄露；不改变按需读取默认。核实：2026-11-01。
 
+#### 调用链调查：先验覆盖，再把 CodeGraph 交给 Agent
+
+**🧪 已知函数、需要一起看正文和上下游时，可试 CodeGraph；找字符串、配置和文档仍用原生搜索。** 它补的是函数关系入口，不是完整影响面证明。先从真实任务找一个已知调用点，对照索引能否正确连回文件与行号，再决定是否值得继续用；现有 LSP／`rg` 已够用时不加工具。
+
+**先在无 `.git` 的临时快照试 CLI，不先接 MCP。** 下面在已安装 Node／npm 的 Linux 中执行，复制目标仓库 **HEAD 的已提交文件**；若任务涉及未提交改动，先明确纳入对应文件并记录版本，不能拿旧快照核当前修改。`init --yes` 在有 Git、watcher 不可用时可能安装同步 Hook；没有 `.git` 的子目录也可能发现祖先仓库，所以下面另隔离 Git 发现并预检。裸 `codegraph` 和 `codegraph install` 会走 Agent 配置安装，不是下面的查询入口。
+
+```bash
+(
+  set -euo pipefail
+  T=$(mktemp -d)
+  mkdir -p "$T/source" "$T/home" "$T/cache"
+  git archive HEAD | tar -x -C "$T/source"
+  unset GIT_DIR GIT_WORK_TREE GIT_COMMON_DIR GIT_INDEX_FILE
+  export GIT_CEILING_DIRECTORIES="$T"
+  export HOME="$T/home" XDG_CONFIG_HOME="$T/home/config" XDG_CACHE_HOME="$T/cache"
+  export DO_NOT_TRACK=1 CODEGRAPH_TELEMETRY=0 CODEGRAPH_NO_UPDATE_CHECK=1
+  export CODEGRAPH_NO_DAEMON=1 CODEGRAPH_NO_DOWNLOAD=1
+  cd "$T/source"
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "仍发现 Git 仓库，停止初始化并检查快照边界" >&2; exit 1
+  fi
+  npm install --prefix "$T/tool" --cache "$T/cache/npm" --ignore-scripts --no-audit --no-fund --save-exact --registry=https://registry.npmjs.org @colbymchenry/codegraph@1.6.2
+  CG="$T/tool/node_modules/.bin/codegraph"
+  "$CG" --version
+  "$CG" telemetry status
+  "$CG" init "$T/source" --yes
+  "$CG" status "$T/source" --json
+  # 以下是 BMAD 的实用入口；换成当前任务的仓库相对路径、精确函数名。
+  FILE=skills/bmad-deep-recon/scripts/recon_kit.py
+  "$CG" node cmd_citations --path "$T/source" --file "$FILE"
+  "$CG" callers strip_fences --path "$T/source" --file "$FILE" --json
+)
+```
+
+**读结果时，先核索引健康、身份和边，再回源码决定改什么。** `status` 应无待处理变更／引用或重建提示；状态完整仍不等于语义覆盖完整。用函数名加 `--file` 消歧，核返回目标与文件一致，以及 `ambiguous`、`filteredOut`、`truncated`；错误文件过滤可能回退显示全部定义，不能只看 exit 0。函数值引用不等于运行时调用：本仓 BMAD 实试里，六个 `set_defaults(func=...)` 是 `references`，文本 `node` 却统一显示为 “Calls”。应按 JSON 的边类型和调用行回读真实分派。修改快照后显式 `sync`，再复查；本次只验证了未改源码时的同步入口，没有验证增量更新正确性。
+
+**让 Agent 同时交图外消费者，不按 `affected=0` 跳过测试。** BMAD 的共享 `strip_fences`／`appendix_rows` 正确连到 citations 和 HTML 输出两条路径；真正调用脚本的 Markdown 工作流却没入图，`affected pyproject.toml` 还漏掉了实际读取该文件的测试。原生搜索已找到这些合同，图没有新增生产消费者。它可把函数体与调用行集中给 Agent，但新增解析器依赖仍要另核脚本分发、直接 import 测试与冻结锁；自然语言 `explore` 的宽查询也不宜直接变成修改清单。
+
+**依据**：[一手] [CodeGraph v1.6.2／MIT 与 CLI](https://github.com/colbymchenry/codegraph/blob/6560052a6f856855d3f71eee838fd66ccfa4285d/README.md)、[初始化行为](https://github.com/colbymchenry/codegraph/blob/6560052a6f856855d3f71eee838fd66ccfa4285d/src/installer/index.ts)、[遥测关闭](https://github.com/colbymchenry/codegraph/blob/6560052a6f856855d3f71eee838fd66ccfa4285d/TELEMETRY.md)；[社区原文] [横切调查与简单查找的取舍](https://zenn.dev/aoki_monpro/articles/6ea28ed4c73aa2)、[只读图切片的漏检](https://menges.dev/writing/code-graph-mcp-servers-tested/)（后者作者同时开发竞品 enola，均非本仓独立模型对照）；[本仓实试] npm 1.6.2 对 BMAD 既有引用检查改动的消费者调查，未接 MCP、未测模型修复率／费用，不改原生检索默认；核实 2026-11-11。
+
 #### 资料检索：已知关键词先 `rg`，跨篇排序再试 QMD
 
 **资料很多、只想先找到相关原文？** 已知关键词仍先用 `rg`；需要跨多篇 Markdown 排序并按行取回时，可选试 QMD 的纯词法 `search`。本仓 2.8.3 索引 207 份公开资料，用 `页面 批注` 返回了导出实验、实际改稿与主专题，随后按返回 docid 取回原文，分清“导出过批注”和“确实改过页面”。同题原生搜索也能找到，增量是排序与取回入口，不是语义理解或模型提效。详见[最短操作与范围](research/2026-10-22-frontier-trials.md#qmd纯词法检索先找到原文再判断证据)。
