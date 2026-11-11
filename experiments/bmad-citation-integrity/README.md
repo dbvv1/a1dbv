@@ -12,12 +12,14 @@
 
 ## 在独立副本使用
 
+本补丁固定于 dev 的 `3cf35b6dc97fb8d7e319287a680a9197a8e1036a`。上游 [#3181](https://github.com/bmad-code-org/BMAD-METHOD/pull/3181) 已将 Skill 移入 `skills/core-tools/`；下面使用新目录，不把旧路径补丁直接套到更新后的检出。修复源码与已审候选相同，仅补丁路径随上游调整；旧 `e9cbe2b` 基线的产物保留在[原提交](https://github.com/dbvv1/a1dbv/tree/3f10165a5f468a188c14d8a459d9db8b7c0d08a6/experiments/bmad-citation-integrity)。
+
 以下为 Bash 命令，需要 Git、uv、Python 3.11+；完整质量检查另需项目支持的 Node/npm。本次使用 Linux、Python 3.11.18、Node 24.22.1、uv 0.13.6 与 npm 11.9.0。把本目录的补丁放在当前目录，从新的源码副本开始，不应用到已有脏树：
 
 ```sh
 PATCH="$PWD/change.patch"
 git clone --branch dev https://github.com/bmad-code-org/BMAD-METHOD.git source
-git -C source checkout e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e
+git -C source checkout 3cf35b6dc97fb8d7e319287a680a9197a8e1036a
 git -C source apply --check "$PATCH"
 git -C source apply "$PATCH"
 cd source
@@ -26,14 +28,14 @@ export PRE_COMMIT_HOME="$PWD/.pre-commit-cache"
 export XDG_CONFIG_HOME="$PWD/.config" ASTRO_TELEMETRY_DISABLED=1
 export npm_config_cache="$PWD/.npm-cache"
 uv sync --frozen
-uv run --frozen python -B -m pytest -n 0 skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
+uv run --frozen python -B -m pytest -n 0 skills/core-tools/bmad-deep-recon/scripts/tests/test_recon_kit.py
 ```
 
 用现有报告检查时，传入它的实际路径：
 
 ```sh
-uv run --frozen python -B skills/bmad-deep-recon/scripts/recon_kit.py citations report.md
-uv run --frozen python -B skills/bmad-deep-recon/scripts/recon_kit.py escape-sources report.md
+uv run --frozen python -B skills/core-tools/bmad-deep-recon/scripts/recon_kit.py citations report.md
+uv run --frozen python -B skills/core-tools/bmad-deep-recon/scripts/recon_kit.py escape-sources report.md
 ```
 
 `citations` 在检测到悬空引用、未被引用的来源或重复编号时退出 1，但仍有上面的代码误识别缺口；`escape-sources` 在重复编号或无效 URL 时退出 1，不能代替前一项检查。各自检查通过退出 0；缺输入等用法错误退出 2。命令不改报告文件。项目完整检查沿原入口执行；下面额外补齐原项目可选 token 计数测试的依赖，避免把缺依赖的跳过记成通过，不改项目锁文件：
@@ -45,12 +47,14 @@ uv pip install --python .venv/bin/python --index-url https://pypi.org/simple 'ti
 uv run --frozen tools/quality.py
 ```
 
-最终两文件候选的五个新增回归配原脚本全部失败；修后相关测试 36 项、完整 Python 测试 1250 项通过，无跳过，项目 `quality.py` 的代码检查与文档站各阶段通过。非作者另跑相关测试与 47 次真实 CLI，核重复编号、来源保全、HTML 转义、退出码及输入字节未变；也确认行内代码误识别仍存在。公开补丁在固定原版应用后，两文件与被审版本逐字节一致。未运行 hosted CI、Windows 或完整 LLM 研究流程。
+**当前固定基线 `3cf35b6` 已重新验收：** 五个新增回归配当前原脚本全部失败；修后相关测试 36 项／4 子测试、完整 Python 测试 1250 项／198 子测试通过，无跳过，原生 `quality.py` 的代码检查与文档站各阶段通过。沿原 CLI 输入重新检查重复行保全、同编号唯一锚点、排序、HTML 转义、URL 校验与退出码，并对照原 issue 的输入确认行内代码误识别仍存在。新补丁在干净固定原版应用后，两文件与受检版本逐字节一致，报告输入未被改写。未运行 hosted CI、Windows 或完整 LLM 研究流程。
+
+旧 `e9cbe2b` 基线的 1250 项／198 子测试及非作者 47 次真实 CLI 是历史验收，不借它们宣布新基线通过；完整原记录保留在上面的原提交。
 
 ## 这次实际采用了哪条项目规则
 
-新读者只以[共享指令页](../../docs/decisions/instruction-files.md)为方法指南，接着读取目标项目原生 `AGENTS.md`、贡献规范与实现。已有指令给出了 Python／Skill 检查入口，并要求测试确定性代码的结果，不用测试去断言提示词文本。因此保留原指令与 Skill 正文，直接修工具、先跑失败回归，再按原项目入口验收；没有为这一例新增 `CLAUDE.md` 或同步器。
+旧 `e9cbe2b` 基线的新读者只以[共享指令页](../../docs/decisions/instruction-files.md)为方法指南，接着读取目标项目原生 `AGENTS.md`、贡献规范与实现。已有指令给出了 Python／Skill 检查入口，并要求测试确定性代码的结果，不用测试去断言提示词文本。因此保留原指令与 Skill 正文，直接修工具、先跑失败回归，再按原项目入口验收；没有为这一例新增 `CLAUDE.md` 或同步器。
 
 这是任务中读取规则后的行为采用；宿主启动加载没有独立回执，也未做第二款客户端任务，不能据此认定双工具共享方案通过。机械引用完整度仍不能证明来源支持结论，原研究流程的独立来源审查继续保留。
 
-**依据**：真实需求 [#3167](https://github.com/bmad-code-org/BMAD-METHOD/issues/3167)、固定 [AGENTS.md](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/AGENTS.md)、[原检查脚本](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/skills/bmad-deep-recon/scripts/recon_kit.py)、[研究收尾的实际调用](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/skills/bmad-deep-recon/references/finalize.md)与本次隔离 CLI 实做。核实 2026-11-11；未提交上游。派生补丁沿[上游 MIT 许可](LICENSE)提供，保留其[贡献者](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/CONTRIBUTORS.md)及[商标说明](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/TRADEMARK.md)入口。
+**依据**：真实需求 [#3167](https://github.com/bmad-code-org/BMAD-METHOD/issues/3167)、固定 [AGENTS.md](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/AGENTS.md)、[当前固定原脚本](https://github.com/bmad-code-org/BMAD-METHOD/blob/3cf35b6dc97fb8d7e319287a680a9197a8e1036a/skills/core-tools/bmad-deep-recon/scripts/recon_kit.py)、[迁移后研究收尾的实际调用](https://github.com/bmad-code-org/BMAD-METHOD/blob/3cf35b6dc97fb8d7e319287a680a9197a8e1036a/skills/core-tools/bmad-deep-recon/references/finalize.md)与本次隔离 CLI 实做。核实 2026-11-11；未提交上游。派生补丁沿[上游 MIT 许可](LICENSE)提供，保留其[贡献者](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/CONTRIBUTORS.md)及[商标说明](https://github.com/bmad-code-org/BMAD-METHOD/blob/e9cbe2b2962eb7ee544b1512b0e3fada7ed0144e/TRADEMARK.md)入口。

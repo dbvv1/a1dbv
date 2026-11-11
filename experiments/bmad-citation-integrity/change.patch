@@ -1,7 +1,7 @@
-diff --git a/skills/bmad-deep-recon/scripts/recon_kit.py b/skills/bmad-deep-recon/scripts/recon_kit.py
+diff --git a/skills/core-tools/bmad-deep-recon/scripts/recon_kit.py b/skills/core-tools/bmad-deep-recon/scripts/recon_kit.py
 index f367e2e3..a5813336 100644
---- a/skills/bmad-deep-recon/scripts/recon_kit.py
-+++ b/skills/bmad-deep-recon/scripts/recon_kit.py
+--- a/skills/core-tools/bmad-deep-recon/scripts/recon_kit.py
++++ b/skills/core-tools/bmad-deep-recon/scripts/recon_kit.py
 @@ -12,7 +12,8 @@ print one JSON object to stdout; diagnostics go to stderr. Exit codes:
  Subcommands:
    citations RESEARCH_MD
@@ -95,10 +95,10 @@ index f367e2e3..a5813336 100644
 
 
  # --- anchors -----------------------------------------------------------------
-diff --git a/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py b/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
+diff --git a/skills/core-tools/bmad-deep-recon/scripts/tests/test_recon_kit.py b/skills/core-tools/bmad-deep-recon/scripts/tests/test_recon_kit.py
 index 00a7078d..088150fe 100644
---- a/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
-+++ b/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
+--- a/skills/core-tools/bmad-deep-recon/scripts/tests/test_recon_kit.py
++++ b/skills/core-tools/bmad-deep-recon/scripts/tests/test_recon_kit.py
 @@ -86,6 +86,28 @@ def run_text(argv, text, name="report.md"):
 
 
