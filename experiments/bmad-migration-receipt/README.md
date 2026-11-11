@@ -1,8 +1,65 @@
 # BMAD：迁移后还要让下一项工作读得回来
 
-**⛔ 现有 pre-release spec 带隐藏稿、`.working/` 或 `.tmp` 时，暂缓直接用受测版本的 `--fold-specs`：它退出 0、`problems=[]`，仍会静默删掉这些文件。**
-**🧪 本地两文件候选在同一输入上保全了内容，并让生产 tickets CLI 继续读取、选择任务、更新既有计划再读回；仅接受 #3142 范围。**
-**本次测的是 v7 preview alpha 的 `6.13.0-next`，不是稳定 v6.12，也不是整套 v6→v7 或模型开发流程。**
+**🧪 迁移 v7 预览版的旧 spec 时，先备份完整输出树，再在副本验证下面的组合候选。** 它保留隐藏稿、临时文件和工作目录，分开各故事的日志及同名附件，并补上迁移后继续写日志的入口。
+**票据与计划保持平铺；日志和附件各归同名目录。** 迁移成功后仍要从当前 tickets／memlog CLI 读写一次，不能只看退出码。
+**这不是稳定 v6.12 的通用升级器，也不修复已经混在一起的历史。** 受测范围是固定 v7 preview 源码；下方历史结果保留原版本和边界。
+
+## 当前组合候选：迁移后还要接着工作
+
+基线为官方 dev `3cf35b6dc97fb8d7e319287a680a9197a8e1036a`，迁移脚本已移到 `skills/core-tools/bmad/scripts/`。原实现仍有 [#3142](https://github.com/bmad-code-org/BMAD-METHOD/issues/3142) 的隐藏／临时文件丢失和 [#3143](https://github.com/bmad-code-org/BMAD-METHOD/issues/3143) 的共享日志、同名附件冲突。旧的两项修复没有组合验收；本次[七文件补丁](combined.patch)把迁移代码、回归和直接使用说明放在一起，不叠加下面的旧补丁。
+
+### 先在新的源码副本应用
+
+需要 Git、uv、Python 3.11+；本次实跑为 Linux／Python 3.11.18。从本目录开始，补丁留在源码树之外；不要应用到已有脏树或其他执行者正在修改的目录。
+
+```sh
+PATCH="$PWD/combined.patch"
+git clone --branch dev https://github.com/bmad-code-org/BMAD-METHOD.git source
+git -C source checkout --detach 3cf35b6dc97fb8d7e319287a680a9197a8e1036a
+git -C source apply --check "$PATCH"
+git -C source apply "$PATCH"
+cd source
+export UV_CACHE_DIR="$PWD/.uv-cache" UV_PYTHON_INSTALL_DIR="$PWD/.uv-python"
+uv sync --frozen
+uv run --frozen python -B -m pytest tools/tests/test_migrate_v6.py
+```
+
+原 guided migration 要求备份完整输出树；直接 `--fold-specs` 不会替你备份，`--clean` 的 `_bmad` 备份也不包含输出树。先复制自己的 `_bmad-output` 到迁移范围之外，在副本上按项目迁移说明执行，再对照文件清单、内容与 JSON 的 `problems`、`unresolved`。不要把 `problems` 非空且 exit 0 当成功。
+
+### 下一轮从票据找到自己的日志
+
+组合候选保持如下布局，当前 tickets 的发现、状态、计划路径和身份不变：
+
+```text
+backlog/
+  story-pay.md
+  story-pay-plan.md
+  story-pay/
+    .memlog.md
+    DESIGN.md
+  story-ship.md
+  story-ship/
+    .memlog.md
+    DESIGN.md
+```
+
+**恢复时先用 `tickets.py find` 找到 `story_file`，去掉末尾 `.md`，得到该 backlog 票据的 SPEC workspace。** 用原有 `memlog.py append --workspace <该目录>` 写入并读回；容器仍用自己的容器目录。`find` 的 `folder=backlog` 不是个体故事的日志地址，不能把它直接代入旧的“ticket folder”。缺少个体日志时按修订后的 SPEC 说明初始化自己的日志，既有共享 `backlog/.memlog.md` 留原样，不猜分给任一故事。
+
+这个差别来自真实后续调用：只合两个代码补丁时，两份历史已经隔离，但按旧说明追加的两个命令都退出 0，却再次写入共享 backlog 日志。最终候选同步了 SPEC、ticket、workflow、票据树规则及迁移说明，后续消费者须从 `find` 返回值取得位置，而不依赖上一次迁移报告还在上下文里。
+
+### 接收范围
+
+实跑使用公开问题同形的合成输入，不是真实用户存档。非作者用独立冻结输入验证正常组合、同名附件、隐藏／临时文件、票据发现与计划读写、独立日志追加、重复迁移和写入前冲突；最终说明由另一执行者完整读取，再从真实 `find.story_file` 接续日志。完整 `tools/quality.py` 入口通过，包括 Python 检查、验证器、测试以及文档 lint、格式、构建、侧栏和测试；独立消费者结果不冒充其全仓检查。
+
+含脚本声明的可选 tiktoken 0.14.0 时，完整 pytest 为 **1252 passed、200 subtests、0 skipped**，未改项目锁文件。要复跑完整项目门禁，另按 CONTRIBUTING 准备 docs-site 依赖并运行 `uv run --frozen tools/quality.py`；受限环境用本次工作区的 `XDG_CONFIG_HOME`，可设 `ASTRO_TELEMETRY_DISABLED=1` 关闭本进程遥测，不改 home 权限。
+
+**失败后先检查实际树，不直接重跑。** 源或目标 `.memlog.md` 是目录、悬空链接时，候选在写入前列出问题；可读但只读的普通日志仍可能在追加时失败，此时票据、附件或日志位置已经改变。独立实跑中，直接再跑还会重复增加 Requirements。它不是事务恢复器，不保证所有运行时失败都保持原树。
+
+**适用边界**：迁移存储、引用与明确日志地址已验证，不等于 LLM 驱动的完整 SPEC／v6→v7 流程通过；没有 Windows、真实存档或线上验收。补丁按现有 [MIT 许可](LICENSE)提供。没有向上游投稿；这份七文件改动仍需按对方规则取得维护者范围确认与贡献者的人审，不以本仓自动检查代替。
+
+**依据**：上述两条真实问题、[固定迁移源码](https://github.com/bmad-code-org/BMAD-METHOD/blob/3cf35b6dc97fb8d7e319287a680a9197a8e1036a/skills/core-tools/bmad/scripts/migrate_v6.py)、[当前票据契约](https://github.com/bmad-code-org/BMAD-METHOD/blob/3cf35b6dc97fb8d7e319287a680a9197a8e1036a/tools/ticket-tree-rules.md)及[贡献规则](https://github.com/bmad-code-org/BMAD-METHOD/blob/3cf35b6dc97fb8d7e319287a680a9197a8e1036a/CONTRIBUTING.md)。定向核实与真实 CLI 实跑：2026-11-11；原始输入均为合成，不推荐据此批量迁移真实数据。
+
+## 历史：11-02 的隐藏文件保全
 
 ## 从真实未完成需求开始
 

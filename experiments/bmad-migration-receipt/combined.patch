@@ -1,0 +1,477 @@
+diff --git a/skills/core-tools/bmad/scripts/migrate_v6.py b/skills/core-tools/bmad/scripts/migrate_v6.py
+index 30da4d8..e036738 100644
+--- a/skills/core-tools/bmad/scripts/migrate_v6.py
++++ b/skills/core-tools/bmad/scripts/migrate_v6.py
+@@ -443,9 +443,11 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+     spec = parse_spec(read_for_fold(folder / f"{folder.name}.md", project_root))
+     loose = folder.parent == store
+     if loose:
+-        home = store / "backlog"
+-        ticket = home / f"story-{slug}.md"
+-        if ticket.exists():
++        ticket = store / "backlog" / f"story-{slug}.md"
++        home = ticket.with_suffix("")
++        if home.exists() or home.is_symlink():
++            raise FoldProblem(f"{relative(home, project_root)} already exists")
++        if ticket.exists() or ticket.is_symlink():
+             raise FoldProblem(f"{relative(ticket, project_root)} already exists")
+     else:
+         home = folder.parent
+@@ -456,10 +458,8 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+         path
+         for path in sorted(folder.iterdir(), key=lambda p: p.name)
+         if path.name not in (f"{folder.name}.md", MEMLOG)
+-        and not path.name.endswith(".tmp")
+-        and not path.name.startswith(".")
+     ]
+-    taken = [path.name for path in moving if (home / path.name).exists()]
++    taken = [path.name for path in moving if (home / path.name).exists() or (home / path.name).is_symlink()]
+     if taken:
+         raise FoldProblem(f"{', '.join(taken)} already exist(s) beside the ticket")
+
+@@ -497,8 +497,10 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+
+     # References to the folder, wherever they are: `spec-<name>/spec-<name>.md` becomes the ticket, `spec-<name>/x` the
+     # moved companion. A suffix rewrite keeps relative and absolute forms right, since the folder's parent is unchanged.
+-    new_prefix = "backlog/" if loose else ""
+-    rewrites = [(f"{folder.name}/{folder.name}.md", f"{new_prefix}{ticket.name}")]
++    new_prefix = f"backlog/{home.name}/" if loose else ""
++    rewrites = [(f"{folder.name}/{folder.name}.md", relative(ticket, folder.parent))]
++    if loose:
++        rewrites.append((f"{folder.name}/{MEMLOG}", f"{new_prefix}{MEMLOG}"))
+     rewrites += [(f"{folder.name}/{path.name}", f"{new_prefix}{path.name}") for path in moving]
+     # Every rewrite is read and computed first, so a file that cannot be read stops the fold before anything changes.
+     writes: dict[Path, str] = {}
+@@ -520,18 +522,20 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+         if changed != text:
+             writes[path] = changed
+     for path in (home / MEMLOG, folder / MEMLOG):
+-        if path.is_file():
++        if path.exists() or path.is_symlink():
++            if not path.is_file():
++                raise FoldProblem(f"{relative(path, project_root)} cannot be read: not a regular file")
+             read_for_fold(path, project_root)
+     for path, text in writes.items():
+         path.write_text(text, encoding="utf-8")
+     rewritten = [relative(path, project_root) for path in writes]
+
+-    references, unresolved = companion_references(spec["companions"], folder, home, project_root, store)
+-    sources = [rebase(item, folder, home, project_root, store) for item in spec["sources"]]
+-    companions = [companion_path(item, folder, home, project_root, store) for item in spec["companions"]]
++    references, unresolved = companion_references(spec["companions"], folder, home, project_root, store, ticket.parent)
++    sources = [rebase(item, folder, home, project_root, store, ticket.parent) for item in spec["sources"]]
++    companions = [companion_path(item, folder, home, project_root, store, ticket.parent) for item in spec["companions"]]
+     requirements = own_lines + [f"- {ids[f'CAP-{n}']} (CAP-{n}): {line}" for n, line in spec["capabilities"].items()]
+     if loose:
+-        text = story_text(spec, home, slug, requirements, references, sources, companions)
++        text = story_text(spec, ticket.parent, slug, requirements, references, sources, companions)
+     else:
+         text = folded_ticket_text(
+             ticket.read_text(encoding="utf-8"),
+@@ -566,7 +570,8 @@ def fold_spec(project_root: Path, store: Path, folder: Path) -> dict[str, object
+     for path in moving:
+         shutil.move(path, home / path.name)
+     (folder / f"{folder.name}.md").unlink()
+-    shutil.rmtree(folder)
++    # Never recursively remove an entry that was not part of the fold.
++    folder.rmdir()
+     return {
+         "spec": relative(folder, project_root),
+         "ticket": relative(ticket, project_root),
+@@ -933,7 +938,7 @@ def story_text(
+
+
+ def companion_references(
+-    items: list[str], folder: Path, home: Path, project_root: Path, store: Path
++    items: list[str], folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path
+ ) -> tuple[list[str], list[str]]:
+     """A References line per companion: `companion — <name>` for one moving beside the ticket, else typed by its
+     file name with the path rebased to the ticket's folder. A path that resolves nowhere is kept as written."""
+@@ -946,14 +951,16 @@ def companion_references(
+             lines.append(f"- companion — {item}")
+             continue
+         if target.is_relative_to(folder.resolve()):
+-            lines.append(f"- companion — {target.relative_to(folder.resolve()).as_posix()}")
++            lines.append(
++                f"- companion — {Path(os.path.relpath(moved_path(target, folder, home), ticket_home)).as_posix()}"
++            )
+             continue
+         kind = COMPANION_TYPES.get(target.name) or re.split(r"[-_.]", target.stem, maxsplit=1)[0].lower() or "companion"
+-        lines.append(f"- {kind} — {rebase(item, folder, home, project_root, store)}")
++        lines.append(f"- {kind} — {rebase(item, folder, home, project_root, store, ticket_home)}")
+     return lines, unresolved
+
+
+-def companion_path(item: str, folder: Path, home: Path, project_root: Path, store: Path) -> str:
++def companion_path(item: str, folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path) -> str:
+     """The companion as `companions:` lists it: a path from the project root when it resolves there, else as rebased."""
+     target = resolve_companion(item, folder, project_root, store)
+     if target is None:
+@@ -961,7 +968,7 @@ def companion_path(item: str, folder: Path, home: Path, project_root: Path, stor
+     target = moved_path(target, folder, home)
+     if target.is_relative_to(project_root.resolve()):
+         return target.relative_to(project_root.resolve()).as_posix()
+-    return rebase(item, folder, home, project_root, store)
++    return rebase(item, folder, home, project_root, store, ticket_home)
+
+
+ def resolve_companion(item: str, folder: Path, project_root: Path, store: Path) -> Path | None:
+@@ -979,17 +986,17 @@ def moved_path(target: Path, folder: Path, home: Path) -> Path:
+     return target
+
+
+-def rebase(item: str, folder: Path, home: Path, project_root: Path, store: Path) -> str:
++def rebase(item: str, folder: Path, home: Path, project_root: Path, store: Path, ticket_home: Path) -> str:
+     """The path as the ticket's folder sees it: a path from beside it, a path from the project root, else relative."""
+     target = resolve_companion(item, folder, project_root, store)
+     if target is None:
+         return item
+     target = moved_path(target, folder, home)
+-    if target.is_relative_to(home.resolve()):
+-        return target.relative_to(home.resolve()).as_posix()
++    if target.is_relative_to(ticket_home.resolve()):
++        return target.relative_to(ticket_home.resolve()).as_posix()
+     if target.is_relative_to(project_root.resolve()):
+         return target.relative_to(project_root.resolve()).as_posix()
+-    return Path(os.path.relpath(target, home.resolve())).as_posix()
++    return Path(os.path.relpath(target, ticket_home.resolve())).as_posix()
+
+
+ def memlog_body(path: Path) -> str:
+diff --git a/skills/method/bmad-agent-po/references/spec.md b/skills/method/bmad-agent-po/references/spec.md
+index 51e33ab..fd8c012 100644
+--- a/skills/method/bmad-agent-po/references/spec.md
++++ b/skills/method/bmad-agent-po/references/spec.md
+@@ -8,6 +8,8 @@ Turns any intent input into a container's **derived lines**: the Requirements an
+
+ The workspace is the ticket the user or the calling capability names, else the active initiative; a ticket named by id or title resolves as Dispatch in `workflow.md` says. A ticket with no file yet is created first from `{{ workflow.ticket_template }}`; at create SPEC also fills Description, Outcome, Done when (three to six checks at the altitude of the source's ids), Boundaries (the input's non-goals) and References from the input, open questions to Notes; a later slice revises them. A new initiative, named from the input's title, is created and recorded as On activation in `workflow.md` says.
+
++The **spec workspace** is the container's folder. For a loose backlog ticket, use `story_file` from `tickets.py find`, without its final `.md`: `backlog/story-pay.md` uses `backlog/story-pay/`. The ticket and plan stay flat. Read and write the memlog and spec-authored companions in that workspace. A missing workspace or memlog means this ticket has no per-ticket log; never use or split `backlog/.memlog.md` as an individual ticket's history.
++
+ **No input.** Ask for a file path, pasted content, an explanation, or a source.
+
+ ## Memory and derivation
+@@ -18,8 +20,8 @@ On a container, SPEC is the only writer of the derived lines; a change goes to t
+
+ Writes go through `{project-root}/_bmad/scripts/memlog.py`:
+
+-- `uv run {project-root}/_bmad/scripts/memlog.py init --workspace <ticket folder> --field topic="<the ticket's title>"` — once, at create.
+-- `uv run {project-root}/_bmad/scripts/memlog.py append --workspace <ticket folder> --type <decision|constraint|requirement|assumption|question|direction|note|event> --text "<one-line gist, reason included>"` — one per line; batch them in one shell call per section.
++- `uv run {project-root}/_bmad/scripts/memlog.py init --workspace <spec workspace> --field topic="<the ticket's title>"` — once, at create.
++- `uv run {project-root}/_bmad/scripts/memlog.py append --workspace <spec workspace> --type <decision|constraint|requirement|assumption|question|direction|note|event> --text "<one-line gist, reason included>"` — one per line; batch them in one shell call per section.
+ - Terminal moments (a validation verdict, "spec finalized") are `--type event` entries; the memlog has no status field.
+
+ ## The Operation
+@@ -44,7 +46,7 @@ A claim is **load-bearing** if any consumer (downstream skill, implementing agen
+
+ Load-bearing content that needs more than one line (tables, diagrams, long reference material) goes in a companion; a line growing sub-bullets wants one.
+
+-- **Spec-authored** companions sit beside the ticket, named for their content; SPEC may edit them on update.
++- **Spec-authored** companions sit in the spec workspace, named for their content; SPEC may edit them on update.
+ - **Adopted** companions (upstream artifacts such as `DESIGN.md`, pre-existing project docs) keep their names; SPEC lists them in `companions:` and never edits or duplicates them.
+
+ ## Spec Law
+@@ -70,6 +72,6 @@ When an update changes or retires an id, name the stale entries and the tickets
+
+ ## Output
+
+-In one or two sentences, share the ticket's path, requirement count, the files written beside it, and whether the checks passed. List any `Assumption:` or `Open question:` lines, one each, and invite the user to walk through them; answers go to the ticket, and to the source too when the user wants it. When the ticket is a container, offer to slice per `slice.md`, or to re-slice what went stale. On the repo store, save it through `write` per `board.md`; on a tracker it stays in the tree until published.
++In one or two sentences, share the ticket's path, requirement count, the files written in its spec workspace, and whether the checks passed. List any `Assumption:` or `Open question:` lines, one each, and invite the user to walk through them; answers go to the ticket, and to the source too when the user wants it. When the ticket is a container, offer to slice per `slice.md`, or to re-slice what went stale. On the repo store, save it through `write` per `board.md`; on a tracker it stays in the tree until published.
+
+ {{ workflow.spec_after }}
+diff --git a/skills/method/bmad-agent-po/references/ticket.md b/skills/method/bmad-agent-po/references/ticket.md
+index 3dcb972..622fd05 100644
+--- a/skills/method/bmad-agent-po/references/ticket.md
++++ b/skills/method/bmad-agent-po/references/ticket.md
+@@ -20,7 +20,7 @@ Reference the Requirements of the ticket above; never copy them. Full criteria (
+ - Record an `estimate` only when the user gives one, on the entry or frontmatter; never propose one.
+ - A bug carries reproduction steps and a cause hypothesis, never a fix; ask for missing steps, tighten unclear ones. Run them when cheap; if the behavior already holds, show the evidence and create nothing. Criteria name the other valid outcome: proof no change is needed.
+ - A spike names the question, who waits on it, and where the answer goes. A question several epics wait on is a shared decision per `slice.md`.
+-- Notes holds marked lines local to this ticket; what spans tickets goes in the parent's Notes, referenced. Confirm each `Assumption:` with the user; the answer is a dated decision. An `Open question:` is answered during the work. An `Unknown:` on a leaf file or an entry's `unknown` gates the start: settle it per `board.md`, or as a spike in its dependents' `after` when the user asks. Never guess. With a `.memlog.md`, `Assumption:` and `Open question:` lines go to the memlog first (`spec.md`, Memory and derivation).
++- Notes holds marked lines local to this ticket; what spans tickets goes in the parent's Notes, referenced. Confirm each `Assumption:` with the user; the answer is a dated decision. An `Open question:` is answered during the work. An `Unknown:` on a leaf file or an entry's `unknown` gates the start: settle it per `board.md`, or as a spike in its dependents' `after` when the user asks. Never guess. Look for `.memlog.md` in the spec workspace (`spec.md`, Workspace), not the shared backlog folder. When it exists, `Assumption:` and `Open question:` lines go there first (`spec.md`, Memory and derivation).
+
+ ## Reviewing or refining an existing ticket
+
+diff --git a/skills/method/bmad-agent-po/workflow.md b/skills/method/bmad-agent-po/workflow.md
+index cf67658..e3e0219 100644
+--- a/skills/method/bmad-agent-po/workflow.md
++++ b/skills/method/bmad-agent-po/workflow.md
+@@ -99,6 +99,10 @@ Headless or autonomous: do not stop to ask; gaps become `Open question:` lines a
+           spike-discount-engine-latency.md
+   backlog/
+     bug-checkout-total-ignores-discount-codes.md
++    story-pay.md
++    story-pay/                               # this loose ticket's spec workspace, when it has one
++      .memlog.md
++      DESIGN.md
+ ```
+
+ - A container's breakdown, child epics, leaf files and plans sit in its `tickets/` folder; its own file, memlog and other skills' runs, named after it, sit above. `tickets.py` takes the container's folder, not its `tickets/` folder.
+diff --git a/skills/method/bmod-method/migration-1.toml b/skills/method/bmod-method/migration-1.toml
+index e5cfd74..2a37eda 100644
+--- a/skills/method/bmod-method/migration-1.toml
++++ b/skills/method/bmod-method/migration-1.toml
+@@ -156,7 +156,7 @@ A `spec-<slug>/` holding `stories.yaml` and `stories/` that belongs to the initi
+
+ ## Pre-release spec folders
+
+-A `spec-<slug>/` holding `spec-<slug>.md` and `.memlog.md` is a 6.13 pre-release spec; the initiative, epic or story file is the spec at its level now. Run `uv run <skill-root>/scripts/migrate_v6.py --project-root <project-root> --skill <skill-root> --fold-specs <root>` once. A folder inside a ticket folder folds into that ticket: the capabilities become Requirements lines, `CAP-<n>` mapped to `R<n>` after any `R` lines the ticket has, in the ticket, its `tickets.toml` and its children; the constraints become Constraints, the non-goals Boundaries lines, the assumptions and open questions Notes lines; the memlog entries are appended to the ticket's `.memlog.md` in order, with the why, the success signal and the fold recorded after them; the companions move beside the ticket as References lines; every reference to the folder in the store is rewritten to the new paths; and the folder is removed. A folder at `<root>` becomes `backlog/story-<slug>.md` the same way, its memlog and companions in `backlog/`. The script prints each fold with its id map, the files it rewrote and the companion paths it could not resolve, and `problems` for a folder it left alone (a companion whose name is taken, a folder outside a ticket); fix those by hand and run it again. Record the folds in the plan.
++A `spec-<slug>/` holding `spec-<slug>.md` and `.memlog.md` is a 6.13 pre-release spec; the initiative, epic or story file is the spec at its level now. Run `uv run <skill-root>/scripts/migrate_v6.py --project-root <project-root> --skill <skill-root> --fold-specs <root>` once. A folder inside a ticket folder folds into that ticket: the capabilities become Requirements lines, `CAP-<n>` mapped to `R<n>` after any `R` lines the ticket has, in the ticket, its `tickets.toml` and its children; the constraints become Constraints, the non-goals Boundaries lines, the assumptions and open questions Notes lines; the memlog entries are appended to the ticket's `.memlog.md` in order, with the why, the success signal and the fold recorded after them; the companions move beside the ticket as References lines; every reference to the folder in the store is rewritten to the new paths; and the folder is removed. A folder at `<root>` becomes the flat ticket `backlog/story-<slug>.md`, with its own memlog and companions in `backlog/story-<slug>/`. Hidden files, `.tmp` files and working folders move too; a preflight destination collision stops that fold before it writes. An existing shared `backlog/.memlog.md` is left alone, never assigned to a story. Later reads and appends use the story's spec workspace (`bmad-agent-po`, `spec.md`), derived from `tickets.py find`'s `story_file`. The script prints each fold with its id map, the files it rewrote and the companion paths it could not resolve, and `problems` for a folder it left alone (a companion whose name is taken, a folder outside a ticket); fix those by hand and run it again. Record the folds in the plan.
+
+ ## Loose implementation files
+
+diff --git a/tools/tests/test_migrate_v6.py b/tools/tests/test_migrate_v6.py
+index 74fe09d..25a351f 100644
+--- a/tools/tests/test_migrate_v6.py
++++ b/tools/tests/test_migrate_v6.py
+@@ -675,18 +675,61 @@ class FoldSpecsTests(unittest.TestCase):
+         text = (epic / "epic-ball.md").read_text(encoding="utf-8")
+         self.assertIn("- E1 (R2): The arc is real.\n- E2 (R2): The angle is set.\n- R1 (CAP-1): ", text)
+
+-    def test_dot_files_in_the_spec_folder_are_not_companions(self):
++    def test_hidden_temporary_and_working_files_move_with_the_spec(self):
+         epic = self.write_epic_with_spec()
+-        write(epic / "spec-ball" / ".DS_Store", "")
+-        write(epic / ".DS_Store", "")
++        payloads = {
++            ".draft-notes.md": b"draft notes\n",
++            "plan.md.tmp": b"\xff partial\n",
++            ".working/mock.html": b"<p>mock</p>\n",
++            "notes/.hidden.tmp": b"\x00 hidden nested data\n",
++        }
++        for name, content in payloads.items():
++            path = epic / "spec-ball" / name
++            path.parent.mkdir(parents=True, exist_ok=True)
++            path.write_bytes(content)
+
+         report = self.fold()
+
+         (fold,) = report["folded"]
+         self.assertEqual(report["problems"], [])
+-        self.assertEqual(fold["companions"], ["_bmad-output/initiative-golf/epic-ball/glossary.md"])
++        self.assertEqual(
++            fold["companions"],
++            [
++                f"_bmad-output/initiative-golf/epic-ball/{name}"
++                for name in (".draft-notes.md", ".working", "glossary.md", "notes", "plan.md.tmp")
++            ],
++        )
++        for name, content in payloads.items():
++            self.assertEqual((epic / name).read_bytes(), content)
+         self.assertFalse((epic / "spec-ball").exists())
+
++    def test_a_hidden_companion_collision_changes_nothing(self):
++        epic = self.write_epic_with_spec()
++        write(epic / "spec-ball" / ".draft-notes.md", "spec draft\n")
++        write(epic / ".draft-notes.md", "ticket draft\n")
++        before = snapshot(self.project)
++
++        report = self.fold()
++
++        self.assertEqual(report["folded"], [])
++        self.assertIn(".draft-notes.md already exist", report["problems"][0]["problem"])
++        self.assertEqual(snapshot(self.project), before)
++
++    def test_a_broken_destination_link_is_a_collision(self):
++        epic = self.write_epic_with_spec()
++        write(epic / "spec-ball" / ".draft-notes.md", "spec draft\n")
++        target = epic / ".draft-notes.md"
++        target.symlink_to("missing-draft")
++        original = (epic / "epic-ball.md").read_bytes()
++
++        report = self.fold()
++
++        self.assertEqual(report["folded"], [])
++        self.assertIn(".draft-notes.md already exist", report["problems"][0]["problem"])
++        self.assertEqual(target.readlink(), Path("missing-draft"))
++        self.assertEqual((epic / "epic-ball.md").read_bytes(), original)
++        self.assertEqual((epic / "spec-ball" / ".draft-notes.md").read_text(), "spec draft\n")
++
+     def test_a_loose_spec_folder_becomes_a_backlog_story(self):
+         loose = self.store / "spec-caddie"
+         write(
+@@ -712,7 +755,7 @@ class FoldSpecsTests(unittest.TestCase):
+         self.assertTrue(
+             text.startswith(
+                 '---\nid: 5\ntype: story\ntitle: "Caddie advice"\nparent: none\ncovers: []\nsources: []\n'
+-                "companions: [_bmad-output/backlog/notes.md]\nafter: []\n"
++                "companions: [_bmad-output/backlog/story-caddie/notes.md]\nafter: []\n"
+                 "refined: false\nhitl: false\nrisk: low\n---\n\n# Caddie advice\n\n## Description\n\n"
+                 "Players leave when the ball flies wrong.\n\n## Requirements\n\n- R1 (CAP-1): "
+             ),
+@@ -720,12 +763,12 @@ class FoldSpecsTests(unittest.TestCase):
+         )
+         self.assertIn("## Constraints\n\n- Simulation runs", text)
+         self.assertIn(
+-            "## Boundaries\n\n- Non-goal: Wind.\n\n## References\n\n- companion — notes.md\n\n## Notes\n\n- Assumption:",
++            "## Boundaries\n\n- Non-goal: Wind.\n\n## References\n\n- companion — story-caddie/notes.md\n\n## Notes\n\n- Assumption:",
+             text,
+         )
+         self.assertNotIn("## Outcome", text)
+-        self.assertEqual((self.store / "backlog" / "notes.md").read_text(encoding="utf-8"), "notes\n")
+-        entries = memlog_entries(self.store / "backlog" / ".memlog.md")
++        self.assertEqual((self.store / "backlog" / "story-caddie" / "notes.md").read_text(encoding="utf-8"), "notes\n")
++        entries = memlog_entries(self.store / "backlog" / "story-caddie" / ".memlog.md")
+         self.assertEqual(
+             entries[:3],
+             ["- (capability) CAP-1 plausible arc", "- (decision) metric units", "- (capability) CAP-2 launch angle"],
+@@ -738,6 +781,70 @@ class FoldSpecsTests(unittest.TestCase):
+         self.assert_references_resolve(story)
+         self.assert_references_resolve(self.initiative / "initiative-golf.md")
+
++    def test_loose_specs_keep_separate_histories_and_same_named_companions(self):
++        backlog = self.store / "backlog"
++        write(backlog / ".memlog.md", "existing backlog history\n")
++        write(backlog / "DESIGN.md", "existing backlog design\n")
++        for slug in ("pay", "ship"):
++            folder = self.store / f"spec-{slug}"
++            write(
++                folder / f"spec-{slug}.md",
++                spec_frontmatter(companions="[DESIGN.md]", sources="[]")
++                + f"# {slug}\n\n## Capabilities\n\n- **CAP-1** {slug} things\n",
++            )
++            write(folder / ".memlog.md", f"---\ntopic: {slug}\n---\n- (idea) {slug} only\n")
++            write(folder / ".draft-notes.md", f"{slug} draft\n")
++            write(folder / "plan.md.tmp", f"{slug} partial\n")
++            write(folder / ".working" / "mock.html", f"{slug} mock\n")
++            write(folder / "DESIGN.md", f"# {slug} design\n[spec](spec-{slug}.md) CAP-1\n[shared](../shared.md)\n")
++        write(self.store / "shared.md", "shared\n")
++        write(
++            self.store / "index.md",
++            "[pay](spec-pay/spec-pay.md) [design](spec-pay/DESIGN.md) [log](spec-pay/.memlog.md)\n",
++        )
++
++        report = self.fold()
++
++        self.assertEqual(report["problems"], [])
++        self.assertEqual(len(report["folded"]), 2)
++        for slug, other in (("pay", "ship"), ("ship", "pay")):
++            home = backlog / f"story-{slug}"
++            self.assertEqual((home / ".draft-notes.md").read_text(), f"{slug} draft\n")
++            self.assertEqual((home / "plan.md.tmp").read_text(), f"{slug} partial\n")
++            self.assertEqual((home / ".working" / "mock.html").read_text(), f"{slug} mock\n")
++            log = (home / ".memlog.md").read_text()
++            self.assertIn(f"topic: {slug}\n", log)
++            self.assertIn(f"{slug} only", log)
++            self.assertNotIn(f"{other} only", log)
++            self.assertEqual(
++                (home / "DESIGN.md").read_text(),
++                f"# {slug} design\n[spec](../story-{slug}.md) R1\n[shared](../../shared.md)\n",
++            )
++            story = backlog / f"story-{slug}.md"
++            self.assert_references_resolve(story)
++            self.assertIn(f"companions: [_bmad-output/backlog/story-{slug}/DESIGN.md]", story.read_text())
++        self.assertEqual((backlog / ".memlog.md").read_text(), "existing backlog history\n")
++        self.assertEqual((backlog / "DESIGN.md").read_text(), "existing backlog design\n")
++        self.assertEqual(
++            (self.store / "index.md").read_text(),
++            "[pay](backlog/story-pay.md) [design](backlog/story-pay/DESIGN.md) [log](backlog/story-pay/.memlog.md)\n",
++        )
++        before = snapshot(self.project)
++        self.assertEqual(self.fold(), {"mode": "fold-specs", "folded": [], "problems": []})
++        self.assertEqual(snapshot(self.project), before)
++
++    def test_existing_loose_story_asset_folder_is_not_merged(self):
++        loose = self.store / "spec-caddie"
++        write(loose / "spec-caddie.md", spec_frontmatter(companions="[]", sources="[]") + SPEC_BODY)
++        write(self.store / "backlog" / "story-caddie" / ".memlog.md", "existing history\n")
++        before = snapshot(self.project)
++
++        report = self.fold()
++
++        self.assertEqual(report["folded"], [])
++        self.assertIn("already exists", report["problems"][0]["problem"])
++        self.assertEqual(snapshot(self.project), before)
++
+     def test_a_loose_story_takes_the_backlog_next_id_when_it_is_higher(self):
+         loose = self.store / "spec-caddie"
+         write(loose / "spec-caddie.md", spec_frontmatter(companions="[]", sources="[]") + SPEC_BODY)
+@@ -827,6 +934,76 @@ class FoldSpecsTests(unittest.TestCase):
+         self.assertIn("spec-ball/.memlog.md cannot be read", problem["problem"])
+         self.assertEqual(snapshot(self.project), before)
+
++    def test_a_memlog_directory_is_reported_before_any_changes(self):
++        epic = self.write_epic_with_spec()
++        for parent in (epic / "spec-ball", epic):
++            with self.subTest(parent=parent.name):
++                memlog = parent / ".memlog.md"
++                if memlog.is_file():
++                    memlog.unlink()
++                write(memlog / "record.txt", "keep this history\n")
++                before = snapshot(self.project)
++
++                report = self.fold()
++
++                self.assertEqual(report["folded"], [])
++                self.assertIn(".memlog.md cannot be read: not a regular file", report["problems"][0]["problem"])
++                self.assertEqual(snapshot(self.project), before)
++                (memlog / "record.txt").unlink()
++                memlog.rmdir()
++
++    def test_a_broken_memlog_link_is_reported_before_any_changes(self):
++        epic = self.write_epic_with_spec()
++        memlog = epic / "spec-ball" / ".memlog.md"
++        memlog.unlink()
++        memlog.symlink_to("missing-history")
++        before = (epic / "epic-ball.md").read_bytes()
++        spec_before = (epic / "spec-ball" / "spec-ball.md").read_bytes()
++
++        report = self.fold()
++
++        self.assertEqual(report["folded"], [])
++        self.assertIn(".memlog.md cannot be read: not a regular file", report["problems"][0]["problem"])
++        self.assertEqual(memlog.readlink(), Path("missing-history"))
++        self.assertEqual((epic / "epic-ball.md").read_bytes(), before)
++        self.assertEqual((epic / "spec-ball" / "spec-ball.md").read_bytes(), spec_before)
++
++    def test_loose_story_payloads_do_not_change_ticket_discovery_or_plan_writes(self):
++        for slug in ("pay", "ship"):
++            folder = self.store / f"spec-{slug}"
++            write(folder / f"spec-{slug}.md", spec_frontmatter(companions="[]", sources="[]") + SPEC_BODY)
++            write(folder / "story-decoy.md", "---\nid: 1\ntype: story\n---\n# Not a backlog ticket\n")
++        self.assertEqual(self.fold()["problems"], [])
++        backlog = self.store / "backlog"
++        script = REPO_ROOT / "skills" / "method" / "bmad-agent-po" / "scripts" / "tickets.py"
++
++        def consume(*args):
++            result = subprocess.run(
++                [sys.executable, str(script), "--project-root", str(self.project), *args],
++                text=True,
++                capture_output=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 0, msg=result.stderr)
++            return json.loads(result.stdout)
++
++        for command in ("status", "next"):
++            result = consume(command, str(backlog))
++            self.assertNotIn("story-decoy", json.dumps(result))
++            self.assertIn("story-pay.md", json.dumps(result))
++            self.assertIn("story-ship.md", json.dumps(result))
++        for slug, number in (("pay", 1), ("ship", 2)):
++            name = f"story-{slug}.md"
++            found = consume("find", str(backlog), name)
++            self.assertEqual(found["id"], number)
++            self.assertEqual(found["story_file"], str(backlog / name))
++            self.assertEqual(found["plan"], str(backlog / f"story-{slug}-plan.md"))
++            consume("mark", str(backlog), name, "in-progress")
++            self.assertEqual(consume("find", str(backlog), name)["status"], "in-progress")
++        before = snapshot(self.project)
++        self.assertEqual(self.fold(), {"mode": "fold-specs", "folded": [], "problems": []})
++        self.assertEqual(snapshot(self.project), before)
++
+     def test_a_parent_folded_on_a_later_run_leaves_the_folded_childs_ids_alone(self):
+         epic = self.write_epic_with_spec()
+         write(
+diff --git a/tools/ticket-tree-rules.md b/tools/ticket-tree-rules.md
+index fe880bc..033b7f9 100644
+--- a/tools/ticket-tree-rules.md
++++ b/tools/ticket-tree-rules.md
+@@ -10,6 +10,7 @@ External modules restate the identity rules for their own artifacts. The Test Ar
+
+ - The tree is `{output_folder}/{active_initiative}`: `output_folder` and `active_initiative` from `[core]` in the merged BMad config.
+ - Each container (initiative or epic) keeps its own file, `.memlog.md`, other skills' run folders and its retrospective at the top of its folder, and its breakdown in a `tickets/` folder inside it: `tickets.toml`, the child epic folders, the leaf files and plans. `backlog/` has no `tickets/` folder. `tickets.py` folder arguments name the container, and it refuses the earlier layout with an error naming `bmad migrate`.
++- A loose backlog ticket keeps its spec memlog and companions in the sibling folder named after its file stem: `backlog/story-pay.md` uses `backlog/story-pay/`. Its ticket and plan stay flat. Resolve that workspace from `find`'s `story_file`; a missing log does not fall back to a shared `backlog/.memlog.md`.
+ - `tickets.py` is installed at `{project-root}/_bmad/method/scripts/tickets.py`. `bmad-agent-po` declares it in its `bmod.toml`. Other skills run it from there and never open `bmad-agent-po`'s folder.
+ - Called with no folder, `tickets.py next`, `status`, `find`, `mark`, and `mirror` resolve the active initiative themselves; `next` and `status` then also report `backlog/`. When no initiative is set, they exit with an error that names the missing key, and the calling skill works without the tree.
+ - On a parent initiative, `find`, `pull`, `mark`, `mirror` and `move` exit with an error naming its children, and `next` and `status` list the children; a build needs a child as the active initiative.
