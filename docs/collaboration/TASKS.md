@@ -42,11 +42,11 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `b110172`／Site **v22**；现有smoke补自然终局、原始帧耗、同次重开输入及实际材料只读状态，609项／两构建／独审过，未开浏览器。原角色 `aa2acf1` 保留；quiet仍欠当前默认盲选、真实完整smoke／帧耗，设备离线、原外层／槽unknown，0/89不变。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `da56173`／Site **v22**；既有HUD技能焦点修复已接回当前默认／quiet共用client，614项／两构建／独审过；完整smoke入口保留，新构建未开浏览器。原角色 `aa2acf1` 保留；quiet仍欠当前默认盲选、真实完整smoke／帧耗，设备离线、原外层／槽unknown，0/89不变。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [核心循环](../../domains/game-dev/05-gameplay-architecture.md#一条完整制作链先让第一局和第二局都能玩)已区分个人结果与全场收尾。Star 原修复已过独立组装客户端 CPU 接收：默认 9/9、轮胎候选 8/9 对手完赛，余 1 为仍在前进的截止 DNF；花见坂反复倒车仍是品质缺口。原发布回执未确认，远端未见修复，不重推；浏览器／帧耗欠。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | [整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)已接三案原smoke，区分自然终局、短流程与同次全程帧耗；MOBA普通诊断核实际材料，FPS不漏首页路由。下一层为合法原槽的真实浏览器／画面；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173 首局](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)已实玩1→5/13：采矿／返航先反馈指令，满舱／卸货才推进目标；取消清档重开保原进度。仅游戏内5分钟，后段×4；死亡／确认重开／跨章未验，不计品质或案例采用。Turbo Kartz逐车定位与旧恢复结论保留，旧阻塞不重试。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `38b56ba`／Site **v10**；整层仍在原开关，当前默认三机位静态盲选通过。整局smoke已修隐藏画质控件导致的赛前阻塞，真实DOM／设置事件反例、20项相关回归及独审过；完整浏览器与连续帧耗仍缺。设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173 首局](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)两次会话累计1→9/13：已验缺资源提示与回采矿操作、目标计数及一次暂停刷新恢复；日志叙事先于10/10，不作完成凭据。累计游戏内11分钟、部分×4；死亡／确认重开／跨章未验，不计品质或案例采用。Turbo Kartz逐车定位与旧恢复结论保留，旧阻塞不重试。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `7916ac4`（本轮只纠正文档旧欠项）／Site **v10**；整层仍在原开关，当前默认三机位静态盲选通过。整局smoke已修隐藏画质控件导致的赛前阻塞，真实DOM／设置事件反例、20项相关回归及独审过；完整浏览器与连续帧耗仍缺。设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
 | FPS | **FPS-Like 完整回合品质** | dot-B | main `276c803`／Site **v24**；现有smoke补首页／旧链接实际路由、默认对全场材质六回合及原始帧耗，437项／构建／独审过，未开浏览器。训练候选 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选与真实完整smoke／帧耗，原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
