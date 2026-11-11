@@ -309,7 +309,42 @@ printf '本次输出：%s/run-output.json\n' "$OUTPUT_DIR"
 )
 ```
 
-验收看输出字段，不只看退出码：脚本遇分歧会停止循环并输出 JSON，未把全部失败汇总为非零退出。
+**把结果检查接在同一次运行后，避免“命令退出 0”掩盖模拟分歧。** 原脚本保留诊断 JSON；它遇分歧可能停止循环但仍退出 0。接着运行下面的 Python 3 检查，缺文件、坏 JSON、缺字段或任一失败都非零退出，原输出仍可调查：
+
+```sh
+python3 - "$OUTPUT_DIR/run-output.json" <<'PYTHON'
+import json, sys
+with open(sys.argv[1], encoding="utf-8") as stream:
+  d = json.load(stream)
+def require(ok, message):
+  if not ok:
+    raise SystemExit(message)
+require(d["initial"]["equal"] is True, "初态不一致")
+w, e = d["window600"], d["extension"]
+require(w["ticks"] == 600 and w["perTickHashEqual"] is True, "600 tick 未通过")
+require(d["snapshotEquality"]["tick600FullSnapshotJsonEqual"] is True, "快照不一致")
+require(e["totalTicksRun"] == e["perTickCompareTicks"] == 9081
+  and e["hashMismatches"] == e["resultsMismatches"] == 0
+  and e["firstMismatch"] is None, "延长窗口未通过")
+f = d["failureProbes"]
+require(f["allPass"] is True and f["validFrameAfterProbesAdvanced"] is True
+  and d["dedupe"]["pass"] is True and d["orderControl"]["differ"] is True,
+  "拒收、去重或席内顺序未通过")
+buy, cast = (d["receipts"][k] for k in ("tick9001", "tick9002"))
+require(any(r["command"]["type"] == "buyItem" and r["accepted"] is True
+  for r in buy["results"])
+  and "wayfarer_boots" in buy["after"][0]["items"]
+  and buy["after"][0]["gold"] < buy["before"][0]["gold"], "未实际买到装备并扣款")
+require(any(r["command"]["type"] == "cast" and r["accepted"] is True
+  for r in cast["results"])
+  and cast["after"][0]["mana"] < cast["before"][0]["mana"]
+  and cast["after"][0]["cooldowns"]["W"] > 0, "未实际施法消耗")
+require(d["final"]["equal"] is True, "最终状态不一致")
+print("六席真实消费者通过：9081 tick、购买与施法；仅同版本 CPU")
+PYTHON
+```
+
+这直接采用[共享指令页第三步](../../docs/decisions/instruction-files.md#第三步让规则参与眼前的真实修改)的“契约对应到会失败的检查”：保住 MOBA 确定性与命令边界，让调用者能停止接收失败结果，不修改模拟或经济。检查含义如下：
 
 - **600 tick 协议窗口**：`window600.ticks = 600`、`perTickHashEqual = true`；`snapshotEquality.tick600FullSnapshotJsonEqual = true`。A 按 `[0,1,2,3,4,5]`、B 按 `[5,2,4,0,3,1]` 送席位封套；31 个 tick 的非空席顺序不同，100–129 tick 明确六席全空。同席反序对照 `orderControl.differ = true`。
 - **拒收与去重**：`failureProbes.allPass`、`validFrameAfterProbesAdvanced`、`dedupe.pass` 均为 true。主跑 tick 20 重送 seat 0 的 move；另起两个模拟、先空跑五帧的 dedupe 探针重送 seat 0 的 W，只产生一条结果并扣一次法力。主跑 tick 6 是 seat 1 的正常 W，不是该探针。

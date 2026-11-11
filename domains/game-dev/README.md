@@ -58,7 +58,7 @@
 | 🧪 [Formula Minus One](https://fm1.app/)：反重力赛车 | 作者持续六个月迭代；草图→图像生成→Tripo 3D→Blender 清理，另有现成声音、人工音乐草稿与风格指南。 | 待试整条赛道的主题与资产组合，而非坚持全程序几何。流程含 Blender 清理，未证实无需手修；[过程与成本](../../docs/research/2026-10-23-game-worth-trying.md#formula-minus-one混合供给仍需设计与清理)。 |
 | 🧪 [DragonScape Idle](https://dragonscapeidle.com/)：网页 idle RPG | 作者用游戏数据生成分类风格静图，人选图与重生成。 | 待试暗底小图标与二改保留，详见[作者原文](../../docs/research/2026-10-23-game-worth-trying.md#dragonscape-idle分类风格与保留已验图片)。 |
 | 👀 Brickbrag／Permit Pending：网页建造／管理 | 作者将玩家的建造卡关、手机操作及 GPU 分配错误交给 Agent 修订，具体分工与来源见[发布后二改](06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)。 | 先按更新后的教程重放，再在原失败设备验证资源档回退；作者声称修复不是本端通过。两作未试玩，不新增品质推荐。 |
-| 🧪 [哈耶克的文明](https://hkingauditore.github.io/civ-game/)：网页策略 | 作者仓库公开 AI 协作协议；具体模型贡献与人工修改比例未知。 | 已在 v2.3.64 实跑建造、保存、改状态和两次读回；刷新选自动档，不能替代手动槽恢复验收。可复用[槽位＋可见标记的分验步骤](06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，跨版迁移与后期性能未验。 |
+| 🧪 [哈耶克的文明](https://hkingauditore.github.io/civ-game/)：网页策略 | 作者仓库公开 AI 协作协议；具体模型贡献与人工修改比例未知。 | 已在 v2.3.64 实跑建造、保存、改状态和两次读回；源码显示启动按时间戳选最新档，刷新不能替代指定手动槽恢复验收。可复用[槽位＋可见标记的分验步骤](06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，跨版迁移与后期性能未验。 |
 | 🧪 [Battle Drones v4](https://simonw.github.io/battledrones/v4/)：历史 2D RTS | 作者用 Claude Code 多轮开发并亲自试玩；本端完成两局败局与一次 Rematch，按首局建议先补防空。 | 可试战后关键事件＋一条具体建议，让下一局操作发生改变；不从不同对手下的数字推策略因果。静音、未验胜利／长期平衡／当前 3D；[原作者与实玩范围](../../docs/research/2026-10-23-game-worth-trying.md#4-battle-drones确实玩到了什么)。 |
 
 ![Battle Drones v4 2026-10-22 历史窄试玩：Airpad 与 Wasp 生产队列，非两局新画面](../../docs/img/2026-10-23-game-battledrones-v4.jpg)

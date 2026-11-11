@@ -56,10 +56,10 @@ result_branch: relay/b-moba-hero-clip-consumer-20261106
 
 接收 [aade37c](https://github.com/dbvv1/MOBA-Like/commit/aade37cac456d898f8ed2a3bd61303891839bc3d) 的隔离配方：原 Blender 4.3 build→UAL1 retarget 可从固定旧源施加 death 修正，重复重定向不累加；明确输出到 `outputs/` 子目录，未替换运行源或GLB。两队真实完整重导、61点接触检查与非作者逐字节核对通过，无修正重导保持原GLB；方法与可用命令已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。默认、网站v22及0/89不变。下一步核既有 `90d4fad` 接线候选的原回执与浏览器／死亡画面门槛，不新开旁置；运行采用与发布资源pin仍待。原调用unknown和拒绝边界不变。
 
-## 11-11 既有候选的资源 pin 接收
+## 11-11 既有候选的配方产物接收
 
-接收[113dbaf](https://github.com/dbvv1/MOBA-Like/commit/113dbaf616b6e5a3d181592b40e5464ff4c1eaef)到实际承接分支 `dot-b/clear-stale-command-receipt-20261107`：沿90d4fad／00f82c7合入最新main配方，真实下载缓冲核两份既有Blender5.2 GLB固定摘要后再交原解析器；未替换为4.3重导产物。706测试、类型／构建、源包检查与非作者真实下载／解析反例通过，默认269项pin和原资产不变。方法已回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
+实际承接分支 `dot-b/clear-stale-command-receipt-20261107` 已从43d3be3快进[acf3f65](https://github.com/dbvv1/MOBA-Like/commit/acf3f6589d898f4d112a437d220a8a917b9b76b3)。接收真正由Blender4.3.2原build→UAL1 retarget产出的双队canonical GLB，重复retarget字节一致；原完整Camera/QW试用入口使用独立pin校验实际下载缓冲后再解析。默认／quiet／capture、原heroes发布源与5.2原包不改。此前113dbaf／43d3be3的5.2接线被这一候选替代，不混称同一来源。
 
-main仍aade37c／Site v22／0/89；未新增入口、资源或部署。原终态、同构建浏览器smoke、双方死亡及非死亡画面仍欠，未跑GPU／声音；原调用unknown和拒绝边界不变。
+708项、42Python、双构建、每队61点接触检查及代码／原始产物两路独审通过；实际bundle包含两份canonical摘要。重导GLB与旧binary fallback同字节，不凭哈希代替制作过程；两份合计比5.2包大34,980B，未声称体积或画面改善。方法回流[动画制作](../../../domains/game-dev/assets/animation.md#death-contact-consumer)。
 
-11-11 接收对账：`113dbaf` 实际位于 `dot-b/clear-stale-command-receipt-20261107`，旧 death-existing 分支停在 `90d4fad`；不是源对象或发布丢失。已沿实际分支快进[43d3be3](https://github.com/dbvv1/MOBA-Like/commit/43d3be3ecf2d3ce490ddab5f8f9de445b22ab98e)，修正源包README“运行未消费／4.3配方未实现”的过时说明。16真实loader／动画消费者、两队61点接触及基线检查过；仅文档，5.2运行资源与4.3隔离重导不混同，默认／网站／0/89不变。
+main仍aade37c／Site v22／0/89；未合默认或部署。恢复后由负责人验同构建浏览器smoke、双方死亡／非死亡画面，再决定采用；GPU、声音／手感未验。原调用外层与拍摄槽unknown、socket／DevTools拒绝不变，不重派或清锁。
