@@ -1,0 +1,291 @@
+diff --git a/src/core/apply-engine.ts b/src/core/apply-engine.ts
+index 9c76bfe..e7eb692 100644
+--- a/src/core/apply-engine.ts
++++ b/src/core/apply-engine.ts
+@@ -393,7 +393,7 @@ export async function processHierarchicalConfigurations(
+   dryRun: boolean,
+   cliMcpEnabled: boolean,
+   cliMcpStrategy?: McpStrategy,
+-  backup = true,
++  backup?: boolean,
+   selectedAgentsByRulerDir?: Map<string, IAgent[]>,
+ ): Promise<string[]> {
+   const allGeneratedPaths: string[] = [];
+@@ -407,6 +407,7 @@ export async function processHierarchicalConfigurations(
+     const rulerRoot = path.dirname(config.rulerDir);
+     const selectedAgents =
+       selectedAgentsByRulerDir?.get(config.rulerDir) ?? agents;
++    const backupEnabled = backup ?? config.config.backup?.enabled ?? true;
+     const paths = await applyConfigurationsToAgents(
+       selectedAgents,
+       config.concatenatedRules,
+@@ -417,7 +418,7 @@ export async function processHierarchicalConfigurations(
+       dryRun,
+       cliMcpEnabled,
+       cliMcpStrategy,
+-      backup,
++      backupEnabled,
+     );
+     const normalizedPaths = paths.map((p) =>
+       path.isAbsolute(p) ? p : path.join(rulerRoot, p),
+@@ -523,12 +524,6 @@ export async function applyConfigurationsToAgents(
+     );
+     generatedPaths.push(...outputPaths);
+
+-    // Only add the backup file paths to the gitignore list if backups are enabled
+-    if (backup) {
+-      const backupPaths = outputPaths.map((p) => `${p}.bak`);
+-      generatedPaths.push(...backupPaths);
+-    }
+-
+     if (dryRun) {
+       logVerbose(
+         `DRY RUN: Would write rules to: ${outputPaths.join(', ')}`,
+@@ -585,6 +580,13 @@ export async function applyConfigurationsToAgents(
+           if (await pathExists(provenancePath)) {
+             generatedPaths.push(path.relative(projectRoot, provenancePath));
+           }
++          if (backup) {
++            await trackVerifiedBackupArtifacts(
++              resolveOutputPath(projectRoot, outputPath),
++              projectRoot,
++              generatedPaths,
++            );
++          }
+         }
+         for (const outputPath of optionalOutputPaths) {
+           await trackOptionalGeneratedArtifacts(
+diff --git a/src/lib.ts b/src/lib.ts
+index 4ab0fb5..67f89b1 100644
+--- a/src/lib.ts
++++ b/src/lib.ts
+@@ -245,10 +245,6 @@ export async function applyAllAgentConfigs(
+       );
+     }
+
+-    const backupEnabledResolved = resolveBackupEnabled(
+-      backup,
+-      rootConfig.backup?.enabled,
+-    );
+     {
+       const { propagateSubagents } = await import('./core/SubagentsProcessor');
+       for (const configEntry of hierarchicalConfigs) {
+@@ -284,7 +280,7 @@ export async function applyAllAgentConfigs(
+       dryRun,
+       cliMcpEnabled,
+       cliMcpStrategy,
+-      backupEnabledResolved,
++      backup,
+       selectedAgentsByRulerDir,
+     );
+   } else {
+diff --git a/tests/backup-option.test.ts b/tests/backup-option.test.ts
+index c9c780c..451cad8 100644
+--- a/tests/backup-option.test.ts
++++ b/tests/backup-option.test.ts
+@@ -182,6 +182,163 @@ describe('backup option', () => {
+     expect(gitignoreContent).not.toContain('*.bak');
+   });
+
++  describe('nested backup settings', () => {
++    it.each([
++      {
++        name: 'child enables backups when root disables them',
++        rootEnabled: false,
++        childEnabled: true,
++        cliFlag: '',
++        rootBackup: false,
++        childBackup: true,
++      },
++      {
++        name: 'child disables backups when root enables them',
++        rootEnabled: true,
++        childEnabled: false,
++        cliFlag: '',
++        rootBackup: true,
++        childBackup: false,
++      },
++      {
++        name: '--backup overrides both directory settings',
++        rootEnabled: false,
++        childEnabled: false,
++        cliFlag: '--backup',
++        rootBackup: true,
++        childBackup: true,
++      },
++      {
++        name: '--no-backup overrides both directory settings',
++        rootEnabled: true,
++        childEnabled: true,
++        cliFlag: '--no-backup',
++        rootBackup: false,
++        childBackup: false,
++      },
++    ])(
++      '$name',
++      async ({
++        rootEnabled,
++        childEnabled,
++        cliFlag,
++        rootBackup,
++        childBackup,
++      }) => {
++        const customProject = await setupTestProject({
++          '.ruler/AGENTS.md': '# Root rules',
++          '.ruler/ruler.toml':
++            'default_agents = ["claude"]\nnested = true\n\n[backup]\nenabled = ' +
++            rootEnabled +
++            '\n',
++          'CLAUDE.md': '# Original root',
++          'child/.ruler/AGENTS.md': '# Child rules',
++          'child/.ruler/ruler.toml':
++            'default_agents = ["claude"]\n\n[backup]\nenabled = ' +
++            childEnabled +
++            '\n',
++          'child/CLAUDE.md': '# Original child',
++        });
++
++        try {
++          const { projectRoot } = customProject;
++          runRuler('apply --nested --agents claude ' + cliFlag, projectRoot);
++
++          for (const { relativePath, original, rules, enabled } of [
++            {
++              relativePath: 'CLAUDE.md',
++              original: '# Original root',
++              rules: '# Root rules',
++              enabled: rootBackup,
++            },
++            {
++              relativePath: 'child/CLAUDE.md',
++              original: '# Original child',
++              rules: '# Child rules',
++              enabled: childBackup,
++            },
++          ]) {
++            const outputPath = path.join(projectRoot, relativePath);
++            expect(await fs.readFile(outputPath, 'utf8')).toContain(rules);
++
++            const backupPath = outputPath + '.bak';
++            const backupExists = await fs
++              .access(backupPath)
++              .then(() => true)
++              .catch(() => false);
++            expect(backupExists).toBe(enabled);
++            const provenancePath = backupPath + '.ruler-generated';
++            if (enabled) {
++              expect(await fs.readFile(backupPath, 'utf8')).toBe(original);
++              expect(await fs.readFile(provenancePath, 'utf8')).toBe(
++                '<!-- Generated by Ruler -->\nBackup generated by Ruler\n',
++              );
++            } else {
++              await expect(fs.access(provenancePath)).rejects.toThrow();
++            }
++          }
++
++          const gitignoreLines = (
++            await fs.readFile(path.join(projectRoot, '.gitignore'), 'utf8')
++          ).split(/\r?\n/);
++          expect(gitignoreLines).toContain('/CLAUDE.md');
++          expect(gitignoreLines).toContain('/child/CLAUDE.md');
++          expect(gitignoreLines.includes('/CLAUDE.md.bak')).toBe(rootBackup);
++          expect(gitignoreLines.includes('/child/CLAUDE.md.bak')).toBe(
++            childBackup,
++          );
++          expect(
++            gitignoreLines.includes('/CLAUDE.md.bak.ruler-generated'),
++          ).toBe(rootBackup);
++          expect(
++            gitignoreLines.includes('/child/CLAUDE.md.bak.ruler-generated'),
++          ).toBe(childBackup);
++        } finally {
++          await teardownTestProject(customProject.projectRoot);
++        }
++      },
++    );
++  });
++
++  it('does not track nonexistent backups when rule outputs are newly created', async () => {
++    const project = await setupTestProject({
++      '.ruler/AGENTS.md': '# Root rules',
++      '.ruler/ruler.toml': '[backup]\nenabled = false\n',
++      'child/.ruler/AGENTS.md': '# Child rules',
++      'child/.ruler/ruler.toml': '[backup]\nenabled = true\n',
++    });
++
++    try {
++      runRuler(
++        'apply --nested --agents claude,agentsmd --local-only --no-mcp --no-skills --no-subagents',
++        project.projectRoot,
++      );
++      const ignore = await fs.readFile(
++        path.join(project.projectRoot, '.gitignore'),
++        'utf8',
++      );
++      for (const relativePath of [
++        'CLAUDE.md',
++        'AGENTS.md',
++        'child/CLAUDE.md',
++        'child/AGENTS.md',
++      ]) {
++        await expect(
++          fs.access(path.join(project.projectRoot, relativePath)),
++        ).resolves.toBeUndefined();
++        await expect(
++          fs.access(path.join(project.projectRoot, relativePath + '.bak')),
++        ).rejects.toThrow();
++        expect(ignore.split(/\r?\n/)).toContain('/' + relativePath);
++        expect(ignore.split(/\r?\n/)).not.toContain(
++          '/' + relativePath + '.bak',
++        );
++      }
++    } finally {
++      await teardownTestProject(project.projectRoot);
++    }
++  });
++
+   describe('agents with custom applyRulerConfig implementations', () => {
+     it('AgentsMdAgent respects --no-backup flag', async () => {
+       const testProject = await setupTestProject({
+diff --git a/tests/e2e/ruler.test.ts b/tests/e2e/ruler.test.ts
+index 8f0aa41..c9560ff 100644
+--- a/tests/e2e/ruler.test.ts
++++ b/tests/e2e/ruler.test.ts
+@@ -462,6 +462,8 @@ output_path = "custom-aider.md"`;
+     beforeAll(async () => {
+       // Create a dedicated test project for gitignore testing
+       gitignoreTestProject = await setupTestProject({
++        'AGENTS.md': '# Original shared instructions',
++        'CLAUDE.md': '# Original Claude instructions',
+         '.ruler/AGENTS.md': 'test',
+         '.ruler/mcp.json': JSON.stringify({
+           mcpServers: { example: { command: 'uvx', args: ['mcp-example'] } },
+@@ -506,7 +508,9 @@ output_path = "custom-aider.md"`;
+         '/.aiassistant/rules/AGENTS.md',
+         // Specific backup patterns instead of *.bak
+         '/AGENTS.md.bak',
++        '/AGENTS.md.bak.ruler-generated',
+         '/CLAUDE.md.bak',
++        '/CLAUDE.md.bak.ruler-generated',
+       ];
+
+       // Should NOT contain broad wildcards
+@@ -515,6 +519,18 @@ output_path = "custom-aider.md"`;
+       for (const pattern of expectedPatterns) {
+         expect(gitignoreContent).toContain(pattern);
+       }
++      expect(
++        await fs.readFile(
++          path.join(gitignoreTestProject.projectRoot, 'AGENTS.md.bak'),
++          'utf8',
++        ),
++      ).toBe('# Original shared instructions');
++      expect(
++        await fs.readFile(
++          path.join(gitignoreTestProject.projectRoot, 'CLAUDE.md.bak'),
++          'utf8',
++        ),
++      ).toBe('# Original Claude instructions');
+     });
+   });
+ });
