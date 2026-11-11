@@ -1040,6 +1040,14 @@ node --import tsx tools/test/handling.ts --cars swift --kinds brake --weather al
 
 来源与范围：2026-11-11 UTC 固定 [handling 消费者](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/tools/test/handling.ts)、[天气门槛及动作初速](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/public/data/testtrack.json)、[真实车辆](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/src/sim/vehicle.ts)与[作者测试复盘](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/06-tests.md)。本端以锁文件依赖、120 Hz 真实 Rapier 执行上述 12 项基线和 6 项反例；未运行整套测试、浏览器自动驾驶、键盘试玩或原 UE 构建。代码 MIT，整包资产权利另核；当前最高水平与三案例实际采用仍未证明。
 
+#### 换车辆模型后，逐车验实际驾驶与恢复
+
+**共享求解器不等于 AI 已适配新轮胎；逐车核进度、控制请求、碰撞状态和恢复结果。** Star 的原玩家完赛与机器人载荷检查都通过，但 `power-tires-v1` 两名 AI 在约390m和600m侧顶护栏，持续给油和转向仍只有0.03–0.06m/s，几十秒不能恢复。同seed、初态和策略的默认车能通过相同路段；策略收到的反馈不同，因此不能把这次比较写成同输入曲线。
+
+失败出在组合消费者：`stepRoadRival` 只夹横向位置并清零向外横速，不走玩家碰撞恢复，前视选线也未覆盖侧着顶墙的状态。先保存该状态，从原控制入口验证恢复，再跑整局；不能靠载荷有限、最高速度或盲降AI速度交差。另须区分玩家冲线与全场结束：本例两版都会在玩家冲线后冻结剩余AI，结算出现“未完赛”并不证明已跑完收尾窗口。两项尚未修，不据此换轮胎默认。
+
+来源与范围：2026-11-11 对固定 `6d7cb5b` 执行真实组装客户端，重跑默认与候选并独立复核原状态；[实际数据与入口](https://github.com/dbvv1/Star-Rush-Reborn/blob/bc2911885d3afed52f2e1ad20f0e4fa484787168/docs/feel.md#完整比赛消费者复核候选-ai-在护栏处停滞)。绘制为CPU替身，未验浏览器、操控或声音；物理参数与默认不变。
+
 #### 给 AI 的任务：把判断需要的证据先做出来
 
 **AI 查写入者、暴露参数并记录复现，人决定驾驶承诺和感觉。** 先列输入、转向／侧力、视觉旋转与镜头目标的写入者，加可关闭的三方向／视锥显示，沿项目步进定位松键后的恢复；下例和清单共用这些轨迹，日志通过不代替试玩。
