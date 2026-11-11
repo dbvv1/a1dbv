@@ -1,0 +1,3 @@
+2026-11-12（UTC+8）对应11-11 22:00 UTC B实例接收前状态；由局部实玩结果替换，三案品质验收未完成。
+
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Turbo Kartz关卡二改](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)的失败定位方法已用于Star真实CPU消费者，区分AI恢复失效与道路几何，不以玩家完赛代替逐车验收；实例本作未试玩。哈耶克同版恢复、backroad制动窄采用保留；旧阻塞不重试。 |
