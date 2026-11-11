@@ -131,7 +131,7 @@ Turbo Kartz 作者记录将路宽从 15 m 增至 24 m，Candy Canyon／Snowy Pea
 
 **失败反例：弯道撞墙就把整条路加宽。** 对平面等宽圆弧，内缘半径是中心线半径减半路宽；只加宽会进一步挤压内侧。先核边界，再选择放缓局部曲线、调整宽度或降低入弯速度，每次只改一类并复跑原失败段及前后衔接；局部条件成立后仍要查整条路线的交叉。上述几何关系是推导，不是对 Turbo Kartz 旧版网格的复现。
 
-Star 的现有自动驾驶提供了可用的复跑入口，但标准不同：`roadDriverControls` 读取前方 12–75 m 的曲率并主动刹车，`tests/road-client.mjs` 检查三条路线能完赛、状态数值有限，并另查比赛未 DNF，没有整圈零接触断言。本轮已沿真实消费者核失败位置：轮胎候选的两名AI侧顶护栏后长期停滞，玩家完赛和载荷断言仍全过；先修控制／碰撞恢复消费者，不把它误判成整条道路都须加宽。实测与适用边界见[逐车驾驶与恢复](05-gameplay-architecture.md#换车辆模型后逐车验实际驾驶与恢复)，尚未修复或通过浏览器验收。[^star-level-assist]
+Star 的现有自动驾驶提供了可用的复跑入口，但标准不同：`roadDriverControls` 读取前方 12–75 m 的曲率并主动刹车，`tests/road-client.mjs` 检查三条路线能完赛、状态数值有限，并另查比赛未 DNF，没有整圈零接触断言。本轮已沿真实消费者核失败位置：轮胎候选的两名AI侧顶护栏后长期停滞，玩家完赛和载荷断言仍全过；先修控制／碰撞恢复消费者，不把它误判成整条道路都须加宽。实测与适用边界见[逐车驾驶与恢复](05-gameplay-architecture.md#换车辆模型后逐车验实际驾驶与恢复)；上述固定版本仍有缺陷，修复接收与待验层见当前 TASKS。[^star-level-assist]
 
 依据与核实（2026-11-11）：[Turbo Kartz 作者复盘](https://www.kartit.net/blog/claude-sonnet-5-5-kart-racer-sony-tv-split-screen)（2026-10-02，10-03 更新）、[当前页面的路宽／路线定义](https://www.kartit.net/games/turbo-kartz/)、[公开打包源码](https://www.kartit.net/games/turbo-kartz/game.js)。本次只读日志与源码；未试玩、未复现四条赛道的单圈结果，旧版几何与逐圈数据未取得，代码／资产复用许可未确认。采用的是检查思路，不复制资源或提高作品评级。
 
