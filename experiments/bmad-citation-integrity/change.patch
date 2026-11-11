@@ -1,0 +1,171 @@
+diff --git a/skills/bmad-deep-recon/scripts/recon_kit.py b/skills/bmad-deep-recon/scripts/recon_kit.py
+index f367e2e3..a5813336 100644
+--- a/skills/bmad-deep-recon/scripts/recon_kit.py
++++ b/skills/bmad-deep-recon/scripts/recon_kit.py
+@@ -12,7 +12,8 @@ print one JSON object to stdout; diagnostics go to stderr. Exit codes:
+ Subcommands:
+   citations RESEARCH_MD
+       Cross-check inline [n] markers against the source-appendix table:
+-      dangling markers (no appendix row) and orphaned rows (never cited).
++      dangling markers (no appendix row), orphaned rows (never cited),
++      and duplicate appendix ids.
+   tally MEMLOG_MD
+       Count memlog entries by type, and claim entries by status.
+       Claim lines carry `status=<word>` and optionally `ref=[n]`; for a
+@@ -27,6 +28,7 @@ Subcommands:
+   escape-sources RESEARCH_MD
+       Emit the source-appendix table as HTML with every cell escaped and
+       only validated http(s) URLs turned into links, for the briefing.
++      Duplicate ids fail the check, but every source row is retained.
+   anchors RESEARCH_MD --repo PATH [--at REV]
+       Re-find each `path:line (symbol) @ sha` and `sha "subject" #pr`
+       citation in git. A code claim is anchored, moved, incomplete,
+@@ -99,9 +101,9 @@ def table_cells(line: str) -> list[str]:
+     return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+-def appendix_rows(text: str) -> dict[int, list[str]]:
++def appendix_rows(text: str) -> list[tuple[int, list[str]]]:
+     """Source-appendix rows: markdown table rows whose first cell is [n]."""
+-    rows: dict[int, list[str]] = {}
++    rows: list[tuple[int, list[str]]] = []
+     for ln in text.splitlines():
+         stripped = ln.strip()
+         if not stripped.startswith("|"):
+@@ -111,7 +113,7 @@ def appendix_rows(text: str) -> dict[int, list[str]]:
+             continue
+         m = ROW_ID_RE.fullmatch(cells[0])
+         if m:
+-            rows[int(m.group(1))] = cells
++            rows.append((int(m.group(1)), cells))
+     return rows
+
+
+@@ -121,6 +123,8 @@ def appendix_rows(text: str) -> dict[int, list[str]]:
+ def cmd_citations(args) -> int:
+     text = strip_fences(read_text(args.file))
+     rows = appendix_rows(text)
++    row_ids = Counter(n for n, _ in rows)
++    duplicates = sorted(n for n, count in row_ids.items() if count > 1)
+     markers: set[int] = set()
+     for ln in text.splitlines():
+         stripped = ln.strip()
+@@ -129,15 +133,16 @@ def cmd_citations(args) -> int:
+             if cells and ROW_ID_RE.fullmatch(cells[0]):
+                 continue  # an appendix row is not a citation of itself
+         markers.update(int(n) for n in MARKER_RE.findall(ln))
+-    dangling = sorted(markers - set(rows))
+-    orphaned = sorted(set(rows) - markers)
+-    ok = not dangling and not orphaned
++    dangling = sorted(markers - set(row_ids))
++    orphaned = sorted(set(row_ids) - markers)
++    ok = not dangling and not orphaned and not duplicates
+     return out(
+         {
+             "markers": sorted(markers),
+-            "appendix_rows": sorted(rows),
++            "appendix_rows": sorted(row_ids),
+             "dangling_markers": dangling,
+             "orphaned_rows": orphaned,
++            "duplicate_rows": duplicates,
+             "ok": ok,
+         },
+         0 if ok else 1,
+@@ -316,12 +321,19 @@ def cmd_escape_sources(args) -> int:
+         return 2
+     invalid: list[str] = []
+     body_rows = []
+-    for n in sorted(rows):
+-        cells = rows[n]
++    row_ids = Counter(n for n, _ in rows)
++    duplicates = sorted(n for n, count in row_ids.items() if count > 1)
++    anchored: set[int] = set()
++    for n, cells in sorted(rows, key=lambda row: row[0]):
+         tds = "".join(f"<td>{cell_html(c, invalid)}</td>" for c in cells[1:])
+-        body_rows.append(f'<tr id="src-{n}"><td>[{n}]</td>{tds}</tr>')
++        anchor = f' id="src-{n}"' if n not in anchored else ""
++        anchored.add(n)
++        body_rows.append(f"<tr{anchor}><td>[{n}]</td>{tds}</tr>")
+     table = '<table class="sources"><tbody>' + "".join(body_rows) + "</tbody></table>"
+-    return out({"rows": len(rows), "invalid_urls": invalid, "html": table}, 1 if invalid else 0)
++    return out(
++        {"rows": len(rows), "invalid_urls": invalid, "duplicate_rows": duplicates, "html": table},
++        1 if invalid or duplicates else 0,
++    )
+
+
+ # --- anchors -----------------------------------------------------------------
+diff --git a/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py b/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
+index 00a7078d..088150fe 100644
+--- a/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
++++ b/skills/bmad-deep-recon/scripts/tests/test_recon_kit.py
+@@ -86,6 +86,28 @@ def run_text(argv, text, name="report.md"):
+
+
+ class CitationsEdgeTest(unittest.TestCase):
++    def test_duplicate_appendix_ids_are_findings_even_when_cited(self):
++        text = (
++            "Facts [1] [2].\n\n| # | Source |\n|---|---|\n"
++            "| [2] | first b |\n| [1] | first a |\n| [2] | second b |\n"
++            "| [1] | second a |\n| [1] | third a |\n"
++        )
++        code, result = run_text(["citations"], text)
++        self.assertEqual(result["appendix_rows"], [1, 2])
++        self.assertEqual(result["duplicate_rows"], [1, 2])
++        self.assertEqual(result["dangling_markers"], [])
++        self.assertEqual(result["orphaned_rows"], [])
++        self.assertFalse(result["ok"])
++        self.assertEqual(code, 1)
++
++    def test_backticks_in_source_cells_cannot_hide_duplicate_rows(self):
++        text = "Fact [1].\n\n| [1] | first `source |\n| [1] | second source` |\n"
++        code, result = run_text(["citations"], text)
++        self.assertEqual(result["markers"], [1])
++        self.assertEqual(result["duplicate_rows"], [1])
++        self.assertFalse(result["ok"])
++        self.assertEqual(code, 1)
++
+     def test_a_bare_number_table_is_not_the_source_appendix(self):
+         text = (
+             "Growth is fast [1].\n\n| Rank | Vendor |\n| --- | --- |\n| 1 | Acme |\n| 2 | Beta |\n| 3 | Gamma |\n\n"
+@@ -198,6 +220,40 @@ class SlugTest(unittest.TestCase):
+
+
+ class EscapeSourcesTest(unittest.TestCase):
++    def test_duplicate_ids_fail_without_dropping_sources_or_repeating_html_ids(self):
++        text = (
++            "Fact [1].\n\n| # | Source |\n|---|---|\n"
++            "| [1] | first https://example.com/a |\n| [1] | second https://example.com/b |\n"
++        )
++        code, result = run_text(["escape-sources"], text)
++        self.assertEqual(result["rows"], 2)
++        self.assertEqual(result["duplicate_rows"], [1])
++        self.assertIn('href="https://example.com/a"', result["html"])
++        self.assertIn('href="https://example.com/b"', result["html"])
++        self.assertLess(result["html"].index("first"), result["html"].index("second"))
++        self.assertEqual(result["html"].count('id="src-1"'), 1)
++        self.assertEqual(code, 1)
++
++    def test_duplicate_rows_still_escape_cells_and_report_invalid_urls(self):
++        text = "| [1] | <script> |\n| [1] | [bad](javascript:alert(1)) |\n"
++        code, result = run_text(["escape-sources"], text)
++        self.assertEqual(result["rows"], 2)
++        self.assertEqual(result["duplicate_rows"], [1])
++        self.assertEqual(result["invalid_urls"], ["javascript:alert(1)"])
++        self.assertIn("&lt;script&gt;", result["html"])
++        self.assertNotIn("<script>", result["html"])
++        self.assertNotIn("javascript:", result["html"])
++        self.assertEqual(code, 1)
++
++    def test_unique_rows_keep_numeric_order_and_ignore_fenced_duplicates(self):
++        text = "| [2] | second |\n| [1] | first |\n\n~~~\n| [1] | ignored |\n~~~\n"
++        code, result = run_text(["escape-sources"], text)
++        self.assertEqual(result["rows"], 2)
++        self.assertEqual(result["duplicate_rows"], [])
++        self.assertLess(result["html"].index('id="src-1"'), result["html"].index('id="src-2"'))
++        self.assertNotIn("ignored", result["html"])
++        self.assertEqual(code, 0)
++
+     def test_escaping_and_url_validation(self):
+         with tempfile.TemporaryDirectory() as tmp:
+             report = Path(tmp) / "report.md"
