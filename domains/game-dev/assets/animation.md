@@ -568,7 +568,11 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 
 **变形手套用真实表面点，不用固定骨偏移代替。** 在选定姿态记录实际三角形及重心坐标，后续每帧重新计算其蒙皮顶点；顶点混合手、腕和前臂权重时，固定手骨偏移会离开表面。再比较角色两接触点与枪械两锚的距离：刚体变换不能消除间距差。固定Knight手槽最近的表面候选相距0.562282m，对RX24的0.270780m，主手对齐后支撑点至少差0.291502m；固定骨偏移在三动作15姿态中另有最大0.017840m漂移。这里只否决这组选点，不代表已经识别真正掌面或所有配对不可行。
 
-复算命令：`node --import tsx tools/check-kaykit-rx24-contact.ts <fixed-sample-directory>`，目录放已固定的`Knight.glb`与`Med_CombatRanged.glb`；先验hash，缺源或坏源失败，不联网补源。独立逐顶点蒙皮、两点刚体拟合和15姿态复算一致，尚无浏览器／握持画面。依据：[表面候选、配方与明确拒收范围](https://github.com/dbvv1/FPS-Like/blob/aea766602680f310d48aff72094d312b36d8e3a9/asset-pipeline/kaykit-rx24/README.md#knight-接触拟合拒绝手槽最近表面方案)，固定源CPU实跑，2026-11-11。
+复算命令：`node --import tsx tools/check-kaykit-rx24-contact.ts <fixed-sample-directory>`，目录放已固定的`Knight.glb`与`Med_CombatRanged.glb`；先验hash，缺源或坏源失败，不联网补源。独立逐顶点蒙皮、两点刚体拟合和15姿态复算一致；15姿态只是数值采样，不能当握持图。依据：[表面候选、配方与明确拒收范围](https://github.com/dbvv1/FPS-Like/blob/aea766602680f310d48aff72094d312b36d8e3a9/asset-pipeline/kaykit-rx24/README.md#knight-接触拟合拒绝手槽最近表面方案)，固定源CPU实跑，2026-11-11。
+
+**先用真实蒙皮几何做制作图，再决定握点。** 没有游戏拍摄槽时，可从原消费者导出当前姿态的蒙皮顶点，用 Blender CPU 看前／侧／上近景，保源尺度；这种粘土图只核几何，不替代游戏光照与同机位验收。先定主手掌腔、枪柄向下、枪背向上的完整接触框，再核枪轴和枪托间隙；左掌目标需在原肩肘腕骨长可达范围内，先离线试作，不直接新增运行时 IK。
+
+失败反例：把最近手槽的表面点作为掌面，再按两手向量刚体对齐，侧图出现枪托进入前臂、顶图左拳到了枪口而非前护木。两点能确定位置／轴向，不能定义握柄朝向或证明拳套包住枪柄；不靠整体放大枪或拉长手臂掩盖。可直接打开[制作源与四张视图](https://github.com/dbvv1/FPS-Like/tree/0e12d631047606cb46cea96f2fcd6556d3d8b718/asset-pipeline/kaykit-rx24/grip-study)的 `knight-rx24-study.blend`，按随附步骤试主手框、左臂可达性及瞄准／开火／换弹接触。源是静态蒙皮采样，不是可复用动画绑定。该候选经非作者看图拒收，未接游戏 View、未增加覆盖。依据：固定源 Three 消费者与 Blender 4.3.2 CPU 制作、非作者几何审查，2026-11-12。
 
 **直接使用**：FPS仓库`asset-pipeline/kaykit-rx24/weapon-only.glb`可由GLTFLoader载入；重建用`node --import tsx asset-pipeline/kaykit-rx24/extract.ts --src assets/content-set/fp-arms-rx24.glb --out asset-pipeline/kaykit-rx24/weapon-only.glb --manifest asset-pipeline/kaykit-rx24/manifest.json`。
 
