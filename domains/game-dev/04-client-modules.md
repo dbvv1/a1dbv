@@ -632,7 +632,7 @@ FPS-Like 已发布的 [a97d572](https://github.com/dbvv1/FPS-Like/commit/a97d572
 
 正常缓存返回与终态分开：`pagehide.persisted` 可按项目政策保留原局，但已经失败的客户端没有恢复资格。用户声音设置与原混音不改，资源退出不等于另建一套音频暂停政策；引擎版沿现有场景／世界所有者实现，不把网页独占渲染器的退出做法套到共享引擎设备。
 
-**实现与边界：** FPS [候选 client](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/src/candidates/offline-training-v1/client.ts)／[10 项回归](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/tests/offline-training-v1/client-terminal.test.ts)直接执行生产编排；其中一项使用真实 Game／Rapier，替换拒绝时旧 hash 不变，继续后 tick 前进。全量 440/440、类型与生产构建通过，独审补齐初始化期间 loss 后通过。其余 DOM／输入／视听与故障为替身；浏览器仅尝试启动即被 socket 权限限制拦住，未到页面、未重试。代码只在候选分支，未合产品 main／部署，真实 WebGL loss、BFCache 和人玩未验，不提升模块采用或品质等级。[复跑与恢复条件](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/docs/client-lifecycle.md)，2026-11-06。[源码／CPU 接入候选]
+**接收与边界：** 11-12 已将[原候选训练 client 与测试](https://github.com/dbvv1/FPS-Like/commit/bb8827c4a7d044ed195ad9b44727264f6e11f004)逐文件接回 [main](https://github.com/dbvv1/FPS-Like/commit/be6ccb01642cc5adec47bc01db6d20a1a2d46261)，并把同一终态合同补到旧 1v1。真实 Game／Rapier 回归确认替换创建失败时旧 hash 不变、继续后 tick 前进；初始化丢上下文、迟到 Game／锁／音频回调与 dispose 异常等为 CPU 故障注入。当前 457 项、类型／生产构建和独审通过；新构建未启动浏览器，网站仍 v24。真实 WebGL loss、BFCache 和人玩未验，不提升品质等级。[原复跑与恢复条件](https://github.com/dbvv1/FPS-Like/blob/bb8827c4a7d044ed195ad9b44727264f6e11f004/docs/client-lifecycle.md)核实于 2026-11-06，本次源码／CPU 接收核实于 2026-11-12。
 
 **离页取消同时撤销“写旧界面”的资格，资源收尾不能代替接收资格。** 在现有启动入口保一份请求代次和本次 lifetime；`pagehide` 先让代次失效，再取消可取消的 fetch、释放已取得资源。每个等待点之后先核本次资格；已经取得的迟到资源仍交原 lifetime 立即释放，不能因为“不再接收”就直接丢掉句柄。异常和 finally 也只修改当前代次的 HUD／按钮，旧请求的失败只清理自己，不调用可能已属于新一局的全局 cleanup。若加载器会在返回前安装 canvas，仅检查返回值仍太晚：给每次进入一个已挂载、尺寸明确的独占容器，旧加载器只允许改自己的容器；退出只移除该容器，新世界不受迟到挂载影响。
 

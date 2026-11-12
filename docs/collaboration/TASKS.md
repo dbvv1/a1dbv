@@ -43,11 +43,11 @@
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
 | MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `da56173`／Site **v22**；既有HUD技能焦点修复已接回当前默认／quiet共用client，614项／两构建／独审过；完整smoke入口保留，新构建未开浏览器。原角色 `aa2acf1` 保留；quiet仍欠当前默认盲选、真实完整smoke／帧耗，设备离线、原外层／槽unknown，0/89不变。 |
-| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | [核心循环](../../domains/game-dev/05-gameplay-architecture.md#一条完整制作链先让第一局和第二局都能玩)已区分个人结果与全场收尾。Star 原修复已过独立组装客户端 CPU 接收：默认 9/9、轮胎候选 8/9 对手完赛，余 1 为仍在前进的截止 DNF；花见坂反复倒车仍是品质缺口。原发布回执未确认，远端未见修复，不重推；浏览器／帧耗欠。 |
+| B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS 原[终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已接回主干并补旧1v1，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见，不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为合法原槽的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档四次会话到第二章 Copper 2/6：24 铜返航时仍 0/10，后续卸货推进；出航／返航提示不同的并行准备，尚未实建该炉。飞行暂停继续保原航线；累计 39 分钟、部分 ×4，已暂停保档。死亡／确认重开／终局／试听未验，不计品质或案例采用。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档五次会话到第二章 Copper 2/6：铜卸货后主线先要求电源核心，并行建炉建议不是当前主线；核心仍0/1，未实建铜炉。累计42分钟、部分×4；电池耗尽出现生命维持返航提示，已暂停保档。死亡／重开／终局／试听未验，不计品质或案例采用。 |
 | SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `2cad483`／Site **v10**；已将源／构建托管配置校正到现有Reborn网站，未部署。整层仍在原开关，当前默认三机位静态盲选通过；完整浏览器smoke与连续帧耗仍缺。隐藏画质控件的赛前阻塞已修，设备离线、外层／槽unknown；未换默认，旧探索2、0/43不变。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `276c803`／Site **v24**；现有smoke补首页／旧链接实际路由、默认对全场材质六回合及原始帧耗，437项／构建／独审过，未开浏览器。训练候选 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选与真实完整smoke／帧耗，原槽unknown，0/77不变。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `be6ccb0`／Site **v24**；接回原训练终态修复并补旧1v1：初始化／运行失败停止客户端，重开创建失败保旧局；457项、类型／构建与独审过，未开浏览器或部署。原完整smoke工具、训练 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选及真实完整smoke／帧耗，原槽unknown，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ## 待人工验收
