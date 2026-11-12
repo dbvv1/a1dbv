@@ -1,12 +1,18 @@
 # A-UPSTREAM-CATTRS-DELTA-READER-20261108 · 新提案出现后的贡献判断
 id: A-UPSTREAM-CATTRS-DELTA-READER-20261108
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 7f54b4c5deb57b08f9cd0fb56af6967116ff023d
 result_branch: relay/a-upstream-cattrs-delta-reader-20261108
 page: docs/decisions/upstream-contributions.md@3f445adee874b68045fe718576ef2678782c2828
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：接收37b1ba8历史只读准入及接收方11-12对main e9239b7、#761／#764／#822、政策和五后端差量的只读补核，不追记为旧读者首次证据；当前性来源见接收日档。旧页3f445ade及候选bde101a5结果不代表新版／当前main通过，apply、测试和投稿闭环未验，放弃本轮可投稿断言，不新增实现／投稿，不挂72小时。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 真实任务与输入
 为 cattrs 的 [Decimal 需求 #761](https://github.com/python-attrs/cattrs/issues/761)决定本仓已有候选现在应怎样推进。本仓 10 月 23 日已完成五后端候选，未投稿；此后 11 月 3 日出现新的 [PR #822](https://github.com/python-attrs/cattrs/pull/822)，另有原 [PR #764](https://github.com/python-attrs/cattrs/pull/764)。这是新提案出现后的贡献决定，不重做旧实现或重复页面的 Memos／Datasette／Qwen 案例。
@@ -34,7 +40,7 @@ page: docs/decisions/upstream-contributions.md@3f445adee874b68045fe718576ef26787
 非读者核实际输入及隔离证据，再回当前上游规则、差量和源码验证结论；不以读者自报代替。页面缺信息、执行能力和未运行环境分别记录；本卡只验真实贡献判断，不声称投稿成功、运行新版或页面已可标绿。
 接收端按文档范围跑 check_repo、check_public、空白与新增提交身份检查；保留其他历史。通常 60–90 分钟、最多两小时，沿共享最多四任务合同；不另开调度，不依赖 dot 桌面在线。Git 发布只证明可被领取，不证明已经执行。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 读者照页完成只读核查：cattrs 无 AGENTS.md/PR 模板，等价入口为 CONTRIBUTING.md、.github/AI_POLICY.md、.github/ISSUE_TEMPLATE.md；main=e9239b7 与最新发布 v26.2.1 均无 Decimal；#761 open 无 label，#764(head 8c04cdb5)/#822(head 2e883761) 均 open/unmerged/mergeable=false 且只覆盖 json+pyyaml，故不能收起五后端候选；结论为先重放 current main、补 HISTORY.md 并把测试并入 tests/test_preconf.py，由本人协调 #822/#764 后再投稿，不新开第三条 PR。taskDone=true；pageStuck 2 处：页面未写禁止 apply/运行时“是否覆盖/能否干净应用”只能是静态或 unknown，也未写协调评论受项目 AI 政策与本卡禁评论限制及由谁执行。未运行验收：just lint/test/cov/docs、候选补丁 apply 及候选在 current main 的实际通过情况均 unknown（本卡禁跑），不以核对者返回代替通过。openIssues：候选测试顶部无条件 from msgspec import to_builtins，PyPy 直接并入 tests/test_preconf.py 会 collection 失败，需加 skip 或拆分后端；读者写 #822 base=e9239b7 但 head 父提交是 bde101a（落后 6 提交），rebase 依据应写后者；CONTRIBUTING 第 3 条指向仓库中不存在的 README.rst，读者只写“更新文档”；pyyaml 行为候选测试已用 Decimal(str(v)) 固化，真正待决定是保留该特例还是采用 #822 的统一 Decimal(v)；读者下一步先重放后协调与页面字面顺序相反；读者多读 evidence/input-guards.json 超出固定候选输入并已自报，未影响判断。
 - 产物：[37b1ba8](https://github.com/dbvv1/a1dbv/commit/37b1ba8e2a9e9fd01e1eeec72c5abdc685b6f1b3)，分支 `relay/a-upstream-cattrs-delta-reader-20261108`。

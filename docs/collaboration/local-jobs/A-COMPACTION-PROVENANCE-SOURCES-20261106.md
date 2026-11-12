@@ -1,11 +1,17 @@
 # A-COMPACTION-PROVENANCE-SOURCES-20261106 · 核压缩来源保真证据
 id: A-COMPACTION-PROVENANCE-SOURCES-20261106
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc45e8d4a3eac99e38508a9a2327068c562bd38e
 result_branch: relay/a-compaction-provenance-sources-20261106
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：0a3efab部分来源证据已由d4c9d396纳入03及context页；拒收“读过外部材料优先重开”新默认，余稿放弃。固定论文／源码静态研究未完成整项独审、产品复现或真实读者接续。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标与输入
 核清已交 M6 周样本的一个剩余问题：Compaction Laundering 的实验到底支持哪些产品、版本与动作，是否足以改变现有上下文／权限建议。交有来源的采用或不采用判断，不预设论文结论正确，也不把复述摘要当完成。
@@ -34,7 +40,7 @@ result_branch: relay/a-compaction-provenance-sources-20261106
 按文档范围运行 `python3 scripts/check_repo.py`、`python3 scripts/check_public.py` 与 `git diff --check`，公开提交身份另检。既有 build Workflow 完成独立审查；最多两小时，保全未完成项，不重复初始调用。
 模型不提交／推送；接收端仅推 result_branch，回 review_ready，缺关键输入则 blocked。不用 accept: auto，不合 main；由 dot-A 当轮决定采用、返工或放弃。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/A-COMPACTION-PROVENANCE-SOURCES-20261106/findings.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
 - 产物：[0a3efab](https://github.com/dbvv1/a1dbv/commit/0a3efab02bfee89ab297d81a5fbd8006c06cde7b)，分支 `relay/a-compaction-provenance-sources-20261106`。

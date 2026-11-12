@@ -1,11 +1,17 @@
 # A-SKILL-MCP-WIDE-20261029 · Skill、MCP 与插件广扫
 id: A-SKILL-MCP-WIDE-20261029
 owner: dot-A
-status: review_ready
+status: accepted
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 74be0d09b201cc0aacf925625899cf2d9bd03d3d
 result_branch: relay/a-skill-mcp-wide-20261029
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：仅接收已转化的 pnpm 线索（结果9f905b0；采用483b4bed／85112b0f），compressor／reference 的 ce38a3a6／467a450d 后续独立实试保留各自边界。528候选未安装运行、整稿未审完，其余候选本轮放弃，不据此验收当前页。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 广扫编码 Agent 可用的 Skill、MCP 服务、插件生态和新颖组合，发现仓库尚未覆盖且值得试的能力。先发现还不知道的东西，不预编窄问题、固定赢家或采用决定。交可回源候选，供 dot-A 云端深挖、试用与取舍。
@@ -39,7 +45,7 @@ result_branch: relay/a-skill-mcp-wide-20261029
 先核本卡原调用、工具及登记进程确已结束；不能确认则维持隔离并报告具体缺证，不启动第二个调用。确认后沿原卡、原结果分支接续；按现行接收协议复用已有完成的收集，重核日期／链接并按本轮分组追踪，不把已完成候选重新从零搜一遍。不读取私人会话或账号用量。
 先交最强的新发现及可实际试用入口，供负责人从两卡总产物选 3 项真实试用并更新 13；本卡仅收集，不提前宣布采用或地图升级。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/A-SKILL-MCP-WIDE-20261029/sources.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
 - 产物：[9f905b0](https://github.com/dbvv1/a1dbv/commit/9f905b0166278975f9831e7d142b9ca4cae423c5)，分支 `relay/a-skill-mcp-wide-20261029`。

@@ -1,11 +1,17 @@
 # A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106 · 核公开账号上下文报告
 id: A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106
 owner: dot-A
-status: review_ready
+status: cancelled
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bc45e8d4a3eac99e38508a9a2327068c562bd38e
 result_branch: relay/a-account-context-public-sources-20261106
+
+## 当前接收决定（2026-11-12 UTC）
+
+**放弃（`cancelled`）**：保留4953b55已进入10-security的录屏／分享短限制；放弃剩余版本追踪与产品复现。8a6e326为11-06历史静态材料、独审未完成，不证明当前发布版行为或真实外发。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标与输入
 只靠公开官方材料核 Claude Code #81138 的版本、实现证据与显示设置含义，判断是否给现有公开提交／录屏建议补充一条有依据的限制。不能靠读取本机账号或问模型系统提示来核验，不预设报告已被独立复现。
@@ -35,7 +41,7 @@ result_branch: relay/a-account-context-public-sources-20261106
 按文档范围运行 `python3 scripts/check_repo.py`、`python3 scripts/check_public.py` 与 `git diff --check`，另检公开提交身份；既有 build Workflow 做独立审查，最多两小时。
 模型不提交／推送；接收端仅推 result_branch，回 review_ready；关键来源不足则 blocked 并保全可核部分。不用 accept: auto，不合 main，由 dot-A 当轮判断采用、返工或放弃。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 单元达到时限，收集超时前已写出的部分成稿：docs/collaboration/local-jobs/artifacts/A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106/findings.md。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
 - 产物：[8a6e326](https://github.com/dbvv1/a1dbv/commit/8a6e32665665f0517d16bcffa96f4de2a335b008)，分支 `relay/a-account-context-public-sources-20261106`。

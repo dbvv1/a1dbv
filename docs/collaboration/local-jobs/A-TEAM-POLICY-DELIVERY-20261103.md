@@ -1,11 +1,17 @@
 # A-TEAM-POLICY-DELIVERY-20261103 · 判断团队策略是否实际到达
 id: A-TEAM-POLICY-DELIVERY-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 17c984ae31ac532fe69bce0f89e72572f6651545
 result_branch: relay/a-team-policy-delivery-20261103
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：结果c198a382经c485ecb4修正后，交付／来源／Hook执行分流已进18§4；原稿两处条件错误仍在，余稿放弃。原静态研究未部署、未运行客户端／Hook，无真实团队采用。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 补读者地图“团队怎么推广”的一个实际操作缺口：管理员已配置 Claude Code 托管策略，但新机器、CI 或已有会话没有出现预期限制时，读者怎样判断策略未送达、已送达但未加载、当前生效源不同，还是 Hook 本身失败。
@@ -34,7 +40,7 @@ result_branch: relay/a-team-policy-delivery-20261103
 保原页面评级、历史核实日期与已接收权限结论。本稿通过仅表示有界来源与操作说明可接收，不表示团队推广通过或 README 的 🟡 可以升级。
 一个 60–90 分钟单元，最多两小时，共享最多 4 并行仅由原接收端调度，不另开调用抢槽；按既有 Workflow 非作者审查、check_repo、check_public、git diff --check 和提交身份检查，仅推 result_branch 后回 review_ready；不用 accept:auto，不合 main。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - **部分采用，保留 review_ready，不标 accepted。** [18 团队页 §4](../../18-team-adoption.md#4-配置治理)已采用交付、来源与 Hook 注册／执行三层分流；来源提交为 [c485ecb4](https://github.com/dbvv1/a1dbv/commit/c485ecb42e5b1d96670db17757136d5e9a7eddd6)。2026-11-05 核该提交已在 main 父链，当前页面与该提交的文件 blob 相同；原 operation.md 未整份进入 main。
 - 已采用正文修正了原审查指出的不可读文件分支：加入“没有任何管理员来源提供策略”的前提，并区分 OS 拒读与其他 I/O 失败每次启动退出。不能据正文修正反称原稿已改正：结果分支 [c198a382](https://github.com/dbvv1/a1dbv/commit/c198a382e2f3089d8fc3a1b1beb5fc329717976a)的 operation.md 仍保留原第 69 行的过强／弱化表述。

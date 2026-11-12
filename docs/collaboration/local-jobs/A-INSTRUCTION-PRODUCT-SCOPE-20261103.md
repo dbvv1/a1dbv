@@ -1,11 +1,17 @@
 # A-INSTRUCTION-PRODUCT-SCOPE-20261103 · 产品例外只覆盖那条共享约定
 id: A-INSTRUCTION-PRODUCT-SCOPE-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0bc25d91bc1e0f1b0570262f7ddf2a30ee52c1b7
 result_branch: relay/a-instruction-product-scope-20261103
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：结果f9a3d911的有效作用域写法已由c485ecb4改写进入 instruction-files；拒收残稿根L253澄清建议，不再合旧稿。原11-03静态来源不证明当前上游状态，客户端加载、模型遵守与新读者未验。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 给已有明确产品需求却被共享设计约定挡住的开发者一个可用分支：确认需求与负责方，局部只覆盖冲突的产品约定，保其他约束并把例外同步到真实任务验收；不为满足局部需求删除全仓仍有效的规则。

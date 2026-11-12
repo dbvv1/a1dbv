@@ -1,7 +1,7 @@
 # A-MCP-TIME-MIGRATION-READER-V2-20261107 · 新读者实做修订后的 Python 迁移路线
 id: A-MCP-TIME-MIGRATION-READER-V2-20261107
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 38ebcee852c84364d30a1dd5a0fb05ca72ac99a1
@@ -16,6 +16,12 @@ page: docs/decisions/migrations.md@9d0321cc594034fb8267540895075376157e3848
 必须自己从项目真实 stdio CLI 启动，分别固定 legacy／2026-07-28 客户端，核基线固定新版真实失败与候选新版成功；不只用 auto、内存传输或直接调用 handler。两代 convert_time 输入 UTC 12:00→Etc/GMT-5 须得 17:00／+5.0h，日期取实际输出；核工具列表／输入契约、无效时区、缺参数、未知工具、未支持方法，分 JSON-RPC error、工具 isError 与进程失败；关闭后新进程连接可用，不声称同一运行实例隔离。
 仅新增 docs/collaboration/local-jobs/artifacts/A-MCP-TIME-MIGRATION-READER-V2-20261107/ 下 result.md、migration.patch、probe-time-eras.py（真运行才交）、verification.json、SERVERS-LICENSE.txt，以及 reader-tests/A-MCP-TIME-MIGRATION-READER-V2-20261107-u1.md。公开文件写命令、退出码、版本、输出摘要与未验，原日志私下保全，不含本机路径、邮箱、凭据、私人调用 id。额外未跟踪内容保持原物，停止收集并报告。
 由非读者审查者核四文件范围、重放、依赖未变、真实输出与页面实际采用；必须核两处修订是否解决 TypeScript／Python pin 写法与真实入口问题，其他卡点区分页面、环境、读者错误。检查 check_repo、check_public、空白、提交身份；单元60–90分钟、最多2小时，未知不重派；缺依赖不请求安装，交 dot-A 精确接收。
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：接收6239e43固定版本静态核对与受阻历史，已进入 migration-case-evidence；四文件补丁与首轮相同，不重复合，计数以原卡勘误为准。旧页9d0321cc运行验收未通过（taskDone=false），真实stdio、原生测试及发行入口未验，不拿云结果补认或继续旧页验收。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
+
 ## 答案页完整正文（固定修订版，仅省略空行）
 ````markdown
 # 遗留代码与大迁移：怎样选改法、保住原行为
@@ -71,7 +77,7 @@ SQLite 父表重建曾级联删掉三条子记录，外键检查仍为空。接�
 - **已经写入新状态**：回退前明确恢复点与将丢的新增数据；依赖补丁反向应用不恢复数据库。无法安全回退时保状态继续修复。
 批量与并行只在迁移单元可独立接收时增加，见[15 §5 的执行与恢复边界](../15-task-playbooks.md#5-大规模迁移与升级)。本页保持 🟡：time 独立读者实际采用了固定两代客户端与只接必要差量的路线，暴露的语言／启动入口前提已在本节修正；修订版仍待新读者。Extruct 首轮读者的选路与旧 PR 卡点已回流，其任务后来取消，不算完整通过；负责人补验也不算新的首次冷读。
 ````
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - reader-test 一轮观察结束，交负责人接收；taskDone=false，pageStuck=true（页面/环境前提：本机缺 mcp、tzlocal、jsonschema、pytest、pytest-asyncio、freezegun、ruff、pyright 且 mcp-server-time 未安装，禁止安装下载）。已完成：页面固定提交 9d0321cc 指纹与附文逐字节一致；migration.patch 对基线 2f8dc42 干净应用、4 文件 blob 与候选 38fa696 全同；uv.lock/pyproject.toml/.python-version 未变且锁 mcp 2.3.0；源码 py_compile 通过。未运行：两代 stdio 真实入口、基线新版失败/候选新版成功、convert_time UTC12:00→Etc/GMT-5 17:00/+5.0h、工具列表与错误分层、关闭后新连接、原生 pytest、ruff/pyright、控制台入口。非读者核对确认页面两处修订（TS/Python pin 写法、真实入口）成立。openIssues：result.md 逐文件计数有两处错（README.md 实为 +6/−1、test_protocol.py 实为 +22/−14，总数与补丁哈希正确）；读者未补读 mcp 2.3.0 SDK 源码核对 mode/Server.run（不影响 blocked）。probe-time-eras.py 未真运行未交付。
 - 产物：[6239e43](https://github.com/dbvv1/a1dbv/commit/6239e43b1752ff1e7e4b753a30fa5b2219e9b959)，分支 `relay/a-mcp-time-migration-reader-v2-20261107`。

@@ -1,11 +1,17 @@
 # A-PUBLIC-SCAN-CLI-ENCODING-20261103 · 非 UTF-8 输出环境仍交完整扫描 JSON
 id: A-PUBLIC-SCAN-CLI-ENCODING-20261103
 owner: dot-A
-status: review_ready
+status: cancelled
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 76011c6b861b2d3f2a54c1171bb98d8057b40dbc
 result_branch: relay/a-public-scan-cli-encoding-20261103
+
+## 当前接收决定（2026-11-12 UTC）
+
+**放弃（`cancelled`）**：结果7deb5bc8的编码修复已由c485ecb4改写采用，d247a234记录接收复验；保留已合修复，放弃其他推进，不重合旧实现。原Windows／hosted CI与退出事实不以云端收据补认。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 本仓发布流程真实使用 `python3 scripts/check_public.py`；有 Unicode 文件名或命中内容时，扫描器应交回可解析 JSON 与原退出码，而不是因输出编码崩溃丢掉整份诊断。修正这个直接 CLI 缺陷，保持现有检测、脱敏、文件覆盖与发布门槛。

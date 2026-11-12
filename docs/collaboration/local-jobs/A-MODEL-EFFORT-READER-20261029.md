@@ -1,12 +1,18 @@
 # A-MODEL-EFFORT-READER-20261029 · 真实配置兼容修复
 id: A-MODEL-EFFORT-READER-20261029
 owner: dot-A
-status: review_ready
+status: cancelled
 kind: reader-test
 target_repo: https://github.com/dbvv1/jrnl
 base_ref: 90de4948d79a4fca8c7238dd2487b599f458c903
 result_branch: relay/a-model-effort-reader-20261029
 page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
+
+## 当前接收决定（2026-11-12 UTC）
+
+**放弃（`cancelled`）**：不再继续旧reader返工验收；保留f3fddd28已采用的页反馈及jrnl返工46e2560429d515101375fe48420d345ccea202ad代码候选。真实CLI／官方测试与记录纠错未闭合，未验候选保全，不称通过、不安装执行或重派。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标与输入
 
@@ -43,7 +49,7 @@ page: docs/decisions/model-roles.md@dot-a/model-effort-reader-dispatch-20261029
 5. 按原项目检查及非作者复核回传。云端对既有候选曾得到 focused 29 passed，全套 716 passed/40 skipped/4 failed；同四个 multiline-with-tags BDD 失败可在干净基线复现，但不是本机通过或完整基线等价。本机须按实际结果分别报告，不继承该云端数字。
 6. 本轮不得在用户电脑安装或更新软件/依赖，只用该任务已有隔离环境；缺依赖则回报精确入口及缺项。不得触碰真实配置、journal、凭据、其他任务、接收器、DayOne 分支或上游投稿。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 **接收结论：保全代码候选，整张 reader 卡未完成验收。** `taskDone=true`、公开扫描或“独立审查通过”均不替代原任务的真实 CLI、官方测试与执行边界核验；本卡保持 `review_ready`，不据此重派。
 

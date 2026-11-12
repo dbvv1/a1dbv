@@ -1,11 +1,17 @@
 id: A-MIGRATION-FACTORIOLAB-READER-20261110
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: be3c57b9de7f97baf01d96d0392dda896b8506d9
 result_branch: relay/a-migration-factoriolab-reader-20261110
 page: docs/decisions/migrations.md@be3c57b9de7f97baf01d96d0392dda896b8506d9
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：接收020a36f环境阻塞／原消费者未改边界，静态清单以原卡勘误为准；f791b58已经3a836158接入migrations，不重复合。旧页be3c57b9真实迁移、测试与构建均未验，6ddd9817仅重建Angular21基线，不补回Angular22迁移，放弃旧附页续验。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
+
 ## 真实任务
 让未读过附页、未参与本任务与该页编写的独立读者照页完成真实产品 factoriolab/factoriolab 的 Angular 21→22 升级历史重放；固定迁移前 f785e10becb84afd1fe546ac5b4098271207aabd（MIT）。不要读上游后续升级补丁、历史解决结论或其他读者答案；不作为当前上游仍有缺陷的证明。
 ## 范围、步骤与验收
@@ -13,7 +19,7 @@ page: docs/decisions/migrations.md@be3c57b9de7f97baf01d96d0392dda896b8506d9
 2. 选原项目 src/components/button/button.spec.ts 及 src/state/router/migration.spec.ts 真实消费者，记录基线；在具备上述条件时执行官方迁移，原测试和构建前后对照，不删除断言、缩分析范围或修改消费者掩盖失败。原测试入口不支持指定过滤则说明实际范围，不编造命令。单纯配置阅读/编译不能算真实迁移通过。
 3. 仅写 docs/collaboration/local-jobs/artifacts/A-MIGRATION-FACTORIOLAB-READER-20261110/result.md，含固定输入、实际命令/退出、diff范围、卡点、未验；不改答案页或产品默认分支，不发上游通信，不写用户路径/私密日志。代码修改仅任务临时隔离副本，交回必要公开差量，不携带依赖或产品数据。
 4. 接收端共享最多4任务/1GPU，60–90分钟单元、2小时上限；按合同回写卡与结果分支，不自动合main。旧写者未知不接管，无合格新读者则待领取；非读者核原始产物、当前页与任务本身的验收，不因命令成功升✅。若缺依赖，区分执行条件与页面卡点，不反复重试。
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 读者按页做到依赖准备与迁移面确认：浅取固定提交 f785e10，核对 README/package.json/angular.json/karma.conf.js/CI 与两个消费者（button.spec、migration.spec 未改）；因仓库无 node_modules 且任务禁止安装/更新依赖及 npx，npm run test:ci、npm test、npm run build 均在 ng 启动前退出 1，未执行真实迁移、未改产品代码，工作树 diff 为空，消费者哈希不变。taskDone=false；真实迁移、同一消费者前后对照、构建产物均未运行验收，不能据此判页面通过。pageStuck 5 条（4 条 page：依赖准备/缺依赖验收/官方 codemod 前提/构建验收均未覆盖『禁止安装』情形；1 条 model：读者先跑测试后核 node_modules）。openIssues：http-xhr-backend 预计命中还含 src/data/release.spec.ts、src/translate/translate.spec.ts；change-detection-eager 还含 form-field.spec.ts 的 TestFormField、tooltip.spec.ts 的 TestTooltip；@vitest/coverage-v8 是根直接 devDependency ^4.1.5，与 vitest 5 存在 peer 错配需手工对齐；@schematics/angular 迁移清单漏列 use-application-builder、trust-proxy-headers；tests.yml 与 build.yml 被合并成一条五步序列的表述偏差。
 - 产物：[020a36f](https://github.com/dbvv1/a1dbv/commit/020a36f78a2f4f8c6cad3cf400cc90b01ca5744a)，分支 `relay/a-migration-factoriolab-reader-20261110`。

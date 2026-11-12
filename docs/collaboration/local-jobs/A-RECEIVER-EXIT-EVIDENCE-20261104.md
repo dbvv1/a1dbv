@@ -1,11 +1,17 @@
 # A-RECEIVER-EXIT-EVIDENCE-20261104 · 核五项原调用退出证据
 id: A-RECEIVER-EXIT-EVIDENCE-20261104
 owner: dot-A
-status: review_ready
+status: cancelled
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: bbf7128ea7c8808f4a3ab33dca014f3cb4765833
 result_branch: relay/a-receiver-exit-evidence-20261104
+
+## 当前接收决定（2026-11-12 UTC）
+
+**放弃（`cancelled`）**：放弃继续整合／补验旧审计；d950609仅报告11-04登记集合退出，5a460af5时序／范围文字修订未入main，不构成新退出核查。登记树外写者和关联差额仍unknown，不解除隔离、不清锁、不重试、不重派。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标与输入
 仅请现有接收端核实以下五项原调用、工具与登记进程／相关写者的退出状态，回传可公开证据，供负责人判断恢复与接收。不是重跑原任务，也不是接收端修复。
@@ -38,7 +44,7 @@ result_branch: relay/a-receiver-exit-evidence-20261104
 现有 build Workflow 非作者审查报告的证据边界与公开安全；模型不提交或推送。接收端运行适用的 check_repo、check_public 与 git diff --check，仅推本卡 result_branch，回 review_ready；无安全可读证据则回 blocked，并保留能核实的部分与精确缺口。不用 accept:auto，不合 main。
 这是单次只读核查，得到可核结果或明确缺口即交回，不循环等待、不为凑时长重复查询；最多两小时。Git 文件和本卡完成都不证明原五项已退出，负责人只按实际回传证据接续。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 五项原调用退出核查报告已写入 status.md：五项均正常结束（exit 0、CLI 关闭、turn ended、tools settled、登记进程树全部 exited），按 PID+创建时间复核同身份存活 0。check_repo 791 文件 0 错误、check_public 1261 文件 0 命中、git diff --check 通过。未关闭问题：第 11 行在“13:20:10Z 观察时点”段内引用了 13:28–13:30Z 才生成的 repo-check.json（TASKS.md 超 10 KB＋5 个 Wave 1 报告链接缺失共 6 项），与报告“旧记录只写原时点”的规则不一致，3 轮修正后仍未关闭，故 reviewed=false。
 - 产物：[d950609](https://github.com/dbvv1/a1dbv/commit/d950609731ac194531f3ade98af5f560ed7582d9)，分支 `relay/a-receiver-exit-evidence-20261104`。

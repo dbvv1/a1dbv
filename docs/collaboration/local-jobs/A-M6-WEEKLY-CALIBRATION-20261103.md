@@ -1,11 +1,17 @@
 # A-M6-WEEKLY-CALIBRATION-20261103 · 上个完整自然周的发现校准
 id: A-M6-WEEKLY-CALIBRATION-20261103
 owner: dot-A
-status: review_ready
+status: cancelled
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2c3287bab9306010137bc99088a251c21feb4669
 result_branch: relay/a-m6-weekly-calibration-20261103
+
+## 当前接收决定（2026-11-12 UTC）
+
+**放弃（`cancelled`）**：保留结果536b86d4及6f657a6c有界周样本收据，放弃未核线索后续转化，不执行原稿配方或重查排名。历史20条标识复核不等于全外链／评论复验、零遗漏或当前新推荐。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 完成运行手册要求的每周外部参照校准，让 M6 维护者知道上一个完整自然周有哪些实际值得补的做法，以及哪些只是新名字、已有能力或不适用线索。沿 10-26 的原采样契约接下一周，不重写旧结果，不把领域广扫的候选总数当周校准。
@@ -34,7 +40,7 @@ HN 入口只用目前允许的 hn.algolia.com search／items API。本轮尚未�
 有价值的缺口须交读者下一步；允许没有新增选择。缺失或无效来源不能计成成功、完整覆盖或零遗漏。保留旧周结果和两广扫状态，不把本次叫新自然读者、工具采用或方法效果验证。
 一个60–90分钟单元，最多两小时；共享调度由原接收端执行，不另起调用。按原Workflow非作者审查、check_repo/check_public、空白及身份检查，仅推 result_branch 回 review_ready，不用 accept:auto；输入、权限或连通性不足就交材料和确切恢复条件，不启动重复调用。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 部分接收为有界周样本，不新增工具推荐；保留 `review_ready`，不等于全稿采纳、零遗漏或旧调用已退出。固定产物：[536b86d](https://github.com/dbvv1/a1dbv/commit/536b86d44f5649af78bc3cc37b65e799fc330112) 的 `sample.json`、`calibration.md`，分支 `relay/a-m6-weekly-calibration-20261103`；原稿记录检查与独立审查通过。
 - 2026-11-05 非作者只读复核：沿冻结 ID 读取 Algolia items，20/20 的 ID、URL、时间及规范化标题一致；两个样本共用同一窗口、各10条的顺序字段、20个唯一成员与固定基线实际命中核对通过。Cursor 事件、agent_summary 与两份旧稿重合，DeepSeek 已有仓内局部验证；不能把重复线索计为新采用。

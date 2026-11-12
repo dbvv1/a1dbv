@@ -1,11 +1,17 @@
 # A-SENTRY-MIGRATION-CONTRACT-20261103 · 分清迁移阶段并撤除临时规则
 id: A-SENTRY-MIGRATION-CONTRACT-20261103
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 147f3353dfaf0640f9e9a129da3bd9b6f82ae152
 result_branch: relay/a-sentry-migration-contract-20261103
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：结果60be529的分阶段 runtime／adapter 与退场条件已由e1a544a2纳入 migrations，旧15长稿不再另合。仅收来源机制，未运行 Sentry、未完成当前页读者实做。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 目标
 给正在让 Agent 分阶段升级依赖的开发者一个可直接判断的答案：何时可用新 API、应该跑哪套验证、何时撤掉双版本与兼容指令。以 Sentry 已完成的真实迁移为证，不另造迁移任务。
@@ -34,7 +40,7 @@ result_branch: relay/a-sentry-migration-contract-20261103
 候选不得把历史V6写成现状，不承诺普适收益，不把静态审稿升为真实迁移/新读者通过；若现有15实际已覆盖同一选择，返回负结果而非硬添一段。
 一个45–75分钟单元，最多两小时；原接收端共享最多4并行调度，不另起调用。按既有Workflow非作者审查、check_repo、check_public、git diff --check与身份检查，仅推result_branch回review_ready；不用accept:auto，不合main。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - 新增 proposal.md，给出可直接合入 docs/15-task-playbooks.md §5 的最小补充候选（并行主版本迁移按实际解析到的 runtime/adapter 写规则与验证，完成切换后清理双版本与兼容指令），并附原句缺口、阶段→固定来源、三问证据与三个反例、反馈取舍、指令示例和不适用边界。openIssues 为空；check_repo（742 文件）与 check_public（1208 文件）均无错误，git diff --check 通过。本单元仅产静态审稿，未运行 Sentry/未复跑其 85/121/427 项测试、未做新读者实测，历史 V6 未写成现状。
 - 产物：[60be529](https://github.com/dbvv1/a1dbv/commit/60be529be34a7fc6f30e8ad3ae9458b44dd29430)，分支 `relay/a-sentry-migration-contract-20261103`。

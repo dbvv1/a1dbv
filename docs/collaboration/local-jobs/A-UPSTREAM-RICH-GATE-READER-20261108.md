@@ -1,12 +1,18 @@
 # A-UPSTREAM-RICH-GATE-READER-20261108 · 重复方案出现后如何推进旧候选
 id: A-UPSTREAM-RICH-GATE-READER-20261108
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 0c91ee9a1b62fff3c380ee47664222ca1281c88c
 result_branch: relay/a-upstream-rich-gate-reader-20261108
 page: docs/decisions/upstream-contributions.md@0c91ee9a1b62fff3c380ee47664222ca1281c88c
+
+## 当前接收决定（2026-11-12 UTC）
+
+**限定接收（`accepted`）**：接收825c3e1的11-08静态准入与停手决定；既有 upstream-contributions 保留先获方案批准及核重叠的路线，本轮放弃同题实现／投稿推进。旧页0c91ee9a及旧候选测试不证明当前main或新版读者通过，未来须维护者明确批准与唯一提交主体才另行决定。
+
+本节按[既定逐项去向](../archive/completed-through-2026-11-12.txt)回写，取代下文旧状态与续派安排；历史产物和验证记录保留。本卡已收口，不再等待接收端回写或自动重派。原结果分支不变，既有未验范围及隔离另行保留。
 
 ## 真实任务与输入
 为 Textualize/rich 的 [#4246](https://github.com/Textualize/rich/issues/4246)决定已有零裁剪候选现在该怎样推进。已有候选针对 `Text.right_crop(0)`／`remove_suffix("")` 清空文本但保留旧长度的真实问题，已完成固定版本本地验证，未向上游投稿。现在 issue 已有多位贡献者提出同样的 guard，其中新增评论出现于 2026-11-07；需要按当前项目规则和源码决定下一步，不再造第四份同题实现。
@@ -32,7 +38,7 @@ page: docs/decisions/upstream-contributions.md@0c91ee9a1b62fff3c380ee47664222ca1
 本卡只验一个真实贡献判断，不宣称投稿成功、已验当前 Rich、完整贡献闭环或页面可标绿。检查按文档范围跑 check_repo、check_public、空白与新增提交身份；保留其他历史。
 通常 60–90 分钟、最多两小时，沿共享最多四任务及原恢复合同；不另开调度、不依赖 dot 桌面在线。Git 发布只证明可领取，不证明本次已执行。
 
-## 当前结果
+## 历史结果（接收决定见页首）
 
 - reader-test 一轮完成：读者按附页与 Rich 现行规则给出决定——暂不投稿、不再造第四份同题实现，等 @willmcgugan 在 #4246 明确批准已提出的 amount==0 早退方案后，再由符合规则并获准发言的唯一协调者提交，现有候选保持原样。核对确认 #4246 仍 open/Needs triage、三条同题评论无维护者回复、current main 的 right_crop 仍无 guard、候选核心实现与三条评论相同仅多测试增量。openIssues 为空；未运行验收（禁做）：补丁应用、Rich 测试、current main 复现保持未验证；GitHub Discussions 未穷尽、full tree API 504 已列为 unknown。check_repo、check_public、git diff --check 均通过，页面与任务文件未改。
 - 产物：[825c3e1](https://github.com/dbvv1/a1dbv/commit/825c3e168f0a86192c2a5250b2e11df889d2f219)，分支 `relay/a-upstream-rich-gate-reader-20261108`。
