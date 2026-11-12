@@ -474,6 +474,10 @@ python asset-pipeline/veyra-death-contact/tests/check_contact.py --candidate-dir
 
 **移动中的英雄优先分上下身责任；小兵先保武器动作和实际出手一致。** 英雄源轨先把首键归零，避免把导出前导帧算进循环；英雄八个上身骨、七个下身骨拆轨：腿与外根位移由移动／快照负责，受击默认只覆盖上身；源和派生轨只读缓存、mixer/action 逐角色独立。小兵在 `basicAttack` 后播放本兵种全身 `attack`，再回 `idle/walk`，仍不等于英雄分层或 hurt 消费。英雄观察 `alive→dead` 播 death、结束后再保留一秒尸体；初见已死不补播，复活清旧姿态。
 
+验收沿真实普攻造成死亡，再让模拟自然复活，不只手工翻转 `alive`：原 19 GLB 整合消费者已核 Veyra／Morrow从致命接触、尸体隐藏到重新可见，复活后不残留 death，表现不改模拟 hash，仍未验画面。[^hero-natural-respawn]
+
+[^hero-natural-respawn]: [原整合消费者与两英雄回归](https://github.com/dbvv1/MOBA-Like/commit/01a18901efef9bd2c6d87a1d27c92975affdbe91)，核实 2026-11-12；逐帧消费真实模拟与资源；外部贴图加载用替身，GLB 内嵌 PNG 实际解码，GPU提交／像素未验。728项、两构建及非作者聚焦8项通过；产品 main 与网站未变。
+
 小兵死亡会在同逻辑步从模拟集合删除，不能靠下一张快照里的 `alive=false` 接动画：[正式消费者](https://github.com/dbvv1/MOBA-Like/blob/c45c2eb6e9326438753aec8ae74befd54ae13eca/src/render/battlefield.ts)改读 cleanup 在真实死亡移除前发出的 `minionDied`，只给已见存活实例播放原约 1.03 秒 death 与 0.15 秒尾停，立即退出选取和血条，再释放独立 mixer／骨架；不推迟模拟死亡、奖励或碰撞，也不把一般缺实体猜成死亡。每个 fixed step 都消费事件，长帧不能只取最后一批；后台无 draw 时尾段暂停，终局仍可收完，重开立即清理。真实正常群战录像支持“不当帧抹掉”的窄连续性增量，但倒下被英雄、活兵和血条遮挡，死亡辨识仍弱；死亡尾段接入不等于达到战斗品质参照。
 
 **源动作改时长，消费者的结束条件也要读同一份 clip。** FPS 的已接收刚性角色源包能重建、能加载，但旧消费者把 fire／hit 窗口另写成 120／180 ms；仅将实际 GLB 的时间输入改为 240 ms，动作仍在旧时刻被截断。沿原消费者改为读取已加载 clip 的 duration，并拒绝无效／重复 clip 后，真实 Three 加载器采样跟随新时长；非时间 buffer 字节、另一个角色实例与源对象保持不变。动作仍从真实事件年龄采样，不能让视觉时长改写伤害或射击间隔。
