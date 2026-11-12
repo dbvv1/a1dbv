@@ -2,7 +2,7 @@
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: da56173cb338b3706d20d769ce34cecaa1edb385
 result_branch: relay/b-moba-quiet-pair-20261112
@@ -51,7 +51,11 @@ result_branch: relay/b-moba-quiet-pair-20261112
 
 ## 当前结果
 
-- 本单元交付文件清单无效，产物保留本地且未提交；修正清单后由接收端维护者接续。
+- 步骤1-5全部通过（tsc、capture构建、baseline/quiet两材质4机位×2成对拍摄、build:web，退出码均0；配对图1280×720/DPR1、逐机位重复一致、quiet材质生效且未回退）；步骤7 default入口--full-match退出1，自然对局已推进至redWin/blueBaseDestroyed tick9010，但现有harness因启动期同帧重复rAF时间戳(atMs 1884.7, intervalMs=0)报Non-contiguous frame timestamps，浏览器自身exit0且预览已关闭；按卡失败即停，步骤8 quiet完整smoke及restart/输入/存档恢复全链、HUD遍历、两入口帧耗对比未运行。openIssues：workflow审查为空，但任务剩余阻断项含default/quiet full-match、footer details严格选择器与本地存档弹窗两个工具缺陷，均待负责人定性/修复。另：default-smoke/report.json与manifest.json含本机绝对路径，公开前需脱敏；720图与900 smoke规格差异须保留。
+- 产物：[aabc47b](https://github.com/dbvv1/MOBA-Like/commit/aabc47be6c806d66d2278dc808f6750ee2bee5c0)，分支 `relay/b-moba-quiet-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人先定性同atMs 1884.7属合法同帧rAF还是契约过严，在允许范围内修复harness（full-match时间戳判定、footer details选择器、local-save弹窗）后同命令重跑default与quiet full-match；两条都通过且quiet无回退后再做帧耗对比与A/B盲选。接收端提交前脱敏default-smoke目录中的本机路径。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 收集接续（2026-11-12，collection-only）
 
