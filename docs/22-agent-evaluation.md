@@ -259,6 +259,14 @@ jq -r '
 
 **依据**：[一手：作者研究] [APM §6.3.1／表 6.4](https://agentic-project-management.dev/research/thesis/discussion/#sec-discussions-grading-blackbox)；[研究：采用判断] 合法输入失败与诊断分分开接收；任务合同、附录原分及读取范围见 [P70 补核](research/2026-10-12-experiment-records.md#p70原生协调与人工中转)。核实 2026-10-26；未复跑研究。
 
+### 行为断言：先校准“所有调用”，再接真实 Agent
+
+**检查“不得调用某工具”或“所有相关调用满足条件”时，先用好坏调用混合的 trace 验证评分器，再确认采集覆盖。** `HasMatchingSpan` 的含义是存在匹配 span；单独写 `not_`，可能只是找到了一个无关的安全 span。将“所有相关调用满足 P”改成“没有相关且不满足 P 的反例”，锚定覆盖整次任务的唯一应用根，同时排除根本身及后代的反例。多个同名根中只匹配一棵好树，仍会漏检。
+
+**从[可运行的评分器校准入口](../experiments/span-eval-calibration/README.md)开始：** 固定依赖，跑全合规、好坏混合与缺根／缺采集输入，核原生分数和内存采集树。缺证据单列为无效评估；要求某工具必须执行时，另加存在断言。“每个工具 span 的直接孩子不超过 5”也不等于全树工具调用总数不超过 5，按实际谓词解释绿灯。校准后再用相同口径重评基线与候选，不能据此宣布真实 Agent 已合规。
+
+**依据与范围：2026-11-12。** [真实报告 #13004](https://github.com/pydantic/pydantic-ai/issues/13004)、[未合修订 #13011](https://github.com/pydantic/pydantic-ai/pull/13011)；上述入口记录 Python 3.12.14、pydantic-evals 2.68.0／logfire 5.5.0 的本地原生复现、首轮采样失败与限定结论。
+
 ### 评估修正后：先选重做哪一层
 
 **按变化层次选择重做方式，不把重评当成 Agent 已适应新要求。**
