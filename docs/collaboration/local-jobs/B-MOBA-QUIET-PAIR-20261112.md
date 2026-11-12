@@ -56,6 +56,7 @@ result_branch: relay/b-moba-quiet-pair-20261112
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：负责人先定性同atMs 1884.7属合法同帧rAF还是契约过严，在允许范围内修复harness（full-match时间戳判定、footer details选择器、local-save弹窗）后同命令重跑default与quiet full-match；两条都通过且quiet无回退后再做帧耗对比与A/B盲选。接收端提交前脱敏default-smoke目录中的本机路径。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 收集修正（接收端维护，2026-11-12 19:05 UTC）：原清单 56 个文件都在仓库 `.gitignore` 忽略的 `outputs/` 下，且完整路径超过 Windows 260 字符，`git add` 报 `unit_files_stage_failed`。已按仓库既有证据位置搬到 `docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/`，机位目录名缩短为 `<机位>-r1/2`；原路径与原 SHA-256 对照见同目录 `paths.json`。只有 `default-smoke/report.json` 里的浏览器安装、运行目录和 worktree 三处本机路径做了脱敏，其余文件字节不变。没有重跑模型、构建、拍摄或 smoke。执行进程已退出（已登记进程 08:08:29 UTC 观测无存活）；浏览器关闭与预览端口关闭回执见各 `lifecycle/` 与 `run-receipt.json`。上一条“接收端提交前脱敏”已完成。
 
 ## 收集接续（2026-11-12，collection-only）
 
