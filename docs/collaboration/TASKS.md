@@ -52,9 +52,9 @@
 
 ### A：11-12 积压接收收口
 
-15项内容去向已定：10项限定接收、5项放弃、0项补验延期，逐项来源／地图对应见[当日日档](archive/completed-through-2026-11-12.txt)。原卡 review_ready 标签仍待原接收端确认卡片单写窗口后按负责人决定回写，未清标签；等待期间不新开单元。原产物不动，accepted／cancelled 不代表调用退出，隔离保留。地图本次0行改动、0行升绿；后续只推进🟡核心推荐／步骤或当前页新读者真实采用。
+15项已定：10项限定接收、5项放弃、0项延期，来源／地图见[当日日档](archive/completed-through-2026-11-12.txt)。原卡 review_ready 标签未回写，待原接收端确认单写窗口后落实决定；等待期间不开新单元。原产物不动，accepted／cancelled 不代表调用退出，隔离保留。本次地图0改动、0升绿；后续只推进🟡核心推荐／步骤或当前页新读者真实采用。
 
-待接收端维护方：A-GH-AW-APIDIFF-FACTS-20261103、A-MULTIAGENT-LONG-WIDE-20261029、A-WORKTREE-ISOLATION-FACTS-20261102；不重派、不再占选题。
+11-12 三卡原进程已核不存在、隔离已解除，均取消：理由见 [GH-AW](local-jobs/A-GH-AW-APIDIFF-FACTS-20261103.md)、[MULTIAGENT](local-jobs/A-MULTIAGENT-LONG-WIDE-20261029.md)、[WORKTREE](local-jobs/A-WORKTREE-ISOLATION-FACTS-20261102.md)。不重派、不占选题；不外推其他卡。
 
 ## 待人工验收
 

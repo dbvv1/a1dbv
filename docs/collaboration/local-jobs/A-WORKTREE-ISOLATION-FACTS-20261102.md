@@ -1,7 +1,7 @@
 # A-WORKTREE-ISOLATION-FACTS-20261102 · 长程路线的 worktree 隔离边界
 id: A-WORKTREE-ISOLATION-FACTS-20261102
 owner: dot-A
-status: blocked
+status: cancelled
 kind: build
 page: docs/decisions/long-tasks.md@0c40c25d470d6df7e00f41c967e3de5cfa3a3465
 target_repo: https://github.com/dbvv1/a1dbv
@@ -29,4 +29,6 @@ result_branch: relay/a-worktree-isolation-facts-20261102
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 2026-11-12 取消。指导层已在本机核清：本卡在 11-03 整机中断时停止，无最终结果，原进程已不存在，本卡隔离已解除。此确认仅限本卡，不外推其他卡或写域。
+- 核心边界已由当前[长任务 §2](../../decisions/long-tasks.md#2-拆工作不拆掉主线责任)、[08 隔离建议](../../08-multi-agent.md#4-实操建议)与[handoff](../../../templates/generic/.claude/skills/handoff/SKILL.md)覆盖；剩余窄条件不补真实离开后接续的采用缺口，无核心增量，不恢复事实核查。
+- 原规格与修改要求仅作历史保留；本次取消取代旧“核清后接续”及 ready／review_ready 等后续安排。同一 id 不重派，不恢复执行；原资料、产物与结果分支不改，取消不计地图进度。

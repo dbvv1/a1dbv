@@ -1,7 +1,7 @@
 # A-GH-AW-APIDIFF-FACTS-20261103 · Agentic Workflows 的真实维护闭环
 id: A-GH-AW-APIDIFF-FACTS-20261103
 owner: dot-A
-status: blocked
+status: cancelled
 kind: build
 page: docs/13-frontier-radar.md@6bed4fd4075157e40fa2960613b05fcbd57f32b8
 target_repo: https://github.com/dbvv1/a1dbv
@@ -29,4 +29,6 @@ result_branch: relay/a-gh-aw-apidiff-facts-20261103
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 2026-11-12 取消。指导层已在本机核清：本卡在 11-03 整机中断时停止，无最终结果，原进程已不存在，本卡隔离已解除。此确认仅限本卡，不外推其他卡或写域。
+- dotnet/core API-diff 维护链仍是本仓未覆盖的具体线索；原事实卡没有真实维护任务、可用执行宿主和验收输入，不能支撑当前长任务 🟡 行的采用。不为增加案例重开，保留原固定线索与资料，不宣称案例已覆盖或验证通过。
+- 原规格与修改要求仅作历史保留；本次取消取代旧“核清后接续”及 ready／review_ready 等后续安排。同一 id 不重派，不恢复执行；原资料、产物与结果分支不改，取消不计地图进度。

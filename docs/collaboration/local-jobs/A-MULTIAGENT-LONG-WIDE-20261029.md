@@ -1,7 +1,7 @@
 # A-MULTIAGENT-LONG-WIDE-20261029 · 多代理与长程任务广扫
 id: A-MULTIAGENT-LONG-WIDE-20261029
 owner: dot-A
-status: blocked
+status: cancelled
 kind: explore
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a37326182cd65de837101d68d2596cbe8042a119
@@ -52,4 +52,6 @@ result_branch: relay/a-multiagent-long-wide-20261029
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 2026-11-12 取消。指导层已在本机核清：本卡在 11-03 整机中断时停止，无最终结果，原进程已不存在，本卡隔离已解除。此确认仅限本卡，不外推其他卡或写域。
+- 原广扫及七项来源订正不补当前[长任务路线](../../decisions/long-tasks.md#3-离开前先看一次真实结果能否接回)中真实离开后执行、接收并开始下一步的采用缺口；不再搜更多框架，也不执行旧七项订正。保留原部分 sources 作历史与去重材料，不认作本次最终结果。
+- 原规格与修改要求仅作历史保留；本次取消取代旧“核清后接续”及 ready／review_ready 等后续安排。同一 id 不重派，不恢复执行；原资料、产物与结果分支不改，取消不计地图进度。
