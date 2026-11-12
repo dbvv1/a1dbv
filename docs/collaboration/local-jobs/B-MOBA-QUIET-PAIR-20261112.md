@@ -54,22 +54,22 @@ result_branch: relay/b-moba-quiet-pair-20261112
 - 步骤1-5全部通过（tsc、capture构建、baseline/quiet两材质4机位×2成对拍摄、build:web，退出码均0；配对图1280×720/DPR1、逐机位重复一致、quiet材质生效且未回退）；步骤7 default入口--full-match退出1，自然对局已推进至redWin/blueBaseDestroyed tick9010，但现有harness因启动期同帧重复rAF时间戳(atMs 1884.7, intervalMs=0)报Non-contiguous frame timestamps，浏览器自身exit0且预览已关闭；按卡失败即停，步骤8 quiet完整smoke及restart/输入/存档恢复全链、HUD遍历、两入口帧耗对比未运行。openIssues：workflow审查为空，但任务剩余阻断项含default/quiet full-match、footer details严格选择器与本地存档弹窗两个工具缺陷，均待负责人定性/修复。另：default-smoke/report.json与manifest.json含本机绝对路径，公开前需脱敏；720图与900 smoke规格差异须保留。
 - 产物：[aabc47b](https://github.com/dbvv1/MOBA-Like/commit/aabc47be6c806d66d2278dc808f6750ee2bee5c0)，分支 `relay/b-moba-quiet-pair-20261112`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：负责人先定性同atMs 1884.7属合法同帧rAF还是契约过严，在允许范围内修复harness（full-match时间戳判定、footer details选择器、local-save弹窗）后同命令重跑default与quiet full-match；两条都通过且quiet无回退后再做帧耗对比与A/B盲选。接收端提交前脱敏default-smoke目录中的本机路径。
+- 下一步：负责人先定性同atMs 1884.7属合法同帧rAF还是契约过严，在允许范围内修复harness（full-match时间戳判定、footer details选择器、local-save弹窗）后同命令重跑default与quiet full-match；两条都通过且quiet无回退后再做帧耗对比；本次原图静态盲选已完成，见末节，不重复计作新成果。接收端提交前脱敏default-smoke目录中的本机路径。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 - 收集修正（接收端维护，2026-11-12 19:05 UTC）：原清单 56 个文件都在仓库 `.gitignore` 忽略的 `outputs/` 下，且完整路径超过 Windows 260 字符，`git add` 报 `unit_files_stage_failed`。已按仓库既有证据位置搬到 `docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/`，机位目录名缩短为 `<机位>-r1/2`；原路径与原 SHA-256 对照见同目录 `paths.json`。只有 `default-smoke/report.json` 里的浏览器安装、运行目录和 worktree 三处本机路径做了脱敏，其余文件字节不变。没有重跑模型、构建、拍摄或 smoke。执行进程已退出（已登记进程 08:08:29 UTC 观测无存活）；浏览器关闭与预览端口关闭回执见各 `lifecycle/` 与 `run-receipt.json`。上一条“接收端提交前脱敏”已完成。
 
-## 收集接续（2026-11-12，collection-only）
-
-08:08:34 UTC 的 `3c3db626` 交回的是收集清单失败，不是已核的 smoke／画面失败。首次接续核查：当前原卡无同类接续请求，远端结果分支未见；本机是否已有收集进程仍须原接收端核实，不据此推定进程已退。保持本卡 blocked、原任务身份及原输出目录，不另派 ready 卡，不重开模型、build、capture 或 smoke，也不改验收工具。
-
-请原接收端维护者在原任务记录内接续：
-1. 先读原调用与收集进程状态；若同一收集单元正在执行，只读取进展，不重复启动。保存原 worktree 和输出，不覆盖或另建拍摄根。
-2. 读取该次清单验证的真实错误、实际 validator/schema 与原交付文件清单；仅按真实契约修正清单，不猜字段，不把 `validate_relay.py` 的另一协议套过来。公开回执给出脱敏的失败字段／规则及修正摘要，不上传私人路径或凭据。
-3. 只对原产物续接收集、公开扫描及结果分支提交推送，保留原文件字节与原时间。缺失的产物明确列缺，不补跑；单项不满足不能记为验收通过。
-4. 交回实际开始／结束 UTC、原命令退出码、进程退出与浏览器／预览端口清理回执、结果 SHA 和产物路径；收集成功后按原合同回写 review_ready。仅状态标签不证明退出，清理未核前不交出拍摄槽。
-
-负责人收到后先核原产物与回执，满足清理条件才接续 Star／FPS 复验；MOBA 仍须完整 smoke、连续帧耗与两位非作者盲选，不因收集成功自动换默认。当前缺的正是原清单验证详情和原退出／清理证据，不是网页端设备连接。
+## 收集接续（已完成）
+08:08:34的清单失败已由19:05原产物接收与清理回执解决；原收集要求保留在Git历史，无需继续blocked或重跑。当前缺完整smoke和连续帧耗，不是设备连接。
 
 ## 非作者静态盲选（2026-11-12）
 
 [两位独立审查与原图映射](../moba-quiet-blind-20261112.md)：两人均4/4偏好quiet，未判更差；静态视觉门槛通过。完整smoke与帧耗缺项仍保留，不换默认，不占当前Star槽。
+
+
+## 观察器修复接收（2026-11-12）
+
+MOBA main [`b8a3770`](https://github.com/dbvv1/MOBA-Like/commit/b8a377078e15c0dd2fb7c367b0bf24adbee09468)只改三个测试文件：保留原始rAF回调，按共享时间戳聚合同帧CPU，独立帧间隔与回调分开统计；ready等待改定时轮询，不再额外占用rAF。原证据1232回调对应1231帧，p95间隔550ms、max2150ms仍保留，acceptanceReady=false，不把离线重算当新smoke。
+
+Node22.23.2定向9/9、独审及公扫通过；全套614/615，唯一audio-skill.test.ts第45行cast.ogg为空，在未改da56173上同样复现，未越界修音频。原报告未执行到footer/local-save，不能据此定为工具缺陷，暂未改。
+
+卡保持review_ready，仅限定接收已交回16图和观察器修复；原base与原产物身份不改。待FPS交回并核清理后，在原卡重派两路完整smoke与帧耗，固定届时准确main，允许仅测试脚本小修并重跑一次。当前不占拍摄槽、不提前派发、不换默认。
