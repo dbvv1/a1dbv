@@ -33,7 +33,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- B 现有98卡：71 accepted、0 review_ready、10 blocked、16 cancelled，0 ready、1 running（MOBA已领取，未见运行回执）。余7卡已定去向：4部分接收，装备语义失败放弃，2旧固定捕获目标由当前默认成对验收替代；历史材料保留；11-12已核原Star拍摄进程退出，Git接收端正常，槽位可用。[三案执行缺口](b-work-20261106.md#11-10-超期候选采用决定)仍未清零，不凑重复卡。
+- B 现有98卡：71 accepted、0 review_ready、11 blocked、16 cancelled，0 ready、0 running（MOBA收集失败，原进程／清理待核）。余7卡已定去向：4部分接收，装备语义失败放弃，2旧固定捕获目标由当前默认成对验收替代；历史材料保留；11-12原Star进程已退，Git接收端正常；当前槽等MOBA清理。[三案执行缺口](b-work-20261106.md#11-10-超期候选采用决定)仍未清零，不凑重复卡。
 
 ## 项目板
 
@@ -41,7 +41,7 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | 本轮15项内容去向已定，见下方接收收口。Datasette 部分接收，#3015 合上游／修契约及六 CI 待批；Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名，旧例6过时／8待验，409非新版，socket拒绝。另张 Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。 |
-| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `da56173`／Site **v22**；HUD焦点修复已入共用client，614项／构建／独审过。原角色 `01a1890` 补致死／隐藏／复活，728项与独审过；quiet仍欠当前默认盲选、完整smoke／帧耗；FPS失败交回且清理后接续[MOBA成对验收卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)，06:30派、06:35:10领取，未见产物回执，0/89不变。 |
+| MOBA | **MOBA-Like 战斗与完整内容**，按 [brief](https://github.com/dbvv1/MOBA-Like/blob/main/docs/brief.md) | dot-B | main `da56173`／Site **v22**；quiet欠当前默认盲选、完整smoke／帧耗。[成对卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)06:30派、06:35:10领、08:08:34收集清单失败；原产物未上传。原卡collection-only保blocked，须本机维护者核清单和退出／清理，追加文字不代表自动重开。原角色 `01a1890` 728项与独审过，0/89不变。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档六次到第二章 Copper 3/6：电池耗尽自动返航保住货物、补给与慢修；核心上船后仍2/6，返港安装后RTG 1→2、容量6060→12060才推进。累计55分钟、部分×4，建铜炉缺14铁矿，已暂停保档。模块损伤未修，死亡／重开／终局／试听未验，不计品质或案例采用。 |

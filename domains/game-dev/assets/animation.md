@@ -579,3 +579,15 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 案例脚注：[RX24配方与静态产物](https://github.com/dbvv1/FPS-Like/tree/841386e0f584b0989106c369831f0ba3efcbe17e/asset-pipeline/kaykit-rx24)，2026-11-10：1958三角、5874顶点，非作者根空间逐点误差0；仅CPU资产验收，未入View、未验握持或画面，不增加内容覆盖。
 
 三锚数据已随[固定配方](https://github.com/dbvv1/FPS-Like/tree/f5e99a5a052d601c8f91ff99332fcdcb261912ea/asset-pipeline/kaykit-rx24)接收。需要重算时运行 `node --import tsx asset-pipeline/kaykit-rx24/anchors.ts --src assets/content-set/fp-arms-rx24.glb`，stdout仅在验证成功后输出JSON；先输出临时文件、退出0后替换，勿直接重定向覆盖已有数据。Node24复验465项与构建通过、独立复算通过；仍非游戏握持或画面验收。
+
+### 双手握持：先随动作释放，再做有限接触修正
+
+**目标**：保持整身动作的挥砍、施法与平衡语义，同时让需要双手握持的区间真正贴住握把；不把支撑手永久钉死。
+
+**做法**：先播放身体／肩臂动作，主手挂接武器；将支撑掌投影到武器握柄轴并限制在可握区间，再按掌到目标的距离平滑混合附着权重。先对齐掌方向，再求肩肘腕的可达目标；动作主动离开握柄时迅速释放，并限制每帧拉动距离。地面接触修正另限定腕／肩转角，不能用无限抬臂补穿地。Evensong 的 `dressCantor` 实作了握柄轴投影、距离权重、`leftArm.align` 后 `reach`；`rideFloor` 限制最多四轮局部修正。这是源码机制观察，不是三案已经采用或验过画面。
+
+**失败反例**：全程强锁左手会破坏单手突刺／施法；只拟合两个掌点不能确定握柄朝向；把源码按角色尺度归一化的剑柄阈值照搬为步枪米制阈值会错误吸附。先用本作固定源离线核主手框、左臂可达性及释放区间，再考虑接运行时，不据此启动一套新 IK 框架。
+
+**可用命令**：`curl -fL https://evensong-phi.vercel.app/src/chars/wardrobe.js -o wardrobe.js && rg -n 'gripLo|leftOn|leftPull|leftArm.align|leftArm.reach' wardrobe.js`；地面修正可对 `src/chars/boss.js` 搜索 `rideFloor`。命令只取得公开源码供阅读，不授予再分发许可；原模型／动画许可须另核，不复制资产或整段实现。
+
+依据：[握持源码](https://evensong-phi.vercel.app/src/chars/wardrobe.js)和[动作消费者](https://evensong-phi.vercel.app/src/chars/boss.js)，2026-11-12 实际读取，响应 SHA256 分别 `1b02308099bea882dc7b9f242a03838b2b865068c182a7f46c28c227b4ccce9a`、`3ed805b180484d5df76909c05383eb93252078c07a1c34d94403e89461f2cea1`。作者制作过程与运行画面未由此次源码读取核实，不推断全 AI 生成动画。

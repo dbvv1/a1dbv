@@ -40,6 +40,24 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **工具：** 浏览器原生 `AudioContext`／`GainNode`／`DynamicsCompressorNode` 足够实现基础分流与增益，沿现有合法样本和混音映射，不为试此机制迁移中间件。[MDN GainNode 创建与增益](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)给出接口；源码参照为 [Saltline 音频实际实现](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5928)和 [Evensong 音频模块](https://evensong-phi.vercel.app/src/audio/audio.js)。核实 2026-11-12；只读源码，未试听、未作三案采用或成本收益结论。
 
+### 先分短事件和持续状态，再预算解码内存
+
+**目标：** 首次进入战斗不迟播枪声，过场切段不断拍，长音乐不把内存挤满。把压缩音频的下载体积当运行内存，或把全部声音统一排队等待解码，都会错估这两件事。
+
+**做法：** 解锁前的短事件过期即丢弃；循环环境声保留当前状态，解锁后只启动仍有效的循环。语音／过场音乐按当前场景时间取偏移，切场或跳过后撤销旧请求，不能从头补播。音乐交接用音频时钟预约，在需要下一段前才解码；保留正在播放、已预约和即将进入的段落，其他段落释放。Evensong 的 `voice`／`lineBuffer`／`musicGo` 展示了这些不同路径：迟到语音从当前偏移进入，已超过台词末端的跳过；`musicKeep` 按状态保留解码缓冲，而不是把全部段落永久缓存。这是源码机制，不是本端试听结论。
+
+**失败反例：** 只在载入页显示“全部音频已下载”，随后同时解码所有配乐。93 秒、48 kHz、双声道 float32 的单段 PCM 就约 34.06 MiB，四段约 136 MiB，还不含压缩源、混响、活动节点及其他资源。将采样率降到 32 kHz 会节省内存但也截掉 16 kHz 以上内容，应先减少同时驻留段数，而非盲降所有声源质量。
+
+**可用命令：** 在自己的授权素材上运行；先核媒体时长／采样率，再按 AudioContext 的实际解码采样率计算预算，最后测整段输出的响度与真峰值。不要把单条素材通过当成混音总线通过。
+
+```sh
+ffprobe -v error -select_streams a:0 -show_entries stream=sample_rate,channels:format=duration -of json mix.wav
+python3 -c 'print(93 * 48000 * 2 * 4 / 1048576)' # 34.06 MiB，仅 PCM 数据
+ffmpeg -hide_banner -i mix.wav -af 'ebur128=peak=true' -f null -
+```
+
+音频时钟／迟到事件接口从原声音模块接入，不增加独立播放框架。上述 FFmpeg 滤镜已用 1 秒合成正弦验证入口可执行，未测三案混音或试听；素材合法性、事件同步、削波／响度和听感分开判断。[Evensong 实现](https://evensong-phi.vercel.app/src/audio/audio.js)核实 2026-11-12，响应 SHA256 `dbd6630e3e42abbce160c15f3b42ef1aaf2074fb4a43bdaa7f6b1793b2bbf8e7`；无复制许可确认，仅借机制。
+
 ## 30 秒结论
 
 | 你的需求 | 先做什么 | 何时换路线 |
