@@ -2,7 +2,7 @@
 id: B-STAR-DEFAULT-SMOKE-20261112
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 2cad4837e6a759183f24c662b39ea1653b0e6bfe
 result_branch: relay/b-star-default-smoke-20261112
@@ -57,4 +57,9 @@ if ($code -ne 0) { throw 'Candidate smoke failed: retain report and return this 
 - 两入口真实通过且无明显帧耗劣化后，dot-B沿已过静态盲选当轮换默认并更新网站；本卡不自动宣称采用或覆盖率提升。
 
 ## 当前结果
-未执行，待本机领取；完整整局与帧耗未验，不以CPU回归代替。
+
+- 默认 /road 整局 smoke 实跑完成 1233 个连续帧（约 247.6s，POS 2/4，01:54.02），但 report.passed=false、真实 Node exit=1：validateFullRace 因玩家冲线快照缺少对手自然截止证据（Haru/Rin 未完赛）抛 AssertionError；按卡步骤 3 未运行候选入口，frameCadence、race.png/canvas.png、restartAndReturn 未产出。环境为 Node v22.23.2，不满足文档要求的 Node 24。独立审查 pass、无 issue；产物哈希 6/6 一致，工作树无 tracked 改动。openIssues：对手收尾观测缺口、Node 24 未满足、候选入口与全量 npm test 未运行；taskDone=false。
+- 产物：[5257d5c](https://github.com/dbvv1/Star-Rush-Reborn/commit/5257d5c089bda540aa1ad5c9ecd0a143a3991b94)，分支 `relay/b-star-default-smoke-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：由 dot-B 决定提供 Node 24 复跑或明确豁免，并处理对手自然截止观测缺口（扩展观察器或另开卡）；随后串行运行候选入口 /road?environment=coast-space-v1 并对比帧耗，Node 24 下补跑全量 npm test。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
