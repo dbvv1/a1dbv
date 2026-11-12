@@ -354,7 +354,7 @@ Git 来源的 `ref` 填已审完整 commit SHA，每条项目命令都保留 `--
 
 ### 2026-10-26 广扫补入：三个实际任务候选
 
-- 👀 **Sentry：复用 CI 实际选中的测试。** 下一次真实 CI 失败，交给 Agent：`读取失败 job 的原命令、配置和选中 nodeid，在同一代码版本重放；修后先验原失败，再跑项目要求的检查。` [实际 AGENTS](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)与[workflow](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/.github/workflows/backend.yml#L144-L162)已有消费者；artifact 只留一天，过期重建，已有明确失败用例时直接跑它。本仓未试用。
+- 🧪 **Sentry：先核原 job，再复用 CI 选择的测试。** [已回流调试路线](../15-task-playbooks.md#ci-报红先找实际失败再决定让-agent-重跑什么)：#130857 的实际 merge checkout、17个选择文件与74个分片 items 分开核；多项失败同指缺失 proto API，作者补依赖后改跑30个全量分片。不能拿后继同编号绿 job 代替原失败 nodeid 结果。[原 AGENTS](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)的 artifact 选择路线仍需保留原命令与配置；未在本地跑完整 Sentry。核实2026-11-12。
 
 - 👀 **agent-browser 0.39.4：按版本读 Skill，增量看网页。** 真实 UI 任务需反复观察时，可比较已装 CLI 的 `skills get core` → `snapshot -i --delta`（丢失上下文用 `--full`），核关键状态与返回文本量；[官方配方](https://github.com/vercel-labs/agent-browser/blob/04ba5264dade678062c3cdcce0f4f293e748249f/skill-data/core/SKILL.md)的 WebMCP 调用不能替代 UI 输入路径。[当前启动实现](https://github.com/vercel-labs/agent-browser/blob/04ba5264dade678062c3cdcce0f4f293e748249f/cli/src/native/cdp/chrome.rs#L1597-L1637)在 root／CI／容器自动关闭 Chrome 沙箱，[多 worktree 用户](https://github.com/vercel-labs/agent-browser/issues/2214)还报告本地安装覆盖全局命令，因此本轮只收录，浏览器对照待保留沙箱的获准环境；未安装或试用。
 

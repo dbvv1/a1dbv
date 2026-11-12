@@ -8,6 +8,7 @@
 
 | 你希望 Agent 做得更好 | 从哪里开始 |
 |---|---|
+| CI 失败很多，或后继变绿却不知是否修到原问题 | [先读原 job 再定复验范围](#ci-报红先找实际失败再决定让-agent-重跑什么)：核 checkout、选测与真实结果，沿共因查依赖 |
 | 取得运行态证据，定位实际走过的分支 | [原生调试路线](#先让-agent-停在真实执行处再猜分支)：读回错误先核落盘值，分支未知用 pdb／窄 trace；需要具名跨客户端调试再接 MCP |
 | 准确接收页面修改意图 | [页面批注](03-context-engineering.md#210-页面批注交意图也要交当前对象)：交接对象与意图，核当前页面身份后修改 |
 | 按领域约束选择改法，而不是关检查求绿 | [框架原生反馈](05-skills-and-plugins.md#框架反馈已经可执行时先让知识进入改法)：用真实Next构建失败区分stream／cache／block，保留实时库存 |
@@ -148,6 +149,40 @@
 **兼容修复按输入机制选范围，不只按版本高低。** 升级消费者或全局关闭能力前，先分清哪些输入仍需该能力。例见 OCRmyPDF 的[两种故障与取舍](research/2026-10-12-development-conditions.md#ocrmypdf兼容修复按输入机制分流)。修订不保证所有输入或旧文件恢复。
 
 **依据**：[一手：历史补丁；研究] [BAML 双 PR](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；[社区／一手；经验] OCRmyPDF 兼容修复按输入机制分流；[经验] 本节调试默认；核实 2026-10-25。
+
+### CI 报红：先找实际失败，再决定让 Agent 重跑什么
+
+**🧪 先把失败 job 的真实输入交给 Agent，再选择复验；不要从红叉数量出发逐条改测试。** 适合已有 CI 日志、选择清单或测试报告的项目。先只读取证，修代码、触发 CI 或提交仍按任务授权；日志不可见或过期时交回缺口，不把新跑的一轮当旧现场。
+
+把原 CI 链接放进下面这段，直接交给当前编码 Agent：
+
+```text
+诊断 [PR／失败 run 链接]，先不改代码或重跑 CI。
+固定 run、attempt、失败 job 和日志实际 checkout SHA；另记 PR head 与 base。
+读完整 job 列表和失败阶段，区分静态检查、安装、收集、执行、收尾失败。
+从原命令／配置、选测清单、分片日志、测试结果分别取证：
+哪些文件被选中、哪些交给这个分片、哪些 nodeid 真正运行或收集失败？
+沿首个决定性异常找生产调用与实际依赖版本，判断是否共同原因。
+若已有修复与后继绿，比较代码、依赖和选测条件，再判原失败是否覆盖。
+交回最窄可执行复验、必须保留的检查、未取得的结果及原始链接。
+```
+
+**先核完整列表，再读少量决定性日志。** GitHub Actions 可从 run 页进入具体 attempt；用 REST 时，取 `GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs?per_page=100&page=1`，按分页读完，再取目标 `GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs`。`head_sha` 不是 checkout 证明，PR workflow 可能运行临时 merge；以日志实际检出值回固定源码。失败摘要能定位 nodeid，但选择器的预计数量、分片清单和 pytest 实际结果分别保留，不能相加。全量模式没有选测 artifact 可能是预期；分片清单未上传时核原 wrapper 与现有日志，只报告取得的范围，不猜完整名单。
+
+| 查到的情况 | 接下来让 Agent 做什么 |
+|---|---|
+| 安装／服务准备失败，测试没有开始 | 处理对应环境条件，先不改测试断言 |
+| 静态检查与运行错误指向测试调用／缺失导入 | 核生产接口契约和测试是否跟上；修后既验原断言也验静态检查，不降低生产要求求绿 |
+| 多个失败沿同一 import／依赖 API 报错 | 核实际安装版本与锁文件，先用原生产调用检验共同原因；保留原失败测试待复验 |
+| 后继 job 绿，但分片数量或选测输入改变 | 比较真实覆盖；要宣称原用例逐项通过，须取得对应 nodeid 结果，不能只比同编号分片 |
+
+**实际选择：Sentry 一个分片的67个失败不需要67份补丁。** PR #130857 的选择器列17个文件、估计917 items；详查的分片实际74 items，67失败、7通过、另有4个收集错误。它们指向 endpoint 导入时访问 `CheckSeerCreditsResponse.DENIAL_REASON_NOT_ENOUGH_CREDITS`，实际安装的 `sentry-protos 0.117.0` 没有该 API。作者只把声明／锁定依赖补为0.118.0；失败 checkout 是 `1628f89f`，不是 API head `c63023df`。
+
+本仓以与原锁哈希一致的两个正式 wheel、相同其余依赖，重放原生产字典表达式：0.117.0 在同一字段报 `AttributeError`、退出1；0.118.0 退出0，两个枚举值为1／2。使用 Python 3.13.5，原 CI 是3.13.18；这是依赖 API 的同因核验，不是完整 endpoint 或原74项测试的本地复跑。
+
+后继 run 的30个全量分片通过，原先却是10个选择分片：改动 `pyproject.toml`／`uv.lock` 改变了选测条件。同编号绿 job 不再是原74 items，成功日志也不足以逐项确认原67个 nodeid。先核版本与共同入口，比改断言或不加区分地重跑全库更直接；这不意味着其他项目应统一升级该包。
+
+**依据**：[GitHub PR 默认 merge checkout](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)；[Sentry 项目给 Agent 的选测约定](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)；[原选择日志](https://github.com/getsentry/sentry/actions/runs/43123471057/job/130869635831)、[失败分片](https://github.com/getsentry/sentry/actions/runs/43123471057/job/130869981928)、[补依赖提交](https://github.com/getsentry/sentry/commit/c51fdeb2974fa7cc2497913ee43f25b1f258488d)、[后继选择日志](https://github.com/getsentry/sentry/actions/runs/43125271532/job/130875774687)；[原生产表达式](https://github.com/getsentry/sentry/blob/1628f89f5ed9ef1d4a6b3add2098d694473e9c8f/src/sentry/seer/endpoints/organization_seer_credit_check.py#L1-L24)、[0.117.0](https://github.com/getsentry/sentry-protos/releases/tag/0.117.0)／[0.118.0](https://github.com/getsentry/sentry-protos/releases/tag/0.118.0) 正式发布包的独立重放。不声称模型效率收益；核实2026-11-12。
 
 ### 跨多次提交的回归：先验判定，再交 Agent 二分定位
 
