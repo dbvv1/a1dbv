@@ -4,62 +4,44 @@ owner: dot-B
 kind: build
 status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
-base_ref: 2cad4837e6a759183f24c662b39ea1653b0e6bfe
+base_ref: d1607a57410c9bcdf1c0a9f24ece4ad238151485
 result_branch: relay/b-star-default-smoke-20261112
 
-## 目标与边界
-- 三案串行第一张；本卡独占拍摄槽，交回并确认本轮资源关闭后才派 FPS，随后 MOBA。不要求桌面连接。
-- 本机接收端已核原品质卡 accepted、旧进程结束、槽可用，不沿用设备离线／槽 unknown 旧阻塞。
-- 保留当前已过静态盲选，不重拍机位图、不重做盲选；硬件 GPU、目标图、升档、人工试听不是前置。
-- 只用固定 SHA 现成源码、构建与 smoke；不改工具、AI、源码、默认值、锁文件，不换浏览器/渲染档绕失败。
-- 独立 worktree，只提交本卡证据；依赖/构建留本地。接收端仅交回，不切默认、不部署。
+## 目标与派发条件
+使用当前 master 的玩家完赛判定，串行测 `/road` 与 `/road?environment=coast-space-v1` 的完整整局、重开和连续帧耗。保留已过静态盲选，不重拍旧机位图。
+本次是原卡返工规格，不是新任务。MOBA 原卡收集由指导层处理；其退出／清理回执未核前保持 blocked，不自动运行。负责人核清后再改 revision_requested，随后 Star → FPS 串行，不抢槽。
+Skill／规格：读取固定源 AGENTS.md、docs/browser-smoke.md，以及 a1dbv 游戏细则§6第3条、§7。仅 headless，不开可见窗口、不模拟桌面键鼠、不操作桌面。
 
-## 执行规格与现成命令
-1. 读 AGENTS.md、docs/browser-smoke.md，核 HEAD=base_ref、工作树干净、Node.js 24。输出根为 `docs/quality/smoke/B-STAR-DEFAULT-SMOKE-20261112/2cad4837`；已存在产物先核原调用后续接，不能覆盖或盲重跑。
-2. 复用本机已装且与锁文件匹配的依赖和既有Chromium，不安装/升级本机软件；缺项明确交回。接收端沿既有隐藏窗口启动方式运行。独立 worktree 的 PowerShell 依次执行准备；每条非零即停止保错。记录源码 SHA、Node/npm/Chromium 版本与开始 UTC。环境设置只限本进程，不改持久配置。
+## 环境、范围与一次修复
+- 使用本机 **Node 22.23.2**、匹配锁文件的现成依赖和原 Chromium；不要求 Node 24，不安装／升级软件，不改持久环境、锁文件或安全设置。
+- 开跑前同时核根目录及 `experiments/rapier-road-comparison/node_modules` 与各自锁文件匹配；当前构建会使用后者。缺依赖如实交回，不擅自安装。
+- 只可修 `tests/smoke-run.mjs`、`tests/smoke.mjs`、`tests/smoke-full-race.mjs` 及其直接测试中的小问题：路径／参数、Node 22兼容、已有玩家完赛判定的观察逻辑；不得改游戏源码、资产、赛制、默认值或放宽完整smoke／帧耗门槛。
+- 首次失败先读真实首错和原调用，保留产物并确认本次浏览器／server／database已关闭。确为上述脚本小问题时可当场修复、跑相关回归，再**仅重跑一次失败的命令**；不因首错立即 blocked。
+- 不能通过删除断言、伪造结果、改输入推进速度、切换浏览器／renderer、跳tick或注入终点来通过。涉及游戏、依赖缺失、安全拒绝、退出不明或第二次失败，停止并写明恢复条件。
+- 同一次失败不重复启动；已通过的入口不重跑。修复改变两入口公共观察逻辑时，两入口必须以同一补丁分别取得完整证据；整卡每条命令最多初跑与一次修复后复跑。
+
+## 固定执行
+独立干净 worktree 固定 base_ref，核源 SHA/tree；保存 node/npm/Chromium 版本、实际 argv、开始 UTC。仅进程环境设 `STAR_RUSH_DRIVING_MODEL=road`；清理其他 STAR_RUSH 覆盖项时保留本轮选定 `STAR_RUSH_SMOKE_CHROMIUM` 路径。
+两入口使用同一 Chromium/SwiftShader、1280×720、DPR1；保持现成 headless 参数、原 loopback Worker／内存 SQLite，不访问生产或播放音频。
+现成命令（PowerShell，先记录 node --version）：
 ```powershell
-node --version
-$env:STAR_RUSH_DRIVING_MODEL='road'
-Get-ChildItem Env:STAR_RUSH_* | Where-Object Name -ne 'STAR_RUSH_DRIVING_MODEL' | ForEach-Object { Remove-Item ('Env:'+$_.Name) }
-$out='docs/quality/smoke/B-STAR-DEFAULT-SMOKE-20261112/2cad4837'
-New-Item -ItemType Directory -Path "$out/default","$out/coast-space-v1" -ErrorAction Stop
-[DateTime]::UtcNow.ToString('o') | Set-Content "$out/started-utc.txt"
+node tests/smoke-run.mjs --full-race --path /road --timeout-ms 900000
+node tests/smoke-run.mjs --full-race --path '/road?environment=coast-space-v1' --timeout-ms 900000
 ```
-3. 先跑当前默认 `/road`。工具固定输出 `outputs/smoke/`，必须立即复制，再跑下一档；以下在同一 PowerShell 执行，不创建新工具。
-```powershell
-npm run smoke -- --full-race --path /road --timeout-ms 900000
-$code=$LASTEXITCODE
-Copy-Item 'outputs/smoke/*' "$out/default/" -ErrorAction Stop
-$code | Set-Content "$out/default/node-exit.txt"
-[DateTime]::UtcNow.ToString('o') | Set-Content "$out/default/returned-utc.txt"
-if ($code -ne 0) { throw 'Default smoke failed: retain report and return this card' }
-```
-4. 确认上一调用退出且 cleanupErrors=[] 后跑拟发布入口；仅增加现成 environment 开关。
-```powershell
-npm run smoke -- --full-race --path '/road?environment=coast-space-v1' --timeout-ms 900000
-$code=$LASTEXITCODE
-Copy-Item 'outputs/smoke/*' "$out/coast-space-v1/" -ErrorAction Stop
-$code | Set-Content "$out/coast-space-v1/node-exit.txt"
-[DateTime]::UtcNow.ToString('o') | Set-Content "$out/coast-space-v1/returned-utc.txt"
-if ($code -ne 0) { throw 'Candidate smoke failed: retain report and return this card' }
-```
-5. 工具自带 headless Chromium、SwiftShader、1280×720／DPR 1，保留 Playwright 默认参数及 `--no-sandbox --enable-unsafe-swiftshader --use-angle=swiftshader --enable-automation`。仅隔离 loopback Worker／内存 SQLite，不用生产、用户浏览器或外部账户，不播放音频。
-6. 两档均由工具选汐见海岸 coast-reborn、竞速、high、固定种子73121，自动试驾按真实时间到结果；不注入终点、跳tick、虚拟时钟或Canvas回退。默认实际space=false、候选space=true；均power=false、backend=webgl2、warnings=[]，起止有tick推进。
+两命令不得粘贴连续盲跑。每条退出后立即记 `$LASTEXITCODE`、UTC、清理事实并复制 `outputs/smoke/`，按上节决定继续或一次修复。
+公开证据根为 `docs/quality/smoke/B-STAR-DEFAULT-SMOKE-20261112/<base短SHA>-r2/`；入口子目录 default/coast-space-v1，每次尝试另用 attempt-1/attempt-2，排他创建，不覆盖首次失败或旧产物。
+固定赛道 coast-reborn、竞速、high、seed73121，真实时间自动试驾到玩家结果页；默认 space=false、候选 space=true，power=false、backend=webgl2、warnings=[]。
+玩家完赛后游戏冻结未完赛对手，这是实际语义；**不要求对手继续完赛／自然截止**。保留真实排名快照与明确未完赛状态，不能伪造对手时间或改比赛逻辑。
 
 ## 验收与交回
-- 每档保留 report.json、现成 race.png/canvas.png（只作smoke附件，不重做静态盲选）、真实Node exit与UTC。保留 servedBundleSha256、renderer/rawRenderer、Chromium版本、actualArgvVerified。
-- 完整通过须scope=full-race、passed=true、exit=0、cleanupErrors=[]；WebGL2有效、页面/控制台/请求错误为空；四名排名与HUD、玩家时间和本地新纪录一致；重开→运行→暂停→回菜单通过。
-- fullRace保留倒计时至结果的连续frames（fromMs/toMs/phase）、首尾边界、initialLap、result/存档、restartAndReturn；frameCadence保留samples/durationMs/meanMs/p50Ms/p95Ms/p99Ms/maxMs/over50Ms。
-- 当前工具对玩家或对手DNF缺自然截止收尾证据，会明确失败；DNF合法，不据此断言AI品质失败。保存failure和部分fullRace，写明缺证据后交回，不改工具或补造frameCadence。
-- 帧耗指真实浏览器rAF间隔，不是GPU或纯渲染耗时。同renderer/viewport/赛道/画质/起止区间比较两档p95/p99/max及>50ms数量；summary.md列原值及变化，不用平均FPS代替尾延迟，由dot-B判有无明显劣化。
-- 首次失败、超时、中断或退出未知即停后续浏览器；保留阶段/error/退出事实和已有产物，安全关闭本轮确知资源，未确认关闭不释放槽。不用PID消失代替浏览器/preview清理回执。
-- 原始调试日志仅留本地；公开产物去掉本机路径、调试地址、身份与凭据，保留错误类型/阶段。附summary.md、SHA256清单和交回UTC，公开扫描后推result_branch，卡改review_ready；失败则blocked并写恢复条件。
-- 两入口真实通过且无明显帧耗劣化后，dot-B沿已过静态盲选当轮换默认并更新网站；本卡不自动宣称采用或覆盖率提升。
+- 两入口 scope=full-race、passed=true、exit=0、cleanupErrors=[]；无页面／控制台／请求错误，玩家结果/HUD/本地纪录一致；重开→推进→暂停→回菜单通过。
+- 保存 fullRace 连续 frames、首尾边界、initialLap、result/存档、restartAndReturn；frameCadence 包含 samples/durationMs/meanMs/p50Ms/p95Ms/p99Ms/maxMs/over50Ms。缺字段不补造。
+- 比较相同renderer/viewport/赛道/画质/时间段的两档尾延迟；rAF间隔不是GPU耗时，不以平均FPS冒充。
+- 保留 servedBundleSha256、rawRenderer、Chromium版本、actualArgvVerified、真实退出码与UTC、browser/server/database关闭回执；不以PID消失代替完整清理。
+- 如现场修脚本，交原base SHA、补丁diff/hash、相关回归结果、实际执行补丁版本与两次独立尝试证据。源码身份与游戏构建hash分开记。
+- 原调试日志留本机，公开副本去私人路径／地址／身份／凭据，保留首错类型和阶段。公开扫描、独审后沿原result_branch交回 summary、SHA256清单和真实UTC；成功review_ready，耗尽一次修复仍失败blocked。
+- 接收端不切默认／部署。dot-B核完整smoke、帧耗和既有盲选后才决定换默认，未通过不记品质或覆盖增长。
 
 ## 当前结果
-
-- 默认 /road 整局 smoke 实跑完成 1233 个连续帧（约 247.6s，POS 2/4，01:54.02），但 report.passed=false、真实 Node exit=1：validateFullRace 因玩家冲线快照缺少对手自然截止证据（Haru/Rin 未完赛）抛 AssertionError；按卡步骤 3 未运行候选入口，frameCadence、race.png/canvas.png、restartAndReturn 未产出。环境为 Node v22.23.2，不满足文档要求的 Node 24。独立审查 pass、无 issue；产物哈希 6/6 一致，工作树无 tracked 改动。openIssues：对手收尾观测缺口、Node 24 未满足、候选入口与全量 npm test 未运行；taskDone=false。
-- 产物：[5257d5c](https://github.com/dbvv1/Star-Rush-Reborn/commit/5257d5c089bda540aa1ad5c9ecd0a143a3991b94)，分支 `relay/b-star-default-smoke-20261112`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：由 dot-B 决定提供 Node 24 复跑或明确豁免，并处理对手自然截止观测缺口（扩展观察器或另开卡）；随后串行运行候选入口 /road?environment=coast-space-v1 并对比帧耗，Node 24 下补跑全量 npm test。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+旧base 2cad483首跑玩家已完赛，但观察器错误要求对手收尾，exit1、cleanupErrors=[]；候选未跑。原产物 [5257d5c](https://github.com/dbvv1/Star-Rush-Reborn/commit/5257d5c089bda540aa1ad5c9ecd0a143a3991b94) 保留，不追认为通过。
+本次明确接受Node22.23.2，取消旧Node24附加门槛；更新后的玩家完赛观察器仍须真实本机重跑。MOBA清理未交回，尚未激活本卡。

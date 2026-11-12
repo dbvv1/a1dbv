@@ -14,6 +14,7 @@
 
 ### B：11-12 先学强作品的方法，再进案例（取代 11-11 B 纠偏）
 
+- **11-12脚本纠偏先行**：Star只判玩家完赛；FPS核切枪超时，拍摄接受commit/query；兼容Node22.23.2。脚本小修可重跑一次，禁改游戏；MOBA收集由指导层处理，清理后串行Star→FPS，见两卡。
 - **知识首要**：按 ai-made-games-scout 研究 Fable 5.2 网页游戏：[Saltline](https://github.com/realcodebear/saltline-fable-5.2)、Evensong、FOG CITY 等，读成品、源码与作者原文。产出两份知识：①方法总结进 AI 全链路页（模型、会话时长、范围、提示词、自测、人改、外部工具、成本、失败）；②画面与声音技术栈进模块／制作链页和 game-quality-pass（地表遮罩 shader、程序化法线／粗糙度、后处理链、画质档、天气、特效库、混音总线），不写案例经过。
 - **进案例**：三案各选一个同品类网页参照作品（FPS 用 Saltline），同机 1280×720 并排截图，取代远标杆作近期目标；按研究出的做法由你自己整场景改画面与声音，不拆逐层小卡下发；按[游戏细则§6第3条](game-taskbook.md#6-作品案例)换默认，玩家界面不露候选／诊断链接。
 - **完成条件**：两份知识页合入并被至少一案采用；每案有参照并排图与下一最大差距；三案默认各有一次玩家可见变化或写明阻塞。
@@ -45,8 +46,8 @@
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档六次到第二章 Copper 3/6：电池耗尽自动返航保住货物、补给与慢修；核心上船后仍2/6，返港安装后RTG 1→2、容量6060→12060才推进。累计55分钟、部分×4，建铜炉缺14铁矿，已暂停保档。模块损伤未修，死亡／重开／终局／试听未验，不计品质或案例采用。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `d621420`／Site **v10**；三机位静态盲选过。[整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)03:41派、03:54:19领、04:05:30.788交回：观察器缺对手收尾，exit1／cleanupErrors=[]，候选未跑。观察器修复已发布、全量测试过；FPS已找到现成Node24，后续复跑先核同入口。默认未换，复跑排MOBA后。旧探索2、0/43。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `f325748`／Site **v24**；原动作 `79f7ef4` 已修旧后坐／闪光，握枪／落地欠。[FPS卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)05:11:21派、05:13:19领、06:04:16失败交回：默认切手枪超时，现成拍摄入口硬编码旧SHA；0图，完整smoke／帧耗未过。清理已核，槽交MOBA；慢帧吞输入与成对CLI已修，466项／构建／独审过，浏览器待复验，0/77不变。 |
+| SR | **Star-Rush 品质**：地平线公路弯道，保留跑圈 | dot-B | master `d1607a5`／Site **v10**；静态盲选过。[整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)03:41派、03:54:19领、04:05:30.788回：旧观察器等对手，exit1／cleanupErrors=[]，候选未跑。玩家完赛判定已修；Node22复跑待MOBA清理，默认未换，0/43。 |
+| FPS | **FPS-Like 品质** | dot-B | main `658b2e5`／Site **v24**。[FPS卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)05:11:21派、05:13:19领、06:04:16回：切手枪超时，旧拍摄入口硬编码SHA，0图。慢帧吞输入已修；本轮补commit/query与Node22，浏览器仍待MOBA清理、Star交回；完整smoke／帧耗未过，0/77。动作余项见b-work。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ### A：11-12 积压接收收口
