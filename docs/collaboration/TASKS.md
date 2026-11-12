@@ -40,7 +40,7 @@
 | 编号 | 项目 | 负责 | 当前状态／下一步 |
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
-| P81 | **试用与选择** | dot-A | 本轮15项内容去向已定，见下方接收收口。Datasette 部分接收，#3015 合上游／修契约及六 CI 待批；Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名，旧例6过时／8待验，409非新版，socket拒绝。另张 Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。 |
+| P81 | **试用与选择** | dot-A | 15项已收口，见下方。Datasette 部分接收，#3015 合上游／修契约及六 CI 待批；Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名，旧例6过时／8待验，409非新版，socket拒绝。另张 Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。 |
 | MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main `da56173`／Site **v22**，0/89。[quiet成对卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)06:30派、06:35:10领、08:08:34收集失败；blocked仅补收集，待本机维护者核清单及退出／清理，禁重跑。原角色 `01a1890` 保留。UI候选 `1574983` 隐藏候选／诊断，617测试、双构建／独审过；dot-B待清理后补浏览器tick／异常／回退再合入。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
@@ -51,7 +51,7 @@
 
 ### A：11-12 积压接收收口
 
-15项已定：10项限定接收、5项放弃、0项延期，来源／地图见[当日日档](archive/completed-through-2026-11-12.txt)。原卡 review_ready 标签未回写，待原接收端确认单写窗口后落实决定；等待期间不开新单元。原产物不动，accepted／cancelled 不代表调用退出，隔离保留。本次地图0改动、0升绿；后续只推进🟡核心推荐／步骤或当前页新读者真实采用。
+15卡已由 dot-A 在 [f0c27d6](https://github.com/dbvv1/a1dbv/commit/f0c27d64374a60868537507c00c42a4ce214fb43) 回写：10 accepted限定接收、5 cancelled、0延期；范围见原卡与[日档](archive/completed-through-2026-11-12.txt)。review_ready由负责人接收，撤销等待单写窗口；保留原产物、未验及隔离。下一单元优先“离开后接续待验”：改核心步骤或让新读者照当前页真实接续采用，再更新地图。本次地图未变。
 
 11-12 三卡原进程已核不存在、隔离已解除，均取消：理由见 [GH-AW](local-jobs/A-GH-AW-APIDIFF-FACTS-20261103.md)、[MULTIAGENT](local-jobs/A-MULTIAGENT-LONG-WIDE-20261029.md)、[WORKTREE](local-jobs/A-WORKTREE-ISOLATION-FACTS-20261102.md)。不重派、不占选题；不外推其他卡。
 
