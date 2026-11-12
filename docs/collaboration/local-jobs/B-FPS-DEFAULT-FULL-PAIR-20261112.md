@@ -2,14 +2,14 @@
 id: B-FPS-DEFAULT-FULL-PAIR-20261112
 owner: dot-B
 kind: build
-status: blocked
+status: revision_requested
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 658b2e592c612fa0801e2cc7fecdce32bb57eadb
 result_branch: relay/b-fps-default-full-pair-20261112
 
 ## 目标、顺序与环境
 当前默认与 ai-courtyard-full-v1 同机位成对图，以及六自然回合完整smoke和连续帧耗。沿原id/result分支返工，不新建重复卡。
-MOBA原卡收集由指导层处理；在其退出／清理核实、Star复验交回并清理前保持 blocked。负责人届时改 revision_requested 才激活，不抢槽。
+MOBA原卡收集退出已核；Star原卡0cf62c6两入口整局于2026-11-12T19:50:53Z交回，真实exit0、cleanupErrors为空且16件产物哈希复核通过。2026-11-12T21:10:03Z负责人释放独占拍摄槽并沿本卡revision_requested派发；本卡交回并核清资源前，不激活MOBA。派发不等于本机已启动。
 读固定源 AGENTS.md、docs/quality/current-capture.md、src/capture/cameras.ts，以及 a1dbv 游戏细则§6第3条／§7。
 本机用 **Node22.23.2**，不硬需24；仅现成匹配锁文件依赖和指定Chromium，不安装／升级软件，不改锁文件、持久环境或系统安全设置。
 只headless、不显示窗口、不模拟桌面键鼠、不操作桌面；页面自动化沿现成smoke。两路同浏览器与SwiftShader，不切GPU或换工具绕失败。
@@ -56,4 +56,4 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 
 ## 当前结果
 旧402dd68首跑按2切pistol超时，materials/六回合未完成；旧harness硬编码导致0图。原产物[1336856](https://github.com/dbvv1/FPS-Like/commit/1336856aca907a4f840f94fdfee42c500a6c09f7)保留，browserDisconnected/previewPortClosed=true、浏览器exit0。
-本次更新脚本及参数化入口后仍待本机复验；未激活，不将CPU测试算出图／浏览器通过。
+2026-11-12T21:10:03Z已派发本次复验，固定base_ref与上列权限不变；待接收端记录实际启动、完成和清理时刻。未交回，不将派发或CPU测试算出图／浏览器通过。
