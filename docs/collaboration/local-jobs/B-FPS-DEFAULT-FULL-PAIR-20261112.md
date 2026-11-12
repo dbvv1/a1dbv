@@ -2,7 +2,7 @@
 id: B-FPS-DEFAULT-FULL-PAIR-20261112
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 402dd688f6da351477036ab884614f9f38e4c46d
 result_branch: relay/b-fps-default-full-pair-20261112
@@ -49,4 +49,9 @@ node tools/smoke-backlog.mjs --full-materials
 两位非作者只读同机位匿名图，均不判更差且至少一位偏好后图，再结合完整smoke与帧耗由dot决定默认；不足不计覆盖。声音和硬件画面不在本卡验收。
 
 ## 当前结果
-05:00 UTC 轮次派发，未运行。前序 Star 于04:05:30.788 UTC交回，真实Node exit=1、cleanupErrors=[]，固定源码的finally已逐项await browser/server/database关闭。Star观察器返工在云端进行，不再占本机拍摄槽；本卡交回前不派MOBA。既有smoke尺寸差异已明确。
+
+- 本单元完成公开脱敏证据落盘但任务范围受阻：402dd68 默认档完整 smoke 首跑 exit 1，tools/smoke.mjs:125 按键 2 后等待 weapon==='pistol' 30s 超时，materials 子运行未开始，六回合未完成（round1 active=114，round2-6=0）；拍摄未执行，因现成三份 harness 均硬编码旧 fa8740d/tree 417652e6 且仅有固定 query、无 commit/query 参数，按卡片未改脚本、未忽略旧 SHA。已交付 README、environment、capture-tool-gap、smoke 报告与 SHA256SUMS（8/8 校验一致，脱敏扫描无命中）。未运行验收：npm test 未跑（未改源码/配置/锁文件），12 张 1280x720 图、画面与帧耗对比、默认切换与部署均未做。openIssues：拍摄入口缺 commit/query 参数；默认档冒烟在武器切换处超时待定位。
+- 产物：[1336856](https://github.com/dbvv1/FPS-Like/commit/1336856aca907a4f840f94fdfee42c500a6c09f7)，分支 `relay/b-fps-default-full-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人决定：(1) 提供支持 402dd68 与两组 query 的现成拍摄入口，或明确授权修正旧 harness；(2) 定位 tools/smoke.mjs:125 按键 2 后 weapon 未变 pistol 的原因（产品缺陷或环境/脚本问题）后再定是否重跑完整 smoke 与六回合/帧耗对比。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
