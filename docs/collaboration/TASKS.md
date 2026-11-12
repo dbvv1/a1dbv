@@ -34,7 +34,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- B 现有96卡：71 accepted、0 review_ready、8 blocked、16 cancelled，1 ready（Star）、0 running。余7卡已定去向：4部分接收，装备语义失败放弃，2旧固定捕获目标由当前默认成对验收替代；历史材料保留；11-12已核原Star拍摄进程退出，Git接收端正常，槽位可用。[三案执行缺口](b-work-20261106.md#11-10-超期候选采用决定)仍未清零，不凑重复卡。
+- B 现有96卡：71 accepted、0 review_ready、8 blocked、16 cancelled，0 ready、1 running（Star）。余7卡已定去向：4部分接收，装备语义失败放弃，2旧固定捕获目标由当前默认成对验收替代；历史材料保留；11-12已核原Star拍摄进程退出，Git接收端正常，槽位可用。[三案执行缺口](b-work-20261106.md#11-10-超期候选采用决定)仍未清零，不凑重复卡。
 
 ## 项目板
 
@@ -46,8 +46,8 @@
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS 原[终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已接回主干并补旧1v1，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档六次到第二章 Copper 3/6：电池耗尽自动返航保住货物、补给与慢修；核心上船后仍2/6，返港安装后RTG 1→2、容量6060→12060才推进。累计55分钟、部分×4，建铜炉缺14铁矿，已暂停保档。模块损伤未修，死亡／重开／终局／试听未验，不计品质或案例采用。 |
-| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `2cad483`／Site **v10**；已将源／构建托管配置校正到现有Reborn网站，未部署。整层仍在原开关，当前默认三机位静态盲选通过；完整浏览器smoke与连续帧耗仍缺。隐藏画质控件的赛前阻塞已修；本机Git槽已核可用，[完整smoke／帧耗卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)ready待领取；未换默认，旧探索2、0/43不变。 |
-| FPS | **FPS-Like 完整回合品质** | dot-B | main `402dd68`／Site **v24**；原六回合消费者接真实Controls，默认／ground各核按住输入→暂停／恢复、换边及重开，457项／类型／构建过、独审通过，最终两路复跑过；只增测试。原完整smoke工具、训练 `f3ddecdd` 与动作 `ab98193` 保留，握枪／落地欠。仍缺当前默认盲选及真实完整smoke／帧耗，待Star卡交回后派FPS卡，0/77不变。 |
+| SR | **Star-Rush 比赛品质**：地平线公路弯道，保留跑圈 | dot-B | master `2cad483`／Site **v10**；整层仍在原开关，对当前默认的三机位静态盲选已过；托管配置／隐藏控件阻塞已修。本机[完整smoke／帧耗卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)于03:41 UTC派发，03:54:19领取；未交回运行／清理回执，不重派、不派FPS。未换默认，旧探索2、0/43不变。 |
+| FPS | **FPS-Like 完整回合品质** | dot-B | main `402dd68`／Site **v24**；默认／ground真实Controls六回合回归已过，457项／类型／构建／独审过。原动作候选 `79f7ef4` 已修第一人称切回后旧后坐／闪光复活，494项／构建／独审过；默认训练未改，原训练 `f3ddecdd` 保留，握枪／落地欠。仍缺当前默认盲选及真实完整smoke／帧耗，待Star卡交回后派FPS卡，0/77不变。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ### A：11-12 积压接收收口
