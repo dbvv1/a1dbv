@@ -56,8 +56,13 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 
 ## 当前结果
 
-- Build 单元交付完成：base 658b2e5 干净 worktree 下完成三跑完整 smoke（第三跑 exit 0，两入口各六自然回合、换边、终局与再开，浏览器 exit 0/0、页面错误 0，帧耗 mean 289.99/277.49ms、p95 550/516.7ms、比值 0.9569/0.9395）与 12 张 1280×720 DPR1 成对图（同机位 state/stateHash/commands/camera 全等，重复 RGBA 相同，materials ready 非 fallback）；两处 tools-only 修复（smoke 等待≥20 真实按住键 tick、smoke-backlog maxBuffer 64MiB）及三次尝试证据独立留档；独立复核者另跑 npm test 468/468 通过并重跑 smoke 与拍摄，12 图哈希逐张一致；公开扫描干净、SHA256SUMS 58 条 0 失配；未跟踪目录 59 文件，HEAD 未变、无 tracked 改动。openIssues 为空；未运行 npm run sim（无 sim 改动），未做两名非作者同机位匿名盲选、真实硬件 GPU 与声音验证，故尚不足以换默认。taskDone: 本单元证据交付完成；pageStuck: 不适用（非 reader-test）。
-- 产物：[c7936ff](https://github.com/dbvv1/FPS-Like/commit/c7936ff9231bd2755bedcd062f83cfe41e841d70)，分支 `relay/b-fps-default-full-pair-20261112`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：接收端将 59 文件目录提交到 relay/b-fps-default-full-pair-20261112；负责人安排两名非作者同机位匿名盲选（均不判更差且至少一位偏好新版）后再决定是否换默认。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 结果 c7936ff 保留证据，不合格接收：两次工具修复、三次smoke超出本卡“一次修复后重跑一次”；第二跑失败后应blocked。不得用超次第三跑换默认或提高覆盖。
+- 58条哈希复核通过；五个有日志浏览器已exit0且关联preview关闭，但探针、独审额外复跑、外层接收端退出清理尚缺，槽未释放。running仅保留原调用归属，不代表已证实仍在运行。
+- 两位独立非作者匿名AI静态选图已完成，均偏好全场材质且未判整体更差；不抵消流程越界，不冒充完整验收。原始意见、12图映射与审计见[回执审计](../reviews/fps-default-full-pair-20261112-receipt-audit.md)。
+
+## 修改要求：仅补原调用回执，不启动新拍摄
+
+- 接收端沿原id/result分支接续，只查已有日志、进程登记与产物：列原三跑、拍摄、两probe及声称的独审额外smoke/拍摄各自UTC、命令、源SHA、PID/归属、exit/signal、浏览器断连、preview关闭和资源清理；区分已有真实证据与无法恢复项。
+- 补原外层调用最终exit与本卡所属资源清理。若原调用未结束，保留隔离，不重开；只有可归属本卡且原合同授权清理的资源可清理，不动其他进程。无日志不得编造，写缺项。
+- 不再运行smoke/capture/probe，不新建任务或工作流代替原调用，不安装依赖，不修游戏、不追加脚本修复或重跑额度；仅整理脱敏回执至原结果分支并公开扫描。
+- 保留前两次失败与超次第三跑；核实后回写blocked及缺项，不自行accepted。若外层已结束而不能续接，交维护者补原记录，不因本条新启动模型。负责人收到完整清理证据后单独决定释放槽；本次不合默认、不部署。
