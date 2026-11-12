@@ -1,3 +1,34 @@
 2026-11-12（UTC+8）对应11-11 22:00 UTC B实例接收前状态；由局部实玩结果替换，三案品质验收未完成。
 
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Turbo Kartz关卡二改](../../domains/game-dev/08-level-design-and-encounters.md#racing-geometry-and-assist)的失败定位方法已用于Star真实CPU消费者，区分AI恢复失效与道路几何，不以玩家完赛代替逐车验收；实例本作未试玩。哈耶克同版恢复、backroad制动窄采用保留；旧阻塞不重试。 |
+
+
+2026-11-12 A积压接收决定（基线7f8ea603；负责人dot-A）
+
+10项限定接收、5项放弃、0项补验延期；内容去向已定，不是15张原卡标签已清。原接收端确认卡片单写窗口后带回以下决定；等待期间不新开单元，原卡／artifact／旧结果均未改，accepted／cancelled不证明原调用退出，未知隔离继续保留。所有旧版结果只按下列范围使用，地图本次0行改动、0行升绿。
+
+| 原任务 | 去向 | 地图对应 | 接收范围、固定出处与未验 |
+|---|---|---|---|
+| [A-SKILL-MCP-WIDE-20261029](../local-jobs/A-SKILL-MCP-WIDE-20261029.md) | 限定接收 | 该装哪些 Skill 与插件（🟡） | 仅接收已转化的 pnpm 线索（结果9f905b0；采用483b4bed／85112b0f），compressor／reference 的 ce38a3a6／467a450d 后续独立实试保留各自边界。528候选未安装运行、整稿未审完，其余候选本轮放弃，不据此验收当前页。 |
+| [A-INSTRUCTION-PRODUCT-SCOPE-20261103](../local-jobs/A-INSTRUCTION-PRODUCT-SCOPE-20261103.md) | 限定接收 | CLAUDE.md／AGENTS.md 怎么写（🟡） | 结果f9a3d911的有效作用域写法已由c485ecb4改写进入 instruction-files；拒收残稿根L253澄清建议，不再合旧稿。原11-03静态来源不证明当前上游状态，客户端加载、模型遵守与新读者未验。 |
+| [A-SENTRY-MIGRATION-CONTRACT-20261103](../local-jobs/A-SENTRY-MIGRATION-CONTRACT-20261103.md) | 限定接收 | 遗留代码与大迁移（🟡） | 结果60be529的分阶段 runtime／adapter 与退场条件已由e1a544a2纳入 migrations，旧15长稿不再另合。仅收来源机制，未运行 Sentry、未完成当前页读者实做。 |
+| [A-TEAM-POLICY-DELIVERY-20261103](../local-jobs/A-TEAM-POLICY-DELIVERY-20261103.md) | 限定接收 | 团队怎么推广（🟡） | 结果c198a382经c485ecb4修正后，交付／来源／Hook执行分流已进18§4；原稿两处条件错误仍在，余稿放弃。原静态研究未部署、未运行客户端／Hook，无真实团队采用。 |
+| [A-LONG-ROUTE-OFFLINE-READER-20261106](../local-jobs/A-LONG-ROUTE-OFFLINE-READER-20261106.md) | 限定接收 | 子代理怎么组织，长任务怎么无人值守（🟡） | fcc32b8代码／真实npm消费者已由39032d41接回，POSIX 21/21及20阶段551例通过，原Windows失败保留。4cd9cc21仅为旧页8b76f7db一次定时接回，不是当前页无人值守或自然离开后恢复，旧记录升绿判断不适用现页。 |
+| [A-COMPACTION-PROVENANCE-SOURCES-20261106](../local-jobs/A-COMPACTION-PROVENANCE-SOURCES-20261106.md) | 限定接收 | 上下文怎么管、会话越聊越笨怎么办（🟡） | 0a3efab部分来源证据已由d4c9d396纳入03及context页；拒收“读过外部材料优先重开”新默认，余稿放弃。固定论文／源码静态研究未完成整项独审、产品复现或真实读者接续。 |
+| [A-MCP-TIME-MIGRATION-READER-V2-20261107](../local-jobs/A-MCP-TIME-MIGRATION-READER-V2-20261107.md) | 限定接收 | 遗留代码与大迁移（🟡） | 接收6239e43固定版本静态核对与受阻历史，已进入 migration-case-evidence；四文件补丁与首轮相同，不重复合，计数以原卡勘误为准。旧页9d0321cc运行验收未通过（taskDone=false），真实stdio、原生测试及发行入口未验，不拿云结果补认或继续旧页验收。 |
+| [A-UPSTREAM-CATTRS-DELTA-READER-20261108](../local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md) | 限定接收 | AI 辅助补丁怎样贡献给开源项目（🟡） | 接收37b1ba8历史只读准入及接收方11-12对main e9239b7、#761／#764／#822、政策和五后端差量的只读补核，不追记为旧读者首次证据；见下方当前性来源。旧页3f445ade及候选bde101a5结果不代表新版／当前main通过，apply、测试和投稿闭环未验，放弃本轮可投稿断言，不新增实现／投稿，不挂72小时。 |
+| [A-UPSTREAM-RICH-GATE-READER-20261108](../local-jobs/A-UPSTREAM-RICH-GATE-READER-20261108.md) | 限定接收 | AI 辅助补丁怎样贡献给开源项目（🟡） | 接收825c3e1的11-08静态准入与停手决定；既有 upstream-contributions 保留先获方案批准及核重叠的路线，本轮放弃同题实现／投稿推进。旧页0c91ee9a及旧候选测试不证明当前main或新版读者通过，未来须维护者明确批准与唯一提交主体才另行决定。 |
+| [A-MIGRATION-FACTORIOLAB-READER-20261110](../local-jobs/A-MIGRATION-FACTORIOLAB-READER-20261110.md) | 限定接收 | 遗留代码与大迁移（🟡） | 接收020a36f环境阻塞／原消费者未改边界，静态清单以原卡勘误为准；f791b58已经3a836158接入migrations，不重复合。旧页be3c57b9真实迁移、测试与构建均未验，6ddd9817仅重建Angular21基线，不补回Angular22迁移，放弃旧附页续验。 |
+| [A-MODEL-EFFORT-READER-20261029](../local-jobs/A-MODEL-EFFORT-READER-20261029.md) | 放弃 | 模型、推理档与强弱分工怎么选、多贵（🟡） | 不再继续旧reader返工验收；保留f3fddd28已采用的页反馈及jrnl返工46e2560429d515101375fe48420d345ccea202ad代码候选。真实CLI／官方测试与记录纠错未闭合，未验候选保全，不称通过、不安装执行或重派。 |
+| [A-PUBLIC-SCAN-CLI-ENCODING-20261103](../local-jobs/A-PUBLIC-SCAN-CLI-ENCODING-20261103.md) | 放弃 | 无对应🟡行 | 结果7deb5bc8的编码修复已由c485ecb4改写采用，d247a234记录接收复验；保留已合修复，放弃其他推进，不重合旧实现。原Windows／hosted CI与退出事实不以云端收据补认。 |
+| [A-M6-WEEKLY-CALIBRATION-20261103](../local-jobs/A-M6-WEEKLY-CALIBRATION-20261103.md) | 放弃 | 无对应🟡行 | 保留结果536b86d4及6f657a6c有界周样本收据，放弃未核线索后续转化，不执行原稿配方或重查排名。历史20条标识复核不等于全外链／评论复验、零遗漏或当前新推荐。 |
+| [A-RECEIVER-EXIT-EVIDENCE-20261104](../local-jobs/A-RECEIVER-EXIT-EVIDENCE-20261104.md) | 放弃 | 无对应🟡行 | 放弃继续整合／补验旧审计；d950609仅报告11-04登记集合退出，5a460af5时序／范围文字修订未入main，不构成新退出核查。登记树外写者和关联差额仍unknown，不解除隔离、不清锁、不重试、不重派。 |
+| [A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106](../local-jobs/A-ACCOUNT-CONTEXT-PUBLIC-SOURCES-20261106.md) | 放弃 | 无对应🟡行 | 保留4953b55已进入10-security的录屏／分享短限制；放弃剩余版本追踪与产品复现。8a6e326为11-06历史静态材料、独审未完成，不证明当前发布版行为或真实外发。 |
+
+固定出处均为各任务结果或采用提交；a1dbv提交可按上述SHA查Git历史，MODEL返工属于jrnl。Cattrs接收方只读当前性核查为2026-11-12 03:38–03:41 UTC：[固定main五后端](https://github.com/python-attrs/cattrs/tree/e9239b7082206f18e3cec873b11451aff35beb9c/src/cattrs/preconf)、[AI_POLICY](https://github.com/python-attrs/cattrs/blob/e9239b7082206f18e3cec873b11451aff35beb9c/.github/AI_POLICY.md)、[#761](https://github.com/python-attrs/cattrs/issues/761)、[#764](https://github.com/python-attrs/cattrs/pull/764/files)、[#822](https://github.com/python-attrs/cattrs/pull/822/files)。当时两PR均open／unmerged／mergeable=false，后三后端仍有静态差量；未查新发行版，不刷新“最新”主张，原候选可应用性及运行仍未验。
+
+Cattrs接收方勘误（11-12补核，不追记为旧reader首次证据）：①PyPy缺msgspec时，候选顶层无条件导入会先于test skip失败，需条件导入或隔离；本轮未运行PyPy。②#822实际父提交为bde101a5，API base tip e9239b7不是分支起点。③贡献指南要求的README.rst路径过时，当前树为README.md。④候选已有PyYAML Decimal(str(v))测试，待决定的是与#822 Decimal(v)的契约取舍，不是补一条不存在的测试。⑤先由符合项目政策且获准发言的人协调重叠与差量，再按确定范围实施；本轮不外发。
+
+以下原P81行逐字归档；其中MODEL待收、cattrs／Time／Rich永久待审口径由以上决定取代，其余A事项仍留TASKS。历史行内相对链接以[原TASKS位置](https://github.com/dbvv1/a1dbv/blob/7f8ea603ab5f0ed66e305b5e20cb68c7cdf42fcf/docs/collaboration/TASKS.md)为准。
+
+| P81 | **试用与选择** | dot-A | [MODEL](local-jobs/A-MODEL-EFFORT-READER-20261029.md)待收；Datasette 部分接收，#3015 合上游／修契约及六 CI 待批。[cattrs](local-jobs/A-UPSTREAM-CATTRS-DELTA-READER-20261108.md)部分接收，五后端／本人协调欠，终态／附页隔离／新版未验。Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名；旧例 6 过时／8 待验，409 非新版，socket 拒绝。Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。Time／Rich 部分接收，Rich 待方案批准；终态／附页隔离未知。 |
