@@ -32,6 +32,27 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 [^materials-practical-case]: 原创参数源与采样修复：a1dbv `f4ca179b1af8db82093b2b4d366a219979eb3423`，[固定案例](https://github.com/dbvv1/a1dbv/tree/f4ca179b1af8db82093b2b4d366a219979eb3423/experiments/material-authoring)。2026-10-26 Blender 4.3.2／Cycles CPU 实测；未证明 Unity／UE、游戏 WebGL2 或最低设备验收。
 
+<a id="web-scene-recipe"></a>
+
+## 网页整场景配方：结构共享，预算成组
+
+**先固定美术方向与玩法净空，再把表面、空间、后处理、效果和声音作为一套配方调整。** 下表是 Saltline／Evensong 实际游戏调用的源码比较，🧪 可独立实现机制；未做同机试玩与性能比较，不是效果排名或现成可复制组件。
+
+| 要解决的问题 | 作品中的具体做法 | 在自己的工程里怎样采用 |
+|---|---|---|
+| 地面像重复色纸，湿区与声音不一致 | Saltline 同一地表 mask 供水坑、wetness 和表面查询；室内区域减少湿润 | 共用世界坐标与布局数据驱动色差、粗糙度、标线和表面事件；不要另随机撒一层亮水片 |
+| 换了颜色，受光仍像平板 | Saltline 生成 albedo／ORM／height，再由高度导法线；Evensong 标准 PBR 上扩展三平面细节与水位湿边 | 同一结构同时输出颜色和数据通道，先定物理纹理尺度／法线幅度，再调灯光；颜色用 sRGB，数据通道保线性 |
+| 看起来灰或乱，叠更多效果仍无层次 | 两作先 HDR 场景，再低分辨率 AO／光束，随后合成、bloom、色调和最终抗锯齿；Evensong 可选景深，Saltline 可选运动模糊 | 先保持一个清楚的主光与近中远明度关系；保留现有后处理路径，只加有明确用途的项，世界与武器／关键提示分别核曝光，不把多 pass 当品质 |
+| 天气、粒子堆满屏幕 | Evensong 用有上限的热／软粒子、面片和冲击池，复用场景深度软化交界；Saltline 反射按档位缩小或关闭 | 由真实事件、表面和风向驱动，给装饰预算和取消／回收规则；战斗提示不随天气被淹没，先减装饰再减可读性 |
+| 高档静态图漂亮，实际掉帧 | 两作画质档成组改变分辨率、阴影、AO、光束等；Saltline 拍摄模式禁动态分辨率 | 成对图固定 renderer、档位与自适应状态；完整游玩另测连续帧耗。低档保构图、角色轮廓与关键反馈，先删反射／装饰，不用不同预算图盲选 |
+| 声音多却听不清 | 两作分世界／近场或UI／环境／音乐等总线，声部限额与优先级；Evensong 语音压音乐、暂停世界但保UI | 用同一场景状态控制画面与[混音焦点](audio.md#web-scene-mix)，先定事件、距离和优先级，再换声源；未经试听只说已接线 |
+
+**失败反例：** 某功能名出现在打包的 Three.js 库里，就写成游戏已经采用。Saltline 单文件含完整库，必须追到游戏创建材质、绑定纹理与每帧调用；同理，启动降级为普通材质也可能没有致命错误。验收读取实际档位和 fallback，不能只查控制台为空。
+
+**直接可用的操作入口：** 在自己的 Three.js `MeshStandardMaterial` 上按官方 `map`、`normalMap`、`roughnessMap`、`metalnessMap` 槽接同源输出；若用 `onBeforeCompile`，保留自定义 program cache key、原参数恢复和资源释放。已有源工具用本页 Blender 配方，不先新建生成器。整场景改之前先保存本作默认与同品类网页参照的同机 1280×720 图；参照画面和源码许可未清时只作本地研究，不进入公开资源包。
+
+**依据**：Saltline 固定 `09c51774` 的[实际材质生成](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5439-L5443)、[地表查询](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5814)、[后处理／降级](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4732-L4733)；Evensong [材质](https://evensong-phi.vercel.app/src/gfx/materials.js)、[后处理](https://evensong-phi.vercel.app/src/gfx/post.js)、[画质](https://evensong-phi.vercel.app/src/gfx/renderer.js)、[效果](https://evensong-phi.vercel.app/src/gfx/vfx.js)；[Three.js PBR 槽契约](https://threejs.org/docs/pages/MeshStandardMaterial.html)。核实 2026-11-12，仅源码与接口阅读，Evensong 部署内容可变；均未证明最低设备收益、完整听感或已用于三个案例。
+
 ## 30 秒决策
 
 | 你现在需要 | 先做什么 | 什么情况下撤回 |
