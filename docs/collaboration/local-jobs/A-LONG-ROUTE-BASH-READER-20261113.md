@@ -24,7 +24,7 @@ page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 2. 为两套 Hook 测试提供一致的 Bash 选择：显式 BASH_UNDER_TEST 优先，其次已有 bash；指定无效路径、缺 Bash、启动失败必须给清楚失败，不能当测试通过。POSIX 原入口保持适用。不要改变 scripts/check_offline.py 的 POSIX 依赖要求或零测试/skip失败门禁。
 3. 保持 TEST_PARSER=python3/jq 的后端隔离；不能用混合 PATH 宣称指定解析器通过。使用已有可执行文件，处理原生 Windows 无 symlink 权限与 Git Bash 路径转换；做不到则明确记录具体阻塞，不能开权限、装工具或改用户接收器。未安装 jq 如实未运行，不能当双后端已验。
 4. 对启动选择、错误/缺失输入、后端隔离（含同时可见两后端时仍选对）、UTF-8 JSON 和含空格的测试目录补回归；测试真实 Bash 与 JSON 输出。解析器失败后有输出也应 fail-closed，现有测试不能退化。
-5. 实跑 python -m unittest discover -s tests -p 'test_protect*py'，已有 jq 时带 TEST_PARSER=jq 重跑；新增夹具测试单跑。直接 Hook CLI 测正常 deny、无匹配及无效 JSON，写退出码与输出。Windows 完整 POSIX 门禁交云端补，不把本机 error/skip记成通过。
+5. 先显式设置 TEST_PARSER=python3，再实跑 python -m unittest discover -s tests -p 'test_protect*py'，记录所选后端；已有 jq 时显式设置 TEST_PARSER=jq 重跑；新增夹具测试单跑。直接 Hook CLI 测正常 deny、无匹配及无效 JSON，写退出码与输出。Windows 完整 POSIX 门禁交云端补，不把本机 error/skip记成通过。
 6. 运行 check_repo、check_public、git diff --check。读者只记录卡点、页外帮助、真实改动与检查，不改页面、不先写通过证书。非读者核 diff 与原始输出后回 review_ready；不用 accept:auto，不合 main。
 
 ## 接回与终点
