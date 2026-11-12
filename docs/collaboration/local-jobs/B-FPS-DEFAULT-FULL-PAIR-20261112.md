@@ -2,7 +2,7 @@
 id: B-FPS-DEFAULT-FULL-PAIR-20261112
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 402dd688f6da351477036ab884614f9f38e4c46d
 result_branch: relay/b-fps-default-full-pair-20261112
