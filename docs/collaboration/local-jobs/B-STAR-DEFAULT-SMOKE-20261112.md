@@ -2,7 +2,7 @@
 id: B-STAR-DEFAULT-SMOKE-20261112
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: d1607a57410c9bcdf1c0a9f24ece4ad238151485
 result_branch: relay/b-star-default-smoke-20261112
