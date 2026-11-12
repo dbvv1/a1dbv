@@ -11,6 +11,20 @@
 - **验收产物**：复用现有 `progress.mjs` 报告与日志，形成一份 Phase 3 七天总结；样本不足的指标明确标记证据不足，不为按期结项而宣称成功。
 - **阶段边界**：七天是首轮决策窗口，不代表已证明长期效果。若改善明确，转入正常运行；若仍有可复现瓶颈，再提出针对性任务，不自动建设 SQLite、通用调度器或新仪表盘。
 
+## Day 7：A 的阶段结论（2026-11-12 补核）
+
+**已有读者可用的能力改进和真实修复采用，核心推荐及本机验收仍有欠项，完整运行改善尚不能判通过。** 本节核至 11-11 23:19 UTC 的公开 Git 快照；11-04～11-11 是计划窗口，提交时间不能冒充精确运行起点或完整七天遥测。
+
+- **实际能力增量**：上下文／长任务方法已用于 Click 真实 CLI 修复和 BMAD 迁移补丁接收；后者既保留文件，也修正后续找到各自日志、继续写入与读回的路径。指定版本读源已用原生 npm 取得 next-auth beta.31 的实现和类型，不必先修取源工具。这些支持各自公开问题与测试输入，不是长期无人值守或上游采用证明。
+- **已采用的默认与模板**：评审入口补齐暂存区／工作树／未跟踪文件取材，不再按 generated／lockfile／vendor 名称排除行为；后继非作者已实操 Git 状态及固定 SQL 消费者，不能因早期改写未跑读者而否认后继证据。规格复用、verifier 范围、Codex Skill 可移植引用已更新；公开扫描输出编码与离线检查误扫依赖的修复已进入本仓实际检查。客户端加载与模型净收益仍分开验。
+- **核心采用欠项**：当前迁移路线仍缺规定的真实任务与本机新读者；Time V2／Factoriolab 的依赖缺失且禁止安装，真实协议／迁移及消费者门槛未跑。MODEL／Skills 真实 CLI、项目检查与旧写者状态未闭合。上下文未验原生压缩／自动恢复，长任务未证离开后稳定接续；地图没有新增 🟡→✅，不拿云端局部通过代填。
+- **有本机执行和接回实例，持续供给仍未知**：原离线门禁、Time、上游核读、Factoriolab 有实际领取与输出，不只 running 标签。截止 A 无 ready／running／revision_requested，有 15 个 review_ready；其中部分修复已采用而保留旧边界，不能把标签都算无人接收，也不能从空 ready 判停工或供给健康。
+- **尚不能评价**：完整 `progress.mjs`／日志、全周供给与回传等待、活动缺口、用户介入、返工总负担、Claude／Codex 资源与费用均缺可比证据。原退出报告存在时间混用且独审未过，已返回／accepted／cancelled 不释放原隔离；本次未定位到原 receiver 可读入口，不推断设备离线。
+
+下一步优先补现有迁移路线的原消费者闭环；仅当原 Factoriolab 写者／工具终态与允许使用的依赖环境具备后续接，不改 no-install、不重派副本。运行指标只从原接收端获准的只读入口补取；条件不足保留 unknown，独立内容接收继续，不另建调度或台账。
+
+依据：固定 [截止快照](https://github.com/dbvv1/a1dbv/tree/9dff6a2e1fbfcb7de474372c43e1563a7b189197) 与 [原计划](https://github.com/dbvv1/a1dbv/blob/15d158a196df428f604b3730782ce10c7935be49/docs/collaboration/TASKS.md)；[BMAD 后续消费者](../../experiments/bmad-migration-receipt/README.md)、[Click](../../experiments/click-auto-envvar-error/README.md)、[精确依赖读源](../../experiments/opensrc-ref-integrity/npm-source/README.md)、[评审后继验收](https://github.com/dbvv1/a1dbv/commit/794cd8d1ca95cae67e5c07b5f1a162ef4af40bd6)、[迁移欠项](../decisions/migrations.md)、[原本机离线门禁接回](../../reader-tests/A-LONG-ROUTE-OFFLINE-READER-20261106-u1.md)、[原退出核查](local-jobs/A-RECEIVER-EXIT-EVIDENCE-20261104.md)。本次只读核对历史版本与原回执，没有重跑历史任务。
+
 ## Day 7：B 的阶段结论（2026-11-11）
 
 **知识与候选接收已有有效成果，三案品质采用仍未完成，不能据此宣布运行改善通过。** 本节只评 B；A 的成果及完整接收端报告另核，不以提交量代替效果。

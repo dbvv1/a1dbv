@@ -56,7 +56,7 @@ claude --model claude-sonnet-5-5 --effort medium
 |---|---|---|
 | 范围清楚的日常功能开发、写测试，尚无稳定配置 | ✅ 采用日常起点 | Codex：GPT-6.1 Sol + `medium`；Claude Code：Sonnet 5.5 + `medium`。已有配置稳定达标则不必换 |
 | 跨文件代码质量审查、明确的回归保护目标，或已出现有效覆盖不足 | 🧪 为该角色比较更高 effort | 可直接从同模型 `high` 起步；与已验证配置比有效发现与保护，不把实现／协调角色自动一起升档；没有增益就撤回 |
-| 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | Codex：GPT-6 Astra + Light（`low`）；Claude Code：Opus 5.5 + `medium`，验证要求高可从 `high` 起步。仍需更强能力时再评 Fable 5.1；不能达到目标或新增投入不值得就撤回 |
+| 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | Codex：GPT-6 Astra + Light（`low`）；Claude Code：Opus 5.5 + `medium`，验证要求高可从 `high` 起步。开放式难题再评 [Fable 5.2](#fable-52-choice)；不能达到目标或新增投入不值得就撤回 |
 | 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档，返工抵消节省就撤回 |
 | 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
 | 离线 / 保密 | 🧪 评估本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B；硬件、质量与数据路径条件见第 5 节 |
@@ -72,6 +72,32 @@ claude --model claude-sonnet-5-5 --effort medium
 **Gemini 4 Argon：从等待开放改为按任务试用。** `gemini-4-argon` 于 2026-10-13 在 Gemini API／AI Studio 正式可用；Free tier 和 Google AI Pro 计划不包含它。已有 Gemini API 工作流迁移时，先移除显式缓存调用，核对 thinking 与输出共享的 token 上限；不要只换模型 ID。🧪 适合需要比较复杂编码或长输出的任务，现有模型已满足要求则不必迁移；是否保留取决于本项目质量、延迟和总费用，GA 不证明收益。
 
 **依据**：[社区：作者实验] 轻量模型与反馈组合（2026-10-22）；[经验：本仓工具实跑] 同题契约工具试用；[一手] [Codex 官方模型指南](https://learn.chatgpt.com/docs/models#choosing-a-model)、[Claude Code 模型配置](https://code.claude.com/docs/en/model-config#choose-an-effort-level)（2026-10-20）、[Claude API effort 说明](https://platform.claude.com/docs/en/build-with-claude/effort#recommended-effort-levels-for-claude-sonnet-5-5)（2026-10-15 核实）；[一手：官方路由与响应契约] 模型身份与采用资格（2026-10-20，见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)）；[一手] [Gemini 发布记录](https://ai.google.dev/gemini-api/docs/changelog)、[迁移指南](https://ai.google.dev/gemini-api/docs/latest-model)（2026-10-15，未实测）；核实 2026-10-22。
+
+<a id="fable-52-choice"></a>
+
+### Fable 5.2：只给困难角色加投入，不替换全部默认
+
+**👀 已有可用入口、确有困难开放式推理或长任务需求时，再比较 Fable 5.2；本仓未调用模型。** 日常已验证配置照用。官方仍建议多数编码先用 Opus 5.5；开源团队 darkroomengineering 的实际配置也保留 Opus 主模型，默认把 Fable 5.2 配给 advisor 和只读 planner。这支持按角色选用，不证明混搭更省：已有用户试完大任务仍用 Opus 实现、Fable 分析，公开配置与体感都缺完整同题质量和账单对照。
+
+**先核版本、数据与计费，再试一个真实任务。** Claude Code 要 v2.1.321+，供应商／账号须实际提供该型号。API 与直连 Claude Code 的 ID 是 `claude-fable-5-2`；第三方平台核自己的映射。普通 `fable` 别名已指向 5.2，但 Claude apps gateway 仍可能指向 Fable 5；`best` 在 v2.1.321 改指 Opus，不是“当前最强 Fable”。不要用别名猜本次型号。
+
+| 先确认什么 | 会改变选择的条件 |
+|---|---|
+| 数据能否发送 | Fable 5.2 属于 Covered Models，默认提示与输出至少保留 30 天；已有 ZDR 不自动覆盖。限时内部业务 ZDR 过渡安排须获供应商明确资格，EFS 的自管云监控也不等于零保留。条件不符就留在当前合规模型 |
+| 是否会另外计费 | 部分计划／席位走 usage credits；`-p`／无提示 SDK 可直接扣费，不能拿它做免费连通性探测。API 单价见下表，不能换算订阅内次数 |
+| 推理还是等待有缺口 | Code 默认 effort 为 `medium`，API 为 `high`，均支持 low／medium／high／xhigh／max；比较时记录实际档位与完整投入。Fast 是另收费的速度模式，不能补推理不足 |
+
+已满足这些条件、要在**新交互会话**比较时，可用下面的一次启动形状；它不是本仓已运行的模型命令：
+
+```bash
+claude --model claude-fable-5-2 --effort medium
+```
+
+若环境中已有 `CLAUDE_CODE_EFFORT_LEVEL`，它优先于 `--effort`。启动后核实际型号、effort、速度档与 advisor，命令未写不等于没有继承设置。交互 `/model <id>` 会保存默认，本次比较不要顺手改持久设置、打开 Fast 或 advisor。模型菜单缺项也不一定无权限：#108726 的用户报告同账号 exact ID 可用而菜单仍旧；这是待修问题，不把开启遥测作为升级步骤。
+
+**按原任务标准比较有效修改、重要遗漏、接管与完整投入，再决定保留。** 1M 上下文、128K 输出和厂商的长任务定位不是持续交付保证。中途从 5.2 降回 Opus 5.5 时，文本／工具历史仍可用，旧模型却不能读 5.2 thinking，下一步可能增加耗时与成本；不要预设换回轻模型一定更省。自建 Messages 历史还须遵守新版 thinking 前缀校验，改过历史再回传旧 thinking 的 400 不能靠原样重试解决。
+
+**依据**：[官方] [发布与任务定位](https://www.anthropic.com/claude-fable-and-mythos-5-2)、[型号／effort／计费入口](https://code.claude.com/docs/en/model-config#work-with-fable)、[API 规格与价格](https://platform.claude.com/docs/en/models/fable-5-2/overview)、[迁移与历史兼容](https://platform.claude.com/docs/en/models/fable-5-2/migration-guide)、[Covered Models 与 ZDR 例外](https://support.claude.com/en/articles/15425695-covered-models)；[开源配置，非效果评测] [固定主模型／advisor](https://github.com/darkroomengineering/cc-settings/blob/955bda5a1c8ccf33dd28f7daf675d6be98aaf6fc/config/10-core.json)、[只读 planner](https://github.com/darkroomengineering/cc-settings/blob/955bda5a1c8ccf33dd28f7daf675d6be98aaf6fc/agents/planner.md)；[真实用户原帖，未复跑] [菜单与 exact ID 不一致](https://github.com/anthropics/claude-code/issues/108726)、[仍用 Opus 实现的反馈](https://www.reddit.com/r/ClaudeCode/comments/1xsbfiw/fable_52_sticking_with_opus_55/)；核实 2026-11-12（UTC）。本仓只实跑隔离的官方 Claude Code 2.1.321 `--version`／`--help`：虚构型号和参数也能随 help 返回 0，因此不据此认定模型可用、账号有权或推荐已通过真实读者验收。
 
 ### Kimi K3.1 Pro：先作监督修复候选，不替换默认
 
@@ -157,11 +183,12 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 | **Claude Sonnet 5.5** | $2 | $0.10（2026-10 减半） | $10 | 2026-10-15 |
 | **Claude Opus 5.5** | $4 | $0.20 | $20 | 2026-10-15 |
 | Gemini 4 Argon（Standard，截至 2026-11-30） | $2（12-01 起 $4） | $0.10（12-01 起 $0.20） | $10（12-01 起 $20，含 thinking） | 2026-10-15 |
-| **Claude Fable 5.1** | $10 | $0.25 | $50 | 2026-10-15 |
+| **Claude Fable 5.2**（Standard） | $8 | $0.20 | $40 | 2026-11-12 |
 | GPT-6 Astra（Standard ≤272K） | $10 | $1 | $50 | 2026-10-15 |
 
 ### 表中未展开的计费维度
 
+- **Fable 5.2**：标准 5 分钟／1 小时缓存写入分别为 $10／$16，读取 $0.20／百万 token；Fast 输入／输出为 $16／$80，不等于提高 effort。Anthropic 路线的交互 Code 要在 5.2 上明确启用 `/fast`，旧 `fastMode: true` 不能当作已启用凭据；Google Agent Platform 的 Fast 需 v2.1.322+，按其独立入口配置。按实际供应商价表核账，不把“最多 2.5 倍输出速度”当整项任务提速。依据：[官方模型价表](https://platform.claude.com/docs/en/models/fable-5-2/overview)、[Fast 入口与价格](https://code.claude.com/docs/en/fast-mode)；核实 2026-11-12（UTC），未启用或调用。
 - **Terra**：Standard 的 30m／12h 缓存写入分别为 $1.25／$2.50；总输入 >272K 时，整次请求的输入／缓存费率乘 2，输出乘 1.5。Fast 为 Standard 的 2 倍，Batch／Flex 为一半；不能把 Sol 的 Ultrafast 可用性套给 Terra。
 - **长上下文与速度**：`gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。精确模型页见本节末。
 - **Luna／Astra 与 Grok**：Luna／Astra 的基础 **30m** 缓存写入分别为 $0.125／$12.50；总输入 >272K 时同样对整次请求收取输入／缓存 2 倍、输出 1.5 倍。Grok 4.7 在 >200K 时另计，长上下文预算须查对应地区的价表，不能沿用基础行。
@@ -233,6 +260,8 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 | Ultra：$200 | **已验证账户无此限制**；未验证仍有临时限制 | 10 倍 |
 
 Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` 条即已验证；结账时的手机号验证不等于此项验证，后者由平台自动完成。无 5 小时限制仍有周额度与 Fable 的独立周限制；Max／Ultra 的 Fable 最多使用周额度的一半。按任务查看实际剩余额度，不换算成固定工作天数。
+
+**Fable 5.2 的发布优惠有截止时间。** 5.2／5.1／5 共用 Fable 周限，Max／Ultra 最多占正常周额度的 50%，不是额外赠送 50%。Pro／Team standard 仅在 11-09 至 **2026-11-16 23:59 PT** 临时纳入同样的 50% 周额度；额度用完或窗口结束后，已开启 usage credits 的继续用量按 credits 计费。符合资格的 reset 恢复已用额度，不提高正常周上限。依据：[官方 Fable 计划条件](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)、[本次限时优惠](https://support.claude.com/en/articles/17506494-claude-fable-5-2-launch-offers)；核实 2026-11-12（UTC），未读取账号资格或领取优惠。
 
 **API 赠额是另一笔额度**：当前 Max 每月 $100、Ultra $200、Team 共享最多 $500；不能充值交互 Code 的订阅额度。价格卡的“比 Max 多 $100”是在比较当前档位，不能据此推出同一套餐的赠额翻倍；领取、运行入口和超额计费见 [18 成本治理](18-team-adoption.md#5-成本治理)。
 
