@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-DRIVE-READER-20261112 · 接续 Hook 盘符兼容修复
 id: A-LONG-ROUTE-DRIVE-READER-20261112
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 3bb383389a100f8fca4e25afe361b493fdfa7a3c
@@ -29,3 +29,11 @@ page: docs/decisions/long-tasks.md@3bb383389a100f8fca4e25afe361b493fdfa7a3c
 负责人通过已有心跳读取固定成果，独立运行完整 POSIX offline 与 CLI 消费者；若失败，同卡返工；通过后按发布流程整合模板并实际采用修复。保留回传、开始读取、独立验收启动与采用版本，不人为制造中断、不新增调度。
 只有派发/领取不算执行，只有结果通知不算接收；单次真实接回也不证明长期可靠性。当前地图仍 🟡，按实际四段证据决定范围，不因建卡升绿。
 共享最多4并发、最多1 GPU，本卡无需 GPU；由接收端现有容量机制领取，卡标签不证明空槽。普通单元最多2小时，失败保产物，按原合同核进程后续接，不重放未知调用。
+
+## 当前结果
+
+- 实现在 templates/generic/.claude/hooks/protect-paths.sh 中把绝对盘符字母统一为大写（目录名、文件名、规则 glob、POSIX 路径保持原大小写），新增 tests/test_protect_drive_case.py（8 方法/33 subTest，旧实现 11 例失败、修复后全过），并落读者记录 reader-tests/A-LONG-ROUTE-DRIVE-READER-20261112-u1.md（页面 114 行/14622 字节/SHA256 748a0cc5…，内嵌全文与仓库页面 cmp 一致）；git status/diff 与返回一致，check_repo、check_public、git diff --check 通过。taskDone=true。pageStuck=2：任务卡写域只允许改 generic，而项目测试 test_template_copies_identical 要求 generic 与 game-dev/unity、unreal 三份字节一致，未越界同步，故 test_protect*py discover 余 2 个 failure（已给逐字节差量）；本机原生 Windows Python 无法启动 fixture 硬编码的 /bin/bash（108 个 error，改动前基线相同）且无 jq（TEST_PARSER=jq 下 42 测试全 skip）、check_offline.py 两条 BLOCKED/exit 2，完整 POSIX 套件与 jq 后端未运行。openIssues：记录称内嵌页为任务文件 35–149 行（实际 148 行，应为 35–148）；卡点 2 将已实跑的 test_protect*py 写成未运行（实为运行但既有 fixture 全部 error）；卡点 3 的页面/输入限制冲突判断不准确（同段首句已把写者核对划给主 Agent）；另读者为格式参考读了旧读者记录，已披露且未沿用其结论。
+- 产物：[a6bc526](https://github.com/dbvv1/a1dbv/commit/a6bc526e3e17f8815060afdd7b0986696455aba1)，分支 `relay/a-long-route-drive-reader-20261112`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人决定是否授权同步 domains/game-dev/unity 与 unreal 两份 Hook 副本以消掉 2 个 failure；在具备 POSIX /bin/bash 与 jq 的环境补跑 test_protect*py 全量、jq 后端与 check_offline.py；并请修正读者记录的上述行号与措辞。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
