@@ -2,14 +2,14 @@
 id: B-STAR-DEFAULT-SMOKE-20261112
 owner: dot-B
 kind: build
-status: blocked
+status: revision_requested
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: d1607a57410c9bcdf1c0a9f24ece4ad238151485
 result_branch: relay/b-star-default-smoke-20261112
 
 ## 目标与派发条件
 使用当前 master 的玩家完赛判定，串行测 `/road` 与 `/road?environment=coast-space-v1` 的完整整局、重开和连续帧耗。保留已过静态盲选，不重拍旧机位图。
-本次是原卡返工规格，不是新任务。MOBA 原卡收集由指导层处理；其退出／清理回执未核前保持 blocked，不自动运行。负责人核清后再改 revision_requested，随后 Star → FPS 串行，不抢槽。
+本次沿原卡／原result_branch返工，不是新任务。MOBA原产物aabc47b已独立验收：两次拍摄及smoke浏览器exit0、preview关闭、cleanupErrors=[]，拍摄槽释放。本轮仅激活Star，FPS待本卡交回及清理后再派。
 Skill／规格：读取固定源 AGENTS.md、docs/browser-smoke.md，以及 a1dbv 游戏细则§6第3条、§7。仅 headless，不开可见窗口、不模拟桌面键鼠、不操作桌面。
 
 ## 环境、范围与一次修复
@@ -42,6 +42,10 @@ node tests/smoke-run.mjs --full-race --path '/road?environment=coast-space-v1' -
 - 原调试日志留本机，公开副本去私人路径／地址／身份／凭据，保留首错类型和阶段。公开扫描、独审后沿原result_branch交回 summary、SHA256清单和真实UTC；成功review_ready，耗尽一次修复仍失败blocked。
 - 接收端不切默认／部署。dot-B核完整smoke、帧耗和既有盲选后才决定换默认，未通过不记品质或覆盖增长。
 
+## 修改要求
+固定新base d1607a5：用现成玩家完赛观察器、Node22.23.2及上述两入口命令；脚本小问题按本卡范围现场修复并重跑一次，不改游戏代码。旧失败证据保留。
+重派UTC：2026-11-12T19:09:44Z；状态revision_requested仅表示已派待领取，不代表进程已运行。
+
 ## 当前结果
 旧base 2cad483首跑玩家已完赛，但观察器错误要求对手收尾，exit1、cleanupErrors=[]；候选未跑。原产物 [5257d5c](https://github.com/dbvv1/Star-Rush-Reborn/commit/5257d5c089bda540aa1ad5c9ecd0a143a3991b94) 保留，不追认为通过。
-本次明确接受Node22.23.2，取消旧Node24附加门槛；更新后的玩家完赛观察器仍须真实本机重跑。MOBA清理未交回，尚未激活本卡。
+本次明确接受Node22.23.2，取消旧Node24附加门槛；更新后的玩家完赛观察器仍须真实本机重跑。MOBA清理已独立核实，本卡已重派；实际领取、执行和新退出待接收端回执。
