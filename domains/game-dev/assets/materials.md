@@ -47,6 +47,14 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 | 高档静态图漂亮，实际掉帧 | 两作画质档成组改变分辨率、阴影、AO、光束等；Saltline 拍摄模式禁动态分辨率 | 成对图固定 renderer、档位与自适应状态；完整游玩另测连续帧耗。低档保构图、角色轮廓与关键反馈，先删反射／装饰，不用不同预算图盲选 |
 | 声音多却听不清 | 两作分世界／近场或UI／环境／音乐等总线，声部限额与优先级；Evensong 语音压音乐、暂停世界但保UI | 用同一场景状态控制画面与[混音焦点](audio.md#web-scene-mix)，先定事件、距离和优先级，再换声源；未经试听只说已接线 |
 
+**地表遮罩要表达成因，不只是多一层噪声。** Saltline 实际地表 shader 分开取积水高度、潮湿、油污和磨损，再与细节纹理、标线共同改变反照率、粗糙度和世界空间法线。独立实现时，先从道路低洼、遮雨区域、通行带和接缝生成大尺度分区，再用细尺度颗粒打破均匀受光；磨损应露出底材，油污应影响色泽和粗糙度，不能四种效果都只乘同一种深色。墙面雨痕按朝向改变，底面不沾雨；脚步、水花和湿润查询使用同一地表语义。
+
+**后处理按玩家状态调制，最终清晰度单独核。** Saltline 在色调阶段把低血量和开镜状态传给暗角，开镜还柔化周边；最后做抗锯齿、限制高反差边缘的锐化、按亮度调节的动态颗粒及抖动。采用时先保准星、敌人剪影和远处地标，再给状态效果幅度上限；正常、低血量、开镜各看一帧，动态颗粒另看连续画面。静态截图更“电影感”不证明移动中更清楚。雨、雾、bloom 与暗角应共用场景方向和事件状态，避免每项单独拉满。材质通道、曝光与混音是一套场景配方，工具检查可以分项，制作不拆成互不知情的小卡。
+
+**可用命令（只定位源码，不代表运行效果）：** 在固定镜像目录执行 `grep -n -E 'unique large-scale masks|rain wetness|vignette: base|luminance-weighted film grain|uSharpen' index.html`，随后追到 uniform 每帧赋值及渲染调用；当前镜像对应地表约 L5507、暗角 L4692、锐化／颗粒 L4723–4724。`?show=mats&q=medium&dynres=0` 是作品自带材质观察入口；固定档位也要记录实际回退，不把它当整局验收。
+
+**来源**：[Saltline 地表语义](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5507-L5599)、[状态暗角与最终清晰度](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4692-L4733)。核实 2026-11-12，已读 shader 及实际 uniform 更新；以上是独立实现建议，未声称已在案例采用或经过视听验收。
+
 **失败反例：** 某功能名出现在打包的 Three.js 库里，就写成游戏已经采用。Saltline 单文件含完整库，必须追到游戏创建材质、绑定纹理与每帧调用；同理，启动降级为普通材质也可能没有致命错误。验收读取实际档位和 fallback，不能只查控制台为空。
 
 **直接可用的操作入口：** 在自己的 Three.js `MeshStandardMaterial` 上按官方 `map`、`normalMap`、`roughnessMap`、`metalnessMap` 槽接同源输出；若用 `onBeforeCompile`，保留自定义 program cache key、原参数恢复和资源释放。已有源工具用本页 Blender 配方，不先新建生成器。整场景改之前先保存本作默认与同品类网页参照的同机 1280×720 图；参照画面和源码许可未清时只作本地研究，不进入公开资源包。
