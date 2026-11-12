@@ -8,55 +8,35 @@ rule globs and POSIX paths keep their original case.
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import unittest
 
+try:
+  import hook_test_support as support
+except ImportError:  # imported as tests.test_protect_drive_case
+  from tests import hook_test_support as support
+
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
-HOOK = Path(os.environ.get('HOOK_UNDER_TEST', REPO / 'templates/generic/.claude/hooks/protect-paths.sh'))
-BASH = os.environ.get('BASH_UNDER_TEST') or shutil.which('bash')
+HOOK = support.hook_under_test()
+BASH = support.resolve_bash()
 
 
 class DriveCaseTests(unittest.TestCase):
   def setUp(self):
-    if not BASH:
-      self.skipTest('bash unavailable')
     self.tmp = tempfile.TemporaryDirectory()
     self.addCleanup(self.tmp.cleanup)
     self.base = Path(self.tmp.name)
     self.rules = self.base / 'rules'
     self.rules.write_text('deny dist/* generated\n', encoding='utf-8')
-    self.env = dict(os.environ, CLAUDE_PROJECT_DIR='C:/Project',
-                    PROTECTED_PATHS_FILE=str(self.rules), PYTHONIOENCODING='utf-8')
-    # Reuse the existing Hook-test mechanism: an isolated PATH containing only
+    # Reuse the shared Hook-test mechanism: an isolated PATH containing only
     # cat and the requested parser pins the backend. Do not report an ambient
     # PATH fallback as a successfully pinned parser on native Windows.
-    requested = os.environ.get('TEST_PARSER')
-    parser = requested or ('jq' if shutil.which('jq') else 'python3')
-    if shutil.which(parser) is None:
-      self.skipTest(f'{parser} unavailable')
-    isolated = self.base / 'bin'
-    isolated.mkdir()
-    pinned = False
-    for name in ['cat', parser]:
-      source = shutil.which(name)
-      if source is None:
-        break
-      try:
-        (isolated / name).symlink_to(source)
-      except OSError:
-        break
-    else:
-      probe = subprocess.run([BASH, '-c', 'printf x | cat'], text=True,
-                             capture_output=True, env=dict(self.env, PATH=str(isolated)),
-                             cwd=str(self.base), timeout=30)
-      if (probe.returncode, probe.stdout) == (0, 'x'):
-        self.env['PATH'] = str(isolated)
-        pinned = True
-    if not pinned:
-      self.skipTest(f'cannot isolate {parser} backend on this host')
+    self.bin, self.parser, self.parser_target = support.isolated_bin(
+        self.base, os.environ.get('TEST_PARSER'))
+    support.verify_isolated_bin(BASH, self.bin, self.base)
+    self.env = support.hook_env(self.bin, 'C:/Project', self.rules)
 
   def run_hook(self, event=None, raw=None):
     if raw is None:
