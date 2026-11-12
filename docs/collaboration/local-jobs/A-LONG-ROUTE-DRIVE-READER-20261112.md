@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-DRIVE-READER-20261112 · 接续 Hook 盘符兼容修复
 id: A-LONG-ROUTE-DRIVE-READER-20261112
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 3bb383389a100f8fca4e25afe361b493fdfa7a3c
