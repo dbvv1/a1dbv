@@ -88,6 +88,7 @@ class OfflineChecksTests(unittest.TestCase):
                                  '--suite', 'tests', 'test*.py', group))
       self.assertEqual(check[2], {'TEST_PARSER': 'python3'})
     self.assertEqual(checks[3][2], {'TEST_PARSER': 'jq'})
+    self.assertEqual(checks[3][1][-1], 'test_protect*.py')
     self.assertIn('experiments/workflow-ablation/evaluator', checks[4][1])
     self.assertEqual(checks[4][1][-1], 'selftest.py')
     self.assertIn('experiments/context-results-audit', checks[5][1])

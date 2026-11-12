@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 编辑工具辅助 Hook；不是 Bash/MCP 或文件系统安全边界。
 # 规则：<deny|ask> <bash-glob> [原因]，相对项目根目录，第一条匹配生效。
-# 依赖 jq 或 python3。路径仅做词法规范化，保留盘符形式，不解析符号链接。
+# 依赖 jq 或 python3。路径仅做词法规范化：绝对盘符字母统一大写，目录名、文件名和 POSIX 路径保留原大小写，不解析符号链接。
 # 解析/依赖错误返回 1；默认运行时策略下仍不是阻止操作。
 set -uo pipefail
 ROOT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
@@ -59,8 +59,19 @@ cwd="${event_paths#*$'\x1f'}"
 # 不读取目标文件，也不使用 realpath；.. 仅在无符号链接前提下等价。
 normalize_path() {
   local part result='' prefix='' path="${1//\\//}"
+  local lower='abcdefghijklmnopqrstuvwxyz' upper='ABCDEFGHIJKLMNOPQRSTUVWXYZ' before
   case "$path" in
-    [a-zA-Z]:/*) prefix="${path:0:2}"; path="${path:2}" ;;
+    [a-zA-Z]:/*)
+      prefix="${path:0:2}"
+      case "${path:0:1}" in
+        [a-z])
+          # 仅统一绝对盘符字母的大小写，其余部分仍按原大小写比较。
+          before="${lower%%"${path:0:1}"*}"
+          prefix="${upper:${#before}:1}:"
+          ;;
+      esac
+      path="${path:2}"
+      ;;
     /*) ;;
     *) return 1 ;;
   esac

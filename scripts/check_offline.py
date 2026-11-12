@@ -27,7 +27,7 @@ def phases(root):
      (*unit, 'tests', 'test*.py', 'general'), {'TEST_PARSER': 'python3'}),
     ('Catalog Compare CLI contract matrix',
      (*unit, 'tests', 'test*.py', 'catalog-compare'), {'TEST_PARSER': 'python3'}),
-    ('Hook jq backend regressions', (*unit, 'tests', 'test_protect_paths.py'),
+    ('Hook jq backend regressions', (*unit, 'tests', 'test_protect*.py'),
      {'TEST_PARSER': 'jq'}),
     ('Evaluation fixtures (no models)',
      (*unit, 'experiments/workflow-ablation/evaluator', 'selftest.py'), {}),

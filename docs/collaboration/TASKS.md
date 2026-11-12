@@ -52,7 +52,7 @@
 
 ### A：11-12 积压接收收口
 
-15卡已由 dot-A 在 [f0c27d6](https://github.com/dbvv1/a1dbv/commit/f0c27d64374a60868537507c00c42a4ce214fb43) 回写：10 accepted限定接收、5 cancelled、0延期；范围见原卡与[日档](archive/completed-through-2026-11-12.txt)。review_ready由负责人接收，撤销等待单写窗口；保留原产物、未验及隔离。下一单元优先“离开后接续待验”：改核心步骤或让新读者照当前页真实接续采用，再更新地图。本次地图未变。
+15卡已回写10 accepted、5 cancelled，范围见[日档](archive/completed-through-2026-11-12.txt)与原卡；撤销单写窗口等待。[盘符任务](local-jobs/A-LONG-ROUTE-DRIVE-READER-20261112.md)已接回，三份Hook同步、双parser及POSIX验收通过。地图仍🟡：下一步新读者照改后页独立接续，不能以清卡代验收。
 
 11-12 三卡原进程已核不存在、隔离已解除，均取消：理由见 [GH-AW](local-jobs/A-GH-AW-APIDIFF-FACTS-20261103.md)、[MULTIAGENT](local-jobs/A-MULTIAGENT-LONG-WIDE-20261029.md)、[WORKTREE](local-jobs/A-WORKTREE-ISOLATION-FACTS-20261102.md)。不重派、不占选题；不外推其他卡。
 
