@@ -56,9 +56,11 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 
 ## 当前结果
 
-- 结果 c7936ff 保留证据，不合格接收：两次工具修复、三次smoke超出本卡“一次修复后重跑一次”；第二跑失败后应blocked。不得用超次第三跑换默认或提高覆盖。
-- 58条哈希复核通过；五个有日志浏览器已exit0且关联preview关闭，但探针、独审额外复跑、外层接收端退出清理尚缺，槽未释放。running仅保留原调用归属，不代表已证实仍在运行。
-- 两位独立非作者匿名AI静态选图已完成，均偏好全场材质且未判整体更差；不抵消流程越界，不冒充完整验收。原始意见、12图映射与审计见[回执审计](../reviews/fps-default-full-pair-20261112-receipt-audit.md)。
+- 本单元为交付后独立核查：HEAD c7936ff 与 origin/relay 一致、worktree clean；独立重算 59 文件/58 条 SHA256（0 失配）、两路 smoke 六回合帧耗（current-default active 1072 帧 mean 289.991ms/p95 550ms；full-materials active 1306 帧 mean 277.490ms/p95 516.7ms，后/前比值 0.957/0.939）、12 张成对图 metadata/PNG（1280×720、同组两次 state/RGBA 全等、default vs materials 状态与 stateHash 8f7d2286 全等而 RGBA 不同、materials 为 ai-courtyard-full-v1 ready 非回退）、浏览器启动参数（--headless/--use-angle=swiftshader，无 --no-sandbox/--enable-unsafe-swiftshader，exitCode 0）、tools-only 补丁可重放、两路构建清单 34 项一致、公开扫描 47 个文本文件干净；未发现需修正缺口，未改动任何文件（files=[]，git status 已核为空）。taskDone：本单元核查完成；pageStuck：不适用（非 reader-test）；未运行验收：npm test（本 worktree 为 relay 证据分支、非本卡 base_ref 且无 node_modules）、npm run sim（无 sim 改动）、完整 smoke 与成对拍摄（任务明令不盲重跑）；真实硬件 GPU 与声音未验证。openIssues：两名非作者同机位匿名盲选（均不判更差且至少一位偏好新版）与据此换默认的决定仍待负责人安排。
+- 本单元没有文件改动。
+- 检查：check_public（文件） 通过；独立审查通过。
+- 下一步：由负责人安排两名非作者同机位匿名盲选，并据结果决定是否将 full-materials 换为默认；README 已声明本目录不表示默认已变更。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求：仅补原调用回执，不启动新拍摄
 
