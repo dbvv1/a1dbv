@@ -2,7 +2,7 @@
 id: B-STAR-DEFAULT-SMOKE-20261112
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: d1607a57410c9bcdf1c0a9f24ece4ad238151485
 result_branch: relay/b-star-default-smoke-20261112
@@ -47,5 +47,9 @@ node tests/smoke-run.mjs --full-race --path '/road?environment=coast-space-v1' -
 重派UTC：2026-11-12T19:09:44Z；状态revision_requested仅表示已派待领取，不代表进程已运行。
 
 ## 当前结果
-旧base 2cad483首跑玩家已完赛，但观察器错误要求对手收尾，exit1、cleanupErrors=[]；候选未跑。原产物 [5257d5c](https://github.com/dbvv1/Star-Rush-Reborn/commit/5257d5c089bda540aa1ad5c9ecd0a143a3991b94) 保留，不追认为通过。
-本次明确接受Node22.23.2，取消旧Node24附加门槛；更新后的玩家完赛观察器仍须真实本机重跑。MOBA清理已独立核实，本卡已重派；实际领取、执行和新退出待接收端回执。
+
+- 两入口 /road 与 /road?environment=coast-space-v1 在固定 base d1607a5、Node 22.23.2、headless SwiftShader WebGL2、1280×720 DPR1 下均跑通完整整局：scope=full-race、passed=true、exit=0、cleanupErrors=[]，页面/控制台/请求错误为空，restartAndReturn=true；玩家结果 01:53.63、01:53.60，均 POS 2/4，未完赛对手按实际语义保留；frameCadence 含 samples/durationMs/meanMs/p50Ms/p95Ms/p99Ms/maxMs/over50Ms。default 首跑 exit1 系 Git Bash 将 /road 改写为 Windows 路径导致参数解析失败（浏览器未启动、无脚本逻辑修改），保留 attempt-1 后加 MSYS_NO_PATHCONV=1 复跑通过。openIssues 为空。未运行验收：真实 GPU、Node 24、人工视觉/手感/听感。结论不构成换默认或品质增长。
+- 产物：[0cf62c6](https://github.com/dbvv1/Star-Rush-Reborn/commit/0cf62c6137337e88b828c44e639c402c4ead03a7)，分支 `relay/b-star-default-smoke-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人接收本单元证据并决定是否换默认；真实 GPU/Node24 与人工视觉、手感、听感验收仍待人工或其他单元处理。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
