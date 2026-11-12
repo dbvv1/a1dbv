@@ -2,7 +2,7 @@
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: da56173cb338b3706d20d769ce34cecaa1edb385
 result_branch: relay/b-moba-quiet-pair-20261112
@@ -50,4 +50,5 @@ result_branch: relay/b-moba-quiet-pair-20261112
 未过换默认前仍0/89；源码合入、默认切换、网站版本、品质分与覆盖分别汇报。失败或不完整证据不计通过。
 
 ## 当前结果
-ready：前序FPS失败交回且清理已核，待本机接收端领取；尚未开始，没有新拍摄结果。完整smoke原900规格与图720规格差异已明列，须在接收结论保留。
+
+- 本单元交付文件清单无效，产物保留本地且未提交；修正清单后由接收端维护者接续。
