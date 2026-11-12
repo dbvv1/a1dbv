@@ -61,6 +61,30 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 **依据**：Saltline 固定 `09c51774` 的[实际材质生成](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5439-L5443)、[地表查询](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5814)、[后处理／降级](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4732-L4733)；Evensong [材质](https://evensong-phi.vercel.app/src/gfx/materials.js)、[后处理](https://evensong-phi.vercel.app/src/gfx/post.js)、[画质](https://evensong-phi.vercel.app/src/gfx/renderer.js)、[效果](https://evensong-phi.vercel.app/src/gfx/vfx.js)；[Three.js PBR 槽契约](https://threejs.org/docs/pages/MeshStandardMaterial.html)。核实 2026-11-12，仅源码与接口阅读，Evensong 部署内容可变；均未证明最低设备收益、完整听感或已用于三个案例。
 
+### 同尺寸参照先核内部预算，再决定画质档
+
+**目标：** 同机 1280×720 参照图用于找构图、受光与视听差距，不把不同内部像素量误当成材质优劣。外框、DPR、内部目标尺寸和后处理是否回退都要分开记录；跨作品不强行抹平各自管线，也不从截图推同机性能胜负。
+
+**做法：** 沿原作品画质配置固定档位和自适应状态，再读实际内部尺寸。Saltline 的 `dynres=0` 只关闭按帧时间调节的控制器，固定档位的 `scale`、最高 2 的 DPR 和内部像素上限仍生效：low／medium／high／ultra 分别为 100／150／230／370 万像素。advanced 管线先算 `CSS宽×CSS高×DPR²×(档位scale×动态因子)²`，超上限再同比缩小，末尾取整；forward 回退走另一条尺寸计算。因此 medium、1280×720、DPR1、动态因子1时，内部为1088×612；DPR2则因150万像素上限变成1633×919。两张导出PNG同为1280×720也可能来自不同预算，必须同时看原 `render.stats()` 返回的 `res` 和实际回退状态。
+
+**画质表不等于所有资源可热切换。** 该固定源码的 `setQuality` 会更新阴影、MSAA、后处理与尺寸；雨的实例数量却在 `Nb` 创建时读取 `quality.rain`。把菜单切到低档并不自动证明旧雨池已缩小。自己的整场景配方应明确哪些参数即时生效、哪些需在安全边界重建，并释放旧资源；先保战斗提示、角色剪影，再减装饰，不在每帧反复重建池。
+
+**失败反例：** 前图DPR1、后图DPR2，或前图advanced、后图已fallback，只锁PNG尺寸和`dynres=0`便给新版更清晰／更快的结论；另一个反例是只改质量配置对象便宣称低档已少画粒子。前者要回实际尺寸与管线，后者要追到消费者是否重新分配和释放。
+
+**可用命令：** 在固定源码目录运行下面的纯文本定位，再沿调用者核对，而不是执行下载的代码；尺寸算例只验证公式，不代表浏览器实测。
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+s = Path('index.html').read_text()
+for key in ('setQuality(ie)', 'resize(){let ie=', 'function Nb('):
+  at = s.index(key)
+  print(key, 'line', s.count('\n', 0, at) + 1, s[at:at + 1000])
+PY
+```
+
+依据：Saltline 固定 `09c51774` 的[画质、动态分辨率与实际渲染尺寸](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4733)、[雨池创建](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5814)。核实 2026-11-12，定位命令与尺寸公式已在CPU运行；未据此声称实际画面、热切换帧耗或三个案例采用通过。
+
 ## 30 秒决策
 
 | 你现在需要 | 先做什么 | 什么情况下撤回 |
