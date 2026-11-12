@@ -55,5 +55,9 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 两名非作者同机位匿名盲选均不判更差且至少一位偏好新版，完整smoke与帧耗无明显劣化，负责人方可换默认。声音、硬件GPU、升档不前置；无完整证据不计覆盖。
 
 ## 当前结果
-旧402dd68首跑按2切pistol超时，materials/六回合未完成；旧harness硬编码导致0图。原产物[1336856](https://github.com/dbvv1/FPS-Like/commit/1336856aca907a4f840f94fdfee42c500a6c09f7)保留，browserDisconnected/previewPortClosed=true、浏览器exit0。
-2026-11-12T21:10:03Z已派发本次复验，固定base_ref与上列权限不变；待接收端记录实际启动、完成和清理时刻。未交回，不将派发或CPU测试算出图／浏览器通过。
+
+- Build 单元交付完成：base 658b2e5 干净 worktree 下完成三跑完整 smoke（第三跑 exit 0，两入口各六自然回合、换边、终局与再开，浏览器 exit 0/0、页面错误 0，帧耗 mean 289.99/277.49ms、p95 550/516.7ms、比值 0.9569/0.9395）与 12 张 1280×720 DPR1 成对图（同机位 state/stateHash/commands/camera 全等，重复 RGBA 相同，materials ready 非 fallback）；两处 tools-only 修复（smoke 等待≥20 真实按住键 tick、smoke-backlog maxBuffer 64MiB）及三次尝试证据独立留档；独立复核者另跑 npm test 468/468 通过并重跑 smoke 与拍摄，12 图哈希逐张一致；公开扫描干净、SHA256SUMS 58 条 0 失配；未跟踪目录 59 文件，HEAD 未变、无 tracked 改动。openIssues 为空；未运行 npm run sim（无 sim 改动），未做两名非作者同机位匿名盲选、真实硬件 GPU 与声音验证，故尚不足以换默认。taskDone: 本单元证据交付完成；pageStuck: 不适用（非 reader-test）。
+- 产物：[c7936ff](https://github.com/dbvv1/FPS-Like/commit/c7936ff9231bd2755bedcd062f83cfe41e841d70)，分支 `relay/b-fps-default-full-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：接收端将 59 文件目录提交到 relay/b-fps-default-full-pair-20261112；负责人安排两名非作者同机位匿名盲选（均不判更差且至少一位偏好新版）后再决定是否换默认。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
