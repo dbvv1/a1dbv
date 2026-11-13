@@ -2,7 +2,57 @@
 
 **🧪 先让 Agent 跑项目真实客户端构造与请求边界，再接收依赖升级。** 固定试用的 Hermes 源码使用 SDK 0.125.0；只换成 2.3.0，构造器先失败，单独查后续请求还会发现采样参数错误和认证头丢失。应把跨过的 **v1 HTTP 层迁移**与 **v2 API 契约迁移**一起处理，暂缓“只改版本号”的补丁。
 
-## 实际发现了什么
+<a id="sdk2-current-candidate"></a>
+## 当前 SDK2 候选：先保平台与行为，不升全产品默认
+
+**保留现有共享版本；只有限定试验使用[九文件候选](hermes-v2-contract.patch)。** 当前 Hermes main `c9b20d7bc08dec1e10779a06d7d9073bc6e7e418` 仍 pin 0.125.0，#142796 未决、#118652 仍是 1.x 在途 PR。本次接通 SDK 2.3.0 的 native 默认请求、辅助请求与主 stream，但不把它作为全产品升级：native 非默认采样没有等价替代，Bedrock 旧模型仍需旧 SDK/API；维护者的升级时机未定。
+
+候选使用 SDK 自带 Timeout 和 httpx2 bearer client；API-key 在 HTTP auth 阶段转回 X-Api-Key，保留 key/token 身份区别、环境隔离和 copy 后认证。请求边界同时接入 create helper 与主线程直接 stream，避免只修 helper 漏掉实际入口。native 默认 temperature=1 可以省略；非默认采样在发请求前明确拒绝，而非静默丢弃；user text 的 citations 移除，assistant 来源与输入历史保留。
+
+| 同一固定输入的检查 | 结果与边界 |
+|---|---|
+| 原 SDK 0.125.0，原项目三文件 | 110 通过 |
+| 新 SDK＋原实现，新增最初三例 | 3 失败，均停在 timeout 类型；只修 timeout 后 2 失败／1 通过，继续暴露认证和采样 |
+| 最终候选，10 个相关测试文件 | 180 通过、0 失败；原生静态入口 17 检查通过 |
+| 独立 native 消费者，旧／新 SDK | 各 7 通过：真实 SSE、辅助默认请求、copy 认证、citations、输入不变及 400 不误回退 |
+| 独立第三方控制 | 3 通过，只证明序列化：新版 API header 与旧采样/citations 同时发出，不证明任何网关接受 |
+
+独审不是首次全过：最初冻结的 7 例在旧版通过，候选 3 过／4 败，原因是审查者把第三方 host 误按 native 新版契约断言；保留[原始冻结测试](independent-original.py)，另用同消息与参数、改为 native host 的 [native 对照](independent-native.py)区分路由，再增加[第三方控制](independent-gateway.py)。辅助非默认 temperature=0.3 的候选结果是 ValueError、零请求，这是升级阻塞，不是功能保留成功。测试全用合成键与内存 transport，未调用模型或真实服务。
+
+### 在独立源码副本重放
+
+从 a1dbv 根目录开始。需要已授权的官方依赖网络、Git 与能启动项目 PM 的 Python；受测 Linux、Python 3.14.9、SDK 2.3.0、httpx2 2.15.1。先读 Hermes 当前指引，只用它的 PM 创建环境，不裸 pip 改产品环境。
+
+```sh
+(
+set -e
+A1DBV="$PWD"
+trial_root="$(mktemp -d)"
+git clone https://github.com/NousResearch/hermes-agent.git "$trial_root/hermes"
+cd "$trial_root/hermes"
+git checkout --detach c9b20d7bc08dec1e10779a06d7d9073bc6e7e418
+PATCH="$A1DBV/experiments/anthropic-sdk-migration/hermes-v2-contract.patch"
+git apply --unidiff-zero --check "$PATCH"
+git apply --unidiff-zero "$PATCH"
+trial_home="$(mktemp -d)"
+export HOME="$trial_home" HERMES_HOME="$trial_home/data" HERMES_RUNTIME_DIR="$trial_home/runtime"
+export HERMES_DISABLE_LAZY_INSTALLS=1
+python -m pm.build_env --source . --out "$trial_root/sdk2-env" --group dev --group test --extra bedrock
+export HERMES_PYTHON="$trial_root/sdk2-env/bin/python"
+cp "$A1DBV/experiments/anthropic-sdk-migration/independent-original.py" tests/agent/test_sdk_migration_independent.py
+cp "$A1DBV/experiments/anthropic-sdk-migration/independent-native.py" tests/agent/test_sdk_migration_native_review.py
+cp "$A1DBV/experiments/anthropic-sdk-migration/independent-gateway.py" tests/agent/test_sdk_migration_gateway_review.py
+HERMES_TEST_FILE_RETRIES=0 bash scripts/run_tests.sh   tests/agent/test_anthropic_sdk2_boundary.py   tests/agent/test_sdk_migration_native_review.py   tests/agent/test_sdk_migration_gateway_review.py -q
+)
+```
+
+本入口已在固定候选上实跑：3 文件、18 项通过、0 失败。这里只运行候选边界、native 与第三方控制；原冻结文件用于保留首次审查证据并供第三方控制导入，不把其已知路由错误作为最终门禁。旧版对照另建固定原树和 PM 环境，只运行 native 文件；不要在同一环境卸装两个版本。发布时改为零上下文补丁以通过仓库空白检查，已在全新固定源码副本应用并逐字节核 9 个文件与独审候选一致，须保留命令中的 `--unidiff-zero`。补丁 SHA256 `2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca`。源码或锁变化须重验，不把本次计数复制到新版本。
+
+候选保存在知识库供继续验证，不进入 Hermes 默认分支或上游 PR；完整应用、真实网关、Bedrock/Foundry 服务、跨 OS 均未验。官方明确要求仍需旧模型或非默认采样语义的请求保持旧版，不能靠换模型或删功能完成原目标。适用 MIT 许可沿用 [HERMES-LICENSE](HERMES-LICENSE.txt)。
+
+依据：[官方 v1 HTTP 迁移](https://github.com/anthropics/anthropic-sdk-python/blob/v2.3.0/MIGRATION.md)、[v2 平台与采样契约](https://platform.claude.com/docs/en/api/migration-2026-10-21)、[实际升级需求](https://github.com/NousResearch/hermes-agent/issues/142796)、[Bedrock 复测原评论](https://github.com/anthropics/anthropic-sdk-python/issues/2031#issuecomment-6796169642)。2026-11-13 重新核原帖、评论、官方原文与固定源码并实跑；这是既有问题的定向深挖，不声称完成全生态广扫。社区 2.8.0 对部分旧模型的成功回执不扩大官方支持范围。
+
+## 历史：原探针实际发现了什么
 
 | 相同真实 adapter／输入 | 原依赖 0.125.0 | 仅换 SDK 2.3.0 |
 |---|---|---|

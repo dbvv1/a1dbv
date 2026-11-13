@@ -1,0 +1,319 @@
+diff --git a/agent/anthropic_adapter.py b/agent/anthropic_adapter.py
+index 0477632e..e4b15622 100644
+--- a/agent/anthropic_adapter.py
++++ b/agent/anthropic_adapter.py
+@@ -379,2 +379,2 @@ def _client_timeout(timeout):
+-    """httpx.Timeout with the caller's read timeout (default 900s) and a 10s connect."""
+-    from httpx import Timeout
++    """SDK-native Timeout with the caller's read timeout (default 900s) and a 10s connect."""
++    from anthropic import Timeout
+@@ -405 +405 @@ def _build_anthropic_client_with_bearer_hook(
+-    documented Foundry pattern) uses a custom ``httpx.Client`` whose request hook mints a fresh JWT
++    documented Foundry pattern) uses a custom ``httpx2.Client`` whose request hook mints a fresh JWT
+@@ -439,6 +439,3 @@ def _new_sdk_client(sdk, kwargs: dict[str, Any], headers: dict[str, str], route:
+-    The SDK fills whichever of ``api_key`` / ``auth_token`` we left unset from ANTHROPIC_API_KEY /
+-    ANTHROPIC_AUTH_TOKEN in the environment (both loaded from ~/.hermes/.env) and then sends dual
+-    auth — x-api-key *and* Authorization: Bearer — shipping a foreign credential to Portal / MiniMax
+-    / OAuth / Entra / third-party endpoints (#26970, #105774). An ``Omit()`` default header is the
+-    SDK-sanctioned way to drop the other header, and unlike an attribute clear it survives
+-    ``with_options()``, which re-runs the constructor and re-reads the environment."""
++    SDK 2 selects one explicit credential and preserves it when copying the client. Both
++    credentials now use Authorization, so key routes convert at the HTTP auth stage rather
++    than omitting Authorization before the credential reaches the transport."""
+@@ -446,3 +443,11 @@ def _new_sdk_client(sdk, kwargs: dict[str, Any], headers: dict[str, str], route:
+-    if "api_key" in kwargs and "auth_token" not in kwargs:
+-        merged["Authorization"] = sdk.Omit()
+-    elif "auth_token" in kwargs and "api_key" not in kwargs:
++    # SDK 2 selects one explicit credential, including after with_options().
++    # Preserve Hermes's key-vs-OAuth route distinction after SDK 2 moved both to Bearer.
++    if "api_key" in kwargs:
++        key = kwargs["api_key"]
++        def send_gateway_key(request):
++            if request.headers.get("Authorization") == f"Bearer {key}":
++                del request.headers["Authorization"]
++                request.headers["X-Api-Key"] = key
++            return request
++        kwargs["http_client"] = sdk.DefaultHttpxClient(auth=send_gateway_key)
++    elif "auth_token" in kwargs:
+@@ -871,0 +877,2 @@ def create_anthropic_message(
++    from agent.anthropic_sdk2_request import prepare_sdk2_message
++    api_kwargs = prepare_sdk2_message(api_kwargs, native=is_native_anthropic_host(str(client.base_url)))
+diff --git a/agent/anthropic_sdk2_request.py b/agent/anthropic_sdk2_request.py
+new file mode 100644
+index 00000000..31f74df5
+--- /dev/null
++++ b/agent/anthropic_sdk2_request.py
+@@ -0,0 +1,42 @@
++"""SDK 2 Messages request adaptation; not a blanket provider/API upgrade."""
++from copy import deepcopy
++
++
++def _strip_user_text_citations(blocks):
++    if not isinstance(blocks, list):
++        return
++    for block in blocks:
++        if not isinstance(block, dict):
++            continue
++        if block.get("type") == "text":
++            block.pop("citations", None)
++        elif block.get("type") in {"search_result", "tool_result"}:
++            _strip_user_text_citations(block.get("content"))
++
++
++def prepare_sdk2_message(params, *, native):
++    """Preserve legacy gateway wire fields; native non-default sampling needs old API."""
++    result = deepcopy(params)
++    sampling = {key: result.pop(key) for key in ("temperature", "top_p", "top_k") if key in result}
++    if not native:
++        if sampling:
++            result["extra_body"] = {**sampling, **result.get("extra_body", {})}
++        return result
++    extra = result.get("extra_body", {})
++    sampling.update({key: extra.pop(key) for key in ("temperature", "top_p", "top_k") if key in extra})
++    if any(key != "temperature" or value != 1 for key, value in sampling.items()):
++        raise ValueError("Non-default sampling requires the previous Anthropic API; SDK 2 cannot preserve it")
++    for message in extra.get("messages", result.get("messages", [])):
++        if message.get("role") == "user":
++            _strip_user_text_citations(message.get("content"))
++    return result
++
++
++def open_sdk2_stream(client, params, *, log_prefix=""):
++    """Apply the same request boundary on the main turn's direct streaming path."""
++    from agent.anthropic_adapter import sanitize_anthropic_kwargs
++    from agent.anthropic_credentials import is_native_anthropic_host
++    final = dict(params)
++    sanitize_anthropic_kwargs(final, log_prefix=log_prefix)
++    final = prepare_sdk2_message(final, native=is_native_anthropic_host(str(client.base_url)))
++    return client.messages.stream(**final)
+diff --git a/agent/azure_identity_adapter.py b/agent/azure_identity_adapter.py
+index 52768568..feea394e 100644
+--- a/agent/azure_identity_adapter.py
++++ b/agent/azure_identity_adapter.py
+@@ -316 +316 @@ def build_bearer_http_client(
+-    """``httpx.Client`` minting a fresh Entra bearer JWT per outbound request. The Anthropic SDK computes
++    """``httpx2.Client`` minting a fresh Entra bearer JWT per outbound request. The Anthropic SDK computes
+@@ -323 +323 @@ def build_bearer_http_client(
+-    import httpx
++    import httpx2
+@@ -325 +325 @@ def build_bearer_http_client(
+-    def _inject_auth(request: httpx.Request) -> None:
++    def _inject_auth(request: httpx2.Request) -> None:
+@@ -343 +343 @@ def build_bearer_http_client(
+-    return httpx.Client(event_hooks={"request": [_inject_auth]}, **httpx_kwargs)
++    return httpx2.Client(event_hooks={"request": [_inject_auth]}, **httpx_kwargs)
+diff --git a/agent/chat_completion_helpers.py b/agent/chat_completion_helpers.py
+index 5f2cf346..abe4ce5e 100644
+--- a/agent/chat_completion_helpers.py
++++ b/agent/chat_completion_helpers.py
+@@ -3379 +3379 @@ class _StreamingCall(StreamingWaitMonitor):
+-        from agent.anthropic_adapter import normalize_stream_usage, sanitize_anthropic_kwargs
++        from agent.anthropic_adapter import normalize_stream_usage
+@@ -3383,3 +3383,2 @@ class _StreamingCall(StreamingWaitMonitor):
+-            final_kwargs = dict(next_api_kwargs)
+-            sanitize_anthropic_kwargs(final_kwargs, log_prefix=getattr(self.agent, "log_prefix", ""))
+-            manager = request_client.messages.stream(**final_kwargs)
++            from agent.anthropic_sdk2_request import open_sdk2_stream
++            manager = open_sdk2_stream(request_client, next_api_kwargs, log_prefix=getattr(self.agent, "log_prefix", ""))
+diff --git a/pyproject.toml b/pyproject.toml
+index 063a61d2..c5cb08f4 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -236 +236 @@ uvloop = [
+-anthropic = ["anthropic==0.125.0"] # CVE-2026-34450, CVE-2026-34452
++anthropic = ["anthropic==2.3.0"] # CVE-2026-34450, CVE-2026-34452
+@@ -582 +582 @@ test = [
+-  "anthropic==0.125.0",
++  "anthropic==2.3.0",
+diff --git a/tests/agent/test_anthropic_client_auth.py b/tests/agent/test_anthropic_client_auth.py
+index 37bb8e2a..f2e57c65 100644
+--- a/tests/agent/test_anthropic_client_auth.py
++++ b/tests/agent/test_anthropic_client_auth.py
+@@ -18 +18 @@ def wire_headers(client) -> dict:
+-    """Headers the SDK would put on a /v1/messages POST (the Omit() default is resolved here)."""
++    """Headers the SDK would put on a /v1/messages POST after SDK headers and the HTTP credential mapping."""
+@@ -21 +21,6 @@ def wire_headers(client) -> dict:
+-    return dict(client._build_headers(FinalRequestOptions(method="post", url="/v1/messages", json_data={})))
++    import httpx2
++    headers = client._build_headers(FinalRequestOptions(method="post", url="/v1/messages", json_data={}))
++    request = httpx2.Request("POST", str(client.base_url) + "messages", headers=headers)
++    if client._client.auth is not None:
++        request = next(client._client.auth.sync_auth_flow(request))
++    return dict(request.headers)
+@@ -93 +98 @@ def test_key_cmd_token_lands_in_the_header_its_family_needs(monkeypatch, base_ur
+-    import httpx
++    import httpx2
+@@ -98 +103 @@ def test_key_cmd_token_lands_in_the_header_its_family_needs(monkeypatch, base_ur
+-    request = httpx.Request("POST", (base_url or "https://api.anthropic.com") + "/v1/messages", headers={"Authorization": "Bearer entra-id-bearer-via-http-hook"})
++    request = httpx2.Request("POST", (base_url or "https://api.anthropic.com") + "/v1/messages", headers={"Authorization": "Bearer entra-id-bearer-via-http-hook"})
+diff --git a/tests/agent/test_anthropic_sdk2_boundary.py b/tests/agent/test_anthropic_sdk2_boundary.py
+new file mode 100644
+index 00000000..7d689458
+--- /dev/null
++++ b/tests/agent/test_anthropic_sdk2_boundary.py
+@@ -0,0 +1,126 @@
++"""Actual SDK2 wire contracts using synthetic credentials and no external transport."""
++import copy
++import json
++import socket
++
++import anthropic
++import httpx2
++import pytest
++
++from agent import anthropic_adapter as adapter
++
++
++@pytest.fixture
++def wire(monkeypatch):
++    seen = []
++    def capture(transport, request):
++        body = json.loads(request.content)
++        seen.append((dict(request.headers), body))
++        return httpx2.Response(200, json={
++            "id": "msg_synthetic", "type": "message", "role": "assistant",
++            "model": body["model"], "content": [{"type": "text", "text": "ok"}],
++            "stop_reason": "end_turn", "stop_sequence": None,
++            "usage": {"input_tokens": 1, "output_tokens": 1},
++        })
++    def no_network(*args, **kwargs):
++        raise AssertionError("This contract test must not open a socket")
++    monkeypatch.setattr(httpx2.HTTPTransport, "handle_request", capture)
++    monkeypatch.setattr(socket.socket, "connect", no_network)
++    monkeypatch.setattr(adapter, "_anthropic_sdk", anthropic)
++    monkeypatch.setattr(adapter, "_custom_provider_extra_headers", lambda route: {})
++    monkeypatch.setenv("ANTHROPIC_API_KEY", "synthetic-ambient-key")
++    monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "synthetic-ambient-token")
++    return seen
++
++
++@pytest.mark.parametrize("base_url,key,header", [
++    ("https://api.anthropic.com", "sk-ant-api-synthetic", "x-api-key"),
++    ("https://gateway.invalid/anthropic", "synthetic-route-key", "x-api-key"),
++    ("https://api.minimax.io/anthropic", "synthetic-route-token", "authorization"),
++])
++def test_actual_builder_and_copy_keep_exactly_one_route_credential(wire, base_url, key, header):
++    client = adapter.build_anthropic_client(key, base_url=base_url, timeout=17)
++    copied = client.with_options(timeout=23)
++    try:
++        for target in (client, copied):
++            result = adapter.create_anthropic_message(target, {
++                "model": "claude-sonnet-4-5", "max_tokens": 16,
++                "messages": [{"role": "user", "content": "synthetic"}],
++            }, prefer_stream=False)
++            assert result.content[0].text == "ok"
++        assert len(wire) == 2
++        for headers, body in wire:
++            assert headers[header] == (key if header == "x-api-key" else f"Bearer {key}")
++            assert ("x-api-key" in headers) != ("authorization" in headers)
++            assert headers["anthropic-version"] == "2026-10-21"
++    finally:
++        copied.close()
++        client.close()
++
++
++def test_native_manual_thinking_payload_and_user_citations_reach_sdk2(wire):
++    citation = {"type": "char_location", "cited_text": "quote", "document_index": 0,
++                "document_title": "doc", "start_char_index": 0, "end_char_index": 5}
++    history = [{"role": "user", "content": [{"type": "text", "text": "question", "citations": [citation]}]},
++               {"role": "assistant", "content": [{"type": "text", "text": "answer", "citations": [citation]}]},
++               {"role": "user", "content": "continue"}]
++    original = copy.deepcopy(history)
++    params = adapter.build_anthropic_kwargs("claude-sonnet-4-5", history, None, 8192,
++                                          {"enabled": True, "effort": "low"})
++    client = adapter.build_anthropic_client("sk-ant-api-synthetic", timeout=17)
++    try:
++        adapter.create_anthropic_message(client, params, prefer_stream=False)
++        assert len(wire) == 1
++        _headers, body = wire[0]
++        assert not {"temperature", "top_p", "top_k"} & body.keys()
++        assert "citations" not in body["messages"][0]["content"][0]
++        assert body["messages"][1]["content"][0]["citations"] == [citation]
++        assert history == original
++    finally:
++        client.close()
++
++
++def test_legacy_gateway_sampling_is_preserved_and_native_nondefault_rejected(wire):
++    params = {"model": "claude-sonnet-4-5", "max_tokens": 16, "temperature": 0.2,
++              "messages": [{"role": "user", "content": "synthetic"}]}
++    with adapter.build_anthropic_client("synthetic", base_url="https://gateway.invalid") as client:
++        adapter.create_anthropic_message(client, params, prefer_stream=False)
++    assert wire[0][1]["temperature"] == 0.2
++    assert params["temperature"] == 0.2
++    with adapter.build_anthropic_client("sk-ant-api-synthetic") as client:
++        with pytest.raises(ValueError, match="previous Anthropic API"):
++            adapter.create_anthropic_message(client, params, prefer_stream=False)
++    assert len(wire) == 1
++
++
++def test_callable_token_refresh_survives_sdk_copy(wire):
++    tokens = iter(["synthetic-first", "synthetic-second"])
++    client = adapter.build_anthropic_client(lambda: next(tokens), base_url="https://gateway.invalid")
++    copied = client.with_options()
++    try:
++        for target in (client, copied):
++            adapter.create_anthropic_message(target, {
++                "model": "claude-sonnet-4-5", "max_tokens": 16,
++                "messages": [{"role": "user", "content": "synthetic"}],
++            }, prefer_stream=False)
++        assert [headers["authorization"] for headers, _ in wire] == ["Bearer synthetic-first", "Bearer synthetic-second"]
++        assert all("x-api-key" not in headers for headers, _ in wire)
++    finally:
++        copied.close()
++        client.close()
++
++
++@pytest.mark.parametrize("value", [0.3, 1])
++def test_native_extra_body_sampling_cannot_hide_from_migration(wire, value):
++    params = {"model": "claude-sonnet-4-5", "max_tokens": 16,
++              "messages": [{"role": "user", "content": "synthetic"}],
++              "extra_body": {"temperature": value}}
++    with adapter.build_anthropic_client("sk-ant-api-synthetic") as client:
++        if value != 1:
++            with pytest.raises(ValueError, match="previous Anthropic API"):
++                adapter.create_anthropic_message(client, params, prefer_stream=False)
++            assert not wire
++        else:
++            adapter.create_anthropic_message(client, params, prefer_stream=False)
++            assert "temperature" not in wire[0][1]
++    assert params["extra_body"]["temperature"] == value
+diff --git a/tests/agent/test_anthropic_stream_fallbacks.py b/tests/agent/test_anthropic_stream_fallbacks.py
+index 2c57b5c4..61bf280d 100644
+--- a/tests/agent/test_anthropic_stream_fallbacks.py
++++ b/tests/agent/test_anthropic_stream_fallbacks.py
+@@ -29 +29 @@ def _client(exc):
+-    return SimpleNamespace(messages=messages), created
++    return SimpleNamespace(messages=messages, base_url="https://gateway.invalid"), created
+@@ -92 +92 @@ def test_null_usage_aux_stream_is_normalized_without_create_retry():
+-    final = create_anthropic_message(SimpleNamespace(messages=messages),
++    final = create_anthropic_message(SimpleNamespace(messages=messages, base_url="https://gateway.invalid"),
+@@ -104 +104 @@ def _anthropic_agent(stream_factory, provider="custom"):
+-    client = SimpleNamespace(messages=SimpleNamespace(stream=lambda **kw: stream_factory()))
++    client = SimpleNamespace(base_url="https://gateway.invalid", messages=SimpleNamespace(stream=lambda **kw: stream_factory()))
+diff --git a/uv.lock b/uv.lock
+index 8cfa6999..4b7ac79d 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -370 +370 @@ name = "anthropic"
+-version = "0.125.0"
++version = "2.3.0"
+@@ -374 +373,0 @@ dependencies = [
+-    { name = "distro" },
+@@ -376 +375 @@ dependencies = [
+-    { name = "httpx" },
++    { name = "httpx2" },
+@@ -377,0 +377 @@ dependencies = [
++    { name = "opentelemetry-api" },
+@@ -382 +382 @@ dependencies = [
+-sdist = { url = "https://files.pythonhosted.org/packages/62/f8/6f0560884b5363848347bd640b6c1d04abc25e7aa61787a232f790c6b60a/anthropic-0.125.0.tar.gz", hash = "sha256:e0cdd336580cb7411c1cdab69f80973e9bf4bff7f8e08141811d46307d45c682", size = 1112593, upload-time = "2026-08-19T22:00:42.837Z" }
++sdist = { url = "https://files.pythonhosted.org/packages/3e/ba/4c91947e0d0062d66d371db371597287153f7685fbed512d3294d0cde3c7/anthropic-2.3.0.tar.gz", hash = "sha256:edfdea1e3fa7b3ce25df1511953408b2f03bfa61eb6f6268f766101a9e18ad53", size = 1869656, upload-time = "2026-10-23T23:18:47.649Z" }
+@@ -384 +384 @@ wheels = [
+-    { url = "https://files.pythonhosted.org/packages/2f/1a/b1bd30cda3790557e8791bec5922a6ec8fabb6fa8b008c76a39cf7be6152/anthropic-0.125.0-py3-none-any.whl", hash = "sha256:3486013602eca76d8b12540764e53654f02cf4951110bca86cf06e67428a9f21", size = 1184067, upload-time = "2026-08-19T22:00:44.596Z" },
++    { url = "https://files.pythonhosted.org/packages/3f/29/eb3558ab6bf252a07ac41c76ac5b0ea24a0aa0c23f87a40aaf31a5f8dba4/anthropic-2.3.0-py3-none-any.whl", hash = "sha256:aa6a3984f9276f307933d42dc6f58b6efc821a5ecafbc8d1bb5993a066767622", size = 2216980, upload-time = "2026-10-23T23:18:45.779Z" },
+@@ -2622 +2622 @@ requires-dist = [
+-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = "==0.125.0" },
++    { name = "anthropic", marker = "extra == 'anthropic'", specifier = "==2.3.0" },
+@@ -2795 +2795 @@ test = [
+-    { name = "anthropic", specifier = "==0.125.0" },
++    { name = "anthropic", specifier = "==2.3.0" },
