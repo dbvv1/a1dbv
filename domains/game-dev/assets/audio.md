@@ -36,6 +36,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 做法：以 `GainNode` 建总线，单声源拥有包络、空间衰减与退出路径；同类事件限额，超额时先淡出低优先级旧声。对话／危险提示出现时平滑调整背景增益，恢复时避免突跳；延迟解码与缓存只改变资源供给，不补播过去的事件。一个场景内先统一雨、脚步、枪声与音乐的远近关系，再换零散样本。Evensong 当前实现含录音、ElevenLabs 和标为 CC0 的音源，不能归为全程序合成，也不能把文件可下载当作可复用许可。
 
+脚步选声先信接触事件的表面与介质结果，不再只按 x/z 重查地面积水覆盖它；否则上层干金属可能发出下层水声。正常地面、高低重叠和查询失败的原代码反例见[共享接触结果](materials.md#web-scene-recipe)。
+
 失败反例：把总线压缩器或“无削波”当成听感通过。限制峰值仍可能让环境遮住换弹、让 UI 随暂停消失，或使旧声在恢复后补播。分别验正确事件、暂停／重开生命周期、响度／削波与真实试听；未做的保留未验。
 
 **工具：** 浏览器原生 `AudioContext`／`GainNode`／`DynamicsCompressorNode` 足够实现基础分流与增益，沿现有合法样本和混音映射，不为试此机制迁移中间件。[MDN GainNode 创建与增益](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)给出接口；源码参照为 [Saltline 音频实际实现](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5928)和 [Evensong 音频模块](https://evensong-phi.vercel.app/src/audio/audio.js)。核实 2026-11-12；只读源码，未试听、未作三案采用或成本收益结论。

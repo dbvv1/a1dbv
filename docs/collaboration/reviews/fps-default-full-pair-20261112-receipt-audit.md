@@ -37,9 +37,11 @@ environment 另记两 worktree 执行 npm ci，与本卡“不安装／升级软
 
 补交汇总记 unit-1 外层 **22:31:23**、unit-2 **23:06:11** exit 0，注册子树 settled；23:39:04 静态核查14个已知PID均不存活、9个已知预览端口无监听。它补上原两单元退出摘要，不等于所有调用原始记录已回仓，也不能替代未知PID／端口的归属证据。
 
-仍缺两 probe 的命令、PID、exit/signal、源码绑定和清理；失败 smoke-review 的候选浏览器退出及清理；两 review smoke 的完整端口清单；两次 capture rerun 的 wrapper exit。补交单元 unit-3 在23:51:52生成汇总时仍 running，最终外层退出未随结果交回。原始接收端 execution／collection 记录仅被引用，未全部公开回仓。原卡的 blocked／taskDone 是工作状态，不当作进程退出证明。
+11-13 01:10:52.987 UTC 只读复核原 execution／collection：unit-3 于11-12 23:11:02.116启动、23:59:06.249返回，外层 exit 0、工具 settled、1963个注册身份全部 exited；00:03:02.762收集记录含外层共1964、live=[]。三个unit共3522个去重的“PID＋创建时间”身份，匹配存活0、29条PID已复用于其他创建身份、身份读取错误0。只核身份，未读取复用进程的命令或会话，未启动／停止进程、清锁或释放槽。这补齐unit-3外层终态和已注册身份当前无存活，不由PID复用误判原任务仍运行。
 
-不推定仍运行，也不推定全部退出。槽继续隔离；只接收可恢复的原调用证据，无法恢复项交维护者说明，不启动模型补造记录、不新 smoke/capture/probe、不追加修复或重跑额度。汇总中的“缺两非作者盲选”已过时，下文12图双AI静态评审保留；硬件GPU与试听仍非换默认前置。
+仍缺两 probe 的精确命令、PID、exit/signal、源码绑定和清理；失败 smoke-review 的候选内部报告、浏览器身份及清理，保留日志只见 SMOKE_EXIT=1；两 review smoke 的完整端口清单；capture-review／reviewer-capture 的 wrapper exit。两次capture浏览器 exit 0分别为22:14:05.202／22:47:48.204，不能由此或unit外层exit 0反推各wrapper。原始接收端记录未全部公开回仓。原卡的 blocked／taskDone 是工作状态，不当作进程退出证明。
+
+已知注册身份无存活，不补造无法归属的调用清理。槽继续隔离；只接收可恢复的原调用证据，无法恢复项交维护者说明，不启动模型补造记录、不新 smoke/capture/probe、不追加修复或重跑额度。汇总中的“缺两非作者盲选”已过时，下文12图双AI静态评审保留；硬件GPU与试听仍非换默认前置。
 
 ## 匿名图片映射
 

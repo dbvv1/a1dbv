@@ -34,7 +34,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- B 拍摄槽仍由 [FPS 原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)独占：11-13原卡blocked，六次smoke越额度，不按合格接收；unit-1/2外层退出摘要已补，仍缺probe／失败review清理及unit-3最终外层回执。blocked也不证明全部退出；只收原记录，不启动新执行。MOBA 原收集、Star 两入口清理已核；FPS 全部清理核清后验 Star 冻结裸入口，再补 MOBA 双路smoke，不重复启动。[旧候选去向](b-work-20261106.md#11-10-超期候选采用决定)保持。
+- B 拍摄槽仍由 [FPS 原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)独占：11-13原卡blocked，六次smoke越额度，不按合格接收；01:10:52 UTC只读核得unit-3最终exit 0，三个unit的3522个注册身份匹配存活0；仍缺probe／失败review清理及部分wrapper。只收原记录，不反推缺失调用清理、不重启。MOBA 原收集、Star 两入口清理已核；FPS 全部清理核清后验 Star 冻结裸入口，再补 MOBA 双路smoke，不重复启动。[旧候选去向](b-work-20261106.md#11-10-超期候选采用决定)保持。
 
 ## 项目板
 
@@ -45,7 +45,7 @@
 | MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main `b8a3770`／Site **v22**，0/89。[quiet卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)19:05收回16图与清理；两非作者均4/4偏好quiet。rAF同帧误报已修（9/9回归），未改游戏；default/quiet完整smoke与帧耗仍待FPS交回后串行补，不换默认。UI候选 `1574983` 保留待验。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
-| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Evensong源码机制](../../domains/game-dev/03-generative-ai-in-games.md)已补：倒地救援保留战斗进度，正常／跳过共用终态恢复；仅源码核实，未试玩／三案采用。FOG CITY未唯一定位。[Solhex](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)暂停保档Copper 3/6，完整玩法未验，不再以窄试玩充主线进度。 |
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 新增[共享接触结果反例](../../domains/game-dev/assets/materials.md#web-scene-recipe)：Saltline原CPU函数／真实mask核地面、高处、查询失败；仅共享mask仍会让高处metal被重查成水声／水花，未实玩或三案采用。FOG CITY仍缺唯一作者／分享链接。[Solhex](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)暂停保档Copper 3/6，不续窄试玩。 |
 | SR | **Star-Rush 品质** | dot-B | master `94eb8432`／Site **v10**，0/43，默认未换。[整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)复派19:09:44、领19:21:40、执行完19:50:53、Git交回21:03:15；两入口exit0、清理完成、16哈希已核，静态盲选过。p95 450→366.6ms，但>50ms比例74.1%→81.8%，不称普遍流畅。冻结 `1299e5a` 待FPS全部清理后重构建验裸入口，再发布网站。 |
 | FPS | **FPS-Like 品质** | dot-B | main `658b2e5`／Site **v24**，0/77，默认未换。[原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)11-12复派21:10:03、领21:12:36；11-13 00:03:06补回 `8afe767`、00:03:23置blocked。12图双AI盲选过；[审计](reviews/fps-default-full-pair-20261112-receipt-audit.md)补出六smoke／三拍摄／两probe，额外成功帧耗均慢于默认；超额隔离，不重跑、不释槽。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
