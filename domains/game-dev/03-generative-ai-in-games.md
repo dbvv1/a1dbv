@@ -94,6 +94,18 @@ flowchart TD
 
 **同品类参照先收敛：** Star 近期选 [Redrock](https://github.com/StarKnightt/redrock/tree/028846ab4adf44358ce389f7f3a48738fc574f0b)，已看仓库 `social.png` 并读实际 cel／outline／audio 模块，重点学海岸道路的分区、共享分级光照与驾驶状态音频；包声明 ISC 但未核到独立许可正文，暂不搬代码。MOBA 近期选 [Citadel Mid 官方页](https://leejianming.itch.io/citadel-mid)，已看作者战斗截图，重点学单路、桥河与英雄轮廓的层级；作者保留所有权，只作本地参照。两者未试玩，不宣称动态效果或性能优于本作，也不公开复制参照图；下一步是同机位实玩取样，而不是再扩散搜链接。
 
+**先让非作者说看见了什么，再解释实现。** 目标是找出机制正确、玩家却看不见的差距。同机位图先隐藏版本和改动清单，请非作者独立写下第一眼看到的东西，再问可读性与整体偏好。例如模拟确认车轮已离地，但镜头和背景让腾空无法辨认，数值过关不等于画面反馈到位。[Redrock 作者原始简报与修订说明](https://github.com/StarKnightt/redrock/blob/028846ab4adf44358ce389f7f3a48738fc574f0b/PROMPT.md)记录了仅看渲染结果的非作者评审如何发现这类落差；这是作者自述，本仓未复现。自由描述仅用于诊断，不另增换默认门槛。
+
+按 [Redrock README](https://github.com/StarKnightt/redrock/blob/028846ab4adf44358ce389f7f3a48738fc574f0b/README.md)，在获准的本地研究环境里，用独立副本固定版本和赛道：
+
+```bash
+git checkout --detach 028846ab4adf44358ce389f7f3a48738fc574f0b
+npm install
+npm run serve
+```
+
+打开 `http://localhost:8123/#seed=22`，取 1280×720 对照图时记录实际渲染器及画质档。参照图只留本地，不进入公开质量记录。本轮只核作者文档，未启动、试玩或截图。
+
 **一次提示不等于一次回答，也不等于低成本。** Saltline 镜像转述作者称 Fable 5.2 单提示、无人反馈、约 8 小时、2.7M 输出／445M 输入 token（大量缓存）、约 550 美元 API 口径；本轮作者 X 原帖返回 403，未核完整提示、Agent 工具调用、自测日志、人改和账单，因此这些只保留为转述，不用于估算自己的工期。镜像说明还提到移除宿主 frame-runtime 并加页面头，不是原运行环境的逐字交付。
 
 **把首次生成与后续修订分开核。** 同一个分享链接可以更新，不能用后来画面反证首轮提示词的能力。研究时固定源码版本，再把首稿入口、当前入口、作者补改和成本口径分别记清。Saltline 的 HN 原讨论给出另一个[首稿入口](https://claude.ai/artifact/2UXyB49DrVHFfhTMdNDFTA)，并转引作者补充的“小范围、高视觉质量”提示；本轮只核到讨论原文，未核两个 artifact 的字节差异，因此不把镜像认定为零人工首稿。API 等值、订阅实际支付和总制作时间也分别填写，未知留空，不能拿等值价格当制作预算。
