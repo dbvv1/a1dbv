@@ -29,7 +29,7 @@
 
 这是有限次数的可重放文件安装结果，不是竞态发生概率、跨平台保证或模型读者采用。没有复现原报告的损坏 JSON／四进程情形。
 
-`result.json` 保留全部 6 轮；`batch-result.json` 保留单调用。`parallel-3/skills-lock.json` 和两个安装目录仍在，可直接复核丢项。没有修改上游依赖或加锁补丁。
+公开证据 `evidence/result.json` 保留全部 6 轮，`evidence/batch-result.json` 保留单调用。原运行现场的 `parallel-3/skills-lock.json` 和两个安装目录已由独审直接复核；失锁文件在本目录保存为 `evidence/parallel-3-lock.json`，安装目录不入库，可按下方步骤重建。没有修改上游依赖或加锁补丁。
 
 ## 实现与取舍
 
