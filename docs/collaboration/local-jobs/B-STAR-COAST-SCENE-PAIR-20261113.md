@@ -2,7 +2,7 @@
 id: B-STAR-COAST-SCENE-PAIR-20261113
 owner: dot-B
 kind: build
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0405af62c8d1a099fd710a852f42c9f8bcf80968
 result_branch: relay/b-star-coast-scene-pair-20261113
