@@ -2,7 +2,7 @@
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: b8a377078e15c0dd2fb7c367b0bf24adbee09468
 result_branch: relay/b-moba-quiet-pair-20261112
@@ -38,3 +38,11 @@ MOBA_SMOKE_CHROMIUM只设当前子进程并指向原已装二进制，不能换�
 首次失败保首错、报告及真实退出；确为测试脚本路径／参数／Node22兼容／选择器或观察逻辑的小问题，允许只修 tests/client/browser-smoke/ 及其直接测试，回归后重跑失败命令一次，不能一失败就blocked。禁止改游戏src、资产、默认、依赖、删除断言、放宽终局或无限重试。若公共测量语义改变，两路需同补丁，保首次及重试独立目录；第二次失败或游戏缺陷原样交回，另一独立入口能安全执行则照常收证。安全拒绝不绕路。
 
 交回原report.json、manifest.json、full-match-frames.json、终局及操作图、构建/脚本patch哈希、Node/Chromium/renderer、真实开始/交回UTC、exit/signal及浏览器/preview退出证据；脱敏私人绝对路径，不伪造缺项。按原已修收集方式收进 docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/ 的短目录，保原始字节SHA映射，避免被忽略outputs或Windows长路径导致收集失败；不改接收端。交回review_ready，执行者不合main、不换默认、不部署。负责人两路完整smoke通过且帧耗无明显劣化后，沿已过双非作者静态盲选当轮换默认。
+
+## 当前结果
+
+- 单元达到时限，收集超时前已写出的部分成稿：tests/client/browser-smoke/run.mjs、tests/client/browser-smoke/full-match.mjs、tests/client/browser-smoke/full-match.test.ts、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/README.md、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/environment.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/paths.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/script-patch-v1.diff、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/script-patch-v2.diff、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/build-web-receipt/capture-build-identity.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/default-smoke/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/default-smoke-retry/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/manifest.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/full-match-frames.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/logs/quiet-smoke-retry.log、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/logs/default-smoke-retry.log、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/deliverable-harness.sha256。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
+- 产物：[332fa5f](https://github.com/dbvv1/MOBA-Like/commit/332fa5f755be8b4a1d91d5fc8071ad4bcbeda2ef)，分支 `relay/b-moba-quiet-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
+- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
