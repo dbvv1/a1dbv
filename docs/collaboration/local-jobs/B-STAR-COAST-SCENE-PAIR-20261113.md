@@ -36,3 +36,4 @@ node tests/capture.mjs OWN_ORIGIN/road outputs/B-STAR-COAST-SCENE-PAIR-20261113/
 ## 当前结果
 
 - 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 隔离解除（接收端维护，2026-11-13 10:31 UTC）：worker 约 09:46 UTC 在修复／审查循环中停止输出，进程已退出且未写执行结果；复核时无相关进程存活。本机已保全未提交改动：`docs/quality/capture/B-STAR-COAST-SCENE-PAIR-20261113/` 下 default 与 scene 两入口各三机位（academy-depth、coast-chase、coast-full-bend）双拍 PNG 与 report，另有 comparison.json、manifest.json、scene-fallback.json、build-records.json 与 README；dist／worker 只是构建刷新。最终审查未完成，不算验收通过。下一步由你决定：只收集这批已存证据（交维护者公开扫描后推结果分支，不重跑模型），或改回 ready 从头重跑，或取消。
