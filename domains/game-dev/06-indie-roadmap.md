@@ -195,6 +195,14 @@ JS
 
 来源：固定 `e5542f96b9a9a2912fdaa160396054e81f022f23` 的[作者过程](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/README.md)、[移植分工与资源](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/04-the-web-port.md)、[测试反例](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/docs/making-of/06-tests.md)与[公开源边界](https://github.com/jason-c-dev/backroad-rally/blob/e5542f96b9a9a2912fdaa160396054e81f022f23/CLAUDE.md)。2026-11-11 UTC 核原文并执行模块页所述 CPU 消费者；AI 比例、原 UE 数值、主动工时与完整成本未独立审计。
 
+### AI 制作方法：场景复用后，分开验点位与整条玩家路径
+
+**目标：** 把已有场景改成另一种移动方式后，玩家能连续读懂下一段路线，而不只是每个点位分别能触发。先冻结地图种子、碰撞与路线节点，换移动控制和镜头；选一段「看见入口 → 入弯 → 出弯再找下一目标」，先用同一驾驶镜头改中景轮廓和街角成套道具，再跑连续过程，别用新材质替代方向线索。
+
+**做法与反例：** 保留点位／碰撞单测，用同一输入直接从起点连续跑到终点，不重定位。逐段记录门号、通过顺序、越界和超时。另交同机位前后图与连续驾驶时的路线辨识、帧耗；听感单独核。MOTHLIGHT 的测试检查过门宽度与顺序路线的构造，但其报告明确说浏览器验收把车放到每一道门前才过门；这证明点位可触发，不证明玩家能连续找路、开完全程或听清提示。
+
+**可用命令：** 在已有整局 smoke 的项目运行 `npm run smoke:match` 前，先核脚本是否真的连续送入玩家指令、最终由玩家抵达终点；若只是逐段摆车，收为点位证据，不能改称整局。镜头与成套资产做法见 [3D 场景](assets/3d.md#2-主辅形体与近中远层)。[固定源码的路线与过门测试](https://github.com/hahaliu1029/fable5.2demo/blob/97710fad3ca3cbfb6e91b852644bc513ace0a342/mothlight/tests/drive.test.js#L65-L87)；[制作报告与未验项](https://github.com/hahaliu1029/fable5.2demo/blob/97710fad3ca3cbfb6e91b852644bc513ace0a342/mothlight/REPORT.md#L29-L61)。只核公开源码与报告，未试玩或试听，未接入本仓案例。
+
 ## G1 旗舰实战：给「潮汐邮差」真的生成资产，再改一次规则
 
 **🧪 值得直接复验：把生成原图、稳定 asset ID、规则状态分开，才能在换图和改玩法时保住旧档。** 本次实际调用生图、保留原 PNG、接入无引擎网页源码，并完成一次预先计划的折叠筏二改；v1 已独立跑通真实浏览器回路，最新 v2 仍待客户端、目标设备和真人体验接收。
