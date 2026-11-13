@@ -2,15 +2,20 @@
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
+try:
+  import hook_test_support as support
+except ImportError:  # imported as tests.test_protect_paths
+  from tests import hook_test_support as support
+
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
-HOOK = Path(os.environ.get('HOOK_UNDER_TEST', REPO / 'templates/generic/.claude/hooks/protect-paths.sh'))
+HOOK = support.hook_under_test()
+BASH = support.resolve_bash()
 PARSER = os.environ.get('TEST_PARSER', 'python3')
 
 
@@ -23,20 +28,13 @@ class HookTests(unittest.TestCase):
     self.root.mkdir()
     self.rules = self.base / 'rules'
     self.rules.write_text('deny dist/* generated\nask *.lock package lock\n', encoding='utf-8')
-    self.bin = self.base / 'bin'
-    self.bin.mkdir()
-    for name in ['cat', PARSER]:
-      binary = shutil.which(name)
-      if not binary:
-        self.skipTest(f'{name} unavailable')
-      (self.bin / name).symlink_to(binary)
-    self.env = dict(os.environ, PATH=str(self.bin), CLAUDE_PROJECT_DIR=str(self.root),
-                    PROTECTED_PATHS_FILE=str(self.rules), PYTHONIOENCODING="utf-8")
+    self.bin, self.parser, self.parser_target = support.isolated_bin(self.base, PARSER)
+    self.env = support.hook_env(self.bin, self.root, self.rules)
 
   def run_hook(self, event=None, raw=None):
     if raw is None:
       raw = json.dumps(event)
-    return subprocess.run(['/bin/bash', str(HOOK)], input=raw, text=True, encoding="utf-8",
+    return subprocess.run([BASH, str(HOOK)], input=raw, text=True, encoding="utf-8",
                           capture_output=True, env=self.env, cwd=self.root, timeout=10)
 
   def event(self, path, **extra):
@@ -44,10 +42,10 @@ class HookTests(unittest.TestCase):
 
   def trace_parser(self):
     # Keep the isolated PATH; delegate to the same actual CLI, not a JSON mock.
-    parser = self.bin / PARSER
-    self.env['REAL_PARSER'] = str(parser.resolve())
+    parser = self.bin / self.parser
+    self.env['REAL_PARSER'] = support.shell_path(self.parser_target)
     calls = self.base / 'parser-calls'
-    self.env['PARSER_CALLS'] = str(calls)
+    self.env['PARSER_CALLS'] = support.shell_path(calls)
     parser.unlink()
     parser.write_text('''#!/bin/bash
 printf 'call\\n' >> "$PARSER_CALLS"
@@ -58,7 +56,7 @@ if [ "${PARSER_FAIL_AFTER_OUTPUT:-0}" = 1 ]; then
   exit 23
 fi
 exec "$REAL_PARSER" "$@"
-''', encoding='utf-8')
+''', encoding='utf-8', newline='\n')
     parser.chmod(0o755)
     return calls
 
@@ -80,7 +78,7 @@ exec "$REAL_PARSER" "$@"
       result = self.run_hook(raw=raw)
       self.assertEqual(0, result.returncode, result.stderr)
       self.assertEqual("中文原因", json.loads(result.stdout)["hookSpecificOutput"]["permissionDecisionReason"])
-      (self.bin / PARSER).unlink()
+      (self.bin / self.parser).unlink()
       result = self.run_hook(raw=raw)
       self.assertEqual(1, result.returncode)
       self.assertEqual("", result.stdout)
@@ -88,10 +86,10 @@ exec "$REAL_PARSER" "$@"
     self.assertEqual(parent_encoding, os.environ.get("PYTHONIOENCODING"))
 
   def test_missing_bash_is_an_error_not_a_skip(self):
-    with patch("subprocess.Popen", side_effect=FileNotFoundError("/bin/bash unavailable")) as launch:
-      with self.assertRaisesRegex(FileNotFoundError, "/bin/bash unavailable"):
+    with patch("subprocess.Popen", side_effect=FileNotFoundError("bash unavailable")) as launch:
+      with self.assertRaisesRegex(FileNotFoundError, "bash unavailable"):
         self.run_hook(self.event("dist/x"))
-      self.assertEqual("/bin/bash", launch.call_args.args[0][0])
+      self.assertEqual(BASH, launch.call_args.args[0][0])
 
   def test_template_copies_identical(self):
     generic = (REPO / 'templates/generic/.claude/hooks/protect-paths.sh').read_bytes()
@@ -308,7 +306,7 @@ exec "$REAL_PARSER" "$@"
         self.decision(path)
 
   def test_no_parser_is_explicit_error(self):
-    (self.bin / PARSER).unlink()
+    (self.bin / self.parser).unlink()
     p = self.run_hook(self.event('dist/x'))
     self.assertEqual(p.returncode, 1)
     self.assertEqual(p.stdout, '')

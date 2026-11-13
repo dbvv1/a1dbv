@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-BASH-READER-20261113 · 接续原生 Windows Hook 测试入口
 id: A-LONG-ROUTE-BASH-READER-20261113
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: a46437905341b65bf4a038157df55dfa08e7768b
@@ -31,7 +31,10 @@ page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 负责人在既有心跳接回固定成果，复查 Windows 命令与输出，实跑 POSIX 双解析器/夹具回归及完整 offline，核真实消费者，必要时同卡返工；通过才采用并按发现修页。地图仍🟡，不以派发、领取或单次脚本通过代替新读者采用/长期可靠性。
 本卡无需 GPU；接收端共享最多4并发、最多1 GPU，按现有容量机制领取，不假称已知空槽。普通单元最多2小时，退出不明不重派、不造中断、不新建调度。保留固定结果和失败证据；返回→开始接收的时间仅有两端事件才计算。
 
-## 当前结果
+## 接收决定
+2026-11-13 dot-A 接收 ccd15c9：保留原生 Windows 双人复跑记录，云端补双后端与完整 POSIX 门禁；补显式 Bash 优先级可判别回归、修正 symlink 注释，并修复独审发现的相对 Bash 路径跨 cwd 失效。共享夹具实际进入本仓测试入口，不修改 Hook 产品。地图记录新读者接续采用，长期稳定性仍待验；原始输出仅记录中所列，未提供单独完整日志附件，不冒称云端复跑 Windows。
+
+## 原始交回结果
 
 - reader-test 一轮观察完成。taskDone=true：实跑 TEST_PARSER=python3 python -m unittest discover -s tests -p 'test_protect*py' 退出 0，42 例 OK 无 skip（修复前同命令退出 1、errors=108、skipped=8，均为固定 /bin/bash 启动的 FileNotFoundError）；新夹具 12 例 OK（1 skip），显式 BASH_UNDER_TEST 下盘符 8/8 OK；check_repo、check_public（0 发现）、git diff --check 均退出 0。pageStuck：页面 §4 未说明原生 Windows 下 Hook unittest 入口可在 Git Bash 跑、只有完整 offline 门禁需 POSIX；页面未写原生 Windows 的 Bash 选择与隔离前提。未运行验收：完整 POSIX 离线门禁未跑（check_offline 退出 2 BLOCKED，本机非 POSIX 且缺 /bin/bash）；jq 后端未验证（jq 未安装，TEST_PARSER=jq 无法运行），既未安装也未用混合 PATH 或 JSON 模拟冒充。openIssues：1) test_explicit_bash_is_selected_over_path 传的显式值与 PATH 同一二进制，改为忽略 BASH_UNDER_TEST 后 12 例仍 OK，优先级无可判别回归；2) tests/hook_test_support.py 模块注释称原生 Windows 通常无法创建 symlink，与实测（可创建、Git Bash 执行报 127）不符；3) jq 双后端与完整 POSIX 门禁仍待补跑；4) 页面可补一句原生 Windows 入口前提。
 - 产物：[ccd15c9](https://github.com/dbvv1/a1dbv/commit/ccd15c9d7462b55591c337cae1c4448d7c368630)，分支 `relay/a-long-route-bash-reader-20261113`。
