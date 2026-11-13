@@ -2,7 +2,7 @@
 id: B-PIPE-MATERIAL-KTX-SEMANTICS-SOURCES-20261113
 owner: dot-B
 kind: explore
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6dedee31abc6bf77694dd02a23f3f9833084f2f5
 result_branch: relay/b-pipe-material-ktx-semantics-sources-20261113
@@ -15,3 +15,7 @@ result_branch: relay/b-pipe-material-ktx-semantics-sources-20261113
 
 ## 范围与完成
 只写 docs/collaboration/local-jobs/artifacts/B-PIPE-MATERIAL-KTX-SEMANTICS-SOURCES-20261113/result.md。每条给资产页、许可原文、静态预览 URL、通道／尺寸，注明缺通道与不匹配理由；给拟归一色彩空间、法线方向与格式，不把建议命令写成已跑。不下载、不登录、不改产品、不拍图，许可证或来源不清即淘汰，留下原因。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
