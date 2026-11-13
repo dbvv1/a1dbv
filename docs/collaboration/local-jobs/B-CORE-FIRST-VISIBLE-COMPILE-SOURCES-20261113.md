@@ -2,7 +2,7 @@
 id: B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113
 owner: dot-B
 kind: explore
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6dedee31abc6bf77694dd02a23f3f9833084f2f5
 result_branch: relay/b-core-first-visible-compile-sources-20261113
@@ -15,3 +15,7 @@ result_branch: relay/b-core-first-visible-compile-sources-20261113
 
 ## 范围与完成
 只写 docs/collaboration/local-jobs/artifacts/B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113/result.md。给两种参考实现各自的触发范围、完成信号、失败或取消语义的源码行链接，区分材质变体遗漏、纹理上传和首帧可用；提出一个可在消费者未来验证的正例与一个更换雾／灯光变体仍首次编译的反例。不改源码、模块页或其他任务；只读源码，不跑浏览器、GPU、不安装软件、不联系上游。源码推断不作运行或性能结论。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
