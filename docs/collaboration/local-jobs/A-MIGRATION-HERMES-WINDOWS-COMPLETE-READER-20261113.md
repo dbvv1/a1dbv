@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-WINDOWS-COMPLETE-READER-20261113
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 146697f97fa8644702371a26f10c349a99f8c100
