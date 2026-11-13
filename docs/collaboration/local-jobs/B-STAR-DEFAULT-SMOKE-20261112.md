@@ -2,7 +2,7 @@
 id: B-STAR-DEFAULT-SMOKE-20261112
 owner: dot-B
 kind: build
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: d1607a57410c9bcdf1c0a9f24ece4ad238151485
 result_branch: relay/b-star-default-smoke-20261112
@@ -53,3 +53,7 @@ node tests/smoke-run.mjs --full-race --path '/road?environment=coast-space-v1' -
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
 - 下一步：负责人接收本单元证据并决定是否换默认；真实 GPU/Node24 与人工视觉、手感、听感验收仍待人工或其他单元处理。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 11-13 默认发布
+
+依据用户「换默认只看整局smoke、帧耗和盲选」纠偏，原两入口整局、帧耗与静态盲选证据接收，不再等待FPS清理或新增裸入口卡。master快进1299e5a7，旧baseline保留，玩家诊断默认隐藏；Site v11／Site源38978955于2026-11-13T03:02:42.782564Z部署succeeded。构建road SHA256为9fa8c8abb3fffa9fb3b88d4c27ba008ecd4244633ac0f781a777e51131573a3c，与已验冻结构建一致。源四文件与已过208项测试及构建版本一致，未新增浏览器验收或提高品质分。

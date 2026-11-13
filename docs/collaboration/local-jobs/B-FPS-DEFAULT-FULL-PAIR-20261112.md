@@ -2,7 +2,7 @@
 id: B-FPS-DEFAULT-FULL-PAIR-20261112
 owner: dot-B
 kind: build
-status: blocked
+status: accepted
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 658b2e592c612fa0801e2cc7fecdce32bb57eadb
 result_branch: relay/b-fps-default-full-pair-20261112
@@ -68,3 +68,9 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 - 补原外层调用最终exit与本卡所属资源清理。若原调用未结束，保留隔离，不重开；只有可归属本卡且原合同授权清理的资源可清理，不动其他进程。无日志不得编造，写缺项。
 - 不再运行smoke/capture/probe，不新建任务或工作流代替原调用，不安装依赖，不修游戏、不追加脚本修复或重跑额度；仅整理脱敏回执至原结果分支并公开扫描。
 - 保留前两次失败与超次第三跑；核实后回写blocked及缺项，不自行accepted。若外层已结束而不能续接，交维护者补原记录，不因本条新启动模型。负责人收到完整清理证据后单独决定释放槽；本次不合默认、不部署。
+
+## 11-13 负责人最终接收与释槽（取代上文旧等待）
+
+用户明确纠偏后，接收完整 smoke、帧耗与已核盲选；六次运行、超次修复及不能恢复的原始回执作为欠项，不丢弃成功证据、不冻结 Star 或 MOBA。01:10:52.987 UTC 已核三个 unit 的 3522 个注册身份全部不存活，unit-3 exit 0／子树 settled；本轮没有再启动 FPS 本机任务。负责人释放本卡拍摄槽，不声称未登记调用的历史清理已被补证，也不终止任何未知进程。
+
+性能决定：不把两次软件档慢 4–10% 单独判为明显劣化。三个成功双路样本均值比为0.9569、1.0418、1.0906，p95比0.9395、1.0966、1.0591，方向不一致，六回合并非相同输入／相同终局工作量；原始整局视口1365×900，不混称1280×720拍摄帧耗。保留所有报告而非挑最好一次。接受原 ai-courtyard-full-v1 默认，有软件性能成本风险，不称性能改善、流畅或GPU通过。产品与站点发布由负责人另核，accepted指本卡证据接收。
