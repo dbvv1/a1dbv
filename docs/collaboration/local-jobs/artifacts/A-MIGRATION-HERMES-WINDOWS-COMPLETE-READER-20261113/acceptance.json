@@ -1,0 +1,159 @@
+{
+  "id": "A-MIGRATION-HERMES-WINDOWS-COMPLETE-READER-20261113",
+  "page": "docs/decisions/migrations.md@a5324e32ae3258e78c7986c39091b0c29a341ed3",
+  "candidate_readme": "experiments/anthropic-sdk-migration/README.md#sdk2-current-candidate",
+  "fixed_source": "c9b20d7bc08dec1e10779a06d7d9073bc6e7e418",
+  "platform": "win32 (native Python; not WSL)",
+  "source_completeness": {
+    "method": "git ls-tree -r HEAD for every entry; working-file existence check; git hash-object --stdin-paths (clean filters) compared to tree blob id",
+    "candidate": {
+      "commit": "c9b20d7bc08dec1e10779a06d7d9073bc6e7e418",
+      "tracked_entries": 25167,
+      "blob_entries": 25167,
+      "missing_count": 0,
+      "mismatch_count": 0,
+      "non_blob_entries": []
+    },
+    "original": {
+      "commit": "c9b20d7bc08dec1e10779a06d7d9073bc6e7e418",
+      "tracked_entries": 25167,
+      "blob_entries": 25167,
+      "missing_count": 0,
+      "mismatch_count": 0,
+      "non_blob_entries": []
+    },
+    "pre_patch_missing_or_mismatch_must_be_zero": true
+  },
+  "patch": {
+    "patch": "experiments/anthropic-sdk-migration/hermes-v2-contract.patch",
+    "sha256": "2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca",
+    "expected_sha256_from_candidate_readme": "2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca",
+    "sha256_matches": true,
+    "git_apply_check_unidiff_zero_exit": 0,
+    "git_apply_unidiff_zero_exit": 0,
+    "git_apply_reverse_check_exit": 0,
+    "changed_files_count": 9,
+    "modified_files": [
+      "agent/anthropic_adapter.py",
+      "agent/azure_identity_adapter.py",
+      "agent/chat_completion_helpers.py",
+      "pyproject.toml",
+      "tests/agent/test_anthropic_client_auth.py",
+      "tests/agent/test_anthropic_stream_fallbacks.py",
+      "uv.lock"
+    ],
+    "new_files": [
+      "agent/anthropic_sdk2_request.py",
+      "tests/agent/test_anthropic_sdk2_boundary.py"
+    ],
+    "files": [
+      "agent/anthropic_adapter.py",
+      "agent/anthropic_sdk2_request.py",
+      "agent/azure_identity_adapter.py",
+      "agent/chat_completion_helpers.py",
+      "pyproject.toml",
+      "tests/agent/test_anthropic_client_auth.py",
+      "tests/agent/test_anthropic_sdk2_boundary.py",
+      "tests/agent/test_anthropic_stream_fallbacks.py",
+      "uv.lock"
+    ],
+    "tree": "candidate tree at c9b20d7bc08dec1e10779a06d7d9073bc6e7e418 + this patch"
+  },
+  "environments": {
+    "candidate": {
+      "interpreter": "<TRIAL_ROOT>/env-candidate/Scripts/python.exe",
+      "platform": "win32",
+      "python": "3.14.9",
+      "anthropic": "2.3.0",
+      "httpx2": "2.15.1",
+      "httpx": "0.28.1",
+      "pytest": "9.1.1"
+    },
+    "original": {
+      "interpreter": "<TRIAL_ROOT>/env-original/Scripts/python.exe",
+      "platform": "win32",
+      "python": "3.14.9",
+      "anthropic": "0.125.0",
+      "httpx2": "2.15.1",
+      "httpx": "0.28.1",
+      "pytest": "9.1.1"
+    },
+    "pm_build": {
+      "command_template": "python -m pm.build_env --source . --out <env> --group dev --group test --extra bedrock",
+      "candidate_exit": 0,
+      "original_exit": 0
+    }
+  },
+  "gates": {
+    "candidate_three_files": {
+      "command": "HERMES_PYTHON=<env-candidate>/Scripts/python.exe HERMES_TEST_FILE_RETRIES=0 bash scripts/run_tests.sh tests/agent/test_anthropic_sdk2_boundary.py tests/agent/test_sdk_migration_native_review.py tests/agent/test_sdk_migration_gateway_review.py -q",
+      "exit_code": 0,
+      "files": 3,
+      "tests_passed": 18,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "per_file": {
+        "tests/agent/test_anthropic_sdk2_boundary.py": 8,
+        "tests/agent/test_sdk_migration_native_review.py": 7,
+        "tests/agent/test_sdk_migration_gateway_review.py": 3
+      },
+      "node_ids": [
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.anthropic.com-synthetic-api-key-param]",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://gateway.invalid/anthropic-synthetic-route-key-x-api-key]",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.minimax.io/anthropic-synthetic-route-token-authorization]",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_native_manual_thinking_payload_and_user_citations_reach_sdk2",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_legacy_gateway_sampling_is_preserved_and_native_nondefault_rejected",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_callable_token_refresh_survives_sdk_copy",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[0.3]",
+        "tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[1]",
+        "tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[key]",
+        "tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[token]",
+        "tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[False-None]",
+        "tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-None]",
+        "tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-0.3]",
+        "tests/agent/test_sdk_migration_native_review.py::test_user_citations_assistant_provenance_and_input_immutable",
+        "tests/agent/test_sdk_migration_native_review.py::test_http_failure_is_not_stream_fallback",
+        "tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[None]",
+        "tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[0.3]",
+        "tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_citations_without_mutation"
+      ],
+      "summary_line": "=== Summary: 3 files, 18 tests passed, 0 failed (100% complete) in 22.6s (24 workers) ==="
+    },
+    "original_native": {
+      "command": "HERMES_PYTHON=<env-original>/Scripts/python.exe HERMES_TEST_FILE_RETRIES=0 bash scripts/run_tests.sh tests/agent/test_sdk_migration_native_review.py -q",
+      "exit_code": 0,
+      "files": 1,
+      "tests_passed": 7,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "summary_line": "=== Summary: 1 files, 7 tests passed, 0 failed (100% complete) in 21.7s (24 workers) ==="
+    }
+  },
+  "boundaries_preserved": {
+    "native_nondefault_sampling": "rejected with ValueError before transport; zero requests",
+    "legacy_gateway": "sampling and citations preserved on explicit third-party base_url; serialization control only, not gateway acceptance",
+    "credentials": "synthetic keys only; socket connect/connect_ex/bind/listen fail the tests if called",
+    "services_not_called": [
+      "real model API",
+      "third-party gateway",
+      "Bedrock",
+      "Foundry",
+      "Azure",
+      "AWS"
+    ]
+  },
+  "not_verified": [
+    "full Hermes application or full test suite/CI",
+    "real gateway acceptance",
+    "Bedrock/Foundry/Azure/AWS services",
+    "full-product default upgrade (non-default sampling and old-model compatibility remain blockers)",
+    "cross-OS beyond this native win32 local consumer"
+  ],
+  "reader_method_notes": {
+    "full_history": "shallow fetch --depth 1 of the fixed commit; all tracked source blobs verified, Git history is not complete",
+    "long_paths": "repo-local core.longpaths=true in the throwaway clone; no Windows system long-path setting changed",
+    "hash_mismatch_explanation": "raw-byte SHA1 initially flagged 3117 text files because system core.autocrlf=true checks out CRLF; clean-filter hashing shows 0 mismatches",
+    "redaction": "synthetic credential token echoed by a pytest parametrization id was replaced with a placeholder; no real credential involved"
+  },
+  "result": "accepted_local_consumer_only"
+}

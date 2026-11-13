@@ -1,0 +1,22 @@
+▶ not activated — using HERMES_PYTHON: <TRIAL_ROOT>/env-candidate/Scripts/python.exe
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 3 test files (~11 tests) under ['tests\\agent\\test_anthropic_sdk2_boundary.py', 'tests\\agent\\test_sdk_migration_native_review.py', 'tests\\agent\\test_sdk_migration_gateway_review.py']; running with -j 24
+[ 18.2% |     2/~11 | ✓3 | ✗0] ✓ tests\agent\test_sdk_migration_gateway_review.py (3✓, 21.7s)
+[ 54.5% |     6/~11 | ✓10 | ✗ 0] ✓ tests\agent\test_sdk_migration_native_review.py (7✓, 22.2s)
+[100.0% |    11/~11 | ✓18 | ✗ 0] ✓ tests\agent\test_anthropic_sdk2_boundary.py (8✓, 22.2s)
+
+=== Summary: 3 files, 18 tests passed, 0 failed (100% complete) in 22.6s (24 workers) ===
+  Durations cached to test_durations.json (3 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   3
+  Total subprocess CPU-wall: 66.2s  (runner wall: 22.6s, parallelism: 24x)
+  P50: 22.21s  P90: 22.22s  P95: 22.22s  P99: 22.22s  Max: 22.22s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     22.22s  tests\agent\test_anthropic_sdk2_boundary.py
+     22.21s  tests\agent\test_sdk_migration_native_review.py
+     21.74s  tests\agent\test_sdk_migration_gateway_review.py

@@ -1,0 +1,25 @@
+{
+  "candidate": {
+    "interpreter": "<TRIAL_ROOT>/env-candidate/Scripts/python.exe",
+    "platform": "win32",
+    "python": "3.14.9",
+    "anthropic": "2.3.0",
+    "httpx2": "2.15.1",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1"
+  },
+  "original": {
+    "interpreter": "<TRIAL_ROOT>/env-original/Scripts/python.exe",
+    "platform": "win32",
+    "python": "3.14.9",
+    "anthropic": "0.125.0",
+    "httpx2": "2.15.1",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1"
+  },
+  "pm_build": {
+    "command_template": "python -m pm.build_env --source . --out <env> --group dev --group test --extra bedrock",
+    "candidate_exit": 0,
+    "original_exit": 0
+  }
+}

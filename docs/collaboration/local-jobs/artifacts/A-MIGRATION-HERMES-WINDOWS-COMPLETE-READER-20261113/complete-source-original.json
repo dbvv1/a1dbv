@@ -1,0 +1,11 @@
+{
+  "commit": "c9b20d7bc08dec1e10779a06d7d9073bc6e7e418",
+  "tracked_entries": 25167,
+  "blob_entries": 25167,
+  "missing_count": 0,
+  "mismatch_count": 0,
+  "missing_sample": [],
+  "mismatch_sample": [],
+  "hash_method": "git hash-object --stdin-paths (applies clean filters)",
+  "status_porcelain": []
+}

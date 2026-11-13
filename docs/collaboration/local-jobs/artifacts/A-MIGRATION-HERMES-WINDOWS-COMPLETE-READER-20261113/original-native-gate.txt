@@ -1,0 +1,18 @@
+▶ not activated — using HERMES_PYTHON: <TRIAL_ROOT>/env-original/Scripts/python.exe
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~4 tests) under ['tests\\agent\\test_sdk_migration_native_review.py']; running with -j 24
+[100.0% |     4/~4 | ✓7 | ✗0] ✓ tests\agent\test_sdk_migration_native_review.py (7✓, 21.4s)
+
+=== Summary: 1 files, 7 tests passed, 0 failed (100% complete) in 21.7s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 21.4s  (runner wall: 21.7s, parallelism: 24x)
+  P50: 21.40s  P90: 21.40s  P95: 21.40s  P99: 21.40s  Max: 21.40s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     21.40s  tests\agent\test_sdk_migration_native_review.py

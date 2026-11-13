@@ -1,0 +1,27 @@
+== tests/agent/test_anthropic_sdk2_boundary.py ==
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.anthropic.com-synthetic-api-key-param]
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://gateway.invalid/anthropic-synthetic-route-key-x-api-key]
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.minimax.io/anthropic-synthetic-route-token-authorization]
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_manual_thinking_payload_and_user_citations_reach_sdk2
+tests/agent/test_anthropic_sdk2_boundary.py::test_legacy_gateway_sampling_is_preserved_and_native_nondefault_rejected
+tests/agent/test_anthropic_sdk2_boundary.py::test_callable_token_refresh_survives_sdk_copy
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[0.3]
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[1]
+
+8 tests collected in 6.19s
+== tests/agent/test_sdk_migration_native_review.py ==
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[key]
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[token]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[False-None]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-None]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-0.3]
+tests/agent/test_sdk_migration_native_review.py::test_user_citations_assistant_provenance_and_input_immutable
+tests/agent/test_sdk_migration_native_review.py::test_http_failure_is_not_stream_fallback
+
+7 tests collected in 3.15s
+== tests/agent/test_sdk_migration_gateway_review.py ==
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[None]
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[0.3]
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_citations_without_mutation
+
+3 tests collected in 3.35s

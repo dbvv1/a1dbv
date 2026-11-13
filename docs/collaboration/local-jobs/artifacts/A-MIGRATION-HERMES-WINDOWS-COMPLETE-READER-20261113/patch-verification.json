@@ -1,0 +1,35 @@
+{
+  "patch": "experiments/anthropic-sdk-migration/hermes-v2-contract.patch",
+  "sha256": "2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca",
+  "expected_sha256_from_candidate_readme": "2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca",
+  "sha256_matches": true,
+  "git_apply_check_unidiff_zero_exit": 0,
+  "git_apply_unidiff_zero_exit": 0,
+  "git_apply_reverse_check_exit": 0,
+  "changed_files_count": 9,
+  "modified_files": [
+    "agent/anthropic_adapter.py",
+    "agent/azure_identity_adapter.py",
+    "agent/chat_completion_helpers.py",
+    "pyproject.toml",
+    "tests/agent/test_anthropic_client_auth.py",
+    "tests/agent/test_anthropic_stream_fallbacks.py",
+    "uv.lock"
+  ],
+  "new_files": [
+    "agent/anthropic_sdk2_request.py",
+    "tests/agent/test_anthropic_sdk2_boundary.py"
+  ],
+  "files": [
+    "agent/anthropic_adapter.py",
+    "agent/anthropic_sdk2_request.py",
+    "agent/azure_identity_adapter.py",
+    "agent/chat_completion_helpers.py",
+    "pyproject.toml",
+    "tests/agent/test_anthropic_client_auth.py",
+    "tests/agent/test_anthropic_sdk2_boundary.py",
+    "tests/agent/test_anthropic_stream_fallbacks.py",
+    "uv.lock"
+  ],
+  "tree": "candidate tree at c9b20d7bc08dec1e10779a06d7d9073bc6e7e418 + this patch"
+}
