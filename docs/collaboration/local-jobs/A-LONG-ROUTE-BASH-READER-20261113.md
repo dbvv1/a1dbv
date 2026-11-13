@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-BASH-READER-20261113 · 接续原生 Windows Hook 测试入口
 id: A-LONG-ROUTE-BASH-READER-20261113
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4564ed0c5d446159aaebe0d3ffd43bb24f97c3e8
@@ -58,3 +58,6 @@ page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：负责人处置：决定恢复 u1.md 至 ccd15c9 或仅追加本轮段落；修正 windows-final.md 的计数与差量方向；按分支流程合并最新 main 后在最终树重跑 check_repo/check_public；在 POSIX 环境补跑 jq 双后端与完整 offline 门禁。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+## 最终补验接收
+2026-11-13 dot-A 接收 f2d71ad 的 windows-final 记录，四份哈希与 main 7965352c 一致。原生 Windows Python 后端42项无跳过、夹具及相对 Bash集成各13项（jq缺失各跳1）已核原始输出；只采用新报告，保留 main 的最终源码和 u1 历史，不合旧分支回退。报告算术与差量方向已纠正，原树检查数保留并解释。POSIX 无行为变化，复用 c976d8f9 已有双后端和完整门禁；不将 Windows jq、长期稳定性记为通过。无需重派。
