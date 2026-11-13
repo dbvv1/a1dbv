@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-NATIVE-READER-20261113
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e43f4e047932b1c0d7d18c713e095aa621609167
@@ -77,3 +77,6 @@ Hermes 的 [SDK 2 候选](https://github.com/dbvv1/a1dbv/blob/77345c97fbbec5bcf5
 来源：[Angular 官方 Karma→Vitest 迁移指南](https://angular.dev/guide/testing/migrating-to-vitest)区分默认 Node DOM、真实浏览器与需另迁的 reporter／覆盖率配置；核实 2026-11-10。
 本页不适用于把纯内部重构统一升级成双版本兼容流程；没有持久状态的语法改写也无需数据库恢复演练。批量与并行只在迁移单元可独立接收时增加。
 [历史实测、读者卡点与未验范围](https://github.com/dbvv1/a1dbv/blob/77345c97fbbec5bcf50ddafa83766fe91de362ef/docs/research/2026-11-10-migration-case-evidence.md)：原任务证据保留；当前版本核心路线尚未通过两项真实任务及本机新读者验收，保持 🟡。
+
+## 负责人接收
+接收 657f2eb7 的 Windows 原生局部消费者证据：原/候选 native 各7、候选runner18；负责人核原始win32逐项输出、冻结测试断言、补丁hash。保留32文件未落地及路径返工；不是完整源码/产品验收，也不是页面首次无卡点通过。当前路线补入源码完整性和Windows路径前提；改后页面尚待新读者，地图保持🟡。

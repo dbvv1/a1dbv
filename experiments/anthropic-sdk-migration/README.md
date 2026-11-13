@@ -19,6 +19,16 @@
 
 独审不是首次全过：最初冻结的 7 例在旧版通过，候选 3 过／4 败，原因是审查者把第三方 host 误按 native 新版契约断言；保留[原始冻结测试](independent-original.py)，另用同消息与参数、改为 native host 的 [native 对照](independent-native.py)区分路由，再增加[第三方控制](independent-gateway.py)。辅助非默认 temperature=0.3 的候选结果是 ValueError、零请求，这是升级阻塞，不是功能保留成功。测试全用合成键与内存 transport，未调用模型或真实服务。
 
+### Windows 原生先处理工作目录与解释器
+
+**先选短工作目录，再由 PM 创建两个环境；不要遇到模块缺失就重装包。** Windows 读者实际使用 Git Bash 执行项目 runner，Python 为原生 win32。重放下方的 Linux 命令前：
+
+1. 将源码、PM 输出、缓存和临时 HOME 放在短路径下，保持两套环境独立。环境建成后用同一路径启动；本次读者将已存在目录解析成 8.3 短路径才完成 PM staging 和 SDK 导入。若系统未提供短路径名，选择更短的工作根目录，不自动修改系统长路径设置。
+2. 将 `HERMES_PYTHON` 指向对应环境的 `Scripts/python.exe`，不是 `bin/python`；先核 `sys.platform` 为 `win32`、SDK 版本和包导入，再运行原三文件门禁。Git Bash 不等于 WSL，不能拿 Linux 解释器结果代替 Windows。
+3. clone／checkout 报错先核实际缺失文件。本次缺少的 32 个 website／plugins 文件不在消费者门禁内，所以只接收该局部结果；要声称完整仓库兼容，须先恢复完整源码再跑原产品门禁，不能忽略 checkout 失败。
+
+[原生读者证据](../../docs/collaboration/local-jobs/artifacts/A-MIGRATION-HERMES-V2-NATIVE-READER-20261113/result.md)保留了 PM `ruamel.yaml` 导入失败、SDK 长模块名导入失败与修复轮次。负责人核补丁 hash、原始 win32 逐项输出及冻结断言：旧/候选 native 各 7 项、候选三文件 18 项通过，0 失败/skip；非默认采样仍被明确拒绝，第三方仍仅序列化。此处路径步骤为读者卡点回流，尚未由另一新读者照改后版本复测。
+
 ### 在独立源码副本重放
 
 从 a1dbv 根目录开始。需要已授权的官方依赖网络、Git 与能启动项目 PM 的 Python；受测 Linux、Python 3.14.9、SDK 2.3.0、httpx2 2.15.1。先读 Hermes 当前指引，只用它的 PM 创建环境，不裸 pip 改产品环境。
@@ -48,7 +58,7 @@ HERMES_TEST_FILE_RETRIES=0 bash scripts/run_tests.sh   tests/agent/test_anthropi
 
 本入口已在固定候选上实跑：3 文件、18 项通过、0 失败。这里只运行候选边界、native 与第三方控制；原冻结文件用于保留首次审查证据并供第三方控制导入，不把其已知路由错误作为最终门禁。旧版对照另建固定原树和 PM 环境，只运行 native 文件；不要在同一环境卸装两个版本。发布时改为零上下文补丁以通过仓库空白检查，已在全新固定源码副本应用并逐字节核 9 个文件与独审候选一致，须保留命令中的 `--unidiff-zero`。补丁 SHA256 `2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca`。源码或锁变化须重验，不把本次计数复制到新版本。
 
-候选保存在知识库供继续验证，不进入 Hermes 默认分支或上游 PR；完整应用、真实网关、Bedrock/Foundry 服务、跨 OS 均未验。官方明确要求仍需旧模型或非默认采样语义的请求保持旧版，不能靠换模型或删功能完成原目标。适用 MIT 许可沿用 [HERMES-LICENSE](HERMES-LICENSE.txt)。
+候选保存在知识库供继续验证，不进入 Hermes 默认分支或上游 PR；完整应用、真实网关、Bedrock/Foundry 服务均未验；跨 OS 只补到上述 Linux/Windows 局部消费者层。官方明确要求仍需旧模型或非默认采样语义的请求保持旧版，不能靠换模型或删功能完成原目标。适用 MIT 许可沿用 [HERMES-LICENSE](HERMES-LICENSE.txt)。
 
 依据：[官方 v1 HTTP 迁移](https://github.com/anthropics/anthropic-sdk-python/blob/v2.3.0/MIGRATION.md)、[v2 平台与采样契约](https://platform.claude.com/docs/en/api/migration-2026-10-21)、[实际升级需求](https://github.com/NousResearch/hermes-agent/issues/142796)、[Bedrock 复测原评论](https://github.com/anthropics/anthropic-sdk-python/issues/2031#issuecomment-6796169642)。2026-11-13 重新核原帖、评论、官方原文与固定源码并实跑；这是既有问题的定向深挖，不声称完成全生态广扫。社区 2.8.0 对部分旧模型的成功回执不扩大官方支持范围。
 

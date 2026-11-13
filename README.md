@@ -23,7 +23,7 @@
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ 因果定位／回归 |
 | 测试驱动、规格驱动、计划模式 | [按缺口选计划、测试与规格](docs/decisions/planning-and-tests.md) | ✅ Oil UI 失败先行／回归 |
 | 前端与 UI 任务 | [真实组件、用户路径与失败恢复](docs/decisions/verification.md) | ✅ 真实交互／窄屏回归 |
-| 遗留代码与大迁移 | [先核平台与行为契约，再迁移和验消费者](docs/decisions/migrations.md) | 🟡 SDK 真实请求候选已验；共享升级仍受兼容边界限制 |
+| 遗留代码与大迁移 | [先核平台与行为契约，再迁移和验消费者](docs/decisions/migrations.md) | 🟡 Windows 新读者已验局部消费者；路径步骤已补，改后待复测 |
 | 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/decisions/tool-adoption.md) | ✅ exporter 同题比较／保留 |
 | 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/decisions/product-improvement.md) | ✅ exporter 输入校验改进 |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | 🟡 |

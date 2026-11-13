@@ -1,0 +1,157 @@
+{
+  "task": "A-MIGRATION-HERMES-V2-NATIVE-READER-20261113",
+  "result_branch": "relay/a-migration-hermes-v2-native-reader-20261113",
+  "a1dbv_head": "e43f4e047932b1c0d7d18c713e095aa621609167",
+  "page_revision": "docs/decisions/migrations.md@77345c97fbbec5bcf50ddafa83766fe91de362ef (blob a5e71c809ebd39a0614ce235c084ef9eff011f7b; identical at HEAD)",
+  "hermes_commit": "c9b20d7bc08dec1e10779a06d7d9073bc6e7e418",
+  "candidate_patch": "experiments/anthropic-sdk-migration/hermes-v2-contract.patch",
+  "candidate_patch_sha256": "2a38c55cbb634e034e2deecbce90ef7eb1cc5986bdf8196b887af99bc28aa6ca",
+  "patch_apply": "git apply --unidiff-zero --check then git apply --unidiff-zero: clean at fixed commit; 9 files (7 modified, 2 added)",
+  "os": "Windows 11 Enterprise 10.0.26300.9818, AMD64 (win32-x64)",
+  "shell": "Git Bash (MSYS) invoking scripts/run_tests.sh; Python itself is native win32 CPython; no WSL",
+  "python": "CPython 3.14.9 (MSC v.1944 64-bit, build 2026-10-21); PM pinned 3.14.9+20261021-win32-x64",
+  "pm_uv": "0.13.5",
+  "environments": {
+    "old": {
+      "anthropic": "0.125.0",
+      "httpx": "0.28.1",
+      "python": "3.14.9",
+      "pm_source": "unpatched fixed commit"
+    },
+    "candidate": {
+      "anthropic": "2.3.0",
+      "httpx2": "2.15.1",
+      "python": "3.14.9",
+      "pm_source": "fixed commit + candidate patch"
+    }
+  },
+  "native_consumers": {
+    "old": [
+      {
+        "id": "test_auth_copy_and_constructor_contract[key]",
+        "status": "passed"
+      },
+      {
+        "id": "test_auth_copy_and_constructor_contract[token]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[False-None]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[True-None]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[True-0.3]",
+        "status": "passed"
+      },
+      {
+        "id": "test_user_citations_assistant_provenance_and_input_immutable",
+        "status": "passed"
+      },
+      {
+        "id": "test_http_failure_is_not_stream_fallback",
+        "status": "passed"
+      }
+    ],
+    "candidate": [
+      {
+        "id": "test_auth_copy_and_constructor_contract[key]",
+        "status": "passed"
+      },
+      {
+        "id": "test_auth_copy_and_constructor_contract[token]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[False-None]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[True-None]",
+        "status": "passed"
+      },
+      {
+        "id": "test_actual_main_and_auxiliary_request_sampling[True-0.3]",
+        "status": "passed"
+      },
+      {
+        "id": "test_user_citations_assistant_provenance_and_input_immutable",
+        "status": "passed"
+      },
+      {
+        "id": "test_http_failure_is_not_stream_fallback",
+        "status": "passed"
+      }
+    ]
+  },
+  "candidate_boundary": [
+    {
+      "id": "builder_and_copy_keep_exactly_one_route_credential[native-key]",
+      "status": "passed"
+    },
+    {
+      "id": "builder_and_copy_keep_exactly_one_route_credential[gateway-key]",
+      "status": "passed"
+    },
+    {
+      "id": "builder_and_copy_keep_exactly_one_route_credential[minimax-token]",
+      "status": "passed"
+    },
+    {
+      "id": "native_manual_thinking_payload_and_user_citations_reach_sdk2",
+      "status": "passed"
+    },
+    {
+      "id": "legacy_gateway_sampling_is_preserved_and_native_nondefault_rejected",
+      "status": "passed"
+    },
+    {
+      "id": "callable_token_refresh_survives_sdk_copy",
+      "status": "passed"
+    },
+    {
+      "id": "native_extra_body_sampling_cannot_hide_from_migration[0.3]",
+      "status": "passed"
+    },
+    {
+      "id": "native_extra_body_sampling_cannot_hide_from_migration[1]",
+      "status": "passed"
+    }
+  ],
+  "candidate_gateway_control": [
+    {
+      "id": "gateway_retains_sampling_body[None]",
+      "status": "passed"
+    },
+    {
+      "id": "gateway_retains_sampling_body[0.3]",
+      "status": "passed"
+    },
+    {
+      "id": "gateway_retains_citations_without_mutation",
+      "status": "passed"
+    }
+  ],
+  "counts": {
+    "old_native": "7 passed / 0 failed / 0 skipped",
+    "candidate_native": "7 passed / 0 failed / 0 skipped",
+    "candidate_boundary": "8 passed / 0 failed / 0 skipped",
+    "candidate_gateway": "3 passed / 0 failed / 0 skipped",
+    "candidate_replay_suite": "3 files, 18 passed / 0 failed / 0 skipped (boundary 8 + native 7 + gateway 3)"
+  },
+  "transport": "real SDK clients with only external I/O replaced by in-memory MockTransport for the SDK generation in use; socket connect/connect_ex/bind/listen are monkeypatched to fail; synthetic credentials and models only",
+  "not_verified": [
+    "real Anthropic or third-party gateway acceptance",
+    "Bedrock/Foundry services and credentials",
+    "OAuth refresh flow",
+    "async client",
+    "full Hermes application",
+    "release wheel/install matrix",
+    "other operating systems",
+    "upstream Hermes PR/default pin change"
+  ],
+  "non_default_sampling": "candidate rejects temperature=0.3 before any request (ValueError, zero transport calls); this is an upgrade blocker, not preserved behavior; old SDK sends 0.3"
+}

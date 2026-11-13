@@ -1,0 +1,111 @@
+Desensitized raw test output (absolute local paths replaced with <unit-temp>; synthetic credential-like ids masked).
+
+===== raw-cand-native-v.log (sanitized) =====
+============================= test session starts =============================
+platform win32 -- Python 3.14.9, pytest-9.1.1, pluggy-1.7.0 -- <unit-temp>\sdk2-env\Scripts\python.exe
+rootdir: <unit-temp>\hermes
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 7 items
+
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[key] PASSED [ 14%]
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[token] PASSED [ 28%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[False-None] PASSED [ 42%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-None] PASSED [ 57%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-0.3] PASSED [ 71%]
+tests/agent/test_sdk_migration_native_review.py::test_user_citations_assistant_provenance_and_input_immutable PASSED [ 85%]
+tests/agent/test_sdk_migration_native_review.py::test_http_failure_is_not_stream_fallback PASSED [100%]
+
+============================== 7 passed in 7.62s ==============================
+cand_native_exit=0
+
+===== raw-old-native-v.log (sanitized) =====
+============================= test session starts =============================
+platform win32 -- Python 3.14.9, pytest-9.1.1, pluggy-1.7.0 -- <unit-temp>\sdk-old-env\Scripts\python.exe
+rootdir: <unit-temp>\hermes-old
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 7 items
+
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[key] PASSED [ 14%]
+tests/agent/test_sdk_migration_native_review.py::test_auth_copy_and_constructor_contract[token] PASSED [ 28%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[False-None] PASSED [ 42%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-None] PASSED [ 57%]
+tests/agent/test_sdk_migration_native_review.py::test_actual_main_and_auxiliary_request_sampling[True-0.3] PASSED [ 71%]
+tests/agent/test_sdk_migration_native_review.py::test_user_citations_assistant_provenance_and_input_immutable PASSED [ 85%]
+tests/agent/test_sdk_migration_native_review.py::test_http_failure_is_not_stream_fallback PASSED [100%]
+
+============================== 7 passed in 3.50s ==============================
+old_native_exit=0
+
+===== raw-cand-boundary-gateway-v.log (sanitized) =====
+============================= test session starts =============================
+platform win32 -- Python 3.14.9, pytest-9.1.1, pluggy-1.7.0 -- <unit-temp>\sdk2-env\Scripts\python.exe
+rootdir: <unit-temp>\hermes
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 11 items
+
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[None] PASSED [  9%]
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_sampling_body[0.3] PASSED [ 18%]
+tests/agent/test_sdk_migration_gateway_review.py::test_gateway_retains_citations_without_mutation PASSED [ 27%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.anthropic.com-sk-ant-<synthetic>] PASSED [ 36%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://gateway.invalid/anthropic-synthetic-route-key-x-api-key] PASSED [ 45%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_actual_builder_and_copy_keep_exactly_one_route_credential[https://api.minimax.io/anthropic-synthetic-route-token-authorization] PASSED [ 54%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_manual_thinking_payload_and_user_citations_reach_sdk2 PASSED [ 63%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_legacy_gateway_sampling_is_preserved_and_native_nondefault_rejected PASSED [ 72%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_callable_token_refresh_survives_sdk_copy PASSED [ 81%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[0.3] PASSED [ 90%]
+tests/agent/test_anthropic_sdk2_boundary.py::test_native_extra_body_sampling_cannot_hide_from_migration[1] PASSED [100%]
+
+============================= 11 passed in 6.34s ==============================
+cand_boundary_gateway_exit=0
+
+===== test-candidate.log (sanitized) =====
+▶ not activated — using HERMES_PYTHON: <unit-temp>\sdk2-env\Scripts\python.exe
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 3 test files (~11 tests) under ['tests\\agent\\test_anthropic_sdk2_boundary.py', 'tests\\agent\\test_sdk_migration_native_review.py', 'tests\\agent\\test_sdk_migration_gateway_review.py']; running with -j 24
+[ 18.2% |     2/~11 | ✓3 | ✗0] ✓ tests\agent\test_sdk_migration_gateway_review.py (3✓, 18.7s)
+[ 63.6% |     7/~11 | ✓11 | ✗ 0] ✓ tests\agent\test_anthropic_sdk2_boundary.py (8✓, 18.7s)
+[100.0% |    11/~11 | ✓18 | ✗ 0] ✓ tests\agent\test_sdk_migration_native_review.py (7✓, 18.7s)
+
+=== Summary: 3 files, 18 tests passed, 0 failed (100% complete) in 18.9s (24 workers) ===
+  Durations cached to test_durations.json (3 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   3
+  Total subprocess CPU-wall: 56.0s  (runner wall: 18.9s, parallelism: 24x)
+  P50: 18.67s  P90: 18.68s  P95: 18.68s  P99: 18.68s  Max: 18.68s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     18.68s  tests\agent\test_sdk_migration_native_review.py
+     18.67s  tests\agent\test_anthropic_sdk2_boundary.py
+     18.66s  tests\agent\test_sdk_migration_gateway_review.py
+TEST_EXIT=0
+
+===== test-old.log (sanitized) =====
+▶ not activated — using HERMES_PYTHON: <unit-temp>\sdk-old-env\Scripts\python.exe
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~4 tests) under ['tests\\agent\\test_sdk_migration_native_review.py']; running with -j 24
+[100.0% |     4/~4 | ✓7 | ✗0] ✓ tests\agent\test_sdk_migration_native_review.py (7✓, 21.8s)
+
+=== Summary: 1 files, 7 tests passed, 0 failed (100% complete) in 22.2s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 21.8s  (runner wall: 22.2s, parallelism: 24x)
+  P50: 21.78s  P90: 21.78s  P95: 21.78s  P99: 21.78s  Max: 21.78s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     21.78s  tests\agent\test_sdk_migration_native_review.py
+TEST_EXIT=0

@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-CONSUMERS-20261113
 owner: dot-A
-status: review_ready
+status: accepted
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2a2cfe336d11b7e9f4e2198696d2f7563ce14787
@@ -30,3 +30,6 @@ result_branch: relay/a-migration-hermes-v2-consumers-20261113
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
 - 下一步：交负责人接收并提交；后续测试范围与未验项由云端实现者按 result.md 的测试命令和产品验收清单执行。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+
+## 负责人接收
+接收 3012e3b0 的固定源码消费者矩阵；负责人重新取得四个源文件并核 SHA256、主/辅助/Omit/Entra 链。仅接收静态事实，不采用删非默认采样或覆盖 API 版本的未验证建议，不作为运行或全产品升级证据。
