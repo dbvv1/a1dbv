@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-BASH-READER-20261113 · 接续原生 Windows Hook 测试入口
 id: A-LONG-ROUTE-BASH-READER-20261113
 owner: dot-A
-status: revision_requested
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4564ed0c5d446159aaebe0d3ffd43bb24f97c3e8
