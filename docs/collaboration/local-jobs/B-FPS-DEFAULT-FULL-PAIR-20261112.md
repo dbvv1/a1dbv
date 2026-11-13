@@ -2,7 +2,7 @@
 id: B-FPS-DEFAULT-FULL-PAIR-20261112
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/FPS-Like
 base_ref: 658b2e592c612fa0801e2cc7fecdce32bb57eadb
 result_branch: relay/b-fps-default-full-pair-20261112
@@ -56,18 +56,10 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 
 ## 当前结果
 
-- 结果 c7936ff 保留证据，不按原卡合格接收：两次工具修复、三次smoke超出本卡“一次修复后重跑一次”；第二跑失败后应blocked。不得用超次第三跑换默认或提高覆盖。
-- 58条哈希复核通过；五个有日志浏览器已exit0且关联preview关闭，但探针、独审额外复跑、外层接收端退出清理尚缺，槽未释放。running仅保留原调用归属，不代表已证实仍在运行。
-- 两位独立非作者匿名AI静态选图已完成，均偏好全场材质且未判整体更差；不抵消流程越界，不冒充完整验收。原始意见、12图映射与审计见[回执审计](../reviews/fps-default-full-pair-20261112-receipt-audit.md)。
-
-后续只读复核没有补齐下面要求的原调用退出清理，也没有改变原卡授权次数。其“未发现需修正缺口”仅是接收端自述；其中“盲选仍待安排／下一步安排盲选”已由上述已完成评审纠正，不再重复安排。第三跑数值只作为隔离证据保留。
-
-### 接收端后续只读复核（5bc1e27，原文保留）
-
-- 本单元为交付后独立核查：HEAD c7936ff 与 origin/relay 一致、worktree clean；独立重算 59 文件/58 条 SHA256（0 失配）、两路 smoke 六回合帧耗（current-default active 1072 帧 mean 289.991ms/p95 550ms；full-materials active 1306 帧 mean 277.490ms/p95 516.7ms，后/前比值 0.957/0.939）、12 张成对图 metadata/PNG（1280×720、同组两次 state/RGBA 全等、default vs materials 状态与 stateHash 8f7d2286 全等而 RGBA 不同、materials 为 ai-courtyard-full-v1 ready 非回退）、浏览器启动参数（--headless/--use-angle=swiftshader，无 --no-sandbox/--enable-unsafe-swiftshader，exitCode 0）、tools-only 补丁可重放、两路构建清单 34 项一致、公开扫描 47 个文本文件干净；未发现需修正缺口，未改动任何文件（files=[]，git status 已核为空）。taskDone：本单元核查完成；pageStuck：不适用（非 reader-test）；未运行验收：npm test（本 worktree 为 relay 证据分支、非本卡 base_ref 且无 node_modules）、npm run sim（无 sim 改动）、完整 smoke 与成对拍摄（任务明令不盲重跑）；真实硬件 GPU 与声音未验证。openIssues：两名非作者同机位匿名盲选（均不判更差且至少一位偏好新版）与据此换默认的决定仍待负责人安排。
-- 本单元没有文件改动。
-- 检查：check_public（文件） 通过；独立审查通过。
-- 下一步：由负责人安排两名非作者同机位匿名盲选，并据结果决定是否将 full-materials 换为默认；README 已声明本目录不表示默认已变更。
+- 新增脱敏原调用清理回执（11 个 run，status=blocked、accepted=false、defaultChanged=false；baseRef 658b2e5/baseTree cd025ea；自哈希 059f1c85 校验通过，公开扫描 55 个文本文件 0 实质发现）。核实 unit-1/unit-2 外层调用均 exit 0、CLI 已关闭、740/819 注册进程全部 exited、观察时 live=[]，当前 14 个记录 PID 均不存活、9 个预览端口无监听，未启动或终止任何进程。任务整体仍 blocked：attempt-3 超一次重跑额度；两 probe 与两 review 阶段 smoke 缺命令/PID/exit/清理记录，两次 capture 包装 exit 未落日志；额外成功 smoke 帧耗比 1.0418/1.0966、1.0906/1.0591 未复现交付的 0.9569/0.9395；两名非作者盲选、硬件 GPU、声音未验证，默认未换、未提交。taskDone：本单元回执整理与资源核查完成；pageStuck：不适用（非 reader-test）。未运行验收：smoke、capture、probe、npm test、npm run sim（本单元任务明令不重跑/超范围）。openIssues：上述不可恢复记录需维护者补原记录，拍摄槽释放与默认材质决定待负责人。
+- 产物：[8afe767](https://github.com/dbvv1/FPS-Like/commit/8afe767e1a68257f635a03946f616895808d999b)，分支 `relay/b-fps-default-full-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人依据回执决定是否释放独占拍摄槽；不可恢复的 probe/包装 exit/额外 smoke 记录交维护者补录；两名非作者同机位盲选与是否换默认另行安排。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求：仅补原调用回执，不启动新拍摄
