@@ -1,48 +1,40 @@
-# B-MOBA-QUIET-PAIR-20261112 · 当前默认与 quiet 成对验收
+# B-MOBA-QUIET-PAIR-20261112 · 仅补 default 完整 smoke
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: review_ready
+status: revision_requested
 target_repo: https://github.com/dbvv1/MOBA-Like
-base_ref: b8a377078e15c0dd2fb7c367b0bf24adbee09468
+base_ref: cb025e897b9d92f9db470d0a057098adb0404f87
 result_branch: relay/b-moba-quiet-pair-20261112
 
-## 已接收与未完成
+## 已接收范围
 
-原卡11-12 06:30派发、06:35:10领取、19:05收集交回；原结果aabc47be6c806d66d2278dc808f6750ee2bee5c0。16张1280×720成对图、清理及两位非作者4/4偏好quiet已接收，见[原盲选](../moba-quiet-blind-20261112.md)，不重复拍摄。default旧整局tick9010到终局，因同帧rAF误报失败，quiet整局未跑；观察器已在b8a3770修复，9/9回归。全套614/615唯一cast.ogg旧缺项在未改版本复现，不能称全套全过。旧命令及过程保留Git历史，本轮以下文为准。
+11-13 05:19交回的332fa5f证据及两处测试脚本修复已接收进main cb025e89。quiet retry完整流程通过；default首轮自然整局tick9010终局，但后续存档弹层阻断初始化，retry初始ready超时，仍缺完整流程。四份报告均有Chromium exit0／previewClosed，未以此冒充外层退出回执。详见目标仓 docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/acceptance.md。
 
-## 11-13 仅补双路完整 smoke（本轮权威执行范围）
+保留quiet通过证据和原16张图、两位非作者4/4偏好quiet结论，不重跑quiet、不重拍、不重盲选。default均帧489.49ms／p95 550，quiet502.14／570.1；软件共享机数据，不称硬件GPU结果。paths清单59项中47项未入Git是收集欠项，不否决已有证据、不冻结其他案例。当前未换默认、未更新网站。
 
-按用户11-13换默认纠偏，取代上文旧命令和“等FPS所有历史清理”门槛。Star已上线v11；FPS旧全场材质性能取舍已决定接受，原卡证据接收并释放槽。原FPS三个unit注册3522身份已核无存活，unit-3 exit0／子树settled；缺失历史probe等回执记欠项，不要求恢复后才开始。本卡沿原id/result_branch续接，不新建重复卡；先核本卡原调用已结束及当时实际资源，不结束其他工作；若发现新活跃同单元只读进展不重复启动。
+## 修改要求（取代旧双路命令）
 
-读 game-quality-pass 的 capture.md、目标仓AGENTS.md及 tests/client/browser-smoke/README.md。固定新base_ref b8a377078e15c0dd2fb7c367b0bf24adbee09468，干净独立worktree；Node22.23.2及原已装Chromium，禁止安装／升级、改锁文件或安全设置。只headless、不显示窗口、不操作桌面、不模拟桌面键鼠；页面自动化沿原完整smoke，不换renderer或浏览器绕过安全拒绝。
+读 game-quality-pass 的 capture.md、目标仓AGENTS及 tests/client/browser-smoke/README.md。本卡唯一需要新执行的内容是 **default 完整流程 smoke**。固定base_ref独立干净worktree；该版本仅测试脚本和证据变化，游戏、quiet材质和帧耗测量语义未变。
 
-不重拍原16张图、不重做静态盲选、不运行探针。仅构建web后依次default完整smoke、quiet完整smoke。固定两路同一Chromium（记录版本、二进制SHA256及真实renderer），SwiftShader，同原脚本1280×900／DPR1，HUD遍历保持原规格，不称1280×720帧耗。输出根 outputs/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2，新建且不覆盖原结果；构建前后记录HEAD/tree/tracked状态。
+开始先核原调用和当前实际资源：同单元若仍活跃只读进度，不重复启动、不杀其他任务。旧浏览器／preview已退出；外层缺收集单记债务，接收端核当前资源可用后执行。独占拍摄槽，交回后才轮到Star卡；状态标签不证明运行。
+
+只用Node22.23.2及原已装Chromium；记录版本、二进制SHA、真实renderer。SwiftShader／1280×900／DPR1沿原规格，不称1280×720。仅headless、隐藏子进程窗口、不操作桌面、不模拟桌面键鼠。禁止安装升级、驱动探针、改安全设置或换浏览器绕过拒绝。MOBA_SMOKE_CHROMIUM只设本子进程原二进制。
 
 ```powershell
 npm run build:web
-$env:MOBA_SMOKE_SOURCE_SHA='b8a377078e15c0dd2fb7c367b0bf24adbee09468'
+$env:MOBA_SMOKE_SOURCE_SHA='cb025e897b9d92f9db470d0a057098adb0404f87'
 $env:MOBA_SMOKE_RENDERER='software'
 $env:MOBA_SMOKE_VARIANT='default'
-$env:MOBA_SMOKE_OUTPUT='outputs/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/default-smoke'
+$env:MOBA_SMOKE_OUTPUT='outputs/B-MOBA-QUIET-PAIR-20261112/cb025e89-default-r3/default-smoke'
 Remove-Item Env:MOBA_SMOKE_CLOUD_NO_SANDBOX -ErrorAction SilentlyContinue
-node tests/client/browser-smoke/run.mjs --full-match
-# 核原命令、浏览器退出与preview关闭后再执行quiet：
-$env:MOBA_SMOKE_VARIANT='quiet'
-$env:MOBA_SMOKE_OUTPUT='outputs/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke'
 node tests/client/browser-smoke/run.mjs --full-match
 ```
 
-MOBA_SMOKE_CHROMIUM只设当前子进程并指向原已装二进制，不能换二进制重试失败。两入口分别为 `/` 与 `/candidate.html?materials=quiet-family-v1&lighting=forest-light-v1`；不加入其他候选，不跳过完整restart／输入／存档恢复及HUD断言；自然tick0至终局，不手工推进或伪造状态。
+新输出目录不得覆盖旧证据；记录构建前后HEAD/tree/tracked状态，入口 `/`，自然tick0到终局及完整restart／输入／存档恢复／HUD断言，不手工推进、不伪造状态。
 
-首次失败保首错、报告及真实退出；确为测试脚本路径／参数／Node22兼容／选择器或观察逻辑的小问题，允许只修 tests/client/browser-smoke/ 及其直接测试，回归后重跑失败命令一次，不能一失败就blocked。禁止改游戏src、资产、默认、依赖、删除断言、放宽终局或无限重试。若公共测量语义改变，两路需同补丁，保首次及重试独立目录；第二次失败或游戏缺陷原样交回，另一独立入口能安全执行则照常收证。安全拒绝不绕路。
+首次失败保原报告和退出。确属测试脚本路径、选择器、参数、Node22兼容小问题，允许只改 tests/client/browser-smoke/ 及直接测试，回归后独立目录重跑失败命令一次；不改游戏、资产、默认、依赖、测量语义，不删除断言、不放宽终局。第二次失败或真实游戏缺陷原样交回，勿无限重试。安全拒绝不得绕路。
 
-交回原report.json、manifest.json、full-match-frames.json、终局及操作图、构建/脚本patch哈希、Node/Chromium/renderer、真实开始/交回UTC、exit/signal及浏览器/preview退出证据；脱敏私人绝对路径，不伪造缺项。按原已修收集方式收进 docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/ 的短目录，保原始字节SHA映射，避免被忽略outputs或Windows长路径导致收集失败；不改接收端。交回review_ready，执行者不合main、不换默认、不部署。负责人两路完整smoke通过且帧耗无明显劣化后，沿已过双非作者静态盲选当轮换默认。
+独立收集欠项：只从原已有磁盘产物补47项，不重执行旧命令、不再造回执；缺文件如实列出。保原字节哈希映射并脱敏私人绝对路径，不改接收端。
 
-## 当前结果
-
-- 单元达到时限，收集超时前已写出的部分成稿：tests/client/browser-smoke/run.mjs、tests/client/browser-smoke/full-match.mjs、tests/client/browser-smoke/full-match.test.ts、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/README.md、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/environment.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/paths.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/script-patch-v1.diff、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/script-patch-v2.diff、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/build-web-receipt/capture-build-identity.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/default-smoke/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/default-smoke-retry/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/report.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/manifest.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/quiet-smoke-retry/full-match-frames.json、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/logs/quiet-smoke-retry.log、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/logs/default-smoke-retry.log、docs/quality/capture/B-MOBA-QUIET-PAIR-20261112/b8a3770-full-r2/deliverable-harness.sha256。最终审查未完成，未关闭意见及未核范围由负责人接收；不表示整项验收通过。
-- 产物：[332fa5f](https://github.com/dbvv1/MOBA-Like/commit/332fa5f755be8b4a1d91d5fc8071ad4bcbeda2ef)，分支 `relay/b-moba-quiet-pair-20261112`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查未通过或未完成。
-- 下一步：负责人接收已有成稿和审查缺口；本次不重派、不重跑。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+交回新report、manifest、帧数组、关键图、测试patch与回归、构建来源、Node／Chromium／renderer、真实开始结束UTC、外层exit/signal、浏览器／preview关闭及当前资源证据。产物收进目标仓 docs/quality/capture/ 本卡短目录，公开扫描后沿原result_branch交回review_ready；不自行合main、换默认或部署。负责人结合已有quiet／盲选及本次default决定换默认；收集欠项单列。

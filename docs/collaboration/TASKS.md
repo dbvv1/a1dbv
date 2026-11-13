@@ -34,7 +34,7 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- **11-13 接续**：Star已换默认并上线v11，不等FPS清理。FPS已交回，01:10:52 UTC核三个unit共3522个注册身份存活0，unit-3 exit0／子树settled，释放槽；历史probe／review／wrapper缺项记欠项，不否决已有证据。MOBA补两路smoke；仅核当前真实资源，不重复启动。
+- **11-13 接续**：Star已换默认并上线v11，不等FPS清理。FPS已交回，01:10:52 UTC核三个unit共3522个注册身份存活0，unit-3 exit0／子树settled，释放槽；历史probe／review／wrapper缺项记欠项，不否决已有证据。MOBA quiet已过，仅补default完整smoke；只核当前资源，不重复启动。
 
 ## 项目板
 
@@ -42,11 +42,11 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | 15项已收口，见下方。Datasette 部分接收，#3015 合上游／修契约及六 CI 待批；Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名，旧例6过时／8待验，409非新版，socket拒绝。另张 Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。 |
-| MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main `b8a3770`／Site **v22**，0/89。[quiet卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)11-13沿原卡补 default／quiet 完整smoke与帧耗；原16图两非作者均4/4偏好quiet，不重复拍摄或盲选。rAF同帧误报已修（9/9回归）；两路过且无明显劣化即换默认，当前仍未换。 |
+| MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main `cb025e89`／Site **v22**，0/89。[quiet卡](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)11-13 05:19交回：quiet完整流程过，default终局后初始化失败、retry初始ready超时；脚本及证据已收，仅补default完整smoke。原图／双盲保留；47项收集欠项不否决已有证据。未换默认；default补齐且帧耗无明显劣化即换。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | 新增[共享接触结果反例](../../domains/game-dev/assets/materials.md#web-scene-recipe)：Saltline原CPU函数／真实mask核地面、高处、查询失败；仅共享mask仍会让高处metal被重查成水声／水花，未实玩或三案采用。FOG CITY仍缺唯一作者／分享链接。[Solhex](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)暂停保档Copper 3/6，不续窄试玩。 |
-| SR | **Star-Rush 品质** | dot-B | master `2f10cf9b`（运行源`1299e5a7`）／Site **v11**（源`38978955`，11-13 03:02:42 UTC部署成功），coast已换默认、baseline可回退、诊断默认隐藏；0/43不变。[整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)11-12 19:09:44复派、19:50:53执行完、21:03:15交回；两入口exit0、双盲已过。p95 450→366.6ms，>50ms比例74.1%→81.8%，不称普遍流畅。下一项整场景视听目标。 |
+| SR | **Star-Rush 品质** | dot-B | master `2f10cf9b`／Site **v11**（源`38978955`），coast默认已上线，0/43；[原整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)两入口exit0、双盲过。p95 450→366.6ms，>50ms比例74.1%→81.8%，不称流畅。整景`0405af62`仅CPU过；[对照卡](local-jobs/B-STAR-COAST-SCENE-PAIR-20261113.md)定型待MOBA补测交回，未出新图。 |
 | FPS | **FPS-Like 品质** | dot-B | main `79bcf1d1`／Site **v25**（源`1521e434`，11-13 03:09:35 UTC部署成功），原`ai-courtyard-full-v1`已换默认，0/77不变。[原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)11-12 21:10:03复派、11-13 00:03:06补回；双盲3/3偏好。三次双路smoke帧耗方向不一、非同输入，本轮不判明显劣化，保留软件慢4–10%成本风险，不称流畅。超次及缺回执记欠项，槽已释放。玩家菜单候选/诊断已隐藏，471/471与build过；该UI未新做浏览器验收，站点HTTP直读403，生产部署由Sites终态核实。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
