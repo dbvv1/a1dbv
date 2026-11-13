@@ -12,3 +12,8 @@
 - v1.4-rev3 状态：待 Codex 工程可行性复核、Claude 核心方向复核（额度恢复后）及用户确认。
 
 - 前序 rev2：[AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev2-draft.md](AUTONOMOUS-WORK-SYSTEM-SPEC-v1.4-rev2-draft.md)，保留历史，不再作为当前评审入口。
+
+
+## Dot 长期行为指令草案
+
+- [DOT-CUSTOM-INSTRUCTIONS-v1-draft.md](DOT-CUSTOM-INSTRUCTIONS-v1-draft.md)：Dot-A/B 共用 Custom Instructions、各自专属补充和 Custom Rules 候选；待 Claude 审核、Codex 可行性检查与用户确认。
