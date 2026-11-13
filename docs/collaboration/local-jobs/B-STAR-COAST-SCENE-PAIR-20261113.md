@@ -2,14 +2,14 @@
 id: B-STAR-COAST-SCENE-PAIR-20261113
 owner: dot-B
 kind: build
-status: blocked
+status: ready
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0405af62c8d1a099fd710a852f42c9f8bcf80968
 result_branch: relay/b-star-coast-scene-pair-20261113
 
 ## 目标与串行条件
 
-MOBA原卡default补测交回并核当前拍摄资源后，负责人改ready；此卡现在仅定型，不表示派发或运行。不重启旧取消卡、不打断现有工作。整景源6a409a7，0405af62仅增加Node22兼容的commit/query拍摄入口；不改游戏、默认或网站。Skill：game-quality-pass／capture.md及目标仓AGENTS。
+MOBA原卡已于11-13 07:38:20 UTC交回；已核b03b7c22原回执：06:38:59外层exit0，浏览器exit0／preview关闭，06:41:51资源检查runner及Chromium进程均0。现释放前卡拍摄槽并派发本卡；这是回执核查，不冒充此刻现场进程采样，执行前仍核当前资源；派发不表示运行。不重启旧取消卡、不打断现有工作。整景源6a409a7，0405af62仅增加Node22兼容的commit/query拍摄入口；不改游戏、默认或网站。Skill：game-quality-pass／capture.md及目标仓AGENTS。
 
 在同一固定SHA、同一构建、同一浏览器下，当前默认 `/road` 对候选 `/road?scene=coast-afternoon-v1`。三机位 coast-chase、coast-full-bend、academy-depth，1280×720／DPR1。候选统一街屋轮廓与冷暖色带、矮灌木簇，不拆层开关。CPU测试不是出图结论。
 
