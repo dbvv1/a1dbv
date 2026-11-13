@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-CONSUMERS-20261113
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2a2cfe336d11b7e9f4e2198696d2f7563ce14787
@@ -22,3 +22,11 @@ result_branch: relay/a-migration-hermes-v2-consumers-20261113
 
 ## 续接
 普通单元最多2小时，共享最多4并发、1GPU；本卡不用GPU。输出可供云端实现者当轮核对并决定测试范围，不决定升级默认或推荐。若固定源码不可取，交具体错误，不换凭据、不安装或开权限。只有实际工具/输出算执行；ready/claimed不算。
+
+## 当前结果
+
+- 完成 Hermes 固定提交 c9b20d7 的 Anthropic SDK 2.x 源代码消费者核对，新增 result.md（187 行）。确认四个失效层：API-key 路由的 Authorization: Omit() 会删除唯一认证头；temperature 生成点与 2.x 方法签名冲突（旧 thinking 路径与辅助请求）；httpx.Timeout/httpx.Client 被 2.x 构造拒绝；user-role citations 入口存在但仓内无生产者。另记录 Bedrock 4.6 及以下版本策略冲突、直接 HTTP 路由保持旧版本头不需全局替换、Apache 2.0 许可。仓库检查 check_repo 退出 0（971 文件）、check_public --staged findings 为空（退出 2 仅因既有 54 个二进制条目跳过，本文件不在其中）、git diff --cached --check 退出 0。未运行 Hermes 测试与真实 SDK 请求（任务禁止装依赖），命令与未验项已明确写入文中。openIssues 为空。
+- 产物：[3012e3b](https://github.com/dbvv1/a1dbv/commit/3012e3b0b8f55516b582b523db7af7f2f136bdc2)，分支 `relay/a-migration-hermes-v2-consumers-20261113`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：交负责人接收并提交；后续测试范围与未验项由云端实现者按 result.md 的测试命令和产品验收清单执行。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
