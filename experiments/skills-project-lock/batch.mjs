@@ -1,0 +1,10 @@
+import {mkdir,readFile,readdir,writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {installSkills} from 'skills';
+const root=import.meta.dirname;
+const cwd=join(root,'batch');await mkdir(cwd);
+const names=['explore-frontier','write-task-guide'];
+const result=await installSkills(join(root,'sources'),{cwd,skills:names,agents:['codex'],mode:'copy',telemetry:false});
+const lock=JSON.parse(await readFile(join(cwd,'skills-lock.json'),'utf8'));
+const report={failed:result.failed,directories:await readdir(join(cwd,'.agents','skills')),lockKeys:Object.keys(lock.skills),bytes:await Promise.all(names.map(async name=>({name,identical:(await readFile(join(root,'sources',name,'SKILL.md'))).equals(await readFile(join(cwd,'.agents','skills',name,'SKILL.md')))})))};
+await writeFile(join(root,'batch-result.json'),JSON.stringify(report,null,2)+'\n');console.log(report);

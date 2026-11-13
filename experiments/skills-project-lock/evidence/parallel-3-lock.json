@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "explore-frontier": {
+      "source": "../sources/explore-frontier",
+      "sourceType": "local",
+      "computedHash": "156e607936abcf01da10cb1e02324ae240559a2326fb8cdd130a4dc74d888beb",
+      "installMode": "copy"
+    }
+  }
+}

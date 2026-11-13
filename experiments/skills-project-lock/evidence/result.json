@@ -1,0 +1,202 @@
+{
+  "version": "1.8.1",
+  "node": "v24.22.1",
+  "platform": "linux",
+  "names": [
+    "explore-frontier",
+    "write-task-guide"
+  ],
+  "runs": [
+    {
+      "mode": "parallel",
+      "n": 1,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier",
+        "write-task-guide"
+      ]
+    },
+    {
+      "mode": "parallel",
+      "n": 2,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier",
+        "write-task-guide"
+      ]
+    },
+    {
+      "mode": "parallel",
+      "n": 3,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier"
+      ]
+    },
+    {
+      "mode": "serial",
+      "n": 1,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier",
+        "write-task-guide"
+      ]
+    },
+    {
+      "mode": "serial",
+      "n": 2,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier",
+        "write-task-guide"
+      ]
+    },
+    {
+      "mode": "serial",
+      "n": 3,
+      "results": [
+        {
+          "status": "fulfilled",
+          "failed": []
+        },
+        {
+          "status": "fulfilled",
+          "failed": []
+        }
+      ],
+      "directories": [
+        "explore-frontier",
+        "write-task-guide"
+      ],
+      "bytes": [
+        {
+          "name": "explore-frontier",
+          "identical": true
+        },
+        {
+          "name": "write-task-guide",
+          "identical": true
+        }
+      ],
+      "keys": [
+        "explore-frontier",
+        "write-task-guide"
+      ]
+    }
+  ]
+}
