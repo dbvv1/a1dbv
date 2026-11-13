@@ -2,7 +2,7 @@
 id: B-AI-GAME-BROWSER-SECOND-PASS-EVIDENCE-20261113
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6dedee31abc6bf77694dd02a23f3f9833084f2f5
 result_branch: relay/b-ai-game-browser-second-pass-evidence-20261113
