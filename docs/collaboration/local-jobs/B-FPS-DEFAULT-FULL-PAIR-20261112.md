@@ -56,10 +56,10 @@ node --import tsx tools/capture-quality-pair.mjs --commit $sha --query $q --cand
 
 ## 当前结果
 
-- 新增脱敏原调用清理回执（11 个 run，status=blocked、accepted=false、defaultChanged=false；baseRef 658b2e5/baseTree cd025ea；自哈希 059f1c85 校验通过，公开扫描 55 个文本文件 0 实质发现）。核实 unit-1/unit-2 外层调用均 exit 0、CLI 已关闭、740/819 注册进程全部 exited、观察时 live=[]，当前 14 个记录 PID 均不存活、9 个预览端口无监听，未启动或终止任何进程。任务整体仍 blocked：attempt-3 超一次重跑额度；两 probe 与两 review 阶段 smoke 缺命令/PID/exit/清理记录，两次 capture 包装 exit 未落日志；额外成功 smoke 帧耗比 1.0418/1.0966、1.0906/1.0591 未复现交付的 0.9569/0.9395；两名非作者盲选、硬件 GPU、声音未验证，默认未换、未提交。taskDone：本单元回执整理与资源核查完成；pageStuck：不适用（非 reader-test）。未运行验收：smoke、capture、probe、npm test、npm run sim（本单元任务明令不重跑/超范围）。openIssues：上述不可恢复记录需维护者补原记录，拍摄槽释放与默认材质决定待负责人。
+- 新增脱敏原调用清理回执（11 个 run，status=blocked、accepted=false、defaultChanged=false；baseRef 658b2e5/baseTree cd025ea；自哈希 059f1c85 校验通过，公开扫描 55 个文本文件 0 实质发现）。8afe767汇总记 unit-1/unit-2 外层调用均 exit 0、CLI 已关闭、740/819 注册进程全部 exited、观察时 live=[]；其11-12 23:39:04核查中14个已知 PID 均不存活、9个已知预览端口无监听。本轮接收只读汇总，不冒充现场进程复核。任务整体仍 blocked：attempt-3 超一次重跑额度；两 probe 与两 review 阶段 smoke 缺命令/PID/exit/清理记录，两次 capture 包装 exit 未落日志；额外成功 smoke 帧耗比 1.0418/1.0966、1.0906/1.0591 未复现交付的 0.9569/0.9395；12图两名非作者AI盲选已通过，见[指导层审计](../reviews/fps-default-full-pair-20261112-receipt-audit.md)；硬件 GPU、声音未验但不是换默认前置。默认未换。taskDone：本单元回执整理与资源核查完成；pageStuck：不适用（非 reader-test）。未运行验收：smoke、capture、probe、npm test、npm run sim（本单元任务明令不重跑/超范围）。openIssues：上述不可恢复记录需维护者补原记录，拍摄槽释放与默认材质决定待负责人。
 - 产物：[8afe767](https://github.com/dbvv1/FPS-Like/commit/8afe767e1a68257f635a03946f616895808d999b)，分支 `relay/b-fps-default-full-pair-20261112`。
 - 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：负责人依据回执决定是否释放独占拍摄槽；不可恢复的 probe/包装 exit/额外 smoke 记录交维护者补录；两名非作者同机位盲选与是否换默认另行安排。
+- 指导层接收（2026-11-13）：保留11个调用汇总及既有12图双AI盲选，不按原卡合格接收。unit-1/2外层退出摘要已补，unit-3生成回执时仍running；原始接收端记录未全部交回，probe／失败review smoke清理及部分wrapper exit仍缺。槽不释放，不激活Star／MOBA。只收可恢复原记录，无法恢复由维护者说明，不新执行或重新派发模型补证；默认不换。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
 
 ## 修改要求：仅补原调用回执，不启动新拍摄

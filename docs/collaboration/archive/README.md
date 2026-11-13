@@ -25,3 +25,5 @@
 - [2026-11-08 FPS 状态接续](completed-through-2026-11-08.txt)：整仓验收前原项目行；产品采用仍看当前 TASKS。
 
 - [2026-11-09 FPS 状态接续](completed-through-2026-11-09.txt)：终局目标提示修复前原项目行；产品采用仍看当前 TASKS。
+
+- [2026-11-13 B状态接续](completed-through-2026-11-13.txt)：FPS原回执与实例行更新前原文；以当前TASKS和原卡审计为准。

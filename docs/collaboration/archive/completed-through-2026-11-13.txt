@@ -1,0 +1,5 @@
+2026-11-13 B状态接续。以下原行逐字保留；相对链接以a1dbv c976d8f9的TASKS原位置为准。当前状态见TASKS，旧欠项不代表新回执。
+
+| B-实例 | **AI 游戏实例**：作品／作者过程／社区反馈 | dot-B | [Solhex v173](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)同档六次到第二章 Copper 3/6：电池耗尽自动返航保住货物、补给与慢修；核心上船后仍2/6，返港安装后RTG 1→2、容量6060→12060才推进。累计55分钟、部分×4，建铜炉缺14铁矿，已暂停保档。模块损伤未修，死亡／重开／终局／试听未验，不计品质或案例采用。 |
+
+| FPS | **FPS-Like 品质** | dot-B | main `658b2e5`／Site **v24**，默认未换，0/77。[FPS卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)复派21:10:03、21:12:36领；结果 `c7936ff`：12图、58哈希已核，两非作者三机位均偏全场材质；[审计](reviews/fps-default-full-pair-20261112-receipt-audit.md)记录两次修复／三次smoke越额度，不能据第三跑换默认。五浏览器exit0，探针／额外审查／外层清理仍欠；仅补原调用证据，不重跑、不释槽。 |

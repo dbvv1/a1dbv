@@ -1,6 +1,6 @@
 # FPS 成对验收回执审计与匿名选图
 
-**决定：证据保留，不按原卡合格接收，不用超次结果换默认。拍摄槽尚未释放。** 原卡只授权一次现场测试脚本修复及一次失败命令重跑；本次实际两处修复、三次聚合 smoke。匿名静态选图通过不抵消执行越界和退出清理欠项。
+**决定：证据保留，不按原卡合格接收，不用超次结果换默认。拍摄槽尚未释放。** 原卡只授权一次现场测试脚本修复及一次失败命令重跑；原三跑之后还有额外复核；11-13 补交回执合计两处修复、六次聚合 smoke、三次成对拍摄和两次 probe。匿名静态选图通过不抵消执行越界和退出清理欠项。
 
 ## 固定证据与真实次数
 
@@ -13,6 +13,20 @@
 | smoke attempt-3 | 21:33:21–21:47:37 | wrapper 0；两入口各六自然回合；超出原卡重跑次数，不计合格 |
 | 独立成对拍摄 | 21:49:19–21:50:27 | exit 0；原始 base，三机位各前后双重复共12图 |
 
+### 补交汇总揭示的额外调用
+
+结果分支 `8afe767e1a68257f635a03946f616895808d999b` 于 **2026-11-13 00:03:06 UTC** 交回原调用清理汇总，原卡于 **00:03:23** 写为 blocked。以下来自该汇总，不冒充本轮运行或全部原始日志已回仓；日期均为11-12 UTC。两次 review smoke 的时间只是日志创建／最后写入窗口，命令由产物结构重建。
+
+| 额外调用 | UTC 时间／窗口 | 汇总中的结果与缺项 |
+|---|---|---|
+| smoke-review | 21:56:38–22:09:28 | wrapper 1；默认六回合，候选失败内部报告、浏览器退出和清理丢失 |
+| capture-review | 22:12:59–22:14:05 | 内层报告及浏览器 exit 0，wrapper exit 未记；12图与交付图逐一同哈希 |
+| smoke-review-rerun | 22:14:20–22:26:03 | wrapper 0；新版/默认帧耗 mean、p95 比 **1.0418／1.0966** |
+| reviewer-capture | 22:46:34–22:47:48 | 内层报告及浏览器 exit 0，wrapper exit 未记；12图与交付图逐一同哈希 |
+| reviewer-smoke | 22:48:06–23:02:10 | wrapper 0；新版/默认帧耗 mean、p95 比 **1.0906／1.0591** |
+
+首次拍摄已通过，复核同图不增加独立场景证据；静态盲选沿用下文已完成结果，不重做。新增两次成功 smoke 的均值与p95均慢于默认，不能挑第三跑的 0.9569／0.9395 宣称帧耗稳定无退化；不同自然输入对局也不能直接推出固定百分比的材质因果成本。所有超额执行继续隔离，不据此换默认。
+
 第一次补丁 `b45345f` 只将真实按住 s 的固定230ms等待改成至少20 tick，保留原位移断言；第二次补丁 `c3546ec` 给 spawnSync 设置64MiB maxBuffer。补丁文本只改测试工具，第三跑实际源为 `c3546ec`，不能写成干净 base。第二跑 SIGTERM 是原 manifest 事实；公开材料没有 spawnSync.error.code=ENOBUFS 原始回执，不能把 maxBuffer 根因解释冒充完全核实。按2探针记录当前版本能切手枪，不能反推旧 `402dd68` 超时根因。
 
 environment 另记两 worktree 执行 npm ci，与本卡“不安装／升级软件”范围不一致；锁文件未变不等于这一步已获本卡授权。
@@ -21,7 +35,11 @@ environment 另记两 worktree 执行 npm ci，与本卡“不安装／升级软
 
 公开脱敏 browser-events.log 核得真实 `process did exit: exitCode=0, signal=null`：66372（21:20:14.299Z）、64884（21:28:50.597Z）、79460（21:40:47.704Z）、106672（21:47:36.937Z）、52864（21:50:27.139Z）。这五份关联 report 均为 browserDisconnected=true、previewPortClosed=true。
 
-仍缺：两份 probe 的启动/退出/资源清理；原卡称独审者额外重跑 smoke 与拍摄的各自调用证据；外层接收端及其关联资源最终退出。没有证据就保留未知，不推定仍运行，也不推定全部已退出。仅这五个浏览器退出不能释放整个槽。按原卡“修改要求”只补原调用证据，不新执行、不重拍、不续加修复额度。
+补交汇总记 unit-1 外层 **22:31:23**、unit-2 **23:06:11** exit 0，注册子树 settled；23:39:04 静态核查14个已知PID均不存活、9个已知预览端口无监听。它补上原两单元退出摘要，不等于所有调用原始记录已回仓，也不能替代未知PID／端口的归属证据。
+
+仍缺两 probe 的命令、PID、exit/signal、源码绑定和清理；失败 smoke-review 的候选浏览器退出及清理；两 review smoke 的完整端口清单；两次 capture rerun 的 wrapper exit。补交单元 unit-3 在23:51:52生成汇总时仍 running，最终外层退出未随结果交回。原始接收端 execution／collection 记录仅被引用，未全部公开回仓。原卡的 blocked／taskDone 是工作状态，不当作进程退出证明。
+
+不推定仍运行，也不推定全部退出。槽继续隔离；只接收可恢复的原调用证据，无法恢复项交维护者说明，不启动模型补造记录、不新 smoke/capture/probe、不追加修复或重跑额度。汇总中的“缺两非作者盲选”已过时，下文12图双AI静态评审保留；硬件GPU与试听仍非换默认前置。
 
 ## 匿名图片映射
 
@@ -60,4 +78,4 @@ environment 另记两 worktree 执行 npm ci，与本卡“不安装／升级软
 
 解码 A=全场材质、B=当前默认。两位均未判新版整体更差且偏好新版，仅这组同机位静态选图条件满足。SwiftShader rAF mean 289.99/277.49ms、p95 550/516.7ms 来自不同自然输入对局；不称流畅，不是GPU帧耗、输入延迟或声音验证。默认、网站、品质覆盖均不据此上调。
 
-证据：[固定卡](https://github.com/dbvv1/a1dbv/blob/5e6b624921b14c29c8ad7f1170a5966ec0fb56fe/docs/collaboration/local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)、[固定产物](https://github.com/dbvv1/FPS-Like/tree/c7936ff9231bd2755bedcd062f83cfe41e841d70/docs/quality/capture/B-FPS-DEFAULT-FULL-PAIR-20261112/658b2e592c61-r2)。核实于2026-11-12。
+证据：[固定卡](https://github.com/dbvv1/a1dbv/blob/5e6b624921b14c29c8ad7f1170a5966ec0fb56fe/docs/collaboration/local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)、[固定产物](https://github.com/dbvv1/FPS-Like/tree/c7936ff9231bd2755bedcd062f83cfe41e841d70/docs/quality/capture/B-FPS-DEFAULT-FULL-PAIR-20261112/658b2e592c61-r2)。原图与五浏览器日志核实于2026-11-12；[原调用清理汇总](https://github.com/dbvv1/FPS-Like/blob/8afe767e1a68257f635a03946f616895808d999b/docs/quality/capture/B-FPS-DEFAULT-FULL-PAIR-20261112/receipts/658b2e592c61-r2-original-call-cleanup.json)补核于2026-11-13。
