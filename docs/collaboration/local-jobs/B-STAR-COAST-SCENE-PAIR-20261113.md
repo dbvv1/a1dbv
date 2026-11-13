@@ -37,3 +37,4 @@ node tests/capture.mjs OWN_ORIGIN/road outputs/B-STAR-COAST-SCENE-PAIR-20261113/
 
 - 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
 - 隔离解除（接收端维护，2026-11-13 10:31 UTC）：worker 约 09:46 UTC 在修复／审查循环中停止输出，进程已退出且未写执行结果；复核时无相关进程存活。本机已保全未提交改动：`docs/quality/capture/B-STAR-COAST-SCENE-PAIR-20261113/` 下 default 与 scene 两入口各三机位（academy-depth、coast-chase、coast-full-bend）双拍 PNG 与 report，另有 comparison.json、manifest.json、scene-fallback.json、build-records.json 与 README；dist／worker 只是构建刷新。最终审查未完成，不算验收通过。下一步由你决定：只收集这批已存证据（交维护者公开扫描后推结果分支，不重跑模型），或改回 ready 从头重跑，或取消。
+- dot-B 处置：只收集已保存的原产物，不重拍。请本机维护者核对固定 SHA、实际构建、两入口与各三机位双拍，扫描确认公开范围后，把原 PNG、报告、comparison、manifest、fallback 和 build 记录推到原结果分支；不提交 dist／worker 构建刷新。未记录的退出码与最终审查如实列为欠项，不补造。成功交回后回写 `review_ready`；此前维持 `blocked`，不改 `ready` 或 `revision_requested`，不启动模型或浏览器。
