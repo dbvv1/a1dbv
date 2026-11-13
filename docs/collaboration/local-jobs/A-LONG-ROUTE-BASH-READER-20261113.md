@@ -1,7 +1,7 @@
 # A-LONG-ROUTE-BASH-READER-20261113 · 接续原生 Windows Hook 测试入口
 id: A-LONG-ROUTE-BASH-READER-20261113
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 4564ed0c5d446159aaebe0d3ffd43bb24f97c3e8
@@ -49,4 +49,12 @@ page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 - 产物：[ccd15c9](https://github.com/dbvv1/a1dbv/commit/ccd15c9d7462b55591c337cae1c4448d7c368630)，分支 `relay/a-long-route-bash-reader-20261113`。
 - 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
 - 下一步：负责人处置 openIssues：补一条能判别 BASH_UNDER_TEST 优先级的回归（显式值与 PATH 用不同二进制），修正 hook_test_support.py 关于 symlink 的注释；在有 /bin/bash 且装有 jq 的 POSIX 环境补跑完整离线门禁与 jq 后端；读者记录与两份原测试保持现状，不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
+## 当前结果
+
+- taskDone=true：按卡末节以 base_ref 4564ed0c 的四份测试文件为准，SHA256 4/4 一致；原生 Windows（Python 3.13.5、Git Bash 5.3.15，未用 WSL）显式 TEST_PARSER=python3 实跑 test_protect*py 退出0/Ran42/OK无skip，test_hook_test_support.py 退出0/Ran13/OK(skip=1，jq未装)，相对 BASH_UNDER_TEST 集成退出0/Ran13/OK(1 skip)，直接 Hook CLI deny/无匹配/无效JSON 退出0/0/1，变异验证两条新增回归可判别(errors=2、failures=2)，check_repo 969/errors=[]、check_public 1578/findings=[]、git diff --check 均0。未运行验收：jq 后端未跑(未安装、未用模拟)、完整 POSIX 离线门禁未跑(check_offline 退出2 BLOCKED)。openIssues：1) u1.md 被整份重写超出「只允许新增 windows-final.md」写域并删掉上一轮非读者核对节(可从 ccd15c9 恢复)；2) windows-final.md §3 变异计数写成12通过1skip，实为11通过1失败1skip；3) 记录 check_repo=968 未覆盖最终树(复核969)；4) §0 差量方向 4564ed0c..HEAD 写反；5) 未执行卡末合并最新 main，工作树为 tests 取 base_ref 的混合状态。pageStuck：页面未写基线晚于 HEAD 时如何取受检文件、如何证明新增回归可判别、相对 Bash+cwd 集成配方，以及补验轮不适用 §3 三项交接检查。
+- 产物：[f2d71ad](https://github.com/dbvv1/a1dbv/commit/f2d71ad14005fd907eab6ea5d259ac69677adf4a)，分支 `relay/a-long-route-bash-reader-20261113`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处置：决定恢复 u1.md 至 ccd15c9 或仅追加本轮段落；修正 windows-final.md 的计数与差量方向；按分支流程合并最新 main 后在最终树重跑 check_repo/check_public；在 POSIX 环境补跑 jq 双后端与完整 offline 门禁。
 - 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
