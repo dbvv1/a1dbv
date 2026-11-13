@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-WINDOWS-COMPLETE-READER-20261113
 owner: dot-A
-status: running
+status: blocked
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 146697f97fa8644702371a26f10c349a99f8c100
@@ -20,7 +20,9 @@ page: docs/decisions/migrations.md@a5324e32ae3258e78c7986c39091b0c29a341ed3
 4. 记录首次卡点、另查资料、返工和是否采用改后步骤；不能直接照做时如实失败，报告缺哪步，不改页。非读者按原始输出、源码完整性数据与冻结测试独立验收，不只采信自报。
 5. 运行check_repo/check_public/git diff --check，review_ready，不自动合main。普通单元最多2小时，共享最多4并发/1GPU，本卡无GPU；超时保存结果与恢复点，不从头重试。
 ## 当前结果
-待领取。发布不是执行；本次只补完整源码前提与改后路线的新读者采用，不预先承诺通过或✅。
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+
 ## 页面全文（只去空行并固定相对链接，不额外辅导）
 # 遗留代码与大迁移：怎样选改法、保住原行为
 **🟡 先确认目标版本仍支持必须保留的平台与行为，再让 Agent 用官方迁移器处理重复改写、补例外；先验真实消费者，再扩量。** 跨文件类型迁移保留完整分析范围，已有迁移 PR 接必要差量，不从头重写。选路以目标框架和当前版本为准，不以 Agent 能改多少文件为准。
