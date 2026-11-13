@@ -1,10 +1,10 @@
 # A-LONG-ROUTE-BASH-READER-20261113 · 接续原生 Windows Hook 测试入口
 id: A-LONG-ROUTE-BASH-READER-20261113
 owner: dot-A
-status: accepted
+status: revision_requested
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
-base_ref: a46437905341b65bf4a038157df55dfa08e7768b
+base_ref: 4564ed0c5d446159aaebe0d3ffd43bb24f97c3e8
 result_branch: relay/a-long-route-bash-reader-20261113
 page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 
@@ -30,6 +30,15 @@ page: docs/decisions/long-tasks.md@b05cb560cd37ba0a248e9a5f624da62ddfced28e
 ## 接回与终点
 负责人在既有心跳接回固定成果，复查 Windows 命令与输出，实跑 POSIX 双解析器/夹具回归及完整 offline，核真实消费者，必要时同卡返工；通过才采用并按发现修页。地图仍🟡，不以派发、领取或单次脚本通过代替新读者采用/长期可靠性。
 本卡无需 GPU；接收端共享最多4并发、最多1 GPU，按现有容量机制领取，不假称已知空槽。普通单元最多2小时，退出不明不重派、不造中断、不新建调度。保留固定结果和失败证据；返回→开始接收的时间仅有两端事件才计算。
+
+## 修改要求 · 最终版本原生 Windows 补验
+本轮沿原卡续接，不重做实现、不重新盲读。此前 accepted 适用于已采用成果；本次只补最终云端修订的原生 Windows 证据。以 base_ref 的最终测试文件为准，不直接使用旧 relay 分支的 ccd15c9 版本；在原分支合并最新 main，保留旧结果历史。
+只允许新增 reader-tests/A-LONG-ROUTE-BASH-READER-20261113-windows-final.md；不改上述测试源码、Hook、页面或其他卡。真实复跑发现失败就保留输出交回，勿擅自修补或安装工具。
+1. 核四份测试／夹具与 base_ref 字节一致，记录相对文件名及 SHA256。只用已有原生 Windows Python、Git Bash 和解析器，不以 WSL／POSIX 代替原生 Windows。
+2. 原生 Windows 显式 TEST_PARSER=python3，运行原卡步骤5的 test_protect*py（预期42项）和 test_hook_test_support.py（预期13项），分别保留退出码、实际数目、skip及失败原因；不可仅写“通过”。已有 jq 才按 TEST_PARSER=jq 重跑，没有则明确未运行，禁止安装或假装双后端。
+3. 核最终新增回归真实执行：显式参数／环境变量优先级、相对 Bash 选择在后续 cwd 改变前绝对化。补一次真实相对路径集成：在任务临时目录引用已有 Bash，用相对 BASH_UNDER_TEST 启动测试，再由夹具切到含空格临时项目；必须保留命令形状、退出码及输出。不要求复制／修改安装目录或提权，无法构造就记具体缺项。
+4. 单独附脱敏终端原始输出，替换个人绝对路径与用户名，保留测试名、计数、skip、错误类型和退出码；非读者核该输出与文件哈希。check_repo、check_public、diff检查后交回 review_ready，不合 main。
+这次补验只闭合实际采用后的跨系统缺口，不新增“首次读者”通过，不凭一次运行提升长期稳定性。负责人接回后核输出与固定文件，再更新本卡接收范围。
 
 ## 接收决定
 2026-11-13 dot-A 接收 ccd15c9：保留原生 Windows 双人复跑记录，云端补双后端与完整 POSIX 门禁；补显式 Bash 优先级可判别回归、修正 symlink 注释，并修复独审发现的相对 Bash 路径跨 cwd 失效。共享夹具实际进入本仓测试入口，不修改 Hook 产品。地图记录新读者接续采用，长期稳定性仍待验；原始输出仅记录中所列，未提供单独完整日志附件，不冒称云端复跑 Windows。
