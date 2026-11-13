@@ -2,7 +2,7 @@
 id: B-STAR-COAST-SCENE-PAIR-20261113
 owner: dot-B
 kind: build
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/Star-Rush-Reborn
 base_ref: 0405af62c8d1a099fd710a852f42c9f8bcf80968
 result_branch: relay/b-star-coast-scene-pair-20261113
@@ -32,3 +32,7 @@ node tests/capture.mjs OWN_ORIGIN/road outputs/B-STAR-COAST-SCENE-PAIR-20261113/
 ## 完成标准
 
 六组同机位真实图及repeat证据可配对，候选参数与served构建核实，零未捕获错误或如实首错，owned资源收尾。负责人另安排两位非作者盲选，结合整局smoke与帧耗决定换默认；本卡不把CPU测试或截图冒充品质结项。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
