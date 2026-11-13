@@ -2,7 +2,7 @@
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: revision_requested
+status: running
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: cb025e897b9d92f9db470d0a057098adb0404f87
 result_branch: relay/b-moba-quiet-pair-20261112
