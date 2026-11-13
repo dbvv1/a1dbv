@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-NATIVE-READER-20261113
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e43f4e047932b1c0d7d18c713e095aa621609167
@@ -20,7 +20,13 @@ page: docs/decisions/migrations.md@77345c97fbbec5bcf50ddafa83766fe91de362ef
 4. 报告本任务是否确实采用页面路线、卡点与未验范围，保留失败后修复的轮次。独立验收者核实际原始测试输出/断言与版本，不采信读者自报；脱敏后交回，不改页面或默认。
 5. check_repo、check_public、git diff --check；review_ready，不自动接收。普通单元不超过2小时，超时保存现有产物并写恢复点，不重复启动；遵守共享4并发/1GPU，本卡不用GPU。
 ## 当前结果
-待领取；本卡发布不代表已执行。剩余：新读者采用路线与 Windows 原生消费者结果。
+
+- reader-test 一轮完成：读者按页面共享依赖升级路线，在 Windows 11 x64 / CPython 3.14.9 原生完成 Hermes c9b20d7 候选补丁（SHA256 2a38c55c…）实测，旧/候选各由项目 PM 建独立环境；旧与候选 independent-native.py 七项各 7 passed/0 failed/0 skipped，候选边界 8 + 网关控制 3 共 11 passed，3 文件门禁 18 passed；git diff --check、check_public、check_repo 均退出 0，未提交未推送。taskDone=true，reviewed=false（核对者 openIssues 未清）。pageStuck：页面与候选 README 未写 Windows 260 字符 MAX_PATH 前提（PM ruamel 271 字符 ImportError、长路径解释器导入 269 字符 anthropic ModuleNotFoundError、website/plugins 32 个文件未落地），且示例用 Linux bin/python 而非 Windows Scripts/python.exe。未运行/未验：真实模型与网关、Bedrock/Foundry、OAuth 刷新、async client、完整 Hermes 应用、发布产物与其他 OS；native 非默认采样仍被明确拒绝，属升级阻塞，不能据此把整页改 ✅ 或升级全产品默认。证据链未闭合：hermes 最终仍是 blob:none 部分克隆且缺 32 个非门禁文件，hermes-old 无 .git 且未记录复制方式，主线程直接 stream open_sdk2_stream 未在门禁覆盖，native-consumers.json 边界项使用自定标签而非 pytest node id。
+- 产物：[657f2eb](https://github.com/dbvv1/a1dbv/commit/657f2eb7645eaff846a312bd97356f79761b46d5)，分支 `relay/a-migration-hermes-v2-native-reader-20261113`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人接收本卡并处理 openIssues：补记部分克隆与 32 个缺失文件、hermes-old 来源；补验或明确标注主线程 open_sdk2_stream 未覆盖；如需定稿，补边界项标签与实际 node id 映射。reader-test 不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+
 ## 给读者的页面全文（仅去空行并将相对链接固定到原版本，不另写操作辅导）
 # 遗留代码与大迁移：怎样选改法、保住原行为
 **🟡 先确认目标版本仍支持必须保留的平台与行为，再让 Agent 用官方迁移器处理重复改写、补例外；先验真实消费者，再扩量。** 跨文件类型迁移保留完整分析范围，已有迁移 PR 接必要差量，不从头重写。选路以目标框架和当前版本为准，不以 Agent 能改多少文件为准。
