@@ -589,3 +589,13 @@ Unity six-way lighting 将六方向光照图在运行时按场景灯光混合，
 **直接运行**：在Star固定候选执行`node --test tests/coast-shoulder-palette.test.mjs`、`npm test`、`npm run build`、`npm run test:side-release`。CPU检查包括206个平台面的目标顶点集合、独立重心权重预期、其他通道/默认路径hash和晚失败时待提交与已缓存数据的回退。装饰失败测试使用桩，真实GPU缓存、整层观感和双盲还须实际验证；配色能运行不代表画面升分。
 
 案例脚注：[平台消费者0e2b689](https://github.com/dbvv1/Star-Rush-Reborn/commit/0e2b689ad5449cac2fbf12a5c80379506093db4f)；[路肩源4b2a887](https://github.com/dbvv1/Star-Rush-Reborn/commit/4b2a88782ca5d7bdb28753fd25216a156a1ac1a3)。
+
+## 材质默认、实际渲染与失败提示分开验
+
+**目标／做法：** 只让玩家入口补缺省材质参数，保留显式旧材质回退；显式非法或重复参数交给严格解析器，不能用新默认掩盖错误。分别记录 requested、configured、active 和实际 renderer：入口设了默认不等于新材质已提交画面。失败恢复仍须有玩家可见的简短提示，隐藏诊断面板不能把恢复原因一起藏掉。
+
+**失败反例：** 只断言HTML的默认标记就宣布换成功，会漏掉初始化失败后实际使用旧材质或Canvas2D。把提示写成“详见诊断”却隐藏诊断，会让玩家无从理解变化。应保持可继续游玩的提示，并把详细技术状态留给独立验收。
+
+**可用命令：** 在案例仓运行 `npm test -- tests/client/default-entry.test.ts tests/client/browser-smoke/harness.test.ts` 与 `npm run build:web`；再对实际待发布入口跑既有整局smoke，核active材质、renderer与fallbackReason，不用CPU测试替代浏览器结果。比较显式 `/?materials=baseline` 回退及受控初始化失败的提示；按既有授权执行故障注入，不给玩家菜单增加诊断链接。
+
+案例脚注：[MOBA入口实现79bdb574](https://github.com/dbvv1/MOBA-Like/commit/79bdb57439d2ca3e49c6560271d4a598999f5ac5)。本次入口单测／构建通过；新首页浏览器未复验，线上发布待确认，非品质升分。
