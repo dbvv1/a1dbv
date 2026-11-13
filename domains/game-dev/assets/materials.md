@@ -57,6 +57,10 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 **可用命令（只定位源码，不代表运行效果）：** 在固定镜像目录执行 `grep -n -E 'unique large-scale masks|rain wetness|vignette: base|luminance-weighted film grain|uSharpen' index.html`，随后追到 uniform 每帧赋值及渲染调用；当前镜像对应地表约 L5507、暗角 L4692、锐化／颗粒 L4723–4724。`?show=mats&q=medium&dynres=0` 是作品自带材质观察入口；固定档位也要记录实际回退，不把它当整局验收。
 
+**逆光过遮挡：把眩光和曝光分开。** 目标是驶入桥底或树荫时，装饰性太阳光晕随遮挡消退，出遮挡时连续恢复，期间路缘仍可辨。Saltline 在同一历史纹理分别记录屏幕加权亮度与太阳圆盘可见比例：圆盘取 12 个深度样本，亮度和可见度分别平滑，色调阶段才用可见度调眩光。若现有管线已提供场景深度，可沿用它控制装饰光晕；没有深度的回退档关闭这层效果，不为此另建管线。不要把参考的样本数与阈值当通用参数。
+
+**失败反例与验证：** 仅按太阳投影叠光晕，桥面挡住太阳时仍会穿透；只用布尔开关则可能在边缘闪烁。先用 `rg -n -o 'uSunUv|uVisRate|tDepth|slExposure' index.html` 定位参考源码，再在自己的同一条固定回放中比较无遮挡 → 遮挡 → 重新露出，保连续帧与回退状态，另核重开后不沿用旧相机的遮挡历史。三张静帧不能验过渡。依据：[深度与亮度独立取样](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4551-L4576)、[眩光与曝光的合成](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4670-L4677)。2026-11-13 核源码，未实跑或在案例采用。
+
 **来源**：[Saltline 地表语义](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5507-L5599)、[状态暗角与最终清晰度](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4692-L4733)。核实 2026-11-12，已读 shader 及实际 uniform 更新；以上是独立实现建议，未声称已在案例采用或经过视听验收。
 
 **失败反例：** 某功能名出现在打包的 Three.js 库里，就写成游戏已经采用。Saltline 单文件含完整库，必须追到游戏创建材质、绑定纹理与每帧调用；同理，启动降级为普通材质也可能没有致命错误。验收读取实际档位和 fallback，不能只查控制台为空。
