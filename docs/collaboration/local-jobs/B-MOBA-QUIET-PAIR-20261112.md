@@ -2,7 +2,7 @@
 id: B-MOBA-QUIET-PAIR-20261112
 owner: dot-B
 kind: build
-status: running
+status: review_ready
 target_repo: https://github.com/dbvv1/MOBA-Like
 base_ref: cb025e897b9d92f9db470d0a057098adb0404f87
 result_branch: relay/b-moba-quiet-pair-20261112
@@ -38,3 +38,11 @@ node tests/client/browser-smoke/run.mjs --full-match
 独立收集欠项：只从原已有磁盘产物补47项，不重执行旧命令、不再造回执；缺文件如实列出。保原字节哈希映射并脱敏私人绝对路径，不改接收端。
 
 交回新report、manifest、帧数组、关键图、测试patch与回归、构建来源、Node／Chromium／renderer、真实开始结束UTC、外层exit/signal、浏览器／preview关闭及当前资源证据。产物收进目标仓 docs/quality/capture/ 本卡短目录，公开扫描后沿原result_branch交回review_ready；不自行合main、换默认或部署。负责人结合已有quiet／盲选及本次default决定换默认；收集欠项单列。
+
+## 当前结果
+
+- 在固定 base_ref cb025e89 的独立干净 worktree 上完成 default 完整流程 smoke：一次通过，外层 exit 0，自然 tick 0→9010（300.33s，redWin/blueBaseDestroyed），restart/输入/存档恢复/HUD 断言全通过，真实 renderer 为 ANGLE SwiftShader（软件，非硬件 GPU 结论），Chromium 156.0.8078.4，视口 1280×900 DPR1，浏览器 exit 0、previewClosed=true、cleanupErrors=[]；Veyra 基线核验与 browser-smoke 回归（2 文件 20 测试）exit 0。b8a3770-full-r2 的 47 项收集欠项已仅从原磁盘产物补入，59/59 在位、缺文件为空，43 项字节 SHA-256 一致、16 项脱敏保留原哈希。cb025e89 已含已接收 v2 harness，本单元未改 tests/game/assets/default/deps/测量语义，故无新测试 patch。reviewed=pass，openIssues 为空。未运行：quiet 重跑/重拍/重盲选、硬件 GPU 性能结论、合 main/换默认/部署（均按任务排除）。
+- 产物：[b03b7c2](https://github.com/dbvv1/MOBA-Like/commit/b03b7c229ecc460dd37adfae3ce9024f4d9b3b54)，分支 `relay/b-moba-quiet-pair-20261112`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：负责人结合已有 quiet 证据与双人 4/4 盲选及本轮 default 通过结果决定是否换默认；本卡可交 review_ready 提交。剩余缺口仅为负责人决策与发布，无技术欠项。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
