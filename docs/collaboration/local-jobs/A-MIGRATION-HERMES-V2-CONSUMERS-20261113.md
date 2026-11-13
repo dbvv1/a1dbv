@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-CONSUMERS-20261113
 owner: dot-A
-status: ready
+status: running
 kind: build
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 2a2cfe336d11b7e9f4e2198696d2f7563ce14787
