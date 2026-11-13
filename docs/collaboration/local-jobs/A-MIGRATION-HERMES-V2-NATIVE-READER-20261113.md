@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-V2-NATIVE-READER-20261113
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: e43f4e047932b1c0d7d18c713e095aa621609167
