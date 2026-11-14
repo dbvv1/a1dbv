@@ -1,0 +1,104 @@
+[
+  {
+    "mode": "direct-limited",
+    "stream": false,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-hidden-limit",
+    "stream": false,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-explicit-limit",
+    "stream": false,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-unlimited",
+    "stream": false,
+    "input_types": [
+      "user",
+      "function_call",
+      "function_call_output",
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "direct-limited",
+    "stream": true,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-hidden-limit",
+    "stream": true,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-explicit-limit",
+    "stream": true,
+    "input_types": [
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  },
+  {
+    "mode": "wrapped-unlimited",
+    "stream": true,
+    "input_types": [
+      "user",
+      "function_call",
+      "function_call_output",
+      "assistant",
+      "user"
+    ],
+    "orphan_outputs": [],
+    "final_output": "ok",
+    "stored_items": 6,
+    "stored_call_preserved": true
+  }
+]
