@@ -1,0 +1,274 @@
+[
+  {
+    "case": "exact-full",
+    "explicit_limit": false,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "exact-full",
+    "explicit_limit": false,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "exact-full",
+    "explicit_limit": true,
+    "stream": false,
+    "assistant_ids": [
+      null
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "exact-full",
+    "explicit_limit": true,
+    "stream": true,
+    "assistant_ids": [
+      null
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "cut-message",
+    "explicit_limit": false,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "cut-message",
+    "explicit_limit": false,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "cut-message",
+    "explicit_limit": true,
+    "stream": false,
+    "assistant_ids": [
+      null
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "cut-message",
+    "explicit_limit": true,
+    "stream": true,
+    "assistant_ids": [
+      null
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "whole-short",
+    "explicit_limit": false,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "whole-short",
+    "explicit_limit": false,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "whole-short",
+    "explicit_limit": true,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "whole-short",
+    "explicit_limit": true,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "user-boundary",
+    "explicit_limit": false,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "user-boundary",
+    "explicit_limit": false,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "user-boundary",
+    "explicit_limit": true,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "user-boundary",
+    "explicit_limit": true,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "user",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "reasoning-boundary",
+    "explicit_limit": false,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "reasoning",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "reasoning-boundary",
+    "explicit_limit": false,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "reasoning",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "reasoning-boundary",
+    "explicit_limit": true,
+    "stream": false,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "reasoning",
+      "message",
+      "user"
+    ]
+  },
+  {
+    "case": "reasoning-boundary",
+    "explicit_limit": true,
+    "stream": true,
+    "assistant_ids": [
+      "msg_public_fixture"
+    ],
+    "stored_prefix_exact": true,
+    "input_types": [
+      "reasoning",
+      "message",
+      "user"
+    ]
+  }
+]
