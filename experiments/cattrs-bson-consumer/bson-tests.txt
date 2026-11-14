@@ -1,0 +1,16 @@
+ss..........                                                             [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1636
+  <cattrs>/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1636: PytestConfigWarning: Unknown config option: typing_checkers
+
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1636
+  <cattrs>/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1636: PytestConfigWarning: Unknown config option: typing_pyrefly_preset
+
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [2] tests/test_preconf.py:87: sentinels require Python 3.15+
+10 passed, 2 skipped, 74 deselected, 2 warnings in 4.12s

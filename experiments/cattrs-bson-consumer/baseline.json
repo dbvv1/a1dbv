@@ -1,0 +1,31 @@
+[
+  {
+    "name": "typed-dict-roundtrip",
+    "passed": false,
+    "error": "AssertionError"
+  },
+  {
+    "name": "missing-required-keys",
+    "passed": false,
+    "error": "AssertionError"
+  },
+  {
+    "name": "invalid-field-types",
+    "passed": false,
+    "error": "AssertionError"
+  },
+  {
+    "name": "counter-type-and-values",
+    "passed": false,
+    "error": "AssertionError"
+  },
+  {
+    "name": "defaultdict-type-and-default",
+    "passed": false,
+    "error": "AssertionError"
+  },
+  {
+    "name": "existing-bytes-key-roundtrip",
+    "passed": true
+  }
+]

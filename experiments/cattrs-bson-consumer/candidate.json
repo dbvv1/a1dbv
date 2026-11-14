@@ -1,0 +1,26 @@
+[
+  {
+    "name": "typed-dict-roundtrip",
+    "passed": true
+  },
+  {
+    "name": "missing-required-keys",
+    "passed": true
+  },
+  {
+    "name": "invalid-field-types",
+    "passed": true
+  },
+  {
+    "name": "counter-type-and-values",
+    "passed": true
+  },
+  {
+    "name": "defaultdict-type-and-default",
+    "passed": true
+  },
+  {
+    "name": "existing-bytes-key-roundtrip",
+    "passed": true
+  }
+]
