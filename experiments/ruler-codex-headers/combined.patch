@@ -1,0 +1,180 @@
+diff --git a/src/agents/CodexCliAgent.ts b/src/agents/CodexCliAgent.ts
+index 1ec37b4..819bbfe 100644
+--- a/src/agents/CodexCliAgent.ts
++++ b/src/agents/CodexCliAgent.ts
+@@ -17,7 +17,8 @@ interface McpServer {
+   args?: string[];
+   env?: Record<string, string>;
+   url?: string;
+-  headers?: Record<string, string>; // Support headers from transformed remote servers
++  headers?: Record<string, string>; // Ruler MCP input
++  http_headers?: Record<string, string>; // Codex MCP output
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   [key: string]: any; // Allow additional properties from transformation
+ }
+@@ -138,9 +139,9 @@ export class CodexCliAgent implements IAgent {
+         if (serverConfig.env) {
+           mcpServer.env = serverConfig.env;
+         }
+-        // Handle additional properties from remote server transformation
++        // Codex reads remote HTTP headers from http_headers
+         if (serverConfig.headers) {
+-          mcpServer.headers = serverConfig.headers;
++          mcpServer.http_headers = serverConfig.headers;
+         }
+
+         if (updatedConfig.mcp_servers) {
+diff --git a/src/core/apply-engine.ts b/src/core/apply-engine.ts
+index 9c76bfe..56b40de 100644
+--- a/src/core/apply-engine.ts
++++ b/src/core/apply-engine.ts
+@@ -986,6 +986,31 @@ async function applyOpenCodeMcpConfiguration(
+   }
+ }
+
++/** Convert Ruler server fields to Codex native configuration fields. */
++function transformMcpForCodex(
++  mcpJson: Record<string, unknown>,
++): Record<string, unknown> {
++  const servers = (mcpJson.mcpServers ?? {}) as Record<
++    string,
++    Record<string, unknown>
++  >;
++  return {
++    ...mcpJson,
++    mcpServers: Object.fromEntries(
++      Object.entries(servers).map(([name, server]) => {
++        const copy = { ...server };
++        // Codex infers the transport from command/url and consumes http_headers.
++        delete copy.type;
++        if (copy.url && copy.headers) {
++          copy.http_headers = copy.headers;
++          delete copy.headers;
++        }
++        return [name, copy];
++      }),
++    ),
++  };
++}
++
+ /**
+  * Transform MCP server types for Claude Code compatibility.
+  * Claude expects "http" for HTTP servers and "sse" for SSE servers, not "remote".
+@@ -1156,6 +1181,8 @@ async function applyStandardMcpConfiguration(
+       agent.getIdentifier() === 'copilot'
+     ) {
+       mcpToMerge = transformMcpForClaude(filteredMcpJson);
++    } else if (agent.getIdentifier() === 'codex') {
++      mcpToMerge = transformMcpForCodex(filteredMcpJson);
+     } else if (agent.getIdentifier() === 'kilocode') {
+       mcpToMerge = transformMcpForKiloCode(filteredMcpJson);
+     } else if (agent.getIdentifier() === 'factory') {
+diff --git a/tests/apply-mcp.toml-remote.test.ts b/tests/apply-mcp.toml-remote.test.ts
+index d07def8..5e20420 100644
+--- a/tests/apply-mcp.toml-remote.test.ts
++++ b/tests/apply-mcp.toml-remote.test.ts
+@@ -1,5 +1,6 @@
+ import * as fs from 'fs/promises';
+ import * as path from 'path';
++import { parse as parseTOML } from '@iarna/toml';
+ import { setupTestProject, teardownTestProject, runRuler } from './harness';
+
+ describe('apply-mcp.toml-remote', () => {
+@@ -65,6 +66,30 @@ url = "https://mcp.example.com/sse"
+     });
+   });
+
++  it('writes Codex remote headers as http_headers', async () => {
++    const { projectRoot } = testProject;
++
++    runRuler('apply --agents codex', projectRoot);
++
++    const configPath = path.join(projectRoot, '.codex', 'config.toml');
++    const content = await fs.readFile(configPath, 'utf8');
++    const config = parseTOML(content) as Record<string, any>;
++
++    expect(config.mcp_servers.search).toEqual({
++      url: 'https://mcp.example.com',
++      http_headers: {
++        Authorization: 'Bearer TOKEN123',
++        'X-API-Version': 'v1',
++      },
++    });
++    expect(config.mcp_servers.api).toEqual({
++      url: 'https://api.example.com/mcp',
++    });
++    expect(config.mcp_servers.events).toEqual({
++      url: 'https://mcp.example.com/sse',
++    });
++  });
++
+   it('propagates mixed command/url TOML servers as http', async () => {
+     const mixedProject = await setupTestProject({
+       '.ruler/ruler.toml': `[mcp]
+diff --git a/tests/unit/agents/CodexCliAgent.test.ts b/tests/unit/agents/CodexCliAgent.test.ts
+index 8393d07..bafa3e1 100644
+--- a/tests/unit/agents/CodexCliAgent.test.ts
++++ b/tests/unit/agents/CodexCliAgent.test.ts
+@@ -108,13 +108,19 @@ describe('CodexCliAgent MCP Handling', () => {
+     expect(parsed.mcp_servers.ruler_server.env.API_KEY).toBe('test-key');
+   });
+
+-  it('writes remote MCP server entries', async () => {
++  it('writes remote MCP headers using the Codex http_headers key', async () => {
+     const agent = new CodexCliAgent();
+     const remoteMcpJson = {
+       mcpServers: {
+         remote_server: {
+           url: 'https://example.com/mcp',
+-          headers: { Authorization: 'Bearer token' },
++          headers: {
++            Authorization: 'Bearer token',
++            'X-API-Version': 'v1',
++          },
++        },
++        public_server: {
++          url: 'https://public.example.com/mcp',
+         },
+       },
+     };
+@@ -127,12 +133,17 @@ describe('CodexCliAgent MCP Handling', () => {
+     const resultStr = await fs.readFile(configPath, 'utf8');
+     const result = parseTOML(resultStr) as Record<string, any>;
+
+-    expect(result.mcp_servers.remote_server.url).toBe(
+-      'https://example.com/mcp',
+-    );
+-    expect(result.mcp_servers.remote_server.headers.Authorization).toBe(
+-      'Bearer token',
+-    );
++    expect(result.mcp_servers.remote_server).toEqual({
++      url: 'https://example.com/mcp',
++      http_headers: {
++        Authorization: 'Bearer token',
++        'X-API-Version': 'v1',
++      },
++    });
++    expect(result.mcp_servers.public_server).toEqual({
++      url: 'https://public.example.com/mcp',
++    });
++    expect(resultStr).not.toContain('[mcp_servers.remote_server.headers]');
+   });
+
+   it('still writes instructions file alongside config', async () => {
+diff --git a/tests/unit/toml-edge-cases.test.ts b/tests/unit/toml-edge-cases.test.ts
+index 91d78fd..62acdfe 100644
+--- a/tests/unit/toml-edge-cases.test.ts
++++ b/tests/unit/toml-edge-cases.test.ts
+@@ -112,10 +112,10 @@ describe('TOML Edge Cases', () => {
+     expect(specialCharsServer.env['VAR_WITH_UNICODE']).toBe('🌟 unicode value');
+
+     const complexServer = parsedConfig.mcp_servers['complex-nested'];
+-    expect(complexServer.headers['Authorization']).toBe(
++    expect(complexServer.http_headers['Authorization']).toBe(
+       'Bearer token-with-special-chars!@#$%',
+     );
+-    expect(complexServer.headers['X-Custom-Header']).toBe(
++    expect(complexServer.http_headers['X-Custom-Header']).toBe(
+       'value with "quotes" and \'single quotes\'',
+     );
+     expect(complexServer.env['NESTED_JSON']).toBe(
