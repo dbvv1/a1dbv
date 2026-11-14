@@ -1,0 +1,39 @@
+{
+  "version": "uv 0.13.6 (x86_64-unknown-linux-gnu)",
+  "cases": [
+    {
+      "mode": "default-existing",
+      "exit": 2,
+      "sentinel_unchanged": true,
+      "link_remains": true,
+      "consumer": null,
+      "stderr": "Using CPython 3.12.14 interpreter at: <python>\nCreating virtual environment at: <scratch>/default-existing/v\nerror: Failed to create virtual environment\n  cause: A directory already exists at: <scratch>/default-existing/v\n\nhint: Use the `--clear` flag or set `UV_VENV_CLEAR=1` to replace the existing directory\n"
+    },
+    {
+      "mode": "allow-existing",
+      "exit": 0,
+      "sentinel_unchanged": false,
+      "link_remains": true,
+      "consumer": {
+        "exit": 0,
+        "venv_prefix_differs": true,
+        "repo_check_exit": 0,
+        "repo_check_stdout": "{\n  \"checked_files\": 989,\n  \"errors\": [],\n  \"limits\": [\n    \"inline local link targets only; fragments not checked\",\n    \"JSON/TOML syntax only; no runtime schema validation\",\n    \"no external links or factual claims verified\"\n  ]\n}\n"
+      },
+      "stderr": "Using CPython 3.12.14 interpreter at: <python>\nCreating virtual environment at: <scratch>/allow-existing/v\n"
+    },
+    {
+      "mode": "separate-new",
+      "exit": 0,
+      "sentinel_unchanged": true,
+      "link_remains": true,
+      "consumer": {
+        "exit": 0,
+        "venv_prefix_differs": true,
+        "repo_check_exit": 0,
+        "repo_check_stdout": "{\n  \"checked_files\": 989,\n  \"errors\": [],\n  \"limits\": [\n    \"inline local link targets only; fragments not checked\",\n    \"JSON/TOML syntax only; no runtime schema validation\",\n    \"no external links or factual claims verified\"\n  ]\n}\n"
+      },
+      "stderr": "Using CPython 3.12.14 interpreter at: <python>\nCreating virtual environment at: <scratch>/separate-new/fresh\n"
+    }
+  ]
+}
