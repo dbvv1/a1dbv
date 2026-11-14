@@ -1,0 +1,192 @@
+[
+  {
+    "signal": "SIGTERM",
+    "exit": -15,
+    "symbols": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": {
+        "result": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}"
+      },
+      "is_error": false,
+      "result_type": "complete"
+    },
+    "cache_before": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "7275914b607f7437eaf81c62384dda2a2367aa57407d3e3c39df8520a319c8d1"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_after": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "7275914b607f7437eaf81c62384dda2a2367aa57407d3e3c39df8520a319c8d1"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_keys": [
+      {
+        "scripts/check_repo.py": {
+          "content_hash": "9c9713e4e7f2fd4d832af41b5e617db8",
+          "names": [
+            "argparse",
+            "json",
+            "Path",
+            "re",
+            "sys",
+            "tomllib",
+            "unquote",
+            "urlsplit",
+            "TASKS_FILE",
+            "TASKS_MAX_BYTES",
+            "JOB_DIR",
+            "JOB_MAX_LINES",
+            "JOB_FINAL",
+            "reject_json_constant",
+            "record_limits",
+            "check",
+            "main"
+          ]
+        }
+      },
+      {
+        "scripts/check_repo.py": {
+          "content_hash": "9c9713e4e7f2fd4d832af41b5e617db8",
+          "names": [
+            "argparse",
+            "json",
+            "Path",
+            "re",
+            "sys",
+            "tomllib",
+            "unquote",
+            "urlsplit",
+            "TASKS_FILE",
+            "TASKS_MAX_BYTES",
+            "JOB_DIR",
+            "JOB_MAX_LINES",
+            "JOB_FINAL",
+            "reject_json_constant",
+            "record_limits",
+            "check",
+            "main"
+          ]
+        }
+      }
+    ],
+    "shutdown_log_count": 1
+  },
+  {
+    "signal": "SIGINT",
+    "exit": -2,
+    "symbols": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": {
+        "result": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}"
+      },
+      "is_error": false,
+      "result_type": "complete"
+    },
+    "cache_before": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "da69b4bdcd05eab68d971841cbad5071c77330905a29f2e5098f31a8a90a80f9"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_after": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "da69b4bdcd05eab68d971841cbad5071c77330905a29f2e5098f31a8a90a80f9"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_keys": [
+      {
+        "scripts/check_repo.py": {
+          "content_hash": "9c9713e4e7f2fd4d832af41b5e617db8",
+          "names": [
+            "argparse",
+            "json",
+            "Path",
+            "re",
+            "sys",
+            "tomllib",
+            "unquote",
+            "urlsplit",
+            "TASKS_FILE",
+            "TASKS_MAX_BYTES",
+            "JOB_DIR",
+            "JOB_MAX_LINES",
+            "JOB_FINAL",
+            "reject_json_constant",
+            "record_limits",
+            "check",
+            "main"
+          ]
+        }
+      },
+      {
+        "scripts/check_repo.py": {
+          "content_hash": "9c9713e4e7f2fd4d832af41b5e617db8",
+          "names": [
+            "argparse",
+            "json",
+            "Path",
+            "re",
+            "sys",
+            "tomllib",
+            "unquote",
+            "urlsplit",
+            "TASKS_FILE",
+            "TASKS_MAX_BYTES",
+            "JOB_DIR",
+            "JOB_MAX_LINES",
+            "JOB_FINAL",
+            "reject_json_constant",
+            "record_limits",
+            "check",
+            "main"
+          ]
+        }
+      }
+    ],
+    "shutdown_log_count": 1
+  }
+]

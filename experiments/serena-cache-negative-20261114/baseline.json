@@ -1,0 +1,108 @@
+[
+  {
+    "signal": "SIGTERM",
+    "exit": -15,
+    "symbols": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": {
+        "result": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}"
+      },
+      "is_error": false,
+      "result_type": "complete"
+    },
+    "cache_before": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "1544e80d6e02dca93bbdd0ceb9776efa81403f9f1d888575d5203502ff2c77fd"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_after": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "1544e80d6e02dca93bbdd0ceb9776efa81403f9f1d888575d5203502ff2c77fd"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_keys": [
+      [
+        "scripts/check_repo.py"
+      ],
+      [
+        "scripts/check_repo.py"
+      ]
+    ],
+    "shutdown_log_count": 0
+  },
+  {
+    "signal": "SIGINT",
+    "exit": 1,
+    "symbols": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": {
+        "result": "{\"Module\": [\"argparse\", \"json\", \"re\", \"sys\", \"tomllib\"], \"Class\": [\"Path\"], \"Function\": [\"unquote\", \"urlsplit\", \"reject_json_constant\", \"record_limits\", \"check\", \"main\"], \"Variable\": [\"TASKS_FILE\", \"TASKS_MAX_BYTES\", \"JOB_DIR\", \"JOB_MAX_LINES\", \"JOB_FINAL\"]}"
+      },
+      "is_error": false,
+      "result_type": "complete"
+    },
+    "cache_before": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "308a7534c9311f6e32ac923dc7b117f3e54458c799c225126f527363540f4f52"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_after": [
+      {
+        "path": ".serena/cache/python_jedi/document_symbols.pkl",
+        "bytes": 10178,
+        "sha256": "308a7534c9311f6e32ac923dc7b117f3e54458c799c225126f527363540f4f52"
+      },
+      {
+        "path": ".serena/cache/python_jedi/raw_document_symbols.pkl",
+        "bytes": 2182,
+        "sha256": "e4402d79d444a96bd5c226348cf536863782c6c8b621c5196301240292d57f65"
+      }
+    ],
+    "cache_keys": [
+      [
+        "scripts/check_repo.py"
+      ],
+      [
+        "scripts/check_repo.py"
+      ]
+    ],
+    "shutdown_log_count": 0
+  }
+]
