@@ -1,0 +1,103 @@
+{
+  "results": [
+    {
+      "pid": 10,
+      "mode": "broken",
+      "requests": [
+        [
+          {
+            "role": "user",
+            "content": "Remember the lookup colour"
+          }
+        ],
+        [
+          {
+            "role": "tool",
+            "tool_call_id": "call_fixture",
+            "content": "blue"
+          }
+        ]
+      ],
+      "final": "colour noted"
+    },
+    {
+      "pid": 14,
+      "mode": "persist",
+      "requests": [
+        [
+          {
+            "role": "user",
+            "content": "Remember the lookup colour"
+          }
+        ],
+        [
+          {
+            "role": "user",
+            "content": "Remember the lookup colour"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_fixture",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_fixture",
+            "content": "blue"
+          }
+        ]
+      ],
+      "final": "colour noted"
+    },
+    {
+      "pid": 18,
+      "mode": "resume",
+      "requests": [
+        [
+          {
+            "role": "user",
+            "content": "Remember the lookup colour"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_fixture",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_fixture",
+            "content": "blue"
+          },
+          {
+            "role": "assistant",
+            "content": "colour noted"
+          },
+          {
+            "role": "user",
+            "content": "Recall the colour"
+          }
+        ]
+      ],
+      "final": "colour noted"
+    }
+  ],
+  "assertions": "PASS: broken reproduces; session restores matching tool history across two processes"
+}
