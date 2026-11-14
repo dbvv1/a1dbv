@@ -1,0 +1,154 @@
+[
+  {
+    "case": "literal-ask",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {
+        "commandAllowlist": [
+          "git status"
+        ]
+      },
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "ask": [
+            "Bash(rm -rf build)"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "variable-ask",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {
+        "commandAllowlist": [
+          "git status"
+        ]
+      },
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "ask": [
+            "Bash(rm -rf ${OUT})"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "variable-deny",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {
+        "commandAllowlist": [
+          "git status"
+        ],
+        "commandDenylist": [
+          "rm -rf ${OUT}"
+        ]
+      },
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "deny": [
+            "Bash(rm -rf ${OUT})"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "literal-deny",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {
+        "commandAllowlist": [
+          "git status"
+        ],
+        "commandDenylist": [
+          "rm -rf build"
+        ]
+      },
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "deny": [
+            "Bash(rm -rf build)"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "alternation-ask",
+    "exit": 0,
+    "files": {
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "ask": [
+            "Bash(rm -rf {build,dist})"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "expanded-ask",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {
+        "commandAllowlist": [
+          "git status"
+        ]
+      },
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "ask": [
+            "Bash(rm -rf build)",
+            "Bash(rm -rf dist)"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "case": "alternation-existing",
+    "exit": 0,
+    "files": {
+      ".factory/settings.json": {},
+      ".claude/settings.json": {
+        "$schema": "https://json.schemastore.org/claude-code-settings.json",
+        "permissions": {
+          "allow": [
+            "Bash(git status)"
+          ],
+          "ask": [
+            "Bash(rm -rf {build,dist})"
+          ]
+        }
+      }
+    }
+  }
+]
