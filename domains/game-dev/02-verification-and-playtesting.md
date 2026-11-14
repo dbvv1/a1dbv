@@ -99,6 +99,8 @@ Jeff Schomay 的 Crossword Dungeon 开发记录展示了适合状态接口的情
 
 **截图差异不是审美评分。** UE 截图比较支持容差，也可关闭 TAA、运动模糊等噪声来源；这有助于稳定回归，但若正在检查拖影／动态清晰度，就必须另外观察保留实际渲染特性的运动过程，不能用“关掉后通过”代替问题解决。
 
+**先分清源码、构建与实际加载的脚本。** 固定源码 SHA，在隔离目录重建并保存构建退出；从最终入口的实际脚本响应取字节，按路由与该次新构建的对应文件比 SHA256。客户端文件和服务端内嵌脚本即使互相匹配，也可能一起是旧生成物；不能只核 checkout 或 URL。默认与候选用同一口径，构建字节一致仍不证明候选已画出或没有回退。[^fresh-served-build]
+
 **拍候选前，先确认当前帧确实在运行候选。** URL 带了开关、PNG 存在或渲染器可用，仍可能是在拍初始化失败后的默认回退。沿现有捕获入口同次读取画面元数据与实际运行状态，按本次入口校验开关、警告、后端和模拟时钟；默认入口应有自己的预期，不一律要求开启候选。先保存该帧的错误与 renderer，再让校验失败，避免报告沿用上一帧信息。Star 原硬件档入口曾缺这道检查，现沿原捕获脚本修正；正常、缺状态、回退与错配的 CPU 契约已过，真实硬件与新图仍未验。依据：[捕获接受契约](https://github.com/dbvv1/Star-Rush-Reborn/commit/ce68aa13fc958a9331b81edfdca7a62a5efa4cad)，2026-11-11；工具检查不替代同机位盲评，也不证明原拍摄调用已退出。
 
 **场景先就绪，也不能漏掉稍后加载的角色与武器。** 固定拍摄应等待这张图实际使用的生产消费者就绪，失败或缺少状态就停止，别用固定延迟碰运气。FPS 训练候选原先只等环境标准件与材质，角色、RX24和命中源还在加载或已经回退时也会报告可拍；[原捕获入口修复](https://github.com/dbvv1/FPS-Like/commit/f3ddecdd26cd4a702e2d81515f6fb85d06f734f0)直接等现有三项状态，没有另造加载层。这是生产控制流的 CPU 复现与回归，未验真实网络、素材画面或浏览器；不依赖这组训练资源的材质对照继续用原入口。核实：2026-11-11。
@@ -144,3 +146,5 @@ Jeff Schomay 的 Crossword Dungeon 开发记录展示了适合状态接口的情
 **本节来源与范围**：Play2Code／RSIGame／Spec2Game、EA RAID／TITAN／Deckhand 为作者报告，Thomas Ricouard 2026-09 为作者实践（一手）；比较与采用判断为本仓研究。详细任务、模型、样本和成本见 [WP13 §7](../../docs/research/2026-10-14-game-wp13-agent-config.md#7-自动反馈何时转真人整页验证选择校准)，二改保留条件见 [二改最高水平卡](../../docs/research/2026-10-14-game-wp13-agent-config.md#当前最高水平卡二改之后旧玩法与资产是否还成立)，完整例子见 [P32 两次需求继承设计](../../docs/research/2026-10-14-game-wp13-agent-config.md#56-从同build证据推进到真实路径与旧需求保留)，生产链条件见 [P53 比较](../../docs/research/2026-10-14-game-wp13-agent-config.md#6-p53探索发现与修复验收分账)。2026-10-22（UTC+8）复核。长期乐趣、完整设备链与总成本仍未知。
 
 [^complete-match-evidence]: 已落入原验收入口：[Star 完整圈与连续帧耗](https://github.com/dbvv1/Star-Rush-Reborn/commit/31111d244609c694ecd2a58009b12b0e6248ea30)、[FPS 当前首页／全场材质的六回合](https://github.com/dbvv1/FPS-Like/commit/276c80399e5386606fc226e54e90072a721c885b)、[MOBA 自然终局及实际材料状态](https://github.com/dbvv1/MOBA-Like/commit/b110172bb02e8687e679e810d1c4024057ab2051)。FPS 原完整链已存在，但验收器按原始 query 分类，漏掉首页及旧链接的实际重定向；现共享生产路由并拒绝固定输入带和未知入口。MOBA 用原纹理所有者、已提交帧与 context-loss 状态辨别材料是否实际激活，不只回显 URL。三项的 CPU／构建与非作者代码审查通过。Star 随后修复[隐藏画质控件阻塞赛前配置](https://github.com/dbvv1/Star-Rush-Reborn/commit/38b56bafc2d8bd0524d712558e38913c57506906)：真实 HTML／设置事件的 CPU 回归证明原脚本无法通过可操作条件，新版预设会更新内存与保存值；这是配置合同检查，不是浏览器执行。Star 自动试驾、FPS 普通 UI 六回合及 MOBA 闲置玩家场景的真实浏览器运行和帧耗尚未验收。核实：2026-11-11。
+
+[^fresh-served-build]: [Star 候选构建与路由](https://github.com/dbvv1/Star-Rush-Reborn/blob/0405af62c8d1a099fd710a852f42c9f8bcf80968/build.mjs#L70-L76) 有改动，但该提交与父基线保留相同的已跟踪 Worker 和客户端。用固定源隔离重建后，直接调用新旧 Worker 的实际路由：新响应与对应新文件一致，旧 Worker 即使收到候选入口也不匹配新文件。此反例未启动浏览器，不能代替原现场构建记录或实际渲染。
