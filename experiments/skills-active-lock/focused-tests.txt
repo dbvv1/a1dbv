@@ -1,0 +1,8 @@
+
+ RUN  v5.1.0 <workspace>/skills-lock-fix-20261114
+
+
+ Test Files  4 passed (4)
+      Tests  79 passed (79)
+   Start at  19:07:28
+   Duration  2.58s (tests 81%, transform 15%, import 4%)

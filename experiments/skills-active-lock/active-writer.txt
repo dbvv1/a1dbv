@@ -1,0 +1,48 @@
+{
+  "heldMs": 31210,
+  "events": [
+    {
+      "event": "snapshot-read",
+      "pid": 19,
+      "at": 1794625672064
+    },
+    {
+      "event": "success",
+      "name": "beta",
+      "at": 1794625703258
+    },
+    {
+      "event": "success",
+      "name": "alpha",
+      "at": 1794625703268
+    }
+  ],
+  "afterBeta": [
+    "beta"
+  ],
+  "final": [
+    "alpha"
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Both successful writes must survive
++ actual - expected
+
+  [
+    'alpha',
+-   'beta'
+  ]
+
+    at file://<workspace>/skills-lock-review-evidence-20261114/active-writer.mjs:52:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [ 'alpha' ],
+  expected: [ 'alpha', 'beta' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
