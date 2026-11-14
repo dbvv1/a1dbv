@@ -1,0 +1,24 @@
+{
+  "realManifest": "Error: Invalid plugin manifest .cursor-plugin/plugin.json: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"mcpServers\"\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  }\n]",
+  "realResolver": "Error: Invalid plugin manifest <fixture>/source/.cursor-plugin/plugin.json: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"mcpServers\"\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  }\n]",
+  "relativePath": true,
+  "mixedArray": false,
+  "unsafePaths": [
+    {
+      "path": "../mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "/mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "https://example.com/mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "C:\\mcp.json",
+      "rejected": true
+    }
+  ]
+}

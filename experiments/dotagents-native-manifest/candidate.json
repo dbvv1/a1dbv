@@ -1,0 +1,24 @@
+{
+  "realManifest": "accepted-unchanged",
+  "realResolver": "cursor-manifest-preserved",
+  "relativePath": true,
+  "mixedArray": true,
+  "unsafePaths": [
+    {
+      "path": "../mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "/mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "https://example.com/mcp.json",
+      "rejected": true
+    },
+    {
+      "path": "C:\\mcp.json",
+      "rejected": true
+    }
+  ]
+}
