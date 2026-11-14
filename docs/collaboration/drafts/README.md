@@ -16,4 +16,5 @@
 
 ## Dot 长期行为指令草案
 
-- [DOT-CUSTOM-INSTRUCTIONS-v1-draft.md](DOT-CUSTOM-INSTRUCTIONS-v1-draft.md)：Dot-A/B 共用 Custom Instructions、各自专属补充和 Custom Rules 候选；待 Claude 审核、Codex 可行性检查与用户确认。
+- **当前版本：** [DOT-CUSTOM-INSTRUCTIONS-v2-draft.md](DOT-CUSTOM-INSTRUCTIONS-v2-draft.md)：Claude 审核意见与改稿（needs-review），待 Codex 可行性检查与用户确认。
+- 前序：[DOT-CUSTOM-INSTRUCTIONS-v1-draft.md](DOT-CUSTOM-INSTRUCTIONS-v1-draft.md)，保留原稿，审核意见见 v2。
