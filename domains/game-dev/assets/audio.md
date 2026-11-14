@@ -42,6 +42,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **工具：** 浏览器原生 `AudioContext`／`GainNode`／`DynamicsCompressorNode` 足够实现基础分流与增益，沿现有合法样本和混音映射，不为试此机制迁移中间件。[MDN GainNode 创建与增益](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)给出接口；源码参照为 [Saltline 音频实际实现](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5928)和 [Evensong 音频模块](https://evensong-phi.vercel.app/src/audio/audio.js)。核实 2026-11-12；只读源码，未试听、未作三案采用或成本收益结论。
 
+**让装饰声让出播放资格，不只让出音量。** 同一渲染回调可追赶多个模拟 tick，共用一个音频时钟。若可选出手声写入普通声的 25 ms 限流，即使更轻或同帧排序更低，下一 tick 的命中也可能消失。做法：装饰声不占普通起播／待播预算，但仍计入全局声部上限，满时先撤装饰声；同一回调中普通反馈优先。把新声源的对照加进现有假 `AudioContext` 夹具，再跑 `npm test -- tests/client/audio-critical.test.ts`，核对开关前后命中／护盾的 `source.start` 时刻，并对紧邻重叠录段用 `ffmpeg -i pair.wav -af ebur128=peak=true -f null -` 检查峰值。[原慢帧反例及运行边界](https://github.com/dbvv1/MOBA-Like/blob/79bdb57439d2ca3e49c6560271d4a598999f5ac5/docs/audio-critical.md)。本地候选的指定事件、模拟音频时钟和离线片段已核；不是原生设备播放、整局混音或试听验收。
+
 ### 重叠提示各自持有混音焦点
 
 **目标：** 交战提示、语音和暂停同时发生时，背景只退到当前需要的程度；一个提示结束不能提前盖回另一个。将语音／关键动作对背景的压低与暂停、玩家音量分别接在不同的增益节点，不共用一个会互相覆盖的目标值。
@@ -245,6 +247,8 @@ SFX v2 接口当前允许 0.5–30 秒及 loop 参数；能力页与接口的最
 **✅ 长时间探索／建造，先选音乐是否持续在场，不先用更多循环层填满时间。** 可比较曲目间留白与持续配乐：C418明确为避免反复播放烦扰而要求间隔；后来的Minecraft又允许玩家调整音乐频率。已有合格曲目可先改出场密度，留白导致空洞、丢失节奏或必要情绪时缩短间隔／恢复连续；这不是静音必然更好或省制作的证明。见[出场密度与版本边界](../../../docs/research/2026-10-14-game-wp6-audio.md#音乐出场密度补研先改间隔还是增加曲目)。[一手／研究]
 
 **需要持续配乐／状态响应时，再定探索、战斗、胜负等状态、乐句长度和切换点。** 少量可循环 BGM 配独立 jingle 可先比较；需要连续强度变化时，才增加同长度、同节拍、同调性和同起点的分层。分离 API 产生的 stem 需查串音和混响，不等于拿到了原生独立录音轨。[一手／研究]
+
+**把循环点作为曲目的交付数据，不从文件头尾猜。** 赛道／关卡用稳定键绑定音频和 `loopStart`／`loopEnd`，标题曲另配；生成或二改某一曲不必改赛道逻辑。[Turbo Tails 的交付页](https://turbo-tails.vercel.app/) 现有源码按赛道查表，解码后把循环点赋给缓冲声源。先用 `ffprobe -v error -show_entries format=duration -of csv=p=0 track.mp3` 粗筛时间范围，再核对运行解码时长和循环接缝；文件标作 loop 或时长通过都不等于听不出接缝。仅核交付源码，未试听。
 
 **新增强度状态，先核整套资源是否真的供得出对应版本。** 原曲已满足表达时可保留原曲与独立提示；强度变化本身重要时，比较已有相容普通／快版及各自循环点，承担多版本存储、调度与后续修改。不要默认程序变速能补齐缺版，无损音频也不等于可重编配工程；必须人工改编才成立时，换完整许可资源或收窄音乐状态。[SuperTuxKart 的成对供给、接入修订与回退撤除](../../../docs/research/2026-10-14-game-wp6-audio.md#成套配乐二改普通曲不自动供应强度版本)支持这项选择，但未证明其替换旧曲的制作动因或零手修创作闭环。[一手／研究]
 

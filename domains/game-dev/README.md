@@ -56,6 +56,7 @@
 |---|---|---|
 | 🧪 [Riposte: Frontline](https://www.playriposte.com/)：网页 FPS | 作者用 Claude Code 写 Three.js 几何与玩法，人提供参考、逐件调整并试玩；照片贴图、动画和声音另有来源。 | 先核真实尺度、建筑体量与通行／视线布局，再试立面构造；给旧盒子贴百叶不等于完整场景。代码 MIT 不覆盖整包资产，详见[作者、源码与排除项](../../docs/research/2026-10-23-game-worth-trying.md#riposte建筑先有构造再加材质)。 |
 | 🧪 [Formula Minus One](https://fm1.app/)：反重力赛车 | 作者持续六个月迭代；草图→图像生成→Tripo 3D→Blender 清理，另有现成声音、人工音乐草稿与风格指南。 | 待试整条赛道的主题与资产组合，而非坚持全程序几何。流程含 Blender 清理，未证实无需手修；[过程与成本](../../docs/research/2026-10-23-game-worth-trying.md#formula-minus-one混合供给仍需设计与清理)。 |
+| 👀 [Turbo Tails](https://turbo-tails.vercel.app/)：网页卡丁车 | 作者做过 [Fable／Opus 早期对照](https://www.youtube.com/watch?v=SsSKJA0EHD4&t=184s)，随后另发[迭代说明](https://nitter.gq/petergyang/status/2120266047484056018)，不把当前线上版本当早期一次出稿。 | 当前交付源码按赛道键管理音乐和循环点，现有四个赛道键不同于早期更新所述三条；可复用[曲目交付合同](assets/audio.md#音乐先定出场密度再定循环和状态切换)。未实玩、试听或验证联机。 |
 | 🧪 [DragonScape Idle](https://dragonscapeidle.com/)：网页 idle RPG | 作者用游戏数据生成分类风格静图，人选图与重生成。 | 待试暗底小图标与二改保留，详见[作者原文](../../docs/research/2026-10-23-game-worth-trying.md#dragonscape-idle分类风格与保留已验图片)。 |
 | 👀 Brickbrag／Permit Pending：网页建造／管理 | 作者将玩家的建造卡关、手机操作及 GPU 分配错误交给 Agent 修订，具体分工与来源见[发布后二改](06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)。 | 先按更新后的教程重放，再在原失败设备验证资源档回退；作者声称修复不是本端通过。两作未试玩，不新增品质推荐。 |
 | 🧪 [哈耶克的文明](https://hkingauditore.github.io/civ-game/)：网页策略 | 作者仓库公开 AI 协作协议；具体模型贡献与人工修改比例未知。 | 已在 v2.3.64 实跑建造、保存、改状态和两次读回；源码显示启动按时间戳选最新档，刷新不能替代指定手动槽恢复验收。可复用[槽位＋可见标记的分验步骤](06-indie-roadmap.md#ai-制作实例把玩家报错交给-agent但先更新复现路径)，跨版迁移与后期性能未验。 |
