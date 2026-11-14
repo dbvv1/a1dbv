@@ -1,4 +1,4 @@
-"""Runner regressions mock execution; never recursively execute the full suite."""
+"""Runner regressions, including real short-lived children; never recurse the suite."""
 from collections import Counter
 import contextlib
 import importlib.util
@@ -8,6 +8,7 @@ from pathlib import Path
 import signal
 import subprocess
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -142,6 +143,70 @@ class OfflineChecksTests(unittest.TestCase):
       self.assertEqual(process.wait.call_count, 2)
       self.assertEqual(popen.call_args.kwargs,
                        {'cwd': runner.ROOT, 'env': {}, 'start_new_session': True})
+
+
+  def test_real_process_exit_codes_and_missing_command(self):
+    with tempfile.TemporaryDirectory() as directory:
+      for code in (0, 7):
+        with self.subTest(code=code):
+          self.assertEqual(runner.run_process(
+            (runner.sys.executable, '-c', f'raise SystemExit({code})'),
+            cwd=directory, env=dict(os.environ), timeout=2), code)
+      with self.assertRaises(FileNotFoundError):
+        runner.run_process((str(Path(directory) / 'missing-executable'),),
+                           cwd=directory, env=dict(os.environ), timeout=2)
+
+  def test_real_timeout_closes_same_group_child_descriptor(self):
+    # EOF proves that no process retains the child's write descriptor. Merely
+    # checking the leader exit code misses surviving children. EOF does not
+    # establish reaping: a killed child may still be a zombie.
+    with tempfile.TemporaryDirectory() as directory:
+      root = Path(directory)
+      fifo = root / 'child-output'
+      os.mkfifo(fifo)
+      child = root / 'child.py'
+      child.write_text(r"""import os, sys, time
+from pathlib import Path
+root = Path(sys.argv[1])
+descriptor = os.open(root / 'child-output', os.O_WRONLY | os.O_NONBLOCK)
+with os.fdopen(descriptor, 'wb', buffering=0) as output:
+  output.write(b'child-ready\n')
+  (root / 'ready').write_text(str(os.getpgrp()))
+  deadline = time.monotonic() + 30
+  while time.monotonic() < deadline and root.exists() and not (root / 'stop').exists():
+    time.sleep(0.02)
+""")
+      parent = root / 'parent.py'
+      parent.write_text("""import os, subprocess, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+(root / 'group').write_text(str(os.getpgrp()))
+subprocess.run([sys.executable, str(root / 'child.py'), str(root)], check=True)
+""")
+      descriptor = os.open(fifo, os.O_RDONLY | os.O_NONBLOCK)
+      try:
+        started = time.monotonic()
+        with self.assertRaises(subprocess.TimeoutExpired):
+          runner.run_process((runner.sys.executable, str(parent), str(root)),
+                             cwd=root, env=dict(os.environ), timeout=2)
+        # A startup failure must not be mistaken for successful cleanup.
+        self.assertEqual((root / 'ready').read_text(), (root / 'group').read_text())
+        self.assertEqual(os.read(descriptor, 4096), b'child-ready\n')
+        deadline = time.monotonic() + 1
+        while True:
+          try:
+            self.assertEqual(os.read(descriptor, 4096), b'')
+            # Reject a delayed observation that could be the child's own exit.
+            self.assertLess(time.monotonic() - started, 10)
+            break
+          except BlockingIOError:
+            if time.monotonic() >= deadline:
+              self.fail('child still owns output descriptor after phase timeout')
+            time.sleep(0.01)
+      finally:
+        # Also bounds the child if a future regression kills only the leader.
+        (root / 'stop').touch()
+        os.close(descriptor)
 
 
   def suite_ids(self, suite):
