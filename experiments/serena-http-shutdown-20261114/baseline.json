@@ -1,0 +1,30 @@
+[
+  {
+    "transport": "sse",
+    "signal": "SIGINT",
+    "exit": 1,
+    "ready": true,
+    "shutdown_count": 0
+  },
+  {
+    "transport": "sse",
+    "signal": "SIGTERM",
+    "exit": -15,
+    "ready": true,
+    "shutdown_count": 0
+  },
+  {
+    "transport": "streamable-http",
+    "signal": "SIGINT",
+    "exit": 1,
+    "ready": true,
+    "shutdown_count": 0
+  },
+  {
+    "transport": "streamable-http",
+    "signal": "SIGTERM",
+    "exit": -15,
+    "ready": true,
+    "shutdown_count": 0
+  }
+]
