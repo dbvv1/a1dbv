@@ -7,9 +7,19 @@
 
 **从这里开始：[独立游戏从概念到发布的路线图](06-indie-roadmap.md)。** 按概念、原型、垂直切片、内容生产、打磨、发布和上线后选择下一步；每阶段列质量标准、AI 能做、人必须决定与对应专题。先过许可与真人反馈；扩角色／组合前确认玩家能察觉核心选择差异；切片必须经历第二次需求修改。阶段路线仍是资料比较。G1 的实测范围与未验项见第 5 节。[研究]
 
-**三案例现有交付**（11-13 核对）：[Star v11](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site)（运行源 `1299e5a7`／Site 源 `38978955`）已将 coast 换为默认，包含海岸地表与街屋，baseline 留作回退；[FPS v25](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)（main `79bcf1d1`／Site 源 `1521e434`）已将全场 `ai-courtyard-full-v1` 材质换为默认，玩家菜单隐藏候选与诊断入口。两案已有整局 smoke 与静态双盲，不把换默认称为整场景质感达标：Star 软件帧耗尾部仍差，FPS 三次双路测量方向不一且输入不匹配，保留慢 4–10% 的成本风险。[MOBA v22](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)（运行源 `002ae06`／Site 源 `0d36007`）线上仍是旧默认。产品 main `79bdb574` 已将 quiet 设为首页默认，显式 `?materials=baseline` 可回退，玩家候选／诊断链接隐藏；617项单测与web构建通过，未新做该首页浏览器验收。已有双路完整smoke、双非作者盲选及补齐收集证据保留，软件帧耗差异不当硬件体验结论。Site 源 `44d9c2199db47b34f1e668cfa8e485c72f084c84`／v23 归档已保存，但公开部署被明确拒绝，待用户确认；线上仍v22，不计网站改进。三案正式覆盖仍为 Star 0/43、FPS 0/77、MOBA 0/89，硬件体验与听感未据部署补称通过。下一步是按近程网页参照推进整场景视听，而不是增加独立工具或把候选计作发布；[证据与接续](../../docs/collaboration/TASKS.md#项目板)。
+## 三个网页案例：先找要玩的版本，再找证据
 
-**现有候选接收：** FPS 原训练候选已修空弹指引、取消换弹起音与击倒后等待，并接入[耗尽弹药后的稳定备枪选择](05-gameplay-architecture.md#bot-ammo-recovery)；MOBA 将赏金、瞄准清理和死亡源统一限在原完整 Q/W 旁置，续修死亡与设置／失焦／隐藏丢弃输入后仍显示“命令已排队”的问题，默认／quiet 保旧。[操作提示如何跟随实际资格](04-client-modules.md#输入与暂停先定动作权限再切输入)已回流模块页。MOBA 普通浏览器已见 Canvas 中的 Q/W 与死亡／重生；11-09 冻结构建默认／旁置均已超过300tick，FPS 默认／ground各完成两轮144tick，原运动入口另跑完六个自然回合、换边与终局重开。受控故障和新标签日志已补未捕获异常观察，失败请求收集仍欠；MOBA 已修 HUD 技能按钮焦点挡住 Esc：默认、完整 Q/W 与 quiet 的真实页面均可取消，取消后左击不再施法，设置退出仍回原按钮；686 项回归、双构建与独审通过。新 context 隔离、失败请求、完整 smoke 及视听门槛仍欠，候选未合产品 main。Canvas推进不代表3D画面通过。隔离浏览器启动阶段的socket EPERM不重试。11-08 原 FPS 候选另修[偏弹越过目标后误伤队友](05-gameplay-architecture.md#bot-friendly-miss)，真实 Game 反例与完整 CPU 回归通过；玩家友伤和实际弹道保留。11-09 两候选再修[结算后换弹进度与取消后的旧回执](04-client-modules.md#输入与暂停先定动作权限再切输入)；MOBA 撤回眩晕、Stop 与目标失效时已作废的排队提示，保留同帧重发的新命令。实际消费者 CPU 与独审通过。两案未合产品 main／部署，不增加地图成熟度或品质分。Star旧两版空间图的探索2→2保留；11-11[默认静态对比](https://github.com/dbvv1/Star-Rush-Reborn/blob/bc2911885d3afed52f2e1ad20f0e4fa484787168/docs/quality.md)复用视觉路径等同前图，两位新非作者均整体偏好指定整层；后续已补整局证据并换默认，现状见上段，正式覆盖未增加。
+想玩现在的默认版，点「线上」；想复现验收，跟「历史实测」的固定源码与回执走。产品默认分支、线上打包源码和实测构建不是同一个标识。MOBA-Like 按当前单路乱斗目标 验收，不以缺少三路或野区扣分；Unity／Unreal 不替代网页案例实测。
+
+| 案例 | 线上默认（Sites 来源） | 产品默认源码 | 历史整局实测（不是对线上重跑） |
+|---|---|---|---|
+| **Star-Rush-Reborn** | [v11 · 海岸公路](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road)，`38978955`；游戏源码 `1299e5a7` | [master `57e14213`](https://github.com/dbvv1/Star-Rush-Reborn/commit/57e14213de54d4ad339cebd411830337b20aa96b)，coast 默认，baseline 可回退 | [`d1607a5` 两入口](../../docs/collaboration/local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)；本机 SwiftShader，尾部帧耗仍有风险 |
+| **FPS-Like** | [v25 · 全场材质](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)，`1521e434` | [main `79bcf1d1`](https://github.com/dbvv1/FPS-Like/commit/79bcf1d1e245c49077dc4ee6235ad8b408289441)，`ai-courtyard-full-v1` 默认 | [`658b2e5` 六回合](../../docs/collaboration/local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)；软件档有慢 4–10% 的样本，输入不匹配，不据此判断硬件性能 |
+| **MOBA-Like** | [v22 · 原默认](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site)，`0d36007`；游戏源码 `002ae06`。v23 仅保存，未公开部署 | [main `79bdb574`](https://github.com/dbvv1/MOBA-Like/commit/79bdb57439d2ca3e49c6560271d4a598999f5ac5)，quiet 默认，`?materials=baseline` 可回退 | [quiet 原配对和 `cb025e89` 默认回执](../../docs/collaboration/local-jobs/B-MOBA-QUIET-PAIR-20261112.md)；不是新默认首页的浏览器验收 |
+
+[海岛／庭院／森林小路](../../docs/collaboration/look-guide-trial-20261114.md#11-15-开关候选可直接换默认)是三案另行评估的候选，不是上表的产品默认或线上版本。工程检查可以定位帧耗、回退和碰撞回归，不能给画面打分。**本轮画面未检查**：尚无本机当前默认与旧版的新同机位并排图，正式覆盖仍为 Star 0/43、FPS 0/77、MOBA 0/89。[后续与回执](../../docs/collaboration/TASKS.md#项目板)。
+
+**较早的候选验收记录：** FPS 原训练候选已修空弹指引、取消换弹起音与击倒后等待，并接入[耗尽弹药后的稳定备枪选择](05-gameplay-architecture.md#bot-ammo-recovery)；MOBA 将赏金、瞄准清理和死亡源统一限在原完整 Q/W 旁置，续修死亡与设置／失焦／隐藏丢弃输入后仍显示“命令已排队”的问题，默认／quiet 保旧。[操作提示如何跟随实际资格](04-client-modules.md#输入与暂停先定动作权限再切输入)已回流模块页。MOBA 普通浏览器已见 Canvas 中的 Q/W 与死亡／重生；11-09 冻结构建默认／旁置均已超过300tick，FPS 默认／ground各完成两轮144tick，原运动入口另跑完六个自然回合、换边与终局重开。受控故障和新标签日志已补未捕获异常观察，失败请求收集仍欠；MOBA 已修 HUD 技能按钮焦点挡住 Esc：默认、完整 Q/W 与 quiet 的真实页面均可取消，取消后左击不再施法，设置退出仍回原按钮；686 项回归、双构建与独审通过。新 context 隔离、失败请求、完整 smoke 及视听门槛仍欠，候选未合产品 main。Canvas推进不代表3D画面通过。隔离浏览器启动阶段的socket EPERM不重试。11-08 原 FPS 候选另修[偏弹越过目标后误伤队友](05-gameplay-architecture.md#bot-friendly-miss)，真实 Game 反例与完整 CPU 回归通过；玩家友伤和实际弹道保留。11-09 两候选再修[结算后换弹进度与取消后的旧回执](04-client-modules.md#输入与暂停先定动作权限再切输入)；MOBA 撤回眩晕、Stop 与目标失效时已作废的排队提示，保留同帧重发的新命令。实际消费者 CPU 与独审通过。两案未合产品 main／部署，不增加地图成熟度或品质分。Star旧两版空间图的探索2→2保留；11-11[默认静态对比](https://github.com/dbvv1/Star-Rush-Reborn/blob/bc2911885d3afed52f2e1ad20f0e4fa484787168/docs/quality.md)复用视觉路径等同前图，两位新非作者均整体偏好指定整层；后续已补整局证据并换默认，现状见上段，正式覆盖未增加。
 
 ## 模块与制作链地图
 
@@ -43,7 +53,7 @@
 | [2D](assets/2d.md) | AI 插画用于菜单选卡；源图标沿配方导出，[成套二改失败保旧批](assets/2d.md#icon-family-rebuild) | 角色、地表与 UI 套件的风格一致性 |
 | [3D 角色与场景](assets/3d.md) | CC0 低模包加脚本改色、重塑；[成套重导出失败保旧批](assets/3d.md#asset-family-rebuild) | 角色精度与场景丰富度；AI 生成 3D 尚未进作品 |
 | [动画](assets/animation.md) | CC0 成熟动作源重采样、实际左右校正到既有骨架＋脚本动作 | 文生动作与动捕清理 |
-| [材质、特效与光照](assets/materials.md) | 共享渐变图集、局部地表边簇、[quiet 材质复用与失败清理](assets/materials.md#quiet-material-family)（旁置已接，画面未验）、程序特效与卡通／Lambert 光照 | 光照氛围、后处理与技能特效 |
+| [材质、特效与光照](assets/materials.md) | 共享渐变图集、局部地表边簇、[quiet 材质复用与失败清理](assets/materials.md#quiet-material-family)（产品 main 默认，线上仍为旧版；上表列实测范围）、程序特效与卡通／Lambert 光照 | 光照氛围、后处理与技能特效 |
 | [音频](assets/audio.md) | CC0 音效、程序合成音乐；开放权重生成的环境声候选 | 听感与混音层级；配音 |
 | [视频](assets/video.md) | 实验短片 | 尚未进作品 |
 
