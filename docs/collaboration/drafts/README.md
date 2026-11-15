@@ -16,5 +16,5 @@
 
 ## Dot 长期行为指令草案
 
-- **当前版本：** [DOT-CUSTOM-INSTRUCTIONS-v2-draft.md](DOT-CUSTOM-INSTRUCTIONS-v2-draft.md)：Claude 审核意见与改稿（needs-review），待 Codex 可行性检查与用户确认。
+- **当前版本：** [DOT-CUSTOM-INSTRUCTIONS-v2-draft.md](DOT-CUSTOM-INSTRUCTIONS-v2-draft.md)：已获用户确认（11-16），由用户粘贴进 Dot，两个 Dot 同时生效。
 - 前序：[DOT-CUSTOM-INSTRUCTIONS-v1-draft.md](DOT-CUSTOM-INSTRUCTIONS-v1-draft.md)，保留原稿，审核意见见 v2。

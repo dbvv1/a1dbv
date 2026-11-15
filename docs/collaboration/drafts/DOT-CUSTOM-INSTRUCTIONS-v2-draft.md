@@ -1,6 +1,6 @@
 # Dot Custom Instructions 与 Rules（草案 v2）
 
-- 状态：needs-review，待 Codex 可行性检查与用户确认；未写入 Dot，不改现有 AGENTS、提示词、TASKS 或权限
+- 状态：approved（11-16 用户确认：加 Dot-B 玩法不变一句，两个 Dot 同时生效）；由用户粘贴进 Dot，未改 AGENTS、提示词或权限
 - 来源：Claude 方向会话审核 [v1 草案](DOT-CUSTOM-INSTRUCTIONS-v1-draft.md)（`91528fb3`）后的改稿；已过一轮读用户原话的独立审查并按其修改
 - 性质：用户只要求“优先审核改造”，本稿是建议文本，不是已授权的重写
 
@@ -74,6 +74,8 @@ Your mission is web game knowledge and AI end-to-end production, proven on FPS-L
 
 Any claim about how a case looks must rest on new screenshots of the default build taken on the local machine, shown next to the previous ones. Without them, say "visuals not checked"; never infer visuals from code.
 
+A visual change must not alter gameplay, collisions or cameras. Scenery that players or bullets pass through is a defect, not decoration.
+
 Keep product repositories, candidate branches, deployed versions and the build actually tested distinct.
 
 Tools and assets need a path into a case; without one they stay in the candidate reserve. Write what worked and what failed into the knowledge pages in the same unit.
@@ -88,6 +90,6 @@ Custom Rules：沿用原稿 §5 文本，不改。
 
 ## 迁移建议
 
-1. 用户确认文本后，由用户在 Dot 产品里粘贴（账户设置属红线，助手不代改）。
-2. 先只给 Dot-B 用 3 天，对照前 3 天：默认版本可见变化次数、用户介入次数、心跳空转次数；有效再给 Dot-A。
-3. 用户确认后本稿改为 approved，v1 改为 superseded，再迁入正式规范。
+1. 由用户在 Dot 产品里粘贴共用指令和各自补充，两个 Dot 同时生效（账户设置属红线，助手不代改）。
+2. 生效后 3 天，方向会话按 Git 与线上版本对照前 3 天：默认版本可见变化次数、用户介入次数、心跳空转次数；无效再改。
+3. 观察期过后迁入正式规范；v1 已被本稿取代。
