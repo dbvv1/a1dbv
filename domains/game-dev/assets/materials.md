@@ -326,6 +326,8 @@ PY
 
 **失败矩阵要分开安装前与安装后。** 第二张纹理加载失败：加载器释放已取得的第一张，返回 `undefined`，未改旧表面；销毁后第一张迟到：释放迟到纹理，不启动后两张或一轮默认资产加载。六建筑注册后半失败：逆序恢复前面已改的模板，释放本轮克隆，不释放原图集或其他所有者的纹理。五标准件构造失败还须清理本轮路肩和骨架。测试“已装好的第一楼仍活着”必须保留真实第一实例再移除第二实例，不能用从未装 quiet 的 baseline 代替。加载入口见 [quiet-family](https://github.com/dbvv1/MOBA-Like/blob/b489ed38592dc184fffe2ab9b3b186441c7dc9bb/src/render/quiet-family.ts)。
 
+**整景失败时只退掉坏的一层。** 用工厂替身先令新增场景初始化失败，再断言第二次 WebGL 初始化仍收到原材质参数；旧场景加原材质也起不来才退基础材质，全部 WebGL 失败才退 Canvas2D。单路 MOBA 的[森林小路候选](https://github.com/dbvv1/MOBA-Like/blob/0161fd2340fa7a33b7922087f38bf34973b77fe9/src/render/playable-world.ts#L15-L22)第二次尝试漏传 `materials`，回退成功也会丢掉健康的 quiet。隔离修补的编排用例从 6/9 到 9/9，构建通过、同输入 600 tick 回放一致；实际浏览器回退与画面未检查，未采用。（核实：2026-11-16，UTC+8）
+
 **接线证据与画面分开接收。** 原 `0811894` 记录的 550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，未呈现 quiet 材质。随 Site v20（26d26c7）部署后默认／quiet／QW 推进 432／353／513 tick，同样不补成材质显示或换默认依据。[原验收](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。11-06 固定 `b489ed3` 的相关 12 项 CPU 检查通过，包括生产 `createBattlefield` 两实例共用与移除、错误 helper 二次注入反例；GLB 实际解析、纹理为内存替身，仅检查 shader 字符串而非编译。原读者四路任务仍未通过，WebGL、真实 WebP 解码、同机位盲评与硬件成本待验，详见[接收记录](../../../docs/collaboration/nonstar-return-intake-20261106.md)。
 
 | 玩家需要读懂什么 | 最小可复用做法 | 何时增加；何时撤回 |
