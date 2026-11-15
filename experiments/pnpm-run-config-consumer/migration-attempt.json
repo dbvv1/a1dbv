@@ -1,0 +1,19 @@
+{
+  "version": "12.18.0",
+  "fixture_change": "move pnpm.overrides from package.json to pnpm-workspace.yaml",
+  "attempts": [
+    {"configuration": "copied original fixture", "install_exit": 1},
+    {"configuration": "explicit task-local storeDir", "install_exit": 1},
+    {"configuration": "explicit task-local storeDir and XDG cache/state/data directories", "install_exit": 1}
+  ],
+  "commands": [
+    "node <pnpm.mjs> install --offline --ignore-scripts",
+    "node <pnpm.mjs> run test",
+    "node <pnpm.mjs> install --frozen-lockfile --offline --ignore-scripts"
+  ],
+  "observed_install_error": "ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK: Failed to open the store operation lock at pnpm-store-operation-locks: Read-only file system (os error 30)",
+  "observed_run": "warning that implicit install failed, followed by test output 123",
+  "separate_run_exit_captured": false,
+  "migration_accepted": false,
+  "host_permissions_changed": false
+}

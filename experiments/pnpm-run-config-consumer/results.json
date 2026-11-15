@@ -1,0 +1,25 @@
+{
+  "versions": [
+    "10.12.1",
+    "12.6.0",
+    "12.18.0"
+  ],
+  "cases": [
+    {
+      "case": "before",
+      "exit": 0,
+      "script_ran": true,
+      "override_retained": false,
+      "lock_unchanged": false,
+      "guard_error": false
+    },
+    {
+      "case": "after",
+      "exit": 1,
+      "script_ran": false,
+      "override_retained": true,
+      "lock_unchanged": true,
+      "guard_error": true
+    }
+  ]
+}
