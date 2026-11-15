@@ -16,6 +16,38 @@
 
 随后只在 linked worktree 重跑同 scope 的 `plugin install`，返回 ok，记录与缓存仍为 `1.0.0 / ONE`。两种 scope 的结果见 [results.json](results.json)。没有测试卸载再装、手改缓存或手改登记文件，不给出这些恢复建议。
 
+## 核对自己的目标目录（只读）
+
+已经遇到同一症状时，先在**实际使用插件的 worktree 根目录**核下面三项，不再反复 install：当前路径和 scope 的安装记录版本、缓存 manifest 版本，以及一个本次升级确实改变的文件的 SHA-256。使用运行 Claude 时的配置目录；默认是 `$HOME/.claude`，设置过 `CLAUDE_CONFIG_DIR` 就用其值。命令只读取明确选定的插件，不修改登记或执行插件代码。
+
+```sh
+CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+PLUGIN='your-plugin@your-marketplace'
+SCOPE='local' # 项目共享安装改为 project
+CHANGED_FILE='commands/example.md' # 改成此次升级确实变化的插件内文件
+python3 - "$CONFIG_DIR/plugins/installed_plugins.json" "$PLUGIN" "$SCOPE" "$(pwd -P)" "$CHANGED_FILE" <<'PYTHON'
+import hashlib, json, sys
+from pathlib import Path
+registry, plugin, scope, project, changed_file = sys.argv[1:]
+entries = json.loads(Path(registry).read_text())["plugins"].get(plugin, [])
+selected = [e for e in entries if e.get("scope") == scope
+            and e.get("projectPath") == project]
+if len(selected) != 1:
+    raise SystemExit("未找到唯一的当前目录记录；核对配置目录、插件名、scope 与安装时路径，不推断已升级。")
+entry = selected[0]
+cache = Path(entry["installPath"])
+manifest = json.loads((cache / ".claude-plugin/plugin.json").read_text())
+print(json.dumps({"record_version": entry["version"],
+                  "manifest_version": manifest.get("version"),
+                  "changed_file_sha256": hashlib.sha256(
+                      (cache / changed_file).read_bytes()).hexdigest()}, indent=2))
+PYTHON
+```
+
+将两个版本与期望版本比较，并将哈希与可信新版本中的**同一个文件**比较。缺记录、缺文件或读取错误都不能算通过；升级本来就没改该文件时，其哈希不具区分力。此处字段来自 2.1.325 的实际安装记录，未来版本改变格式时应重新核对，不据此手改登记。
+
+本节命令已用于上方真实 CLI 夹具：两种 scope 下，主 checkout／独立仓库均读到 1.1.0，linked worktree 均读到 1.0.0，manifest 与记录一致，变更文件哈希也分别对应 TWO／ONE。它能定位“管理命令成功但目标目录记录未更新”，**不能证明会话实际加载哪个版本**；记录与缓存满足期望后，仍须在目标会话完成原插件任务。恢复方式尚未验证，不建议手改缓存或卸载重装。
+
 ## 复跑
 
 先通过官方渠道准备 **2.1.325 原生 CLI**，把它的绝对路径传给：
