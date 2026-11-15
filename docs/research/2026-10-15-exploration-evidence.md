@@ -938,3 +938,21 @@ python3 "$migrator" --validate-target "$trial/target/.codex"
 **定向回核范围。** [Storybook 交互测试](https://storybook.js.org/docs/writing-tests/interaction-testing)仍以组件 story 的 play 执行动作和断言；[TanStack Intent](https://github.com/TanStack/intent)仍描述随包分发 Skill，[固定 search-params](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)分别给保留参数和重置参数的导航方式。[ast-grep 测试文档](https://ast-grep.github.io/guide/test-rule.html)要求 valid／invalid 两类，[Pinia Colada 固定规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)仍可逐条读回，不把其原版当作本仓修后规则。[Context7](https://github.com/upstash/context7)区分 CLI＋Skill 和 MCP；本周只沿用原已试 MCP 入口，不执行新 setup。用户 [#3309 正文及评论](https://github.com/upstash/context7/issues/3309)明确生成文档与普通刷新不同，且维护者已重建修复，不能报成当前未修复故障。[一手／社区原帖；2026-11-15]
 
 本轮实际覆盖 Storybook、TanStack Intent、ast-grep、Context7 四组官方团队／工具生态入口，固定实际配置／代码 2 处，用户原帖及修复评论 1 组；新候选结果复用本仓原接收，不冒充本轮重跑。中文社区、多轮新候选发现与市场头部覆盖未完成，不称广扫饱和或当前全行业最强已知。原五项的版本、计数、实试日期与未验范围逐项保留，未新增模型收益、用户采用或答案页评级。
+
+
+## 2026-11-15：Argus 无人值守指标与采用门槛
+
+**先保现有长程协调，ArgusAgent 未试用、不换默认。** 这是本轮从长程 Agent 广扫找到的未收录候选；项目在不同模型 CLI 上分开 Manager、Planner、Engineer、Reviewer，适合已有跨轮研究任务且愿意承担独立 runtime 运维的人，不适合只缺一次补丁执行或把高占用率当正确交付的人。
+
+固定 `fdfeb715b0749db176c7d8b3212a717fb81087ba` 的论文源码定义可用时间为日历跨度扣除无待做任务／环境不可用时间，busy 取模型调用区间并集；结果表五个 campaign 的可用时间占用为 95.1–98.7%，另两行为 83.7%／45.0%，不能把约 95–99% 当全体范围，也不能与全日历 busy 32.4% 互换。27 个 campaign、1,548 小时内全部需人请求为 38 次，平均 40.7 小时一次；其中研究判断只有 5 次，才得到约 310 小时一次。作者也写明未按同配置回放，主动介入不计系统请求；这些是作者观测，未独立重建原始运行日志。
+
+当前可复制的选型问题是：“分母扣掉了什么时间？所有阻塞请求还是只算研究判断？最终交付由谁验收？当前 CLI 怎样实现只读？”固定实现对 Codex 生成 `read-only` sandbox 参数，对 Claude 限制 `Read,Glob,Grep`；只是源码路径核对，不能外推各宿主真实执行边界。后续仅在一个现有真实跨轮任务需要换 runtime 时，再比较最终验收与人工介入，不为了运行时长另造任务。
+
+| 本轮来源与取法 | 实际覆盖／去向 |
+|---|---|
+| 官方与实现 | 深读 Argus README、论文源码定义／结果／局限、CLI command builder；MIT。arXiv HTML 与 Git 源内容不同，数字固定到 Git 版本。Anthropic 长程 harness 索引为已有来源，不重复收录。 |
+| 用户反馈 | 读 Argus #31、#32 正文：前者报告旧 0.1.1 的源文件误脱敏，后者提出 loopback 服务校验缺口；未复测，不判为当前版本仍有故障。 |
+| 社区原帖与评论 | Reddit 用户的单个测试环境使 worktree 并行排队，评论分别建议串行验收槽和少用编排；它说明资源瓶颈，不证明 Argus 能消除。 |
+| 发现与缺口 | 英文长程／worktree／Argus 与中文检索定位新候选；周报页面未能读取，未依摘要下结论。尚未覆盖多站点头部、中文原帖与更多独立采用，不能称广扫饱和。 |
+
+**依据**：[论文定义](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/03_problem_formulation.tex)、[结果原表](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/06_results.tex)、[指标常量](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/figures/autonomy_metrics.tex)、[局限](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/08_limitations.tex)、[CLI 实现](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/argus/agent_cli/_sandbox_commands.py)、[用户 #31](https://github.com/microsoft/ArgusAgent/issues/31)、[#32](https://github.com/microsoft/ArgusAgent/issues/32)、[worktree 排队原帖及评论](https://www.reddit.com/r/ClaudeCode/comments/1xlz2bs/how_do_you_manage_worktrees_when_your_agents_end/)。核实：2026-11-15。
