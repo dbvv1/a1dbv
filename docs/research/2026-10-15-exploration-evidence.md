@@ -885,3 +885,40 @@ P53的三页内容与来源交接范围闭合，游戏01／02／05仍保留差�
 核实日期：2026-10-29；依据为上述公开入口的云端 curl 响应及公开搜索索引观察。
 
 本机接收端同日实测（Node fetch 与关闭吊销检查后的 curl）：Reddit、linux.do、news.ycombinator.com 连接被重置，V2EX 证书域名不符；hn.algolia.com API、GitHub API、掘金、cursor.com、anthropic.com 返回 200，知乎 403。
+
+### 2026-11-15：跨宿主迁移先收待审草稿，不把静态通过当权限等价
+
+**迁移 Claude 子 Agent 到 Codex 时，可试官方 `migrate-to-codex` 生成草稿；工具限制仍须按目标宿主重新核验。** 本仓两份真实评审模板的副本均能生成 TOML、通过迁移器静态校验，但两份也都明确报 `manual_fix_required`。本轮没有启动 Codex 客户端或模型、安装真实配置或验证权限，不能据此推荐直接切换。[本仓实试]
+
+**改变的选择：** 迁移报告和结构校验要一起读；没有语法错误，不代表保留了原工具边界。VS Code 官方指南明确其 Codex 集成读取 `.github/agents/*.agent.md` 的角色正文，却不把 `tools` frontmatter 用作工具 allowlist。dotnet/skills 的实际贡献约定另指出：将 Copilot agent 文件列进 Codex plugin manifest，并不会安装成 Codex 原生 agent。这两条分别针对 VS Code 集成和插件分发，不混同原生 CLI。[一手；研究]
+
+#### 本仓实际输入与重放
+
+输入固定为 a1dbv `ddac1c29d2cd9b6421ce611157e42ca9910d6ff4` 的 `templates/generic/.claude/agents/code-reviewer.md`、`verifier.md`；只复制这两个公开文件，未执行模板内的命令。迁移器固定为 openai/skills `49f948faa9258a0c61caceaf225e179651397431`。在独立临时目录内运行，保留原模板不变：
+
+```bash
+# 在固定版本的 a1dbv 副本根目录执行；migrator 指向已审阅的固定源码。
+migrator="$skills_checkout/skills/.curated/migrate-to-codex/scripts/migrate-to-codex.py"
+trial=$(mktemp -d)
+mkdir -p "$trial/source/.claude/agents" "$trial/target/.codex"
+cp templates/generic/.claude/agents/{code-reviewer,verifier}.md "$trial/source/.claude/agents/"
+python3 "$migrator" --source "$trial/source/.claude" --target "$trial/target/.codex" --subagents --plan
+python3 "$migrator" --source "$trial/source/.claude" --target "$trial/target/.codex" --subagents --dry-run
+python3 "$migrator" --source "$trial/source/.claude" --target "$trial/target/.codex" --subagents
+python3 "$migrator" --validate-target "$trial/target/.codex"
+```
+
+实际结果：两份源副本与原模板逐字节相同；生成 **2/2**，静态 required-fields 校验 **2/2** 通过，迁移报告 **2/2 `manual_fix_required`**。目标均仅有 `name`、`description`、`model`、`developer_instructions` 四字段；`tools` 进入正文的人工复核提示，没有生成对应权限设置。`model: inherit` 被保留为 `model = "inherit"`，客户端是否接受未测。目标未生成 `config.toml`，校验器同时报该配置不存在的 warning。没有模型运行、质量／耗时收益或权限强制效果数据。 非作者独立重放全流程，生成输出逐字节一致；再将两份生成文件的 `model` 改为不存在的占位值，静态校验仍为 2/2 ok。该负对照说明此校验没有确认模型可用性，不证明原 `inherit` 值在客户端必然失败。
+
+原迁移参考表的文档检查日期为 2026-04-20；本轮只对上述两个实际输入和目标范围作判断，不照搬整张旧映射表。要把草稿变成可采用配置，下一步是核目标客户端的有效模型及权限，再用实际评审任务和禁止写入的失败路径验证；目前不安装、不改变默认或地图评级。
+
+#### 来源覆盖与反证
+
+| 类别 | 本轮实际读取／去向 |
+|---|---|
+| 官方团队 | VS Code 定制指南、custom agents 页面；openai/skills 固定迁移 Skill、差异表及脚本。选迁移草稿作为可复用入口。 |
+| 实际项目／生态 | dotnet/skills CONTRIBUTING 的 host-specific agents 与 MCP manifest 段；Kempner Coding Agent Skills 正文。前者补充分发边界，后者仍是“指令不是限制”，没有独立运行收益证据，不另装技能包。 |
+| 原始用户反馈与评论 | microsoft/vscode #285754 正文及 11-13 维护者、作者评论。作者表示旧场景无法确证、可暂按 cannot reproduce 处理；不将旧投诉当作现版越权漏洞。 |
+| 广搜未深读 | 搜索触及 Worktrunk、OpenCode 与工作流索引；既有覆盖或仅索引摘要，不据此改推荐。中文社区、市场排行与多轮替代追踪尚未完成，不称广扫饱和。 |
+
+**来源**：[VS Code 定制指南](https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide)、[官方迁移器固定源码](https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/migrate-to-codex)、[dotnet 项目约定](https://github.com/dotnet/skills/blob/main/CONTRIBUTING.md)、[Kempner 技能正文](https://handbook.eng.kempnerinstitute.harvard.edu/s2_swe_for_research/coding_agent_skills.html)、[用户原帖及评论](https://github.com/microsoft/vscode/issues/285754)。核实与实试：2026-11-15；两份静态转换，不是两个新读者完成真实评审。
