@@ -1,0 +1,142 @@
+[
+  {
+    "scope": "local",
+    "cli_version": "2.1.325 (Claude Code)",
+    "initial": {
+      "repo": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      }
+    },
+    "update_responses": {
+      "repo": {
+        "outcome": "ok",
+        "updateOutcome": "updated",
+        "oldVersion": "1.0.0",
+        "newVersion": "1.1.0"
+      },
+      "worktree": {
+        "outcome": "ok",
+        "updateOutcome": "up_to_date",
+        "oldVersion": "1.1.0",
+        "newVersion": "1.1.0"
+      },
+      "independent_repo": {
+        "outcome": "ok",
+        "updateOutcome": "updated",
+        "oldVersion": "1.0.0",
+        "newVersion": "1.1.0"
+      }
+    },
+    "after_update": {
+      "repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      }
+    },
+    "worktree_install_response": {
+      "outcome": "ok",
+      "scope": "local"
+    },
+    "after_worktree_install": {
+      "repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      }
+    }
+  },
+  {
+    "scope": "project",
+    "cli_version": "2.1.325 (Claude Code)",
+    "initial": {
+      "repo": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      }
+    },
+    "update_responses": {
+      "repo": {
+        "outcome": "ok",
+        "updateOutcome": "updated",
+        "oldVersion": "1.0.0",
+        "newVersion": "1.1.0"
+      },
+      "worktree": {
+        "outcome": "ok",
+        "updateOutcome": "up_to_date",
+        "oldVersion": "1.1.0",
+        "newVersion": "1.1.0"
+      },
+      "independent_repo": {
+        "outcome": "ok",
+        "updateOutcome": "updated",
+        "oldVersion": "1.0.0",
+        "newVersion": "1.1.0"
+      }
+    },
+    "after_update": {
+      "repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      }
+    },
+    "worktree_install_response": {
+      "outcome": "ok",
+      "scope": "project"
+    },
+    "after_worktree_install": {
+      "repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      },
+      "worktree": {
+        "version": "1.0.0",
+        "marker": "ONE"
+      },
+      "independent_repo": {
+        "version": "1.1.0",
+        "marker": "TWO"
+      }
+    }
+  }
+]
