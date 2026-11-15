@@ -3,7 +3,7 @@
 <a id="本周-top-5"></a>
 ## 本周 Top 5：挑一个真实任务就开做
 
-**本周（2026-11-02～11-08）先试下面五项：修 bug 取运行态证据，改 UI 跑真实组件，写库功能读随包 Skill，批量迁移交规则，查 API 锁版本。** 按任务覆盖面、可直接复用程度与已有实试排序；选与你手头任务相符的一项，成熟做法也可上榜。
+**本周（2026-11-09～11-15）先试下面五项：修 bug 取运行态证据，改 UI 跑真实组件，写库功能读随包 Skill，批量迁移交规则，查 API 锁版本。** 按任务覆盖面、可直接复用程度与已有实试排序；选与你手头任务相符的一项，成熟做法也可上榜。
 
 | 排名／你正在做什么 | 本周先试的做法 | 已试到哪一步／何时换路 |
 |---|---|---|
@@ -13,9 +13,9 @@
 | **4 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)（10-23）：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
 | **5 · Agent 总把库的新旧 API 混用** | 🧪 **Context7 精确版本查询**：`resolve-library-id` 选实际存在的版本 ID → `query-docs` → 核同 tag 原文；[已试入口](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)可照用。 | 两次匿名查询（10-23）分别取回 Pydantic v1 的 `dict()`、v2 的 `model_dump()`，源链接匹配版本；只验检索，生成代码未试。只查一次或所需版本未索引，直接读官方对应版文档。 |
 
-**为什么本周继续选这五项：** 五项都有实试入口和明确的通过／未验范围：前两项接住真实修复与真实组件续改，后三项分别把库配方、重复改法和版本差异变成 Agent 可检查的输入。本周不换榜：[ECC search-first 同题对照](decisions/skills-and-plugins.md#ecc-search-first)中两法选择相同、没有新增被采用候选；[diff-cover](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md#条件推荐) 补的是变更行覆盖，不提供运行态因果，其他候补也仍缺可替代的完整入口。缺平台原文可看下文候选表的 [Agent-Reach](#agent-reach-public-trial)，无人值守任务被旧测试规则卡住可看[测试保护的适用边界](#test-protection-contract-change)；按自己的缺口选，不为追新装齐。
+**为什么本周继续选这五项：** 仍按“能否直接接住眼前任务”选，不按发布时间换榜。本周对照了已接收的[原生侧问](decisions/context-management.md#编码途中想问一句先选侧问改变要求仍回主线)、[依赖包原生取源](../experiments/opensrc-ref-integrity/npm-source/README.md)与[跨宿主迁移草稿](research/2026-10-15-exploration-evidence.md#2026-11-15跨宿主迁移先收待审草稿不把静态通过当权限等价)：前者尚未实用，后两者分别解决读实现和转换配置，不替代五项的调试、交互、状态管理、批量修改与版本查询。已有真实采用的 mutmut 仍适合“测试绿但怀疑断言漏检”这一支路，见下方候选表；不要求普通修复先加变异工具。具体对照与来源范围见[本周校准](research/2026-10-15-exploration-evidence.md#2026-11-15top-5保留按任务选不按新鲜度换)。
 
-**依据**：[一手：源码／实际配置] [GitButler 按需 Skill 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)、[TanStack 随包 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)、[Pinia Colada 固定迁移规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)；[社区：真实问题与回执] [jrnl 原问题](https://github.com/jrnl-org/jrnl/issues/1422)、[TanStack 状态保留讨论](https://www.reddit.com/r/reactjs/comments/1to7tcj/tanstack_router_and_query/)、[LINUX DO 批量改码反馈](https://linux.do/t/topic/3004044)、[Context7 修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)。选择周为 2026-11-02～11-08；2026-11-04 只与已接收候选结果对照后保留，未重核外部来源。原五项来源定向回核 2026-10-26，表内复用 2026-10-23～26 的试用，具体范围见各入口。
+**依据**：[一手：源码／实际配置] [GitButler 按需 Skill 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)、[TanStack 随包 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)、[Pinia Colada 固定迁移规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)；[社区：真实问题与回执] [jrnl 原问题](https://github.com/jrnl-org/jrnl/issues/1422)、[TanStack 状态保留讨论](https://www.reddit.com/r/reactjs/comments/1to7tcj/tanstack_router_and_query/)、[LINUX DO 批量改码反馈](https://linux.do/t/topic/3004044)、[Context7 修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)。选择周为 2026-11-09～11-15；11-15 对照已接收候选，并定向回核 Storybook、TanStack、ast-grep 与 Context7 官方入口、固定代码及 Context7 用户原帖／修复评论，范围见本周校准。原五项来源定向回核为 2026-10-26，表内仍复用 2026-10-23～26 的试用，没有重跑或刷新实测日期。
 
 ## 工具入口与代表做法
 

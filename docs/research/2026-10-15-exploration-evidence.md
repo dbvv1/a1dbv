@@ -922,3 +922,19 @@ python3 "$migrator" --validate-target "$trial/target/.codex"
 | 广搜未深读 | 搜索触及 Worktrunk、OpenCode 与工作流索引；既有覆盖或仅索引摘要，不据此改推荐。中文社区、市场排行与多轮替代追踪尚未完成，不称广扫饱和。 |
 
 **来源**：[VS Code 定制指南](https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide)、[官方迁移器固定源码](https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/migrate-to-codex)、[dotnet 项目约定](https://github.com/dotnet/skills/blob/main/CONTRIBUTING.md)、[Kempner 技能正文](https://handbook.eng.kempnerinstitute.harvard.edu/s2_swe_for_research/coding_agent_skills.html)、[用户原帖及评论](https://github.com/microsoft/vscode/issues/285754)。核实与实试：2026-11-15；两份静态转换，不是两个新读者完成真实评审。
+
+
+### 2026-11-15：Top 5保留按任务选，不按新鲜度换
+
+**本周 11-09～15 保留原五项顺序与操作入口。** 选择的是能接住调试、UI 续改、URL 状态、批量迁移和版本查询的已有路线，不是本周新发布产品榜。先查现有雷达、收件箱与已验收的上周卡，再对照新候选；没有为周校准重复旧试验或新增接收卡。
+
+| 对照项 | 本次决定／证据缺口 |
+|---|---|
+| 原生侧问 | 11-09 已核官方契约但本仓未试；不能替代运行证据或真实交互接收。保候选，不换榜。 |
+| opensrc／原生包取源 | 11-11 已实际读到指定 npm 发布包的实现与类型；本次只验实现取源，尚无替换版本文档查询的同题证据。已有包源码时直接读包，不因此安装新工具。 |
+| 官方迁移草稿 | 本日两份真实模板转换均静态通过、均待人工修复；模型可用性与宿主权限没验。保草稿入口，不升默认。 |
+| mutmut | 11-05 已帮助本仓补出两处 continue→break 回归；真实采用保留。适用于怀疑断言漏检，不覆盖调试因果或通用批量 API 改写，不为五个名额装更多工具。 |
+
+**定向回核范围。** [Storybook 交互测试](https://storybook.js.org/docs/writing-tests/interaction-testing)仍以组件 story 的 play 执行动作和断言；[TanStack Intent](https://github.com/TanStack/intent)仍描述随包分发 Skill，[固定 search-params](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)分别给保留参数和重置参数的导航方式。[ast-grep 测试文档](https://ast-grep.github.io/guide/test-rule.html)要求 valid／invalid 两类，[Pinia Colada 固定规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)仍可逐条读回，不把其原版当作本仓修后规则。[Context7](https://github.com/upstash/context7)区分 CLI＋Skill 和 MCP；本周只沿用原已试 MCP 入口，不执行新 setup。用户 [#3309 正文及评论](https://github.com/upstash/context7/issues/3309)明确生成文档与普通刷新不同，且维护者已重建修复，不能报成当前未修复故障。[一手／社区原帖；2026-11-15]
+
+本轮实际覆盖 Storybook、TanStack Intent、ast-grep、Context7 四组官方团队／工具生态入口，固定实际配置／代码 2 处，用户原帖及修复评论 1 组；新候选结果复用本仓原接收，不冒充本轮重跑。中文社区、多轮新候选发现与市场头部覆盖未完成，不称广扫饱和或当前全行业最强已知。原五项的版本、计数、实试日期与未验范围逐项保留，未新增模型收益、用户采用或答案页评级。
