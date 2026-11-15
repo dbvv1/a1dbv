@@ -44,6 +44,12 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **让装饰声让出播放资格，不只让出音量。** 同一渲染回调可追赶多个模拟 tick，共用一个音频时钟。若可选出手声写入普通声的 25 ms 限流，即使更轻或同帧排序更低，下一 tick 的命中也可能消失。做法：装饰声不占普通起播／待播预算，但仍计入全局声部上限，满时先撤装饰声；同一回调中普通反馈优先。把新声源的对照加进现有假 `AudioContext` 夹具，再跑 `npm test -- tests/client/audio-critical.test.ts`，核对开关前后命中／护盾的 `source.start` 时刻，并对紧邻重叠录段用 `ffmpeg -i pair.wav -af ebur128=peak=true -f null -` 检查峰值。[原慢帧反例及运行边界](https://github.com/dbvv1/MOBA-Like/blob/79bdb57439d2ca3e49c6560271d4a598999f5ac5/docs/audio-critical.md)。本地候选的指定事件、模拟音频时钟和离线片段已核；不是原生设备播放、整局混音或试听验收。
 
+### 按每条录音的事件标记截取对照片段
+
+**做法：** 在实际经过关键点时，把里程／tick／事件和该次录制起点后的秒数一起保存。按各自标记裁出同一逻辑区间，不跨 A/B 共用秒数。先核报告对应的文件名、字节数和时间单调性，再以 `ffprobe -show_entries format=duration` 核时长；例如标记落在 12.5–18.1 秒的这一条，用 `ffmpeg -i mix.webm -af 'atrim=start=12.5:end=18.1,asetpts=PTS-STARTPTS,ebur128=peak=true' -f null -` 核该段原幅响度与真峰。比较刹车、撞栏等瞬态时，还须有相同事件序列；只有里程对齐的两次驾驶，可比较环境声所在区段，不能把不同事件当成混音遮蔽。
+
+**失败反例：** [Star 已记录的旧录音失败](https://github.com/dbvv1/Star-Rush-Reborn/blob/2f10cf9b0b8b5a83fcc28968113fdd4b0702af18/assets/coast-ambience/README.md#verification-status)用 HUD 比赛时间 19–34 秒裁软件 WebGL 的实时 WebM，实际仍未到入淡的 380 m。固定[脚本](https://github.com/dbvv1/Star-Rush-Reborn/blob/2f10cf9b0b8b5a83fcc28968113fdd4b0702af18/tests/coast-ambience-browser.mjs#L128-L168)在两路分别记录 380／420／620／660 m 的录音时间；旧 WebM 只取压缩后的 SFX 总线，不含音乐，也不是同输入回放。实物无标记时可用同期画面的实到位置核对，无法对齐应保留未验；只有资产、控制量、脚本或截图不能补成真实混音。此处核固定文档和实现，未取到原录音、未实听。
+
 ### 重叠提示各自持有混音焦点
 
 **目标：** 交战提示、语音和暂停同时发生时，背景只退到当前需要的程度；一个提示结束不能提前盖回另一个。将语音／关键动作对背景的压低与暂停、玩家音量分别接在不同的增益节点，不共用一个会互相覆盖的目标值。
