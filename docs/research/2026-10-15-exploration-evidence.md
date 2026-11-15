@@ -956,3 +956,15 @@ python3 "$migrator" --validate-target "$trial/target/.codex"
 | 发现与缺口 | 英文长程／worktree／Argus 与中文检索定位新候选；周报页面未能读取，未依摘要下结论。尚未覆盖多站点头部、中文原帖与更多独立采用，不能称广扫饱和。 |
 
 **依据**：[论文定义](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/03_problem_formulation.tex)、[结果原表](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/06_results.tex)、[指标常量](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/figures/autonomy_metrics.tex)、[局限](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/technical_report/sections/08_limitations.tex)、[CLI 实现](https://github.com/microsoft/ArgusAgent/blob/fdfeb715b0749db176c7d8b3212a717fb81087ba/argus/agent_cli/_sandbox_commands.py)、[用户 #31](https://github.com/microsoft/ArgusAgent/issues/31)、[#32](https://github.com/microsoft/ArgusAgent/issues/32)、[worktree 排队原帖及评论](https://www.reddit.com/r/ClaudeCode/comments/1xlz2bs/how_do_you_manage_worktrees_when_your_agents_end/)。核实：2026-11-15。
+
+
+### 2026-11-15：停运消息要沿原公告回读修订
+
+**本轮回流编排工具的状态，不把营销迁移页当当前停运证据。** [08 的服务状态](../08-multi-agent.md#服务状态不要照旧停运新闻搬家)区分 Conductor 已撤回与 Jules 已只读；保留原工具评级，不新增迁移默认或声称客户端实试。
+
+- **漏检与时差**：本仓 08 原 Conductor 条目仍是 10-08 的形态说明，未称停运，但漏了停运及撤回的选型背景。官方首页将继续开发的 0.94.2 列为 11-13，本轮 11-15 回核，按日期差约两天；Jules 10-29 公告至本轮约十七天，11-11 后只读至本轮约四天。不是全天监控或精确小时延迟。
+- **来源冲突**：[Orage 作者迁移文](https://orage.ai/conductor-shutting-down)的读取版本仍列 11-13／11-20，作者同时介绍自己开发的 Orage 并推荐替代工具，不是官方状态公告；[Conductor 原公告](https://www.conductor.build/announcement)已修订、[0.93.0](https://www.conductor.build/changelog/0.93.0-conductor-is-joining-meta)已划去日期、[0.94.2](https://www.conductor.build/changelog/0.94.2-conductor-is-back)明确继续开发。用后者判当前状态，不把文中的工具推荐一并接收。
+- **社区对照**：[HN 撤回原帖](https://news.ycombinator.com/item?id=50473888)读到正反反馈，既有已迁移和失信意见，也有工作树清理／标签的具体体验；[Reddit 用户求助](https://www.reddit.com/r/conductorbuild/comments/1xs0ygu/what_the_fck_is_conductor_doing/)报告找不到 Cloud 工作区，评论有人要求私下联系排查，没有公开恢复证据。它说明需要核自己的工作区，不证明全体服务已停或已恢复。
+- **覆盖与未做**：初始按 AI coding 近期工具／工作流广搜两组，发现生命周期冲突后收窄。实际深读两家官方公告、Conductor 两个版本记录及 Cloud FAQ，一篇开发者的迁移文、HN 与 Reddit 各一篇原帖和可见评论；Jules 读公开导出说明但未访问账户、凭据或私人历史。没有本轮开源配置／代码实跑、中文社区及头部工具全量覆盖，广扫未饱和；不把这个状态修订算采用效果。
+
+核实：2026-11-15。后续遇迁移选题先回读原公告的修订与产品范围，再决定是否迁移；不新增监控调度。

@@ -132,13 +132,21 @@ claude --agents '{"focused-reviewer":{"description":"核对指定文件与验收
 | 工具 | 形态 | 评级 |
 |---|---|---|
 | Claude Squad | tmux + worktree 的终端 TUI，支持 Claude Code、Codex、Gemini、Aider | 🧪 |
-| Conductor | 本地 worktree／Cloud microVM；桌面、iOS 与 API 入口按官方当前说明分别核对 | 🧪 核实际环境、权限与套餐；厂商隔离声明不代替项目验收 |
+| Conductor | 本地 worktree／Cloud microVM；[已撤回停运计划](#服务状态不要照旧停运新闻搬家)，桌面、iOS 与 API 入口仍分别核对 | 🧪 核实际环境、权限与套餐；厂商隔离声明不代替项目验收 |
 | container-use（Dagger） | 每个 Agent 一个容器加 git 分支 | 🧪（需要隔离运行环境时） |
 | Happy Coder | 在手机或桌面上并行控制多个 Claude Code | 👀 |
 | Vibe Kanban | 原公司与托管服务终止；官方称本地 workspaces 可继续用、项目转社区维护 | 👀 按维护承受能力选择本地版，暂缓依赖原托管协作；不据公告保证当前社区活跃 |
 | Cursor 3 Agents Window、Codex 指挥中心 | 厂商内置 | 🧪 |
 
 **依据**：[一手] [Claude Squad](https://github.com/smtg-ai/claude-squad)、[Conductor](https://www.conductor.build/)、[Cloud FAQ](https://www.conductor.build/docs/cloud/faq)、[container-use](https://github.com/dagger/container-use)、[Happy Coder](https://github.com/slopus/happy)、[Vibe Kanban](https://github.com/BloopAI/vibe-kanban)、[停运范围](https://www.vibekanban.com/blog/shutdown)；核实 2026-10-08。
+
+### 服务状态：不要照旧停运新闻搬家
+
+**Conductor 已撤回停运计划；Jules 则按官方时间表已进入只读期，两者不要混用迁移时间表。** Conductor 0.93.0 更新记录中 Cloud 的 11 月 13 日只读、11 月 20 日关闭安排已划去，11 月 13 日的 0.94.2 明确继续开发。既有用户不必因旧日期强制换工具；仍需核自己工作区的访问与任务结果。HN 原帖既有对撤回决定和信任的质疑，也有迁往 T3 Code 后仍认可 Conductor 工作树清理与标签体验的反馈，公告不等于可靠性实测。
+
+Google 10 月 29 日公告则明确：Jules 在 11 月 11 日后只读，12 月 31 日结束服务，不再作为新异步任务入口。GitHub 上已有代码、分支和 PR 留在原处；仅保存在 Jules 的配置与历史按官方导出说明另存。导出包含环境变量值，不能直接提交公开仓库。本仓只核公开状态与导出说明，未登录或执行导出。
+
+**依据**：[Conductor 已修订公告](https://www.conductor.build/announcement)、[0.93.0 的修订](https://www.conductor.build/changelog/0.93.0-conductor-is-joining-meta)、[0.94.2](https://www.conductor.build/changelog/0.94.2-conductor-is-back)及[发布日期](https://www.conductor.build/)、[HN 原帖与正反评论](https://news.ycombinator.com/item?id=50473888)、[Jules 官方结束服务与导出说明](https://jules.google/docs/changelog/2026-10-29)；核实 2026-11-15。其他工具的上方核实日不变。
 
 ### 工作树管理：何时补 Worktrunk
 
