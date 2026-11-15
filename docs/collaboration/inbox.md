@@ -4,6 +4,20 @@
 
 ## 待处理
 
+### 2026-11-15：Code Mode 先试批量读任务，不替换无人值守入口
+
+👀 **Claude Code Code Mode 可作为批量搜索、过滤和独立工具调用的候选，未试用，不改默认。** 2.1.323 起提供实验入口；仅支持原生交互终端及官方支持的账号、模型，不支持 `-p`、Agent SDK、cloud 或 gateway。已有环境满足条件、接受首次确认时，可在 macOS／Linux／WSL 中用一次性启动，不写项目配置：
+
+```sh
+CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 claude
+```
+
+先看启动提示确认真正开启，不能只看环境变量。Code Mode 会话只能在终端保持该模式恢复；不能转 Desktop、Remote Control 或后台会话。后台 **代码** 是另一概念，仅特定启动条件支持，不能据此承诺离开后持续执行。不为试用删除隐私、认证或管理设置。
+
+**把省工具往返与真实收益分开。** 下一项用本仓真实文档链接检查，同一固定树分别用普通模式与 Code Mode，核最终清单的漏检、误报、返工与总投入，不只比较工具次数。逐工具 `deny`／`ask` 和 `PreToolUse` 仍生效，auto classifier 审整段代码而非每次工具调用；不把它当更强沙箱。
+
+依据：[官方入口与限制](https://code.claude.com/docs/en/code-mode)、[2.1.323 发布](https://github.com/anthropics/claude-code/releases/tag/v2.1.323)、[社区原帖与评论](https://www.reddit.com/r/ClaudeCode/comments/1xvw576/claude_code_21323_experimental_code_mode_claude/)。社区有读多任务受益、短任务增加成本和 JS 错误中断写批次的自报，缺可复跑对照；其中“用了一周”的时间跨度也不能由新发布日证实，不作效果证据。核实：2026-11-15。只完成该候选的一手文档与社区定向核对，未达领域饱和。
+
 ### 2026-11-15：前端领域知识按需取，不让扫描器替代浏览器验收
 
 🧪 **已有前端任务可试 Modern Web Guidance 补 Web 平台知识，框架行为仍用对应版本配方。** GoogleChrome 的 1.0.0 将专家指南与浏览器支持数据按 `search → retrieve` 送入上下文，不必整包读入或先安装 Skill。先写清目标浏览器、核心交互与保留行为；查询用单个 UI 能力，不混入项目名。以下命令会从 npm 取公开包，需 Node.js 22+，关闭工具默认遥测：
