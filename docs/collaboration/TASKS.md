@@ -30,7 +30,8 @@
 
 - 职责按 [AGENTS](../../AGENTS.md) 与[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)；本机任务走 [local-jobs](local-jobs/README.md)，两项清理仍按原收窄范围接续。
 - 10-26 历史已获准改写：开工 `git fetch origin +refs/heads/*:refs/remotes/origin/* --prune`，按远端重建分支，不推旧历史。
-- **11-13 接续**：Star已换默认并上线v11，不等FPS清理。FPS已交回，01:10:52 UTC核三个unit共3522个注册身份存活0，unit-3 exit0／子树settled，释放槽；历史probe／review／wrapper缺项记欠项，不否决已有证据。MOBA 原 default／quiet 完整 smoke 均已交回，旧卡不补跑；仓库 quiet 已换默认，线上待 v23 的单次发布确认。
+- [11-13 已完成的释放槽与整局回执](https://github.com/dbvv1/a1dbv/blob/42e2cc4a36e5d3aa3d94e3cefd991f506f081751/docs/collaboration/TASKS.md#分工)。MOBA v23 仅等单次发布确认。
+- **B 接收端（11-15 08:00 UTC）**：`ddac1c29` 三张模块卡 ready 超 40 分钟未见认领或结果，不计运行、不重派。云端继续。
 
 ## 项目板
 
