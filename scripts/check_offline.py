@@ -57,11 +57,11 @@ def preflight():
 
 
 def run_process(command, *, cwd, env, timeout):
-  # A timed-out test may own children. Kill the entire phase process group.
+  # A timed-out or interrupted test may own children in its process group.
   with subprocess.Popen(command, cwd=cwd, env=env, start_new_session=True) as process:
     try:
       return process.wait(timeout=timeout)
-    except subprocess.TimeoutExpired:
+    except (subprocess.TimeoutExpired, KeyboardInterrupt):
       try:
         os.killpg(process.pid, signal.SIGKILL)
       except ProcessLookupError:

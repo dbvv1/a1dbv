@@ -157,6 +157,12 @@ class OfflineChecksTests(unittest.TestCase):
                            cwd=directory, env=dict(os.environ), timeout=2)
 
   def test_real_timeout_closes_same_group_child_descriptor(self):
+    self.assert_real_group_descriptor_closes(interrupt=False)
+
+  def test_real_interrupt_closes_same_group_child_descriptor(self):
+    self.assert_real_group_descriptor_closes(interrupt=True)
+
+  def assert_real_group_descriptor_closes(self, *, interrupt):
     # EOF proves that no process retains the child's write descriptor. Merely
     # checking the leader exit code misses surviving children. EOF does not
     # establish reaping: a killed child may still be a zombie.
@@ -186,9 +192,42 @@ subprocess.run([sys.executable, str(root / 'child.py'), str(root)], check=True)
       descriptor = os.open(fifo, os.O_RDONLY | os.O_NONBLOCK)
       try:
         started = time.monotonic()
-        with self.assertRaises(subprocess.TimeoutExpired):
-          runner.run_process((runner.sys.executable, str(parent), str(root)),
-                             cwd=root, env=dict(os.environ), timeout=2)
+        if interrupt:
+          wrapper = root / 'wrapper.py'
+          wrapper.write_text("""import importlib.util, os, sys
+from pathlib import Path
+spec = importlib.util.spec_from_file_location('runner', sys.argv[1])
+runner = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(runner)
+root = Path(sys.argv[2])
+try:
+  runner.run_process((sys.executable, str(root / 'parent.py'), str(root)),
+                     cwd=root, env=dict(os.environ), timeout=20)
+except KeyboardInterrupt:
+  (root / 'interrupted').touch()
+  raise SystemExit(130)
+""")
+          with subprocess.Popen(
+              (runner.sys.executable, str(wrapper), runner.__file__, str(root)),
+              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) as process:
+            try:
+              deadline = time.monotonic() + 5
+              while not (root / 'ready').exists():
+                if process.poll() is not None or time.monotonic() >= deadline:
+                  self.fail('child did not become ready before interrupt')
+                time.sleep(0.01)
+              process.send_signal(signal.SIGINT)
+              self.assertEqual(process.wait(timeout=2), 130)
+              self.assertTrue((root / 'interrupted').exists())
+            finally:
+              if process.poll() is None:
+                process.kill()
+                process.wait()
+
+        else:
+          with self.assertRaises(subprocess.TimeoutExpired):
+            runner.run_process((runner.sys.executable, str(parent), str(root)),
+                               cwd=root, env=dict(os.environ), timeout=2)
         # A startup failure must not be mistaken for successful cleanup.
         self.assertEqual((root / 'ready').read_text(), (root / 'group').read_text())
         self.assertEqual(os.read(descriptor, 4096), b'child-ready\n')
@@ -201,7 +240,7 @@ subprocess.run([sys.executable, str(root / 'child.py'), str(root)], check=True)
             break
           except BlockingIOError:
             if time.monotonic() >= deadline:
-              self.fail('child still owns output descriptor after phase timeout')
+              self.fail('child still owns output descriptor after phase termination')
             time.sleep(0.01)
       finally:
         # Also bounds the child if a future regression kills only the leader.
