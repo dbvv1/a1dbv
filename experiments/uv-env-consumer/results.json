@@ -1,0 +1,204 @@
+{
+  "uv": "uv 0.13.6 (x86_64-unknown-linux-gnu)",
+  "python_dotenv": "1.2.2",
+  "cases": [
+    {
+      "case": "plain",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "plain",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "space",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello world",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "space",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": null,
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": true
+    },
+    {
+      "case": "quoted-space",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello world",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "quoted-space",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello world",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "dollar",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "cost$MISSING",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "dollar",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "cost",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "single-dollar",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "cost$MISSING",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "single-dollar",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "cost$MISSING",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "braced",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello_world",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "braced",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello_world",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "underscore",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "$A_PLAIN",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "underscore",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "short_PLAIN",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "braced-underscore",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "long",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "braced-underscore",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "long",
+        "BEFORE": null,
+        "AFTER": null
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "partial",
+      "implementation": "dotenv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": "hello world",
+        "BEFORE": "yes",
+        "AFTER": "yes"
+      },
+      "parse_warning": false
+    },
+    {
+      "case": "partial",
+      "implementation": "uv",
+      "exit": 0,
+      "values": {
+        "SAMPLE": null,
+        "BEFORE": "yes",
+        "AFTER": null
+      },
+      "parse_warning": true
+    }
+  ]
+}
