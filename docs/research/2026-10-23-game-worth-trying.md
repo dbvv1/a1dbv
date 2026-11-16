@@ -110,6 +110,16 @@
 
 依据（核实 2026-10-27 UTC）：[作者制作帖与玩家回帖](https://www.reddit.com/r/aigamedev/comments/1x79hnz/i_vibe_coded_a_free_multiplayer_fps_for_the/)、[固定 README](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/README.md)、[LICENSE](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/LICENSE)／[NOTICE](https://github.com/BenDBSS/Riposte-Frontline-Source/blob/31ca050d8ce59f4885c01a3237f68cdf186c9b60/NOTICE.md)。
 
+<a id="fog-city-facades"></a>
+
+### FOG CITY：重复街屋先变立面，不动街道轮廓
+
+**👀 已有一排可玩的街屋，只想减少立面重复时，先用固定建筑种子和窗格坐标修改原墙面材质。** FOG CITY 将墙面按风格分批，每个顶点带立面格坐标、格宽高和建筑种子；窗框、亮灯和玻璃后的室内色差由材质计算，不需要为每扇窗放置真实室内模型。可在 Star 海岸街屋的已有墙面上独立实现：固定同一排墙的轮廓、碰撞、镜头与道路，只让窗区变化；同种子重开应一致，再用同机位图和同路线运动片段核窗格是否重复、闪烁或干扰路缘，另测实机帧耗。
+
+**反例：不要直接套它的照片立面分支。** 源码会按照片比例调整部分楼体高度，不是纯材质替换；若当前任务只改表现层，这条分支不能沿用。源码公开不代表代码或资产可再分发，本条只借机制，不复制实现、图片或纹理。
+
+来源与范围（2026-11-16 UTC）：[项目 README 与静态启动入口](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/README.md#fog-city)、[窗格和种子进墙面批次](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L204-L242)、[室内着色](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L155-L194)、[照片分支与改高](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L504-L540)。仅核固定源码；原提示词、模型分工、成本和授权未核实，未试玩、未验画面、未在 Star 采用。
+
 ### Formula Minus One：混合供给仍需设计与清理
 
 **待试线索是先定视觉主题、再组合资源；图像转 3D 尚不能当作免清理生产线。** 六个月复盘明确写出铅笔草图→图像生成→Tripo→Blender 清理瑕疵，音乐先在 MIDI 键盘起稿再生成，声音还用现成资源。作者重写半低模／双色风格指南，重做角色、菜单与关卡。它支持混合供给和持续设计；清理是否全由 Agent 完成未交代，尚不能作为“无需人工美术修补”的完整样板。[社区：作者自述]
