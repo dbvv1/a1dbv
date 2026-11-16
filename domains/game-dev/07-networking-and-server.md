@@ -352,7 +352,9 @@ PYTHON
 
 依据：[固定源类型](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/types.ts)、[消费与经济实现](https://github.com/dbvv1/MOBA-Like/blob/7e1986f1ca2f05f07124d34fa9fdcbd3f33bfe64/src/sim/simulation.ts)与[读者原始报告](https://github.com/dbvv1/a1dbv/blob/a5501970d0ad492e42be64f3e70b8521a77178e4/docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md)，2026-11-06 接收；[负责人接收勘误](../../docs/collaboration/local-jobs/artifacts/B-CORE-STABLE-SEATS-ADOPTION-20261106/result.md#负责人接收勘误)保留读者未做项。2026-11-08 新读者用 Node 24.22.1 在独立固定源按页复跑通过，除 source 元数据外与原输出逐字段一致，原证据未改。9,081 tick 仍为 running；网络／浏览器／跨设备／完整终局未验，CPU 一致性不是品质提升。
 
-此前 `npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。这份历史完整局不是上述六席序列的终局证明。冻结默认入口 `default-src` 尚未采用；本次接的是旁置版本的本地输入合同。
+此前 `npm run sim` 的完整局与回放哈希一致，原 `formatVersion: 1/2` 存档可恢复并续演；新回放标记 `stable-seats-v1`，旧无标记回放仍按原输入顺序重演（2026-10-29 [源码／离线实跑]）。这份历史完整局不是上述六席序列的终局证明。
+
+**要复用本地席位封套，从现在的根入口取例，不要从旧版搬。** 产品 main 与线上 v22 的记录源都从 `index.html` 进入 `src/client.ts`，由 `LocalMatch.step` 合并玩家与机器人命令、包成 `commandFrame` 再交给模拟；`legacy-v10.html` 的冻结 `default-src` 仍传裸数组。依据：[产品 main 输入桥](https://github.com/dbvv1/MOBA-Like/blob/79bdb57439d2ca3e49c6560271d4a598999f5ac5/src/save/match.ts#L91-L102)、[v22 记录源入口](https://github.com/dbvv1/MOBA-Like/blob/002ae06b67ec1196d773738e039bf0660fc25cf6/index.html)、[v22 记录源输入桥](https://github.com/dbvv1/MOBA-Like/blob/002ae06b67ec1196d773738e039bf0660fc25cf6/src/save/match.ts#L91-L102)；2026-11-16 核源码，未核线上实际包或运行浏览器、联机。
 
 ## 5. 给 AI 的实施材料与验收
 
