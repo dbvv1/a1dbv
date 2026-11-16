@@ -120,6 +120,14 @@
 
 来源与范围（2026-11-16 UTC）：[项目 README 与静态启动入口](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/README.md#fog-city)、[窗格和种子进墙面批次](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L204-L242)、[室内着色](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L155-L194)、[照片分支与改高](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L504-L540)。仅核固定源码；原提示词、模型分工、成本和授权未核实，未试玩、未验画面、未在 Star 采用。
 
+### SUBLEVEL 07：保存有效提示，不把调试通关当玩家通关
+
+**👀 想复跑“一句话做 FPS”，保存实际传给模型的完整输入。** 这次不是 Saltline 本身。作者把一句玩法需求连同单页／素材约束作为用户提示，再用 `--append-system-prompt` 加入截图自检、渲染器识别和离线音频检查。复跑时分别固定这两份文本与运行参数，特别是第 5 个参数 `prompts/builder_system_04.md`，省略会读取通用系统提示；作者报告实验只跑一次，耗时 40.8 分钟、73 轮、缓存命中 90.9%，15.96 美元是订阅运行的 API 等价估算，不是额外扣款，也不能作一般成本。
+
+**FPS 验收可借的是分开记录两类结果。** 公开的录屏脚本每帧自动瞄准、把血量至少补到 60，再手动推进时间。作者另称脚本打通三波；没有该测试的完整输入轨迹，不能断定它与录屏用了同一脚本。调试直达用来定位或拍固定状态，不能证明玩家入口下能正常开局、操作、打完和重开。做性能对比时也另走正常循环：这份源码会按帧间隔降低内部渲染分辨率，最低画质跳过地面平面反射的额外绘制；同尺寸导出图不能证明两次绘制预算相同。
+
+依据（2026-11-16 UTC，源码与作者自报，未实玩或在 FPS-Like 采用）：[原需求](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/prompts/04-fps.md)、[追加系统提示](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/prompts/builder_system_04.md)、[运行脚本](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/scripts/run.sh#L5-L11)、[作者成本与通关说明](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/README.md#L79-L125)、[录屏脚本的自动瞄准、保血与步进](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/scripts/rec/auto04.js#L11-L23)、[调试入口与动态缩放](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/demos/04-fps/index.html#L1211-L1239)、[画质开关与渲染尺寸](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/demos/04-fps/index.html#L729-L751)。
+
 ### Formula Minus One：混合供给仍需设计与清理
 
 **待试线索是先定视觉主题、再组合资源；图像转 3D 尚不能当作免清理生产线。** 六个月复盘明确写出铅笔草图→图像生成→Tripo→Blender 清理瑕疵，音乐先在 MIDI 键盘起稿再生成，声音还用现成资源。作者重写半低模／双色风格指南，重做角色、菜单与关卡。它支持混合供给和持续设计；清理是否全由 Agent 完成未交代，尚不能作为“无需人工美术修补”的完整样板。[社区：作者自述]
