@@ -118,7 +118,20 @@
 
 **反例：不要直接套它的照片立面分支。** 源码会按照片比例调整部分楼体高度，不是纯材质替换；若当前任务只改表现层，这条分支不能沿用。源码公开不代表代码或资产可再分发，本条只借机制，不复制实现、图片或纹理。
 
-来源与范围（2026-11-16 UTC）：[项目 README 与静态启动入口](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/README.md#fog-city)、[窗格和种子进墙面批次](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L204-L242)、[室内着色](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L155-L194)、[照片分支与改高](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L504-L540)。仅核固定源码；原提示词、模型分工、成本和授权未核实，未试玩、未验画面、未在 Star 采用。
+**先用简单窗面作对照，不把远距过滤当成省算力证明。** 远景街屋先用过滤窗区与纯色窗；只有近距观察能看出收益且实机成本可接受，才加视差室内，几何与碰撞保持原样。固定源码用 `fwidth` 过滤窗区、在远处混向均色，但室内求交仍只受 `win > 0.002` 控制，并不因远距 `lod` 而跳过。这是待验证的选型建议，不是已采用的优化。
+
+**可选本地观察入口：** 在独立研究副本固定版本后启动静态服务，不在已有游戏工作树内运行：
+
+```sh
+git clone https://github.com/Rikinshah787/Game-Fable-5.2.git fog-city-source
+cd fog-city-source
+git checkout --detach c8d7f439f119c819de62f72b84c52f995b24037b
+python3 -m http.server 8765 --bind 127.0.0.1
+```
+
+再打开 `http://127.0.0.1:8765/`；不能直接以 `file://` 加载模块。本轮未执行上述启动或浏览器验证，入口依据项目 README。
+
+来源与范围（2026-11-16 UTC）：[项目 README 与静态启动入口](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/README.md#fog-city)、[窗格和种子进墙面批次](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L204-L242)、[窗区过滤与室内着色](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L103-L203)、[照片分支与改高](https://github.com/Rikinshah787/Game-Fable-5.2/blob/c8d7f439f119c819de62f72b84c52f995b24037b/src/city.js#L504-L540)。仅核固定源码；原提示词、模型分工、成本和授权未核实，未试玩、未验画面、未在 Star 采用。
 
 ### SUBLEVEL 07：保存有效提示，不把调试通关当玩家通关
 
