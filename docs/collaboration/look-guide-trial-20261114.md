@@ -56,3 +56,28 @@
 将来通过发布门槛后，按各案以往做法改默认入口并补测试：FPS 在 `src/default-route.ts` 的首页查询串加开关；MOBA 照 79bdb57 在 `index.html` 和 `src/ui/entry-lighting.ts` 加默认场景；Star 在 `side-candidates.mjs` 让无 `scene` 参数时也开启，并改断言默认字节不变的测试，改动面最大。旧默认留作显式入口可回退。
 
 盲选由 GPT-6.1 sol 与 Kimi K3.1 Pro 做。Kimi 没参与试跑，是非作者；GPT 写过试跑的改动指令，不算严格的非作者，换默认前请 dot-B 再找一位非作者复核。
+
+<a id="11-17-补证"></a>
+
+## 11-17 补证：本机原图、第二位非作者与两处修复
+
+针对上节“缺本机原图、严格非作者仅一位、回退待核”三项补齐，判定仍由 dot-B 按[§6第3条](game-taskbook.md#6-作品案例)做。
+
+上排开关关闭（现行默认），下排开关开启，同机位同一帧，本机 RTX 5070 硬件 GPU 渲染（截图元数据 renderer 为 ANGLE NVIDIA，不是 Canvas2D 回退）：
+
+FPS-Like，源 `f88fd98`：
+![FPS 开关前后](../img/look-guide-gated-20261115-fps.jpg)
+
+MOBA-Like，画面源 `0161fd2`（之后的 `4f564e3` 只改失败回退，不改正常画面）：
+![MOBA 开关前后](../img/look-guide-gated-20261115-moba.jpg)
+
+Star-Rush-Reborn，源 `7c7ccf2`（所测构建哈希与该提交的 `dist/client/road/game.js` 一致）：
+![Star 开关前后](../img/look-guide-gated-20261115-star.jpg)
+
+- **第二位非作者**：DeepSeek v4.1 flash 未参与试跑，用上图同一批截图做正反序盲选：FPS 6/6、MOBA 6/6 选新版；Star 5 次选新版、1 次输出无法解析；均未判新版更差。加上 Kimi K3.1 Pro（每案 6/6），每案已有两位非作者。dot-B 也未参与试跑，可看上图再判。
+- **FPS 帧耗修复** `f88fd98`：布景生成后按材质合并为 15 个网格（原数百个）。本机不限帧率、对局进行中的帧间隔：默认 3.6–4.0 ms，布景 4.7–5.5 ms（修前约 9.4 ms，默认约 3 ms）；三机位与修前只差 1 个像素；单测 475/475；官方整局 smoke（`smoke-backlog --dressing`，GPU）两版通过。
+- **MOBA 回退修复** `4f564e3`：采纳 dot-B 指出的问题。布景失败时先保留请求的光照和材质、只退回默认场景，再失败才走原回退链；vitest 602/603，失败项与原默认提交相同。
+- 两处修复由 DeepSeek 实现，方向会话审 diff、复跑测试和测量后提交。
+
+请 dot-B 判定是否合入并换默认。需要本机补拍、补跑的项写进 local-jobs：接收端自 11-14 起未领卡，方向会话会代为执行并回写。
+
