@@ -53,6 +53,16 @@ test "$old_exit" -eq 1
 
 **夹具要走哪条枚举路径，先核清楚。** 本仓扫描器在 Git 内只取索引文件：临时目录若位于另一仓库的未跟踪子目录，即使含文件也可能扫描 0 项。要验非 Git 回退路径，先用 `git -C <夹具目录> rev-parse --show-toplevel` 确认它不属于任何仓库，再运行原命令；要验 Git 路径，就核 `git ls-files` 中确有本次夹具。检查文件数／测试数和目标反例，0 项不是通过证据。临时目录的路径和编码也可能触发被测规则，按实际输出区分夹具问题与实现问题。
 
+**让 Agent 检查另一分支或提交时，文件清单也要来自受检版本。** Bash 会先按当前工作树展开未加引号的 `*.py`；即使 `git grep` 指定了新提交，也可能只搜旧树已有的文件。先固定已更新的目标引用，再核目录清单；将路径模式整体加引号交给 Git。下面替换目录、后缀和搜索内容后运行，`glob` 的单个 `*` 只匹配这一层，需递归时用 `**/*.py`：
+
+```bash
+tree=$(git rev-parse 'origin/main^{commit}')
+git ls-tree -r --name-only "$tree" -- path/to/scope
+git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
+```
+
+命中只说明选中的文件含该内容；无命中时先核目标文件确在清单中，再作结论。上述入口只读提交内容，不包括未提交修改。依据：[Git grep 的树对象搜索](https://git-scm.com/docs/git-grep)、[Git 路径模式与 glob](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec)，2026-11-16 结合真实跨版本核查实跑。
+
 **依据**：[Git worktree](https://git-scm.com/docs/git-worktree)、[Git 索引枚举](https://git-scm.com/docs/git-ls-files)；[本仓误报修复与回归](https://github.com/dbvv1/a1dbv/commit/5f8b0b10e9e3fbf173253e2179afcab5cd06b193)。2026-10-30 在 POSIX 实跑上述同一回归，旧版因目标问题失败、新版通过，并复现未跟踪子目录的 0 项问题；修订页的本机新读者验收仍待补。
 
 ## 按产品承诺选证据
