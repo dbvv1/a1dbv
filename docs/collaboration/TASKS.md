@@ -50,10 +50,10 @@
 
 ### A：试验收口
 
+- 最高优先：[两题 strong 卡](../../experiments/strong-short-task-20261117/README.md)，方向会话待启动。
+
 [11-12 已完成段](archive/completed-through-2026-11-17.txt)；旧试验未收口不新开。
 
-- **adopted**：Git 查验用于本仓接收：按 [9aa62a15](https://github.com/dbvv1/a1dbv/commit/9aa62a1514b519c3dea895941ecfbf693855b92a) 枚举固定树逐张读卡、核结果分支，不用旧工作树通配符。
-- **rejected**：sqlite 本轮缺依赖、无 CLI 验收；Codex 启动因只读环境失败、无模型结果。保留产物不重试，不否定方法／模型；§6 发布保持用户中止。
 - **未收口**：Decimal、Chat-stream、Ruler 原卡交方向会话核原调用后执行提交，不重派；Hermes／Skills 保持原隔离。四条已发布路线仅核到隔离读者验证，实际采用未知。
 
 ## 待人工验收

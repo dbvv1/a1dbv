@@ -1,0 +1,24 @@
+修复 Mermaid graph TD 节点内 <br> 导入后显示字面标签。在 excalidraw/excalidraw c0a0ca348faa273c768de839a22df113f997c095 的应用 Mermaid 导入入口，执行 将给定 Mermaid 输入粘贴到实际应用导入 后，
+预期 节点按标签分行，连线和文本可继续编辑、导出再导入，实际 原 issue 报告字面 <br> 未换行；先核此固定版本；保留 普通单行文本与特殊字符、图连线、文本编辑和导出导入；不全局清除任意 HTML。
+已有入口：原 issue 的 Mermaid 输入与项目现有相关测试。
+先读项目指令，核当前改动与已返回结果，再从原入口复现；
+沿实际调用找出造成这次差异的位置，用证据解释根因，再改相关实现。
+复用相关测试；缺少覆盖时，在原套件补能因这次问题失败的回归，再改实现。
+修后重跑同一触发路径、相关测试和项目必跑检查，核保留行为仍成立。
+交回根因与改动、修前／修后实际结果，以及未完成的验证和具体原因。
+
+共同输入：
+graph TD
+    A["User Registration<br>Process"] --> B["Validate Input<br>Data"]
+    B --> C{"Is Data<br>Valid?"}
+    C -->|Yes| D["Create User<br>Account"]
+    C -->|No| E["Display Error<br>Message"]
+    D --> F["Send Welcome<br>Email"]
+    E --> A
+    F --> G["Registration<br>Complete"]
+    style A fill:#e1f5fe
+    style G fill:#c8e6c9
+    style E fill:#ffcdd2
+
+运行环境由本次目标仓库的 RUN-ENV.txt 提供启动命令、依赖版本和本机结果查看工具；文件只记录相同环境事实，不提供解法。
+只处理本题的源文件与相关测试，保留项目指令；不向上游发布、不部署、不读私人文件或改账号凭据。可按需读项目运行文档和必要 API 文档，不读取解法/历史补丁。

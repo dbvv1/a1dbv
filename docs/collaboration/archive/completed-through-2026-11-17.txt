@@ -5,3 +5,7 @@
 15卡已回写10 accepted、5 cancelled，见[日档](archive/completed-through-2026-11-12.txt)；无单写窗口等待。[盘符](local-jobs/A-LONG-ROUTE-DRIVE-READER-20261112.md)与[Windows测试接续](local-jobs/A-LONG-ROUTE-BASH-READER-20261113.md)已采用，新读者实用当前页；地图🟡，离开后长期稳定性待验。
 
 11-12 三卡原进程已核不存在、隔离已解除，均取消：理由见 [GH-AW](local-jobs/A-GH-AW-APIDIFF-FACTS-20261103.md)、[MULTIAGENT](local-jobs/A-MULTIAGENT-LONG-WIDE-20261029.md)、[WORKTREE](local-jobs/A-WORKTREE-ISOLATION-FACTS-20261102.md)。不重派、不占选题；不外推其他卡。
+
+11-17 A 已收口（保留原决定）：
+- **adopted**：Git 查验用于本仓接收：按 [9aa62a15](https://github.com/dbvv1/a1dbv/commit/9aa62a1514b519c3dea895941ecfbf693855b92a) 枚举固定树逐张读卡、核结果分支，不用旧工作树通配符。
+- **rejected**：sqlite 本轮缺依赖、无 CLI 验收；Codex 启动因只读环境失败、无模型结果。保留产物不重试，不否定方法／模型；§6 发布保持用户中止。

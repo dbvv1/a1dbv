@@ -1,0 +1,20 @@
+修复 auto_envvar_prefix 与 show_envvar=True 配合时错误提示遗漏自动环境变量名。在 pallets/click 8abb77a8432e03ed14a95f972b44f905279415a7 的真实 CLI，执行 按给定程序先 --help，再无参数，再 --port oops 后，
+预期 help、missing 与 invalid 错误均显示正确 MYAPP_PORT，错误退出码仍为 2，实际 help 有变量名，missing/invalid 没有；保留 解析优先级、显式 envvar、show_envvar=False、allow_from_autoenv=False、嵌套命令与正常输入。
+已有入口：原 issue 最小程序与当前项目 tests。
+先读项目指令，核当前改动与已返回结果，再从原入口复现；
+沿实际调用找出造成这次差异的位置，用证据解释根因，再改相关实现。
+复用相关测试；缺少覆盖时，在原套件补能因这次问题失败的回归，再改实现。
+修后重跑同一触发路径、相关测试和项目必跑检查，核保留行为仍成立。
+交回根因与改动、修前／修后实际结果，以及未完成的验证和具体原因。
+
+共同输入：
+import click
+@click.command(context_settings={"auto_envvar_prefix": "MYAPP"})
+@click.option("--port", type=int, required=True, show_envvar=True)
+def cli(port):
+    click.echo(f"port={port}")
+if __name__ == "__main__":
+    cli()
+
+运行环境由本次目标仓库的 RUN-ENV.txt 提供启动命令、依赖版本和本机结果查看工具；文件只记录相同环境事实，不提供解法。
+只处理本题的源文件与相关测试，保留项目指令；不向上游发布、不部署、不读私人文件或改账号凭据。可按需读项目运行文档和必要 API 文档，不读取解法/历史补丁。
