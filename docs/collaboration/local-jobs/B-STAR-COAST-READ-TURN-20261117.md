@@ -16,6 +16,7 @@ result_branch: relay/b-star-coast-read-turn-20261117
 - **先验正在服务的构建**：分别组装两份产物后，用 `node tests/smoke-server.mjs` 服务各自的已构建目录；`npm run smoke:serve` 会先重构建，普通 shell 会把 navy 覆盖回默认，标牌构建验收 `node tests/signboard-source-choice.mjs` 也会在清理时重建默认。两份截图回执要记从 `/road/game.js` 实际取回的 SHA-256，并确认各自匹配其构建、两份不同；不匹配就不出 A/B 结论。
 - `shot=coast-chase&seed=73121&t=28&input=road-tour` 已接近弯中，只用于确认目标牌。旧记录可从车辆约 387 米、目标原三连牌约 405 米开始找，这不是当前 v12 的可见性证据。沿同一条输入、同一追尾机位向前取一帧，要求牌已进入视野且车还没进弯，两组固定同一时刻；先看原图再决定取哪帧。若该段实际未出现目标牌，写明，不用弯中画面宣称改善预告。旧[整景试验图](../look-guide-trial-20261114.md)是选题线索，不是此次前图。
 - 方向会话核原拍摄槽空闲后，交本机强执行者一次连续真 GPU 回合，自己看图。仅 headless，禁止可见窗口、模拟键鼠、操作桌面；使用现有输入录制或游戏入口，不改相机、碰撞、道路、操控或新增资产。原会话状态未知不另起。普通接收端不执行本卡。
+- **真 GPU 入口**：保留同一个 `?shot=` 页面，用方向会话已有的本机 headless RTX 拍摄方式读取该页导出的 PNG、相机／时刻／车况和 renderer。固定源码自带的 `npm run capture` 会强制并校验 SwiftShader；`--hardware-evidence` 仅引用已有回执，不会切换 GPU。若未确认真实硬件 renderer，不把截图归入真 GPU 对照。
 
 ## 交付
 交本机默认 build 和 navy build 的同机位原始前后图（1280×720、DPR 1、同一画质）；记录入口、时刻、实际 renderer、Chromium、构建 bundle SHA、实际退出，附 320 像素宽对照。交一句判断：第一眼何时能读出方向，是否被其他标志抢读。值得采用才补拟发布入口的真 GPU 整局和帧耗，交一位非作者看图；实现若无新技法，写清为何现成配色有效或无效。结果交方向会话，不换默认、不部署。
