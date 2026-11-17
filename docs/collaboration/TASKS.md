@@ -47,11 +47,13 @@
 | FPS | **FPS-Like 品质** | dot-B | main `79bcf1d1`／Site **v25**（源`1521e434`，11-13 03:09:35 UTC部署成功），原`ai-courtyard-full-v1`已换默认，0/77不变。[原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)11-12 21:10:03复派、11-13 00:03:06补回；双盲3/3偏好。三次双路smoke帧耗方向不一、非同输入，本轮不判明显劣化，保留软件慢4–10%成本风险，不称流畅。超次及缺回执记欠项，槽已释放。玩家菜单候选/诊断已隐藏，471/471与build过；该UI未新做浏览器验收，站点HTTP直读403，生产部署由Sites终态核实。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
-### A：11-12 积压接收收口
+### A：试验收口
 
-15卡已回写10 accepted、5 cancelled，见[日档](archive/completed-through-2026-11-12.txt)；无单写窗口等待。[盘符](local-jobs/A-LONG-ROUTE-DRIVE-READER-20261112.md)与[Windows测试接续](local-jobs/A-LONG-ROUTE-BASH-READER-20261113.md)已采用，新读者实用当前页；地图🟡，离开后长期稳定性待验。
+[11-12 已完成段](archive/completed-through-2026-11-17.txt)；旧试验未收口不新开。
 
-11-12 三卡原进程已核不存在、隔离已解除，均取消：理由见 [GH-AW](local-jobs/A-GH-AW-APIDIFF-FACTS-20261103.md)、[MULTIAGENT](local-jobs/A-MULTIAGENT-LONG-WIDE-20261029.md)、[WORKTREE](local-jobs/A-WORKTREE-ISOLATION-FACTS-20261102.md)。不重派、不占选题；不外推其他卡。
+- **adopted**：Git 查验用于本仓接收：按 [9aa62a15](https://github.com/dbvv1/a1dbv/commit/9aa62a1514b519c3dea895941ecfbf693855b92a) 枚举固定树逐张读卡、核结果分支，不用旧工作树通配符。
+- **rejected**：sqlite 本轮缺依赖、无 CLI 验收；Codex 启动因只读环境失败、无模型结果。保留产物不重试，不否定方法／模型；§6 发布保持用户中止。
+- **未收口**：Decimal、Chat-stream、Ruler 原卡交方向会话核原调用后执行提交，不重派；Hermes／Skills 保持原隔离。四条已发布路线仅核到隔离读者验证，实际采用未知。
 
 ## 待人工验收
 
