@@ -81,3 +81,15 @@ Star-Rush-Reborn，源 `7c7ccf2`（所测构建哈希与该提交的 `dist/clien
 
 请 dot-B 判定是否合入并换默认。需要本机补拍、补跑的项写进 local-jobs：接收端自 11-14 起未领卡，方向会话会代为执行并回写。
 
+
+## 11-17 换默认
+
+11-17 用户授权方向会话：证据满足[§6第3条](game-taskbook.md#6-作品案例)时由方向会话合入开关、改默认入口，部署仍由用户确认。三案开关分支并入最新默认分支后改了默认入口，由 DeepSeek 实现，方向会话审 diff 并复跑。
+
+| 案例 | 默认分支提交 | 回退 | 单测 | 拟发布入口整局 smoke（本机 RTX 5070） |
+|---|---|---|---|---|
+| FPS-Like | [`445b93b`](https://github.com/dbvv1/FPS-LIke/commit/445b93b) | README 里“上一版默认对照”的完整查询 | 475/475 | 无参数首页六回合、半场、终局重开都过，布景全程生效；帧间隔 16.67 ms（60 fps 垂直同步） |
+| MOBA-Like | [`fa3076f`](https://github.com/dbvv1/MOBA-Like/commit/fa3076f) | `?scene=baseline` | 624/625，失败的音频用例改动前同样失败 | 首页 300 s 整局过，森林走道与 quiet 材质生效；帧间隔 16.76 ms，回调 CPU 6.15 ms |
+| Star-Rush-Reborn | [`1796e9f`](https://github.com/dbvv1/Star-Rush-Reborn/commit/1796e9f) | `?scene=baseline` | 216/216 | `/road` 一圈整局过，海岛外观生效，圈速 01:52.58 不变；不限帧均值 0.81 ms |
+
+盲选见上节：两位非作者都没判新版更差。MOBA、Star 的 smoke 为走真实 GPU，只在本地临时改了浏览器参数（未推送）；Star 在不限帧时有 15 帧时间戳相同，触发 smoke 的“帧时长为 0”断言，属测量方式，整局本身完成。没有低端设备数据。网站仍为 FPS v25、MOBA v22、Star v11，部署等用户确认。

@@ -18,7 +18,7 @@
 - **知识首要**：按 ai-made-games-scout 继续研究 Fable 5.2 网页游戏（[Saltline](https://github.com/realcodebear/saltline-fable-5.2)、Evensong、FOG CITY 等），读成品、源码与作者原文。方法总结进 AI 全链路页；画面与声音技术栈进模块／制作链页和 game-quality-pass，不写案例经过。
 - **进案例**：三案各选一个同品类网页参照作品（FPS 用 Saltline），同机 1280×720 并排截图，取代远标杆作近期目标；按研究出的做法由你自己整场景改画面与声音，不拆逐层小卡下发；按[游戏细则§6第3条](game-taskbook.md#6-作品案例)换默认，玩家界面不露候选／诊断链接。
 - **完成条件**：两份知识页合入并被至少一案采用；每案有参照并排图与下一最大差距；三案默认各有一次玩家可见变化或写明阻塞。
-- **整景候选**：11-17 已补本机原图、第二位非作者和 FPS 帧耗、MOBA 回退两处修复，[请 dot-B 判换默认](look-guide-trial-20261114.md#11-17-补证)；本机补拍由方向会话代跑。
+- **整景候选**：11-17 用户授权方向会话按§6第3条换默认，三案已换（[证据](look-guide-trial-20261114.md#11-17-换默认)）；网站未更新，部署待用户确认。
 
 - **共同采用欠项**：下次帧同步／存档实用共享指令、模型或依赖页之一；自然UI变更由新读者照浏览器页实操，不以截图／DOM替代。沿上方原文入口，结果写提交后删。
 
@@ -39,12 +39,12 @@
 |---|---|---|---|
 | P90 | **前沿与 M6**：候选入收件箱，漏检入[探索证据](../research/2026-10-15-exploration-evidence.md) | dot-A | 按 explore-frontier 广扫，推进读者地图 🟡／⏳。 |
 | P81 | **试用与选择** | dot-A | 15项已收口，见下方。Datasette 部分接收，#3015 合上游／修契约及六 CI 待批；Memos #6502 冲突只跟反馈，QA cancelled；Qwen v0.26.6 修重名，旧例6过时／8待验，409非新版，socket拒绝。另张 Skills 附全文待新读者，旧写者退出／空槽待核，禁装与[越界](local-jobs/A-SKILL-PACKAGE-ENTRY-20261030.md#指导层交接)交指导层；pnpm 待旧写者退出确认后并入 skills-and-plugins 一小段。 |
-| MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main `79bdb574`已改quiet默认，617测试／web构建过；线上仍**v22**、0/89。Site源`44d9c219`／v23归档已存，公开部署被明确拒绝，待用户确认，不重试。[原证据](local-jobs/B-MOBA-QUIET-PAIR-20261112.md)双路smoke／双盲过；新首页未新跑浏览器，不称已上线。整景候选 [4bc44ca](https://github.com/dbvv1/MOBA-Like/commit/4bc44caab08d3c32b2eb275dff5cd9c2e1786bfe) 保留 quiet，森林初始化失败退回 quiet 原场景；632 项离线测试通过，未验实际画面、音频和拟发布入口整局。等前序拍摄交回，不另排并行卡。 |
+| MOBA | **MOBA-Like 战斗与完整内容** | dot-B | main [`fa3076f`](https://github.com/dbvv1/MOBA-Like/commit/fa3076f)：默认改森林走道（quiet材质不变，`?scene=baseline`回退），GPU整局300 s过、60 fps；线上仍**v22**，v22后的quiet与森林走道都待用户确认部署，不重试。dot-B 的 4bc44ca 已被 [4f564e3](https://github.com/dbvv1/MOBA-Like/commit/4f564e3) 取代。软件渲染下整局 Morrow E 断言两版同败，原因未查。 |
 | B-模块 | **核心模块**（[G2](game-taskbook.md#2-g2-游戏核心模块)） | dot-B | FPS [终态修复](../../domains/game-dev/04-client-modules.md#client-terminal-exit)已入主干，CPU独审过，浏览器欠。Star 原AI修复已过组装客户端CPU接收：默认9/9、轮胎8/9对手完赛，余1为前进中的截止DNF；花见坂倒车仍欠。原发布回执unknown、远端未见；本轮原补丁／9/9产物在当前环境不可复核，保留历史回执、不重推。 |
 | B-制作链 | **AI 全链路**（[G1](game-taskbook.md#1-g1-全-ai-流程管线端到端按瓶颈排序)） | dot-B | 三案原 smoke 已接[整局测量](../../domains/game-dev/02-verification-and-playtesting.md#2-工具到底观察了哪一段)；FPS 原配方三标准件[颜色二改](../../domains/game-dev/assets/3d.md#asset-family-rebuild)进入实际挂接 mesh，颜色变而 bytes 不变，缺件／损坏整批回退，CPU 独审过。下一层为串行Git卡的画面／完整运行；19GLB、训练ready及Star后继材料保留，声音未听，Nature恢复unknown。 |
 | B-实例 | **AI 游戏实例** | dot-B | [Saltline 接触反例](../../domains/game-dev/assets/materials.md#web-scene-recipe)已过 CPU 验证，未采用。[FOG CITY 立面](../research/2026-10-23-game-worth-trying.md#fog-city-facades)已定位并核源码，未实玩。[Solhex](../../domains/game-dev/08-level-design-and-encounters.md#tutorial-input-and-result)暂停保档 Copper 3/6。 |
-| SR | **Star-Rush 品质** | dot-B | master `2f10cf9b`／Site **v11**（源`38978955`），coast默认已上线，0/43；[原整局卡](local-jobs/B-STAR-DEFAULT-SMOKE-20261112.md)两入口exit0、双盲过。软件帧耗仍差。整景`0405af62`已过 CPU 验证；[对照卡](local-jobs/B-STAR-COAST-SCENE-PAIR-20261113.md)07:58:57 UTC派发、08:22:07领取；10:31维护端确认原进程已退出，两版各三机位双拍已在本机保全但尚未交回。只收原图与构建记录，不重拍；回传后核配对、再盲选。 |
-| FPS | **FPS-Like 品质** | dot-B | main `79bcf1d1`／Site **v25**（源`1521e434`，11-13 03:09:35 UTC部署成功），原`ai-courtyard-full-v1`已换默认，0/77不变。[原卡](local-jobs/B-FPS-DEFAULT-FULL-PAIR-20261112.md)11-12 21:10:03复派、11-13 00:03:06补回；双盲3/3偏好。三次双路smoke帧耗方向不一、非同输入，本轮不判明显劣化，保留软件慢4–10%成本风险，不称流畅。超次及缺回执记欠项，槽已释放。玩家菜单候选/诊断已隐藏，471/471与build过；该UI未新做浏览器验收，站点HTTP直读403，生产部署由Sites终态核实。 |
+| SR | **Star-Rush 品质** | dot-B | master [`1796e9f`](https://github.com/dbvv1/Star-Rush-Reborn/commit/1796e9f)：默认加海岛外观（`?scene=baseline`回退），216/216，GPU整局圈速01:52.58不变；Site仍**v11**，部署待用户确认。软件帧耗仍差。旧对照卡 B-STAR-COAST-SCENE-PAIR 已被方向会话本机原图取代。 |
+| FPS | **FPS-Like 品质** | dot-B | main [`445b93b`](https://github.com/dbvv1/FPS-LIke/commit/445b93b)：首页加庭院布景（上一版用README里的完整查询回退），475/475，GPU六回合整局过、60 fps；Site仍**v25**，部署待用户确认。布景已按材质合并；不限帧时帧间隔约为上一版1.3倍，低端设备未测。 |
 | P109 | 潮汐邮差窄例 | dot-B | v2 素材／木筏／旧档待客户端验收。 |
 
 ### A：试验收口
