@@ -75,6 +75,8 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 **先做明暗与地面分区，反射最后加。** 保持现有通路和掩体轮廓；用一处暖主光、偏冷的阴影和低亮度的墙面引导视线。地面先给通行带和湿区稳定的世界尺度，再让湿区粗糙度变化。若反射有收益，多片积水可共用同一平面反射，不为每片单独渲一遍；先看关闭反射后路线和目标是否仍好读，拿实际帧耗决定留不留。
 
+**不要把换颜色图误诊成缺粗糙度。** FPS-Like 的庭院已把通行带、训练区、墙根服务带写进同一张非重复粗糙度图，通过 `uv1` 挂到地表 `roughnessMap`；AI 材质后来只替换 `map`，不会撤掉该粗糙度图、浅凹凸或磨损叠层。二改先保颜色图、几何、灯光和相机，用同一正常持枪视角先比较原分区与同尺寸、同 UV 的均匀粗糙度，单独看这张图有没有贡献；不要关掉整个庭院布景，因为它还改灯光。看脚下通行带是否更早可辨、掩体轮廓是否被高光抢走、远端是否还看得清；只在顶视图或放大图里变明显，不算玩家收益。无需先加反射。此例只核到源码绑定，不代表画面更好。[地表绑定](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/scene.ts#L112-L140) · [分区配方](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/ground.ts#L233-L263) · [颜色替换](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/ai-materials.ts#L110-L116)。
+
 **反例与采图。** 不用无枪全景决定战斗画面：庭院试验的全景近处有强反光，正常持枪图才看得到武器、准星、靶与地面亮点的同屏关系。要在已有项目验证，用同构建设置、镜头、状态取 normal / aim / fire 三帧；正常入口另查 HUD，不把隐藏界面的拍摄帧当作真实持枪。若湿地高光、雾或暗角压低目标剪影，先减该效果，不靠改碰撞、移动对象或调相机去“修”对照。
 
 **依据与边界：** [本端庭院试验的两张 sol 图和技法记录](../../../docs/collaboration/demo-trial-20261117.md#结果)，2026-11-17；看过原图，反射、阴影与合批的具体实现是试验记录转述，源代码未公开。下一次采用点是 FPS-Like 的现有中央通路，不是另造庭院。还没做同机位项目对照，不以此宣称接入或更清楚。
