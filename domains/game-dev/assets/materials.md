@@ -69,6 +69,16 @@ blender --background --factory-startup --threads 2 --python-exit-code 1 \
 
 **依据**：Saltline 固定 `09c51774` 的[实际材质生成](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5439-L5443)、[地表查询](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5814)、[后处理／降级](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L4732-L4733)；Evensong [材质](https://evensong-phi.vercel.app/src/gfx/materials.js)、[后处理](https://evensong-phi.vercel.app/src/gfx/post.js)、[画质](https://evensong-phi.vercel.app/src/gfx/renderer.js)、[效果](https://evensong-phi.vercel.app/src/gfx/vfx.js)；[Three.js PBR 槽契约](https://threejs.org/docs/pages/MeshStandardMaterial.html)。核实 2026-11-12，仅源码与接口阅读，Evensong 部署内容可变；均未证明最低设备收益、完整听感或已用于三个案例。
 
+<a id="lane-lighting-from-play-view"></a>
+
+### 在持枪视角分清脚下、掩体和交战点
+
+**先做明暗与地面分区，反射最后加。** 保持现有通路和掩体轮廓；用一处暖主光、偏冷的阴影和低亮度的墙面引导视线。地面先给通行带和湿区稳定的世界尺度，再让湿区粗糙度变化。若反射有收益，多片积水可共用同一平面反射，不为每片单独渲一遍；先看关闭反射后路线和目标是否仍好读，拿实际帧耗决定留不留。
+
+**反例与采图。** 不用无枪全景决定战斗画面：庭院试验的全景近处有强反光，正常持枪图才看得到武器、准星、靶与地面亮点的同屏关系。要在已有项目验证，用同构建设置、镜头、状态取 normal / aim / fire 三帧；正常入口另查 HUD，不把隐藏界面的拍摄帧当作真实持枪。若湿地高光、雾或暗角压低目标剪影，先减该效果，不靠改碰撞、移动对象或调相机去“修”对照。
+
+**依据与边界：** [本端庭院试验的两张 sol 图和技法记录](../../../docs/collaboration/demo-trial-20261117.md#结果)，2026-11-17；看过原图，反射、阴影与合批的具体实现是试验记录转述，源代码未公开。下一次采用点是 FPS-Like 的现有中央通路，不是另造庭院。还没做同机位项目对照，不以此宣称接入或更清楚。
+
 ### 同尺寸参照先核内部预算，再决定画质档
 
 **目标：** 同机 1280×720 参照图用于找构图、受光与视听差距，不把不同内部像素量误当成材质优劣。外框、DPR、内部目标尺寸和后处理是否回退都要分开记录；跨作品不强行抹平各自管线，也不从截图推同机性能胜负。
