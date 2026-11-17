@@ -1,6 +1,6 @@
 id: A-CONTEXT-PAGE-CONTRACT-READER-20261029
 owner: dot-A
-status: blocked
+status: cancelled
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 5847ea532dbf7437ca8c4865af031ce0d862a153
 result_branch: relay/a-context-page-contract-reader-20261029
@@ -29,6 +29,10 @@ page: docs/decisions/context-management.md@dot-a/context-concise-reader-20261029
 - 非读者验证者核对实际测试输入与输出，复跑关键检查，并核读者实际收到的固定页面全文；无法观察的接收端行为记未知，不采纳模型自报作通过。
 
 没有自然跨压缩或新会话时，只记按需取回与检查点准备的结果，原生接续效果仍待验。单元最多两小时；接收端公开扫描与适用检查后推指定结果分支、回 review_ready，不用 accept: auto，不合默认分支。
+
+## 本轮结论（2026-11-17）
+
+本轮 u5 独立读者试验 rejected：读者开工已读旧 result／u4／u5，不能证明新读者只照页面做通。取消的是本卡继续补成首次独立读者证据的尝试，不否定已核的仓库检查、精度反馈或上下文路线；原证据和未验范围保留。不重派本卡，不凭 cancelled 判断原调用／进程退出或解除隔离。
 
 ## 当前结果
 

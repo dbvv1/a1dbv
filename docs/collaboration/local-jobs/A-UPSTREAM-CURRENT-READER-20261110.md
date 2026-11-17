@@ -1,6 +1,6 @@
 id: A-UPSTREAM-CURRENT-READER-20261110
 owner: dot-A
-status: blocked
+status: cancelled
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: dc45976eeb083d498f90152035c0fa0a9ee1878c
@@ -13,6 +13,10 @@ page: docs/decisions/upstream-contributions.md@dc45976eeb083d498f90152035c0fa0a9
 按附页实际读目标当前规则、issue/PR及代码，独立选择实现/补验/协调/准入/收起；给固定来源、行为差量、一个可执行下一步、仍缺内容，以及页面造成的卡点。不得创建issue/PR/fork、签约、安装、运行测试/模型、操作用户配置或访问私密数据；只读公开材料。规则沉默保留未知。
 只新写 docs/collaboration/local-jobs/artifacts/A-UPSTREAM-CURRENT-READER-20261110/result.md；不改正文/补丁/旧任务/产品。接收端按合同回写本卡与结果分支；不自动合main。单元60–90分钟、上限2小时，沿已有4并行/1GPU限额；旧调用未知不接管，本任务不重试旧任务。
 非读者核源码、所读版本、原始返回与实际结论，区分页面卡点和执行能力；只验当前页的投稿前核心选路，不视为已投稿/合并或自动升级✅。check_repo/check_public/空白与提交身份通过后交回。没有新读者或共享槽条件则保留待领取，不捏造执行。
+## 本轮结论（2026-11-17）
+
+本轮独立读者验收 rejected：原结果含贡献者必须本人操作、两入口均记 lastError、open issue 为通用硬门槛等不成立推断，不能接收为完整准确的投稿前选路回执。已部分接收的行为差量与核读事实保留；不因缺新版独立读者而判整条上游贡献路线失败。取消本卡继续补成完整验收的尝试，不自动重读／重派；不凭 cancelled 判断原调用／进程退出或解除隔离。
+
 ## 当前结果
 
 部分接收 [10c592c](https://github.com/dbvv1/a1dbv/commit/10c592cacc9aece883eb9066d904dc333a0dfd8f) 的行为差量与投稿前核读，不接收“Qwen要求贡献者本人而非Agent操作”、两入口均记lastError、缺open issue为通用硬门槛等推断。CONTRIBUTING要求关联已有issue，缺对应问题才新开并等反馈；未要求所有issue必须open。须补核用户可见改动的docs与before/after demo要求。当前Qwen f650643源码两文件与41ff一致；未重跑已拒socket。
