@@ -268,6 +268,29 @@ Google 10 月 29 日公告则明确：Jules 在 11 月 11 日后只读，12 月 
 
 **依据**：[一手] Claude Code 的[子 Agent](https://code.claude.com/docs/en/sub-agents)、[worktree](https://code.claude.com/docs/en/worktrees)、[Agent Teams](https://code.claude.com/docs/en/agent-teams)、[Dynamic Workflow](https://code.claude.com/docs/en/workflows) 入口，[Anthropic 多 Agent 研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)、[Cursor 9-23 原文](https://cursor.com/blog/improved-token-efficiency)、[Cognition 2026-04 修订](https://cognition.com/blog/multi-agents-working)；[一手：公开补丁] [Spec Kit 改稿链](research/2026-10-12-experiment-records.md#p81任务依赖按当前承诺重划边界)；[研究] [Coding agent teams 10-12 评测](https://arxiv.org/html/2610.17471v1)、[依赖接收](research/2026-10-12-experiment-records.md#p72审计补强并行结果按依赖接收)、[worktree 的状态边界](research/2026-10-12-experiment-records.md#worktree隔离到哪里配置缓存与被测产物)、[评审层选择](09-review-and-quality.md#按风险选择评审层不默认逐层叠加)；[经验：本仓实际生产] [A-DELIVERY-ROUTE-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-DELIVERY-ROUTE-001.md)、[A-STYLE-REWRITE-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-STYLE-REWRITE-001.md)、[A-STYLE-REWRITE-002](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-STYLE-REWRITE-002.md)、[A-MEMOS-READING-001](https://github.com/dbvv1/a1dbv/blob/795c8f6c06607b6931ae19b45451b949825c77ec/docs/collaboration/local-jobs/A-MEMOS-READING-001.md)、[最终整合](https://github.com/dbvv1/a1dbv/commit/795c8f6c06607b6931ae19b45451b949825c77ec)；核实 2026-10-25。
 
+### 旧分支冲突：接收意图，不把旧文件搬回来
+
+**先读共同基线到双方的变化，再把仍需要的功能接到当前入口。** 对已有 PR，先核原需求和评审是否仍支持这个目标；“能解决冲突”不代表该设计已获接收。给 Agent 的任务可直接这样写：
+
+```text
+将 [现有分支/PR] 的 [已确认目标] 接到 [目标分支]，保留双方仍有效的行为。
+先核当前工作树、在途操作与原需求，记录目标和候选 SHA、共同基线；
+有未归属改动或未结束的操作时先保全，不自行 reset、清理或重开。
+分别读基线到候选、基线到目标的差异，说明功能意图、主干新增契约和搬迁后的入口。
+按项目原有合并方式接续；不要整文件选 ours/theirs 来消掉标记。
+被主干删除或拆分的文件，先找当前消费者，再迁必要增量；不默认恢复旧路径。
+核所有实际调用入口，包括类型声明/重载、默认参数、文档和测试位置。
+在整合树中运行候选目标与主干受影响行为，另走一次真实用户入口；
+检查本次暂存差异和未解决项，区分原有失败、此次回归和未运行检查。
+交回可接收差量、双方保留行为的结果、未决设计与未验范围；不自行改写已发布历史或发布。
+```
+
+**文本版本是定位依据，行为结果才决定怎么合。** 普通 merge 冲突中，`git ls-files -u` 列出未解决路径；`git show :1:路径`、`:2:路径`、`:3:路径` 分别读取共同基线、当前 HEAD 与待合入版本（删除一侧可能没有对应阶段）。这是普通 merge 的含义，不能原样套到 rebase 的 ours/theirs。文件搬迁后同时读新入口和调用方，不只盯着冲突标记。
+
+Click 的旧 PromptBuilder 候选给出实际反例：主干已经拆分测试、把 RST 换成 Markdown，并增加字符串默认标签及泛型重载。整文件取旧会恢复废弃文件并丢掉新行为；只迁格式定制仍须接到当前重载和默认标签处理。接收候选后，真实 CLI 能定制格式、拒绝错误选项、重问并完成二次确认，当前默认标签仍保留。
+
+**依据与实做范围**：[Git 官方冲突阶段与检查入口](https://git-scm.com/docs/git-merge#_how_to_resolve_conflicts)、[真实需求 #2875](https://github.com/pallets/click/issues/2875)与[候选 #2880](https://github.com/pallets/click/pull/2880)。本仓以 `08b803cf` 主干接 `bf5f10ae` 候选，六文件冲突收为五文件差量；相关检查 990 通过、23 跳过，真实 subprocess CLI 通过。完整套件在原主干与候选均因缺安装 metadata 收集失败；类型、文档构建和 Windows 未验，未提交上游。仅证明局部整合可用，未比较模型或自动解冲突工具；核实 2026-11-17。
+
 ## 7. 子 Agent 配置手册（Claude Code）
 
 **按任务只给必要工具与上下文：模型可从 `inherit` 起步，会改文件的子 Agent 加 worktree 隔离，重型 MCP 只挂给需要的子 Agent。** frontmatter 里最有用的字段如下，写在 `.claude/agents/<name>.md`；只有 `name` 和 `description` 必填。
