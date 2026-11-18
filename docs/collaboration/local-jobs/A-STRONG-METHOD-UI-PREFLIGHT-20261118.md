@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-UI-PREFLIGHT-20261118 · 界面替补只做预检
 id: A-STRONG-METHOD-UI-PREFLIGHT-20261118
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -26,4 +26,4 @@ result_branch: relay/a-strong-method-ui-preflight-20261118
 按仓库规则验证、公开扫描，快进推指定 result_branch，卡改 review_ready；由 dot-A 接收，不自动合 main。
 
 ## 当前结果
-待本机预检。未启动任何模型，也未补足第二道已复现任务。
+reproduced（11-18 方向会话本机预检）：候选 1 Sortable #2456 在 1.15.6 / `63ecb31937d19fcb30aa924e82ee8a769ef34492` 上经真实 headless Chromium 三轮均复现，`onStart` 的 `toArray()` 为 `alpha,bravo,charlie,alpha`，释放后 `onSort`/`onEnd` 为 `bravo,charlie,alpha`。按协议取首个复现项即停止，候选 2 #2469 未检查，未启动模型，计费 0。执行、截图、事件日志和复跑命令见[预检记录](../../../experiments/strong-short-task-20261117/ui-replacement/results/PREFLIGHT.md)。待 dot-A 核收并提升成对卡；本卡仍不授权启动任一模型臂。
