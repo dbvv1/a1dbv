@@ -1,7 +1,7 @@
 # A-MIGRATION-CATTRS-DECIMAL-READER-20261114 · Decimal 消费者接收旧 PR
 id: A-MIGRATION-CATTRS-DECIMAL-READER-20261114
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 6764ab019c94d63fe02af06596a5c0e1f8d9446f
@@ -36,5 +36,8 @@ result.md 说明实读页面版本、独立性、精确源码/解释器/依赖�
 
 ## 当前结果
 
-2026-11-17 接续：由方向会话沿本卡核原调用／登记进程及接收容量，再运行和提交原任务结果；dot-A 不重派。尚无交回结果，不计 adopted；ready 不证明未运行，原合同与隔离要求不变。
-待领取；已附完整页，尚无实际执行或读者结果。
+- reader-test 完成：核对 PR #822 head 2e883761 落后基线 e9239b7 共 6 个提交，在基线上 cherry-pick 其唯一提交得到整合 653efccb（仅 HISTORY.md NEXT 段冲突，保留两侧条目）；分别构建 base(26.2.2.dev20)、PR head(dev15)、整合(dev21) 三个 wheel，在三个独立 CPython 3.12.15 venv 各自只装一个 wheel 并记录 SHA-256。attrs Order(amount: Decimal) 对照：字符串输入 JSON 输出 {"amount": "19.99"}、YAML 输出 amount: '19.99'，loads 返回 Decimal 且 as_tuple/尾零/40 位有效数字保留；基线 JSON TypeError、YAML RepresenterError、loads StructureHandlerNotFoundError。消费者 pytest：base 22 failed/2 passed，PR head 与整合各 24 passed；原生 tests/test_preconf.py 61/65/65 passed、各 22 skipped；typed-deque 回归 base 11 passed、PR head 6 failed/5 passed、整合 11 passed。taskDone=true；pageStuck=5 条（其一读者自评非实际卡点）；未运行验收：无（仅未执行提交/推送，不属读者验收）。openIssues：result.md 第125行产物清单误写 results/pr.json、results/integ.json，实际为 pr-head.json、integrated.json；5 条 pageStuck 均为页面措辞/方法缺口（低），建议负责人评估后更新页面。
+- 产物：[2d9a294](https://github.com/dbvv1/a1dbv/commit/2d9a294cdcae9a5a0f014abb63184715602ee90f)，分支 `relay/a-migration-cattrs-decimal-reader-20261114`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 6764ab01 已有问题：docs\collaboration\TASKS.md: over 10 KB; move finished rows to archive/（保留告警，交负责人接收）；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人修正 result.md 产物命名不一致，并评估 5 条 pageStuck 是否补入页面（依赖升级与代码 PR 分开、补 PR 祖先检查与冲突规则、不按 PEP 440 版本号认候选、Decimal 精度判定粒度）；本轮观察结束，不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
