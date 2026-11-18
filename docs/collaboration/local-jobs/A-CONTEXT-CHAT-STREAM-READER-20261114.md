@@ -1,7 +1,7 @@
 # A-CONTEXT-CHAT-STREAM-READER-20261114 · 流式 Chat Completions 手动历史接收
 id: A-CONTEXT-CHAT-STREAM-READER-20261114
 owner: dot-A
-status: running
+status: blocked
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 4ac4f0f958f0644c6245aad907b57fbba0caace1
@@ -27,8 +27,7 @@ page: docs/decisions/context-management.md@4ac4f0f958f0644c6245aad907b57fbba0caa
 
 ## 当前结果
 
-2026-11-17 接续：由方向会话沿本卡核原调用／登记进程及接收容量，再运行和提交原任务结果；dot-A 不重派。尚无交回结果，不计 adopted；ready 不证明未运行，原合同与隔离要求不变。
-待领取；全文嵌入，尚无实际执行或读者结果。
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
 
 ## 页面全文（JSON，解码后原样交付）
 ```json
