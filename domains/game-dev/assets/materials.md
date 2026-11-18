@@ -353,6 +353,8 @@ PY
 
 **两招同屏时，先保更紧急的信息。** 来袭威胁的来源与范围边界高于我方攻击的阶段和装饰，命中闪光其次，余波最后；共享色板就必须同时用轮廓（束／扇）、出现位置和时序区分，不能只靠颜色。[研究]
 
+**🧪 英雄和兵群争抢视线，先试让普通小兵的宽面亮度退一级，不给全员加描边。** 保留阵营布色、兵种剪影、命中与施法提示；只收敛两队近战／远程兵四个模型里的钢甲和金边反差，不改全局色板；攻城兵走独立模型，不纳入这轮。先在正常机位拍双方兵线接触，再按相同施法事件取实际交战帧。两组都让非作者指出英雄和旁边的小兵，交战帧再问危险边界在哪。若只在放大图好辨、小兵混入地面、错认敌我或技能更晚才读到，就撤回。MOBA-Like 森林版的近／远程兵与英雄模型共用钢、金、暗部色值，但材质相同不等于屏幕上同样亮；这是试验起点，未证明现版有此缺陷，也未在真 GPU 试改。依据：[固定生产配方](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/asset-pipeline/battle/tools/build.py#L98-L149)，2026-11-18。
+
 **[研究] 原生方案按信号选，不按功能数选。** 固定光照背景可比较 Baked Lit，需响应实时灯的动态对象可比较 Simple Lit／Lit，必须稳定显色的提示可比较 Unlit；Unlit 失去灯光塑形，Baked Lit 不提供实时受光，不能全场机械替换。Unity 的[低端移动建议](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/configure-for-better-performance.html)与[着色模型说明](https://docs.unity3d.com/6000.3/Documentation/Manual/urp/shaders-in-universalrp-choose.html)支持这些机制取舍，不保证本项目帧率收益。[一手]
 
 **固定天空先比较现成全景，并把“背景好看”与环境照明分开。** AI 可保留 [Kenney Skyboxes](https://kenney.nl/assets/skyboxes) 等许可可公开原件的 CC0 源，记录导出配方与水平朝向（yaw），用引擎原生背景或不受光球面显示；星跃本例固定 PNG 原件→2048×1024 WebP，按 sRGB LDR 消费，不接 IBL／PMREM，也不偷改太阳或曝光。球面随相机位置、不随朝向；改 WebP 质量或 yaw 后重导出并核正常转向；改尺寸还须同步导出与消费端约定，画中太阳与原灯只近似对应，不能从色彩图猜 HDR 辐射度。[本地运行／一手]
