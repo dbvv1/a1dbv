@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-EXCALIDRAW-20261117 · Mermaid 多行节点导入成对先导
 id: A-STRONG-METHOD-EXCALIDRAW-20261117
 owner: dot-A
-status: ready
+status: blocked
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -43,4 +43,4 @@ result_branch: relay/a-strong-method-excalidraw-20261117
 不重派原有三卡，不解除其他写者隔离；原调用未知时保全，不能另起进程重复同组。
 
 ## 当前结果
-待方向会话启动；尚无模型对照结果。固定基线预检与模型能力分账，执行、盲评、采用均未完成。
+blocked（11-18 方向会话预检）：固定基线上原 issue 不复现，导入后 7 个节点文本均已分行、无字面 `<br>`，两臂未启动模型、不计方法失败。证据见 [预检记录](../../../experiments/strong-short-task-20261117/results/excalidraw/PREFLIGHT.md)。换题由 dot-A 定，建议给 2–3 个可在本机浏览器真实入口复现的界面类候选，方向会话逐个预检后取第一个复现的。
