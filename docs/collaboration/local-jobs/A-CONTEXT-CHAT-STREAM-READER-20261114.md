@@ -1,7 +1,7 @@
 # A-CONTEXT-CHAT-STREAM-READER-20261114 · 流式 Chat Completions 手动历史接收
 id: A-CONTEXT-CHAT-STREAM-READER-20261114
 owner: dot-A
-status: review_ready
+status: accepted
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 4ac4f0f958f0644c6245aad907b57fbba0caace1
@@ -27,11 +27,12 @@ page: docs/decisions/context-management.md@4ac4f0f958f0644c6245aad907b57fbba0caa
 
 ## 当前结果
 
-- 读者在固定 SDK 64fbde5 上按页面手动历史分支完成两轮流式/非流式 Chat Completions 消费者：不传 session/服务端 ID，第二轮用 to_input_list()+新用户消息；46 项请求级断言与 434 项相关 SDK 测试均通过，页面全文 SHA-256 与任务卡一致且页面未改。taskDone=true。pageStuck：缺 Runner.run_streamed 示例、流式取历史只有一句顺序、SDK 行为结论绑定 1fc77bbc、session 未给入口。openIssues：consumer.py 顶部注释仍写 openai 3.55.0/httpx2 2.16.2（实际 3.29.0/2.14.0），按注释装依赖可能重现 4 个 span 用例失败；result.md 第 7 行“每轮实际发出 3 个请求”表述有误（实为每种模式 3 个）。未验：真实模型记忆/服务端接收、服务端会话参数与完整 replay 混用、SQLiteSession/Responses/原生客户端、SDK 全库测试、非 Windows/Python 3.13.5 环境。核对者已独立复跑，但 reviewed=false，不表示目标验收通过。
-- 产物：[6500a95](https://github.com/dbvv1/a1dbv/commit/6500a953b848eb34a85b1422e5ef8038a48f085c)，分支 `relay/a-context-chat-stream-reader-20261114`。
-- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
-- 下一步：负责人修 consumer.py 版本注释与 result.md 第 7 行表述；评估是否在页面补 run_streamed 示例与流式取历史说明，并按需追验服务端会话组合。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
+- **接收范围**：收存手动完整历史分支的请求级验证产物，不等于用户真实工作流采用，不升级答案页。原读者报告独立性与首次阅读；接收者只能核正文 hash、源码、请求与复跑结果，不能外证其阅读历史。
+- **原回传**：[6500a95](https://github.com/dbvv1/a1dbv/commit/6500a953b848eb34a85b1422e5ef8038a48f085c)；本机核对曾因两处描述错误返回 `reviewed=false`。保留原首交记录，现已将 consumer.py 注释改为 openai 3.29.0/httpx2 2.14.0，将“每轮 3 个请求”改为“每种模式两轮合计 3 个”。
+- **接收复核（2026-11-18）**：固定 SDK `64fbde5`，Linux/Python 3.12.14 独立复跑两种模式各 3 个请求、共 46 项断言全过；三份捕获与原产物逐字相同，434 项相关 SDK 测试通过。内嵌正文 SHA-256 与卡内值一致。此次产物审查 `reviewed=true`，不追溯改写首次核对状态。
+- **复跑环境卡点**：本侧首次消费者启动遇到环境 SOCKS 代理缺可选依赖，虽关闭 tracing，初始化仍构造 exporter 客户端；仅对纯 Mock 子进程移除代理环境变量后通过，未改系统设置或访问真实 API。命令与范围见[结果](artifacts/A-CONTEXT-CHAT-STREAM-READER-20261114/result.md#负责人接收复核2026-11-18)。
+- **未验**：真实模型记忆/服务端接收、服务端会话组合与完整 replay 混用、SQLiteSession/Responses/原生客户端、SDK 全库；原页面版本的读者体验不代表修订版复测。缺 `run_streamed` 示例等页面反馈保留在[读者回执](../../../reader-tests/A-CONTEXT-CHAT-STREAM-READER-20261114-u1.md)，本次不改页面。
+- 执行：首交由本机接收端 Claude Code＋DeepSeek 原生 Workflow 完成；本次仅接收复核与描述修正，不重派、不新开试验。
 
 ## 页面全文（JSON，解码后原样交付）
 ```json

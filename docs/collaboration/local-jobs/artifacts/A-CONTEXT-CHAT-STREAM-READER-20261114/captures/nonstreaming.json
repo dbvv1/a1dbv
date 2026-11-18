@@ -1,0 +1,275 @@
+{
+  "mode": "non-streaming",
+  "sdk": {
+    "commit": "64fbde5d02b42ae5f9db668eb0184cdb3fc9d775",
+    "package_version": "0.24.0"
+  },
+  "requests": [
+    {
+      "index": 1,
+      "round": 1,
+      "model": "gpt-4.1-mock",
+      "stream": false,
+      "stream_field_present": false,
+      "store": true,
+      "stream_options": null,
+      "has_tools": true,
+      "server_state_fields": {
+        "previous_response_id": null,
+        "conversation_id": null
+      },
+      "messages": [
+        {
+          "content": "Use the lookup_order tool whenever the user asks about an order.",
+          "role": "system"
+        },
+        {
+          "role": "user",
+          "content": "Find order 1234 and tell me its status."
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "round": 1,
+      "model": "gpt-4.1-mock",
+      "stream": false,
+      "stream_field_present": false,
+      "store": true,
+      "stream_options": null,
+      "has_tools": true,
+      "server_state_fields": {
+        "previous_response_id": null,
+        "conversation_id": null
+      },
+      "messages": [
+        {
+          "content": "Use the lookup_order tool whenever the user asks about an order.",
+          "role": "system"
+        },
+        {
+          "role": "user",
+          "content": "Find order 1234 and tell me its status."
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_order_1234",
+              "type": "function",
+              "function": {
+                "name": "lookup_order",
+                "arguments": "{\"order_id\":\"1234\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_order_1234",
+          "content": "order 1234: shipped, arriving in 2 days"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "round": 2,
+      "model": "gpt-4.1-mock",
+      "stream": false,
+      "stream_field_present": false,
+      "store": true,
+      "stream_options": null,
+      "has_tools": true,
+      "server_state_fields": {
+        "previous_response_id": null,
+        "conversation_id": null
+      },
+      "messages": [
+        {
+          "content": "Use the lookup_order tool whenever the user asks about an order.",
+          "role": "system"
+        },
+        {
+          "role": "user",
+          "content": "Find order 1234 and tell me its status."
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_order_1234",
+              "type": "function",
+              "function": {
+                "name": "lookup_order",
+                "arguments": "{\"order_id\":\"1234\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_order_1234",
+          "content": "order 1234: shipped, arriving in 2 days"
+        },
+        {
+          "role": "assistant",
+          "content": "Order 1234 shipped and should arrive in 2 days."
+        },
+        {
+          "role": "user",
+          "content": "Is there anything else I need to do for that order?"
+        }
+      ]
+    }
+  ],
+  "rounds": [
+    {
+      "label": "round 1 (initial user, synthetic tool call, tool return, final answer)",
+      "final_output": "Order 1234 shipped and should arrive in 2 days.",
+      "last_response_id": null,
+      "event_types": [],
+      "to_input_list": [
+        {
+          "content": "Find order 1234 and tell me its status.",
+          "role": "user"
+        },
+        {
+          "arguments": "{\"order_id\":\"1234\"}",
+          "call_id": "call_order_1234",
+          "name": "lookup_order",
+          "type": "function_call",
+          "id": "__fake_id__",
+          "provider_data": {
+            "model": "gpt-4.1-mock",
+            "response_id": "chatcmpl-mock-1"
+          }
+        },
+        {
+          "call_id": "call_order_1234",
+          "output": "order 1234: shipped, arriving in 2 days",
+          "type": "function_call_output"
+        },
+        {
+          "id": "__fake_id__",
+          "content": [
+            {
+              "annotations": [],
+              "text": "Order 1234 shipped and should arrive in 2 days.",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ],
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+          "provider_data": {
+            "model": "gpt-4.1-mock",
+            "response_id": "chatcmpl-mock-1"
+          }
+        }
+      ]
+    },
+    {
+      "label": "round 2 (to_input_list + new user message)",
+      "final_output": "Nothing else is needed; the shipment is already on its way.",
+      "last_response_id": null,
+      "event_types": [],
+      "to_input_list": [
+        {
+          "content": "Find order 1234 and tell me its status.",
+          "role": "user"
+        },
+        {
+          "arguments": "{\"order_id\":\"1234\"}",
+          "call_id": "call_order_1234",
+          "name": "lookup_order",
+          "type": "function_call",
+          "id": "__fake_id__",
+          "provider_data": {
+            "model": "gpt-4.1-mock",
+            "response_id": "chatcmpl-mock-1"
+          }
+        },
+        {
+          "call_id": "call_order_1234",
+          "output": "order 1234: shipped, arriving in 2 days",
+          "type": "function_call_output"
+        },
+        {
+          "id": "__fake_id__",
+          "content": [
+            {
+              "annotations": [],
+              "text": "Order 1234 shipped and should arrive in 2 days.",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ],
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+          "provider_data": {
+            "model": "gpt-4.1-mock",
+            "response_id": "chatcmpl-mock-1"
+          }
+        },
+        {
+          "role": "user",
+          "content": "Is there anything else I need to do for that order?"
+        },
+        {
+          "id": "__fake_id__",
+          "content": [
+            {
+              "annotations": [],
+              "text": "Nothing else is needed; the shipment is already on its way.",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ],
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+          "provider_data": {
+            "model": "gpt-4.1-mock",
+            "response_id": "chatcmpl-mock-1"
+          }
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "round1_request_1_initial": {
+      "request_has_one_user": true,
+      "first_user_is_initial": true,
+      "no_tool_messages_yet": true,
+      "message_order": true,
+      "no_server_state": true
+    },
+    "round1_request_2_tool_result": {
+      "request_has_one_user": true,
+      "first_user_is_initial": true,
+      "message_order": true,
+      "assistant_has_one_tool_call": true,
+      "tool_call_id_matches": true,
+      "tool_call_name_matches": true,
+      "tool_arguments_match": true,
+      "tool_message_id_matches": true,
+      "tool_message_value_matches": true,
+      "no_server_state": true
+    },
+    "round2_request_full_history": {
+      "request_has_two_users": true,
+      "initial_user_once": true,
+      "new_user_once_and_last": true,
+      "assistant_tool_calls_kept_once": true,
+      "tool_result_kept_once": true,
+      "previous_final_answer_kept": true,
+      "no_server_state": true,
+      "message_order": true
+    }
+  },
+  "all_checks_pass": true
+}
