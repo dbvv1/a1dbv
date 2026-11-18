@@ -1,0 +1,38 @@
+{
+  "repro/.ruler/AGENTS.md": {
+    "bytes": 230,
+    "sha256": "7643c3faaeecbc895a9718a64bbf48361a9620b633a19fed234530e5a2ded655"
+  },
+  "repro/.ruler/part1.md": {
+    "bytes": 8454,
+    "sha256": "08e68beb51ac24cbfdfc273b3ebf43f1a864baaf23f0b65630ae3e1a16a26d44"
+  },
+  "repro/.ruler/part2.md": {
+    "bytes": 8454,
+    "sha256": "8065fc6df8c9ff17cad5070d35eaf0bf537ec8dc4e413a9234381e6f17c9428a"
+  },
+  "repro/.ruler/part3.md": {
+    "bytes": 8454,
+    "sha256": "7dcb0300d43a73f42d82c65406bc9afac5fd8b1a958106b53a41f9d279ee6ffc"
+  },
+  "repro/.ruler/part4.md": {
+    "bytes": 8454,
+    "sha256": "0e80cf9c8063a4d11e10e607e12ad279ddd77c4acf30e1ea50dbce742c36e8cd"
+  },
+  "repro/.ruler/part5.md": {
+    "bytes": 8454,
+    "sha256": "d4fe44d87fb60683499597998b19c08c8e28acffe6f51562957be8872c99bd47"
+  },
+  "repro/.ruler/part6.md": {
+    "bytes": 8454,
+    "sha256": "e35875687cc5bffe416a8f159bc9c8de51e77ea992da425d78a914563575540d"
+  },
+  "generated/AGENTS.md": {
+    "bytes": 51241,
+    "sha256": "d6ef5c2315f96a9e168f2554a32b6ea69ea95fbe9c0068acc326db35b443045c"
+  },
+  "patch/0001-warn-codex-project-doc-limit.patch": {
+    "bytes": 8007,
+    "sha256": "8a1ef8f1b0acdaca39b1c531eb05080bf83d364def17381fe0645a0497669b99"
+  }
+}
