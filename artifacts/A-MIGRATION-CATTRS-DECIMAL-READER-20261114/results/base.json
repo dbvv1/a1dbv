@@ -1,0 +1,267 @@
+{
+  "label": "base",
+  "environment": {
+    "python_version": "3.12.15",
+    "python_implementation": "CPython",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "cattrs_version": "26.2.2.dev20",
+    "attrs_version": "26.1.0",
+    "pyyaml_version": "6.0.3",
+    "cattrs_module_file_suffix": "site-packages/cattrs/__init__.py"
+  },
+  "values": [
+    "19.99",
+    "0.1",
+    "1234567890.123456789012345678901234567890",
+    "1.10"
+  ],
+  "cases": [
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "json",
+      "case": "Order(amount=Decimal(Decimal('19.99')))",
+      "error_type": "builtins.TypeError",
+      "error_message": "Object of type Decimal is not JSON serializable",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "json",
+      "case": "unstructure/structure Decimal(Decimal('19.99'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "json",
+      "case": "Order(amount=Decimal(Decimal('0.1')))",
+      "error_type": "builtins.TypeError",
+      "error_message": "Object of type Decimal is not JSON serializable",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "json",
+      "case": "unstructure/structure Decimal(Decimal('0.1'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "json",
+      "case": "Order(amount=Decimal(Decimal('1234567890.123456789012345678901234567890')))",
+      "error_type": "builtins.TypeError",
+      "error_message": "Object of type Decimal is not JSON serializable",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "json",
+      "case": "unstructure/structure Decimal(Decimal('1234567890.123456789012345678901234567890'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "json",
+      "case": "Order(amount=Decimal(Decimal('1.10')))",
+      "error_type": "builtins.TypeError",
+      "error_message": "Object of type Decimal is not JSON serializable",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "json",
+      "case": "unstructure/structure Decimal(Decimal('1.10'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "numeric_input",
+      "serializer": "json",
+      "case": "Order(amount=19.99) from a wire number",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "numeric_input",
+      "serializer": "json",
+      "case": "Order(amount=42) from a wire integer",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "invalid_decimal_string",
+      "serializer": "json",
+      "case": "Order(amount='not-a-decimal')",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "invalid_decimal_string",
+      "serializer": "json",
+      "case": "Order(amount='')",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "mixed_fields",
+      "serializer": "json",
+      "case": "Mixed(Decimal + non-Decimal fields)",
+      "error_type": "builtins.TypeError",
+      "error_message": "Object of type Decimal is not JSON serializable",
+      "status": "error"
+    },
+    {
+      "group": "non_decimal_behavior",
+      "serializer": "json",
+      "case": "PlainOrder/plain dict/datetime (no Decimal)",
+      "order_raw": "{\"id\": 7, \"name\": \"alpha\", \"note\": null}",
+      "order_equals": true,
+      "plain_raw": "{\"id\": 1, \"tags\": [\"a\", \"b\"], \"flag\": true}",
+      "plain_equals": true,
+      "stamp_raw": "{\"when\": \"2026-11-03T12:00:00\"}",
+      "stamp_equals": true,
+      "status": "ok"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "yaml",
+      "case": "Order(amount=Decimal(Decimal('19.99')))",
+      "error_type": "yaml.representer.RepresenterError",
+      "error_message": "('cannot represent an object', Decimal('19.99'))",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "yaml",
+      "case": "unstructure/structure Decimal(Decimal('19.99'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "yaml",
+      "case": "Order(amount=Decimal(Decimal('0.1')))",
+      "error_type": "yaml.representer.RepresenterError",
+      "error_message": "('cannot represent an object', Decimal('0.1'))",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "yaml",
+      "case": "unstructure/structure Decimal(Decimal('0.1'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "yaml",
+      "case": "Order(amount=Decimal(Decimal('1234567890.123456789012345678901234567890')))",
+      "error_type": "yaml.representer.RepresenterError",
+      "error_message": "('cannot represent an object', Decimal('1234567890.123456789012345678901234567890'))",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "yaml",
+      "case": "unstructure/structure Decimal(Decimal('1234567890.123456789012345678901234567890'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "decimal_string_roundtrip",
+      "serializer": "yaml",
+      "case": "Order(amount=Decimal(Decimal('1.10')))",
+      "error_type": "yaml.representer.RepresenterError",
+      "error_message": "('cannot represent an object', Decimal('1.10'))",
+      "status": "error"
+    },
+    {
+      "group": "direct_api",
+      "serializer": "yaml",
+      "case": "unstructure/structure Decimal(Decimal('1.10'))",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "numeric_input",
+      "serializer": "yaml",
+      "case": "Order(amount=19.99) from a wire number",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "numeric_input",
+      "serializer": "yaml",
+      "case": "Order(amount=42) from a wire integer",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "invalid_decimal_string",
+      "serializer": "yaml",
+      "case": "Order(amount='not-a-decimal')",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "invalid_decimal_string",
+      "serializer": "yaml",
+      "case": "Order(amount='')",
+      "error_type": "cattrs.errors.StructureHandlerNotFoundError",
+      "error_message": "Unsupported type: <class 'decimal.Decimal'>. Register a structure hook for it.",
+      "status": "error"
+    },
+    {
+      "group": "mixed_fields",
+      "serializer": "yaml",
+      "case": "Mixed(Decimal + non-Decimal fields)",
+      "error_type": "yaml.representer.RepresenterError",
+      "error_message": "('cannot represent an object', Decimal('19.99'))",
+      "status": "error"
+    },
+    {
+      "group": "non_decimal_behavior",
+      "serializer": "yaml",
+      "case": "PlainOrder/plain dict/datetime (no Decimal)",
+      "order_raw": "id: 7\nname: alpha\nnote: null\n",
+      "order_equals": true,
+      "plain_raw": "flag: true\nid: 1\ntags:\n- a\n- b\n",
+      "plain_equals": true,
+      "stamp_raw": "when: 2026-11-03 12:00:00\n",
+      "stamp_equals": true,
+      "status": "ok"
+    }
+  ],
+  "summary": {
+    "total_cases": 28,
+    "by_status": {
+      "error": 26,
+      "ok": 2
+    },
+    "by_group": {
+      "decimal_string_roundtrip": 8,
+      "direct_api": 8,
+      "numeric_input": 4,
+      "invalid_decimal_string": 4,
+      "mixed_fields": 2,
+      "non_decimal_behavior": 2
+    }
+  }
+}
