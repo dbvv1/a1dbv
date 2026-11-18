@@ -1,7 +1,7 @@
 # A-TEAM-RULER-BUDGET-READER-20261114 · 共享规则生成与 Codex 实际输入
 id: A-TEAM-RULER-BUDGET-READER-20261114
 owner: dot-A
-status: running
+status: review_ready
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 55937fe5e473121b408697d21358fa1b0edada3c
@@ -26,8 +26,11 @@ page: docs/18-team-adoption.md@55937fe5e473121b408697d21358fa1b0edada3c
 
 ## 当前结果
 
-2026-11-17 接续：由方向会话沿本卡核原调用／登记进程及接收容量，再运行和提交原任务结果；dot-A 不重派。尚无交回结果，不计 adopted；ready 不证明未运行，原合同与隔离要求不变。
-待领取；原issue与当前生成源码已核，发现入口可用不代表本机已执行。main目前另有两张ready卡，未见本题已派卡或结果；接收端实际活动未知，领取前仍须核容量。
+- reader-test 一轮完成：在固定 Ruler b905f192（0.3.46）复现 #791，基线生成 AGENTS.md 51241 字节且无警告，Codex 0.166.0 离线 debug prompt-input 仅见前 32768 字节（part1-4 在，part5/6 丢）；补丁后真实 CLI 输出一条 32 KiB 警告、生成文件逐字节不变、消费者仍截断；7 个定向测试及 build/format/lint/package-lock 通过，全量测试失败集合与基线一致（17 套件/34 用例，退出码 1）。taskDone=true，pageStuck=5（均指 §4 未说明宿主读取上限与验证入口），reviewed=false。openIssues：result.md 缺输入 SHA-256 清单；config.toml 不变断言缺 MCP 限定；patch/README.md 应用命令为裸文件名。未运行验收：调大 project_doc_max_bytes 的消费者行为、其他 Codex 版本/平台、嵌套 AGENTS/MCP/技能/恢复、npm audit/npm pack。logs/ 被 .gitignore 忽略未列入交付。
+- 产物：[6b91d26](https://github.com/dbvv1/a1dbv/commit/6b91d269bec08d47f1b852a56fab5d0e112f96dc)，分支 `relay/a-team-ruler-budget-reader-20261114`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人处理 3 条文档/证据缺口并评估是否据 pageStuck 更新 docs/18-team-adoption.md §4（补 32 KiB、project_doc_max_bytes、codex debug prompt-input 与“生成成功≠宿主读全”）；本轮不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 页面全文（JSON，解码后原样交付）
 ```json
