@@ -2,7 +2,7 @@
 id: B-CORE-SCENERY-LOD-TRANSITION-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: running
+status: blocked
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-scenery-lod-transition-sources-20261115
@@ -16,3 +16,7 @@ page: domains/game-dev/04-client-modules.md@82e13fe6a5895b48baa0ff659bfd23019e4e
 
 ## 范围与完成
 只写 `docs/collaboration/local-jobs/artifacts/B-CORE-SCENERY-LOD-TRANSITION-SOURCES-20261115/result.md`。两个实现每个结论给行链接：距离选点、往返阈、哪种淡变有额外绘制、哪种平台不支持；至少一个 `d-ε → d+ε → d-ε` 回摆门槛示例及一个快速回看加雾遮住远层的反例。列可服从现有批次接口的最小建议和「保持无 LOD」停止条件（无可见反例、无成本证据）。不动相机、地图、关卡碰撞、绘制代码及拍摄队列；不要求拿到帧耗、截图或分数。dot 经实际采用才回写「运动中的清晰度／设备预算」。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
