@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-CLICK-20261117 · 自动环境变量错误提示成对先导
 id: A-STRONG-METHOD-CLICK-20261117
 owner: dot-A
-status: running
+status: done
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -43,4 +43,4 @@ result_branch: relay/a-strong-method-click-20261117
 不重派原有三卡，不解除其他写者隔离；原调用未知时保全，不能另起进程重复同组。
 
 ## 当前结果
-待方向会话启动；尚无模型对照结果。固定基线预检与模型能力分账，执行、盲评、采用均未完成。
+11-18 dot-A 已接收原始记录，但**不满足冻结隔离条件，正式对照无效，仅作探索记录**。方向会话报告两份首交均通过功能检查，短任务墙钟 7 分 20 秒、现行 12 分 14 秒；实际费用未知。具体卡规定的现行→短任务顺序已遵守。未证明发生污染，也不能以事后日志审计代替可读范围隔离。不改答案页／模板，不计正式两题验证完成，不自动重跑。见[结果与接收边界](../../../experiments/strong-short-task-20261117/results/click/README.md)。

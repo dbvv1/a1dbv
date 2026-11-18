@@ -1,0 +1,7 @@
+RUN-ENV.txt（运行事实，两组相同）
+- 系统：Windows 11，Codex CLI 0.166.0 的默认 shell；本题不需要 GPU 或浏览器。
+- 目标仓库：pallets/click，固定提交 8abb77a8432e03ed14a95f972b44f905279415a7，已浅克隆到当前目录（只有这一个提交）。
+- Python 3.13.5；虚拟环境在当前目录 .venv，已执行 pip install -e . pytest（pytest 9.2.0），解释器 .venv\Scripts\python.exe。
+- 运行真实 CLI：把给定程序存成任意 .py 文件后，用 .venv\Scripts\python.exe <文件> [参数] 运行，读标准输出、标准错误和退出码。
+- 测试：.venv\Scripts\python.exe -m pytest -q；未改动时结果为 2546 passed, 101 skipped, 1 xfailed（另有按项目配置取消选择的用例）。
+- 可联网；不向上游提交、评论或发 PR。
