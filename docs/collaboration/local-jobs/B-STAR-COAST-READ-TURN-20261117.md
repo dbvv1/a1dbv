@@ -14,7 +14,7 @@ result_branch: relay/b-star-coast-read-turn-20261117
 ## 几点事实
 - 固定游戏源码为已部署 v12 的 `1796e9f`，两份独立构建。现有 `STAR_RUSH_SIGNBOARD_VARIANT=navy-v1` 是构建开关，不是网址参数；默认粉色与深蓝候选只差旧三连箭头的配色，单箭头不变。入口均为 `/road/`，不加 `scene=baseline`；那是海岛场景回退，不是标牌对照。现有入口见[拍摄说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/1796e9fc65c1af64415ecbf151432f0e273c1c3c/docs/capture.md)。
 - **先验正在服务的构建**：分别组装两份产物后，用 `node tests/smoke-server.mjs` 服务各自的已构建目录；`npm run smoke:serve` 会先重构建，普通 shell 会把 navy 覆盖回默认，标牌构建验收 `node tests/signboard-source-choice.mjs` 也会在清理时重建默认。两份截图回执要记从 `/road/game.js` 实际取回的 SHA-256，并确认各自匹配其构建、两份不同；不匹配就不出 A/B 结论。
-- `shot=coast-chase&seed=73121&t=28&input=road-tour` 已接近弯中，只用于确认目标牌。旧记录可从车辆约 387 米、目标原三连牌约 405 米开始找，这不是当前 v12 的可见性证据。沿同一条输入、同一追尾机位向前取一帧，要求牌已进入视野且车还没进弯，两组固定同一时刻；先看原图再决定取哪帧。若该段实际未出现目标牌，写明，不用弯中画面宣称改善预告。旧[整景试验图](../look-guide-trial-20261114.md)是选题线索，不是此次前图。
+- `coast-chase` 用 `seed=73121&input=road-tour`。固定 v12 的生产道路逻辑无画面复跑，在 `t=22` 到达 381.76 m，`t=22.3` 到达 387.22 m，`t≈23.28` 越过 405 m。实机先从 `t=22` 查 `__shot.player.s` 并看目标牌，必要时往前取帧。旧 [`t=28` 回执](https://github.com/dbvv1/Star-Rush-Reborn/blob/1796e9f/docs/quality/capture/B-STAR-QUALITY-CAPTURE-20261106/811646e8/coast-chase/coast-chase-run1.json#L24-L44) 在 478.72 m，已过目标牌，不能用于验证入弯预告。两组按同一 tick 对照；若要说新版「更早」可辨，用 `frames`／`__shotNext()` 取少量连续配对帧，记录首次判对方向的时刻。若原机位入弯前未出现目标牌，写明，不改相机。无画面车位只缩小找帧范围，不证明可见。
 - 方向会话核原拍摄槽空闲后，交本机强执行者一次连续真 GPU 回合，自己看图。仅 headless，禁止可见窗口、模拟键鼠、操作桌面；使用现有输入录制或游戏入口，不改相机、碰撞、道路、操控或新增资产。原会话状态未知不另起。普通接收端不执行本卡。
 - **真 GPU 入口**：保留同一个 `?shot=` 页面，用方向会话已有的本机 headless RTX 拍摄方式读取该页导出的 PNG、相机／时刻／车况和 renderer。固定源码自带的 `npm run capture` 会强制并校验 SwiftShader；`--hardware-evidence` 仅引用已有回执，不会切换 GPU。若未确认真实硬件 renderer，不把截图归入真 GPU 对照。
 
