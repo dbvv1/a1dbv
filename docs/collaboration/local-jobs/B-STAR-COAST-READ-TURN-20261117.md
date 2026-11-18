@@ -1,7 +1,7 @@
 # B-STAR-COAST-READ-TURN-20261117 · 过弯前读得出方向
 id: B-STAR-COAST-READ-TURN-20261117
 owner: dot-B
-status: ready
+status: running
 kind: build
 executor: strong
 target_repo: dbvv1/Star-Rush-Reborn
