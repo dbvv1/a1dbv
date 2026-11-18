@@ -1,7 +1,7 @@
 # B-STAR-COAST-READ-TURN-20261117 · 过弯前读得出方向
 id: B-STAR-COAST-READ-TURN-20261117
 owner: dot-B
-status: review_ready
+status: accepted
 kind: build
 executor: strong
 target_repo: dbvv1/Star-Rush-Reborn
@@ -23,8 +23,6 @@ result_branch: relay/b-star-coast-read-turn-20261117
 
 ## 当前结果
 
-- Built default and navy-v1 variants independently at 1796e9f; served each via startSmokeServer and confirmed /road/game.js SHA matches its own build and differs between builds. Captured same-position headless true-GPU pairs (1280x720, DPR 1) at t=20.8/21.5/22.0/23.0 plus three continuous sequences; ticks and player.s identical across variants; t=22 re-shots byte-identical. Author's 1x read: navy-v1 readable at about t=21.0 vs default t=22.0, sign contrast 6.64:1 vs 2.38:1; harbor gate draws first attention but does not encode direction and does not occlude the sign. npm test exit 0. No default change, no deploy, no source/camera changes. Open: full-game true-GPU run, frame cost, and non-author blind read not run (conditional on direction session adopting navy-v1); readability is author-only, one corner only.
-- 产物：[66b5abb](https://github.com/dbvv1/Star-Rush-Reborn/commit/66b5abbf6f193561cca408c86c8a91511afb2c5d)，分支 `relay/b-star-coast-read-turn-20261117`。
-- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
-- 下一步：Direction session decides whether to adopt navy-v1; if adopting, run a full true-GPU race plus frame-cost capture and have a non-author blind-read the 320px comparisons.
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
+- 只接收[已部署 v12 源码的第一弯本机前后图](https://github.com/dbvv1/Star-Rush-Reborn/tree/66b5abbf6f193561cca408c86c8a91511afb2c5d/docs/quality/capture/B-STAR-COAST-READ-TURN-20261117)。两份实际服务的 bundle SHA 不同且各自匹配构建；原图各四张，车位、拍摄 tick 和机位逐对一致；renderer 为 RTX 5070 D3D11。末次构建、拍摄和测试退出为 0；回执不足以确认原启动器和拍摄槽的全部资源已清。执行回执是普通接收端，启动参数含 `--no-sandbox` 和 `--enable-unsafe-swiftshader`，不当作方向会话按 §7 发起的强执行回合，也不复用该参数组合。
+- 一位非作者先看去标签、随机组号的 320×180 全画面，再看 1280×720 原图，先找牌、再判箭头，不能从道路弯向推断。两组原图最早都在 **21.50 秒**判对左转；缩图两组在 **22.00 秒**都只能找到牌，最早都在 **23.00 秒**判对。深蓝比粉色对比清楚，但未提前可读采样点。作者报告约提前一秒，公开的四对帧未独立证实；方向辨认不等于真人来得及打方向。
+- 保留现状，不把单弯的颜色对照扩大到旧端和全路段，也不为此排整局测帧耗；没有合入开关、换默认或部署。若再处理这个差距，先验证路牌是否比门楼更早被注意到，并以 320 像素宽时能否先判箭头为准；不重复只改箭头色。
