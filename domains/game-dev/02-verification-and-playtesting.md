@@ -57,6 +57,8 @@ MOBA-Like 的原检查在 R 技能及多轮 HUD 改尺寸后才问 E 区域是�
 
 可复用的取帧例：[MOBA-Like 固定版拍摄入口](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/docs/capture.md#请求与逐帧合同)用 `capture.html?shot=gameplay&seed=1&input=march&t=19.8&frames=49` 覆盖预警前到结算后。用原 `CaptureSession` 和实际 `createEffects` 复跑，敌方 Veyra R 的预警实体与网格在 tick 596、606、615 同时存在，595 未出现，616 均不存在；从出现到结算有 20 个逻辑 tick（0.67 秒）。[伤害范围按目标半径扩展](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/sim/simulation.ts#L1140-L1170)。这是拍摄入口的 CPU 定位，不是玩家看得见、来得及或能躲开的证明（本端 CPU 实测，2026-11-18）。
 
+若用这段取帧比较 v24 的画面，两版共同追加 `&lighting=forest-light-v1&materials=quiet-family-v1&scene=forest-lane-v1`。这些是该版[普通首页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/index.html#L1-L2)的默认配置，[独立拍摄页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/capture/client.ts#L60-L76)不会继承。不带参数三项都回到 baseline。若本轮改的就是其中一项，只改该变量，回读实际渲染配置；该命令仅校准取帧，不代替本机实拍默认入口。
+
 **本节来源与范围**：Unity CLI 帧字段见 [CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)，Input System 合成输入见 [Input testing](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)，UE 自动化与输入模拟见 [Automation Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine)、[Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)，Roblox 试玩入口见 [Studio MCP](https://create.roblox.com/docs/studio/mcp)；以上均为各引擎官方文档（一手）。能力边界与选择判断为本仓研究。引擎契约原核实 2026-10-15（UTC+8）。
 
 ## 3. 一个真实案例：答对了，为什么还走不出去？
