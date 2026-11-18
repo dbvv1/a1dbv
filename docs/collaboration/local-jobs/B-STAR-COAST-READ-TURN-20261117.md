@@ -1,7 +1,7 @@
 # B-STAR-COAST-READ-TURN-20261117 · 过弯前读得出方向
 id: B-STAR-COAST-READ-TURN-20261117
 owner: dot-B
-status: blocked
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/Star-Rush-Reborn
@@ -23,4 +23,8 @@ result_branch: relay/b-star-coast-read-turn-20261117
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- Built default and navy-v1 variants independently at 1796e9f; served each via startSmokeServer and confirmed /road/game.js SHA matches its own build and differs between builds. Captured same-position headless true-GPU pairs (1280x720, DPR 1) at t=20.8/21.5/22.0/23.0 plus three continuous sequences; ticks and player.s identical across variants; t=22 re-shots byte-identical. Author's 1x read: navy-v1 readable at about t=21.0 vs default t=22.0, sign contrast 6.64:1 vs 2.38:1; harbor gate draws first attention but does not encode direction and does not occlude the sign. npm test exit 0. No default change, no deploy, no source/camera changes. Open: full-game true-GPU run, frame cost, and non-author blind read not run (conditional on direction session adopting navy-v1); readability is author-only, one corner only.
+- 产物：[66b5abb](https://github.com/dbvv1/Star-Rush-Reborn/commit/66b5abbf6f193561cca408c86c8a91511afb2c5d)，分支 `relay/b-star-coast-read-turn-20261117`。
+- 检查：check_public（文件与新提交身份） 通过；独立审查通过。
+- 下一步：Direction session decides whether to adopt navy-v1; if adopting, run a full true-GPU race plus frame-cost capture and have a non-author blind-read the 320px comparisons.
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
