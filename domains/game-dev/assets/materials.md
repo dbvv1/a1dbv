@@ -344,6 +344,8 @@ PY
 
 **接线证据与画面分开接收。** 原 `0811894` 记录的 550 项测试、构建、关闭开关的同输入回放通过；浏览器默认／quiet 从零推进 653／470 tick，但均自然回退 Canvas2D，未呈现 quiet 材质。随 Site v20（26d26c7）部署后默认／quiet／QW 推进 432／353／513 tick，同样不补成材质显示或换默认依据。[原验收](https://github.com/dbvv1/MOBA-Like/blob/0811894da59740bdc10e0a2318174f3dbb0530d1/docs/side-release-acceptance.md#quiet-材质已有候选重放旁置门槛通过)，2026-11-03。11-06 固定 `b489ed3` 的相关 12 项 CPU 检查通过，包括生产 `createBattlefield` 两实例共用与移除、错误 helper 二次注入反例；GLB 实际解析、纹理为内存替身，仅检查 shader 字符串而非编译。原读者四路任务仍未通过，WebGL、真实 WebP 解码、同机位盲评与硬件成本待验，详见[接收记录](../../../docs/collaboration/nonstar-return-intake-20261106.md)。
 
+**👀 换贴图先查它在当前默认画面中占多大权重。** MOBA 的旧 quiet 路径让土与草直接参与地表混合；森林默认另用生成的石板作路心，在 23／41 米两个尺度混合，原土／草只提供低幅度色调扰动。换 [Brown Mud Dry](https://polyhaven.com/a/brown_mud_dry) 和 [Grass Ground](https://polyhaven.com/a/grass_ground) 不会因此得到一条新材质的主路。要试现成材质，先把 [Stone Wall 05](https://polyhaven.com/a/stone_wall_05) 放进仍消费墙面图的基地／兵营石面，只替换既有遮罩内的 albedo，保旗帜与原图集；新废墟塔附饰不吃这张图。先比原 4 米采样和约 2.1 米源尺度下的砌块，不顺手加法线、KTX2 或改路线。来源[明确为 CC0](https://polyhaven.com/license)；[当前地面着色](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/render/quiet-family.ts#L135-L169)和[现有墙面遮罩](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/render/quiet-buildings.ts#L5-L35)已核。只收来源和消费者路径，未替换、渲染或做同机位风格比较。核实：2026-11-18。
+
 | 玩家需要读懂什么 | 最小可复用做法 | 何时增加；何时撤回 |
 |---|---|---|
 | 我在哪里、面朝哪边、与环境是什么空间关系 | ✅ 共用少量主材质与光照预设，先让主体轮廓和地面层次清楚；不靠每件资产独立补光 | 🧪 只给确实被遮住的重要对象加原生 Render Objects 遮挡显示；它能提示位置，不能代替看清脚下危险或通路。全场描边压平层次、暗示本不该知道的敌人信息时收窄范围 [研究] |
