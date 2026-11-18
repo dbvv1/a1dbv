@@ -2,7 +2,7 @@
 id: B-CORE-SCENERY-LOD-TRANSITION-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-scenery-lod-transition-sources-20261115
@@ -19,8 +19,6 @@ page: domains/game-dev/04-client-modules.md@82e13fe6a5895b48baa0ff659bfd23019e4e
 
 ## 当前结果
 
-- result.md 已写入并通过独立审查：首屏给出默认保持无 LOD、按 chunk／整批选层、10%–15% 回差带、先硬切滞回后淡变及平台限制等结论；417 条已核实来源逐条带链接与理由，渠道覆盖 10 类合计 417，前 12 组含 three.js LOD.update 滞回公式与 50→55 m 回摆例、Star-Rush 三消费者文件；结论索引覆盖距离选点、往返阈、淡变双绘、平台不支持、快速回看＋雾反例、最小批次建议与停做条件；附录 148 条不可达按原因归类。未运行引擎／游戏／浏览器，无帧耗、截图或分数（任务不要求）；部分条目仅摘要或仅 URL 已在文中标注；无未关闭 issue。
-- 产物：[c3f028b](https://github.com/dbvv1/a1dbv/commit/c3f028b605e5eda09150fdba08c08c10ba428f1d)，分支 `relay/b-core-scenery-lod-transition-sources-20261115`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 82e13fe6 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；独立审查通过。
-- 下一步：接收端提交 result.md；本单元无剩余缺口
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- **仅接收来源研究，不采用 LOD。** [原始返回 c3f028b](https://github.com/dbvv1/a1dbv/blob/c3f028b605e5eda09150fdba08c08c10ba428f1d/docs/collaboration/local-jobs/artifacts/B-CORE-SCENERY-LOD-TRANSITION-SOURCES-20261115/result.md#toc-conclusion)保留来源、比较和未读范围。不把清单逐条当已复核，不把 10%–15% 当通用建议。
+- **核正回摆例。** Three.js r180 实际 `LOD.update`：切远阈 50 m、回差 0.1，远层活跃后小于 45 m 才切近。先从 0 m 初始化，49.9→50.1→49.9→45→44.9 m 为近、远、远、远、近；新建对象直接从 49.9 m 启动却先选远，因为远层初始可见。测正常回摆，也测重建后第一帧的层级。[r180 源码](https://github.com/mrdoob/three.js/blob/0af9729d0c143a86a1d725d6e2c3ad83301f3f34/src/objects/LOD.js#L245-L292)（本端 CPU 实测，2026-11-18）。
+- **Star 保持不改。** 已部署 v12 的[赛道裁剪](https://github.com/dbvv1/Star-Rush-Reborn/blob/1796e9fc65c1af64415ecbf151432f0e273c1c3c/race.js#L170-L172)按玩家沿路线与 40 m 区块起点的环绕距离，裁的是整个区块；默认走 [island 后端](https://github.com/dbvv1/Star-Rush-Reborn/blob/1796e9fc65c1af64415ecbf151432f0e273c1c3c/render-three-island.js#L14-L18)，按相机视图深度做 150–560 m 雾，不是旧后端的 125–460 m，也不等价于沿道裁剪。摆件入实例批次前有独立节点，不必整区块换层；整区块还含道路和护栏，不能当作装饰件淡掉。若路肩跳变，先辨别整块裁剪还是同一件远近模型切换，不用雾距离推裁剪时刻；双层是否增提交要看实际批次与帧耗。尚无同路径实拍反例或性能证据，不开新拍摄、不回写采用知识。
