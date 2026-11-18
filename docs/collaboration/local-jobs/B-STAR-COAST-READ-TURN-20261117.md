@@ -1,7 +1,7 @@
 # B-STAR-COAST-READ-TURN-20261117 · 过弯前读得出方向
 id: B-STAR-COAST-READ-TURN-20261117
 owner: dot-B
-status: running
+status: blocked
 kind: build
 executor: strong
 target_repo: dbvv1/Star-Rush-Reborn
@@ -20,3 +20,7 @@ result_branch: relay/b-star-coast-read-turn-20261117
 
 ## 交付
 交本机默认 build 和 navy build 的同机位原始前后图（1280×720、DPR 1、同一画质）；记录入口、时刻、实际 renderer、Chromium、构建 bundle SHA、实际退出，附 320 像素宽对照。交一句判断：第一眼何时能读出方向，是否被其他标志抢读。值得采用才补拟发布入口的真 GPU 整局和帧耗，交一位非作者看图；实现若无新技法，写清为何现成配色有效或无效。结果交方向会话，不换默认、不部署。
+
+## 当前结果
+
+- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
