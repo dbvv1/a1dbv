@@ -1,0 +1,97 @@
+{
+  "task": "A-MIGRATION-CATTRS-DECIMAL-READER-20261114",
+  "page": "docs/decisions/migrations.md@6764ab019c94d63fe02af06596a5c0e1f8d9446f",
+  "base_ref": "e9239b7082206f18e3cec873b11451aff35beb9c",
+  "pr": "python-attrs/cattrs#822",
+  "pr_head": "2e883761ca61b076c3de45a5d976952226347c2c",
+  "pr_head_parent": "bde101a5a67997c61a3ee0e971386a82fe141d4e",
+  "pr_merge_base_with_base": "bde101a5a67997c61a3ee0e971386a82fe141d4e",
+  "main_commits_missing_from_pr_head": [
+    "e9239b7 docs: link deque fix to its issue and pull request",
+    "354a141 Fix typed deque serialization in the msgspec converter",
+    "8a23a31 Bump msgpack from 1.2.1 to 1.2.3",
+    "c4c73b1 Bump pymongo from 4.18.2 to 4.18.3",
+    "d043dbd Fix the cache_result parameter name in get_*_hook docstrings",
+    "7a24f77 Bump certifi from 2025.6.15 to 2026.10.19"
+  ],
+  "integration": {
+    "method": "cherry-pick PR head commit onto base_ref",
+    "commit": "653efccbf73ab5890d7480986e3815e14ae707f4",
+    "conflict": "HISTORY.md NEXT section; resolved by keeping both the PR Decimal entry and main's newer deque entry",
+    "files_changed_vs_base": [
+      "HISTORY.md",
+      "src/cattrs/preconf/json.py",
+      "src/cattrs/preconf/pyyaml.py",
+      "tests/test_preconf.py"
+    ]
+  },
+  "environment": {
+    "interpreter": "CPython 3.12.15 (64-bit, MSC v.1944), win-amd64",
+    "python_version": "3.12.15",
+    "os": "Windows 11 (10.0.26300)",
+    "installed_dependencies": {
+      "attrs": "26.1.0",
+      "PyYAML": "6.0.3",
+      "pytest": "9.2.0",
+      "hypothesis": "6.170.15",
+      "pytest-benchmark": "5.3.1",
+      "msgpack": "1.2.4",
+      "msgspec": "0.22.0",
+      "ujson": "6.1.0",
+      "orjson": "3.13.0",
+      "tomlkit": "0.15.2",
+      "tomli_w": "1.2.0",
+      "cbor2": "6.3.0",
+      "pymongo": "4.20.0",
+      "typing_extensions": "4.16.0"
+    },
+    "isolation": "three fresh venvs, each installed exactly one built wheel with --no-deps; dependencies installed from PyPI; consumer and tests import site-packages/cattrs"
+  },
+  "builds": [
+    {
+      "label": "base",
+      "git_commit": "e9239b7082206f18e3cec873b11451aff35beb9c",
+      "package_version": "26.2.2.dev20",
+      "wheel": "cattrs-26.2.2.dev20-py3-none-any.whl",
+      "wheel_sha256": "d6ff46ed512e2fadd4d69b46168b5ad5401b7705d60aa38c41b47801e62f496e"
+    },
+    {
+      "label": "pr-head",
+      "git_commit": "2e883761ca61b076c3de45a5d976952226347c2c",
+      "package_version": "26.2.2.dev15",
+      "wheel": "cattrs-26.2.2.dev15-py3-none-any.whl",
+      "wheel_sha256": "cddf4ff40e82f35b64cc72bc6c5293171ed6dbd571cfd5d3cc7fcd97ea3e60d0"
+    },
+    {
+      "label": "integrated",
+      "git_commit": "653efccbf73ab5890d7480986e3815e14ae707f4",
+      "package_version": "26.2.2.dev21",
+      "wheel": "cattrs-26.2.2.dev21-py3-none-any.whl",
+      "wheel_sha256": "a8a1235a7ec0f71dd73b37d3bf145f4e44287e72574ff4dfef13bb8d24ad6a6b"
+    }
+  ],
+  "results": {
+    "consumer_observation": {
+      "base": {"total": 28, "ok": 2, "error": 26},
+      "pr-head": {"total": 28, "ok": 24, "error": 4, "note": "the 4 errors are the two invalid-string inputs per serializer, which are expected to raise"},
+      "integrated": {"total": 28, "ok": 24, "error": 4, "note": "same as pr-head"}
+    },
+    "consumer_pytest": {
+      "base": {"exit_code": 1, "passed": 2, "failed": 22},
+      "pr-head": {"exit_code": 0, "passed": 24, "failed": 0},
+      "integrated": {"exit_code": 0, "passed": 24, "failed": 0}
+    },
+    "native_tests_test_preconf": {
+      "command": "python -m pytest tests/test_preconf.py -q -p no:cacheprovider",
+      "base": {"exit_code": 0, "passed": 61, "skipped": 22},
+      "pr-head": {"exit_code": 0, "passed": 65, "skipped": 22},
+      "integrated": {"exit_code": 0, "passed": 65, "skipped": 22}
+    },
+    "native_main_regression_deque": {
+      "command": "python -m pytest tests/preconf/test_msgspec_cpython.py -q -k deque (test file from base_ref run against each installed wheel)",
+      "base": {"exit_code": 0, "passed": 11, "failed": 0},
+      "pr-head": {"exit_code": 1, "passed": 5, "failed": 6},
+      "integrated": {"exit_code": 0, "passed": 11, "failed": 0}
+    }
+  }
+}
