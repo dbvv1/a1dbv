@@ -1,6 +1,6 @@
 id: A-MIGRATION-HERMES-WINDOWS-COMPLETE-READER-20261113
 owner: dot-A
-status: blocked
+status: review_ready
 kind: reader-test
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 146697f97fa8644702371a26f10c349a99f8c100
@@ -21,7 +21,11 @@ page: docs/decisions/migrations.md@a5324e32ae3258e78c7986c39091b0c29a341ed3
 5. 运行check_repo/check_public/git diff --check，review_ready，不自动合main。普通单元最多2小时，共享最多4并发/1GPU，本卡无GPU；超时保存结果与恢复点，不从头重试。
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- reader-test 一轮结束，taskDone=true：原生 win32 上固定 c9b20d7b 建原/候选两棵独立树，各 25167 个跟踪 blob，未打补丁前缺失/不符 0；补丁 SHA256 一致；原树 native 7 项、候选 3 文件 18 项通过（0 失败/skip，exit 0）；check_repo/check_public/git diff --check 通过；未提交。核对者独立复现通过但 reviewed=false，pageStuck=4：8.3/subst 不足以绕过 Git 长路径、全历史 clone 非必需、blob 需 clean-filter 核法、check_public 对合成 sk- 串误报需脱敏提示。openIssues=7：candidate-node-ids 占位符非实际 node id、深临时路径 import anthropic 失败而 artifacts 未记短路径前提、原树 native 测试文件复制及 hash 未记录，及上述 4 项页面卡点。未运行/未验：真实网关、Bedrock、完整应用、全量测试/CI；不升全产品默认。
+- 产物：[4afc23d](https://github.com/dbvv1/a1dbv/commit/4afc23d2499684497cc3bb0349af4c1080d8e6c9)，分支 `relay/a-migration-hermes-windows-complete-reader-20261113`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 146697f9 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人按卡点修页面（repo-local core.longpaths/浅取 fetch/clean-filter 核 blob/脱敏提示）并修正 artifacts 的 node id 与复现前提；确认本轮 reader-test 是否接收，不自动重读。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 页面全文（只去空行并固定相对链接，不额外辅导）
 # 遗留代码与大迁移：怎样选改法、保住原行为
