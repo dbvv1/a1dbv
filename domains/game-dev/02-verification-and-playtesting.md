@@ -67,11 +67,17 @@
 MOBA-Like 的原检查在 R 技能及多轮 HUD 改尺寸后才问 E 区域是否还在。在原版的固定步长 CPU 复现中，Morrow E 于 tick 11 生成区域并挂接两个网格，147 按期移除；到 191，旧断言会报失败。用项目的固定步长入口核交付与到期两个点，可以检验断言时序；网格记录不是屏幕像素，也不能据此确定历史浏览器失败原因。[原浏览器断言](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/tests/client/browser-smoke/run.mjs#L208-L217) · [技能时长配置](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/content/catalog.ts#L483-L501)（本端 CPU 实测，2026-11-17）。
 
 
-**危险预警要让没见过技能的人在命中前作出正确反应。** 先用现有重放找到预警生效和结算的两个时刻，再在玩家实际视角录一小段，保留敌我单位和地面特效。给没见过技能的观察者先停在结算前，问「哪里危险、你往哪退」，再播放结算。只看命中截图会把爆炸当作预警；只比较留帧则不能判断玩家有多久可反应。以角色碰撞外沿是否离开伤害区核对结果，不拿脚底中心出圈当成功。
+**第一次看危险预警，要有交战上下文，但不给命中结果。** 从预警前一小段开始，以正常速度播放整个玩家视野；保留单位、地面特效及其它提示，不先圈出目标。到命中前即停，请没见过技能的人先答「哪里危险、往哪退」，再播放命中并看定位图。不用已知答案的反复看图替代第一次判断。这个试验看提示能否被发现与理解；要测实际逃脱，还要让玩家操作并核碰撞外沿已离开伤害区，不能只看角色中心。
 
-可复用的取帧例：[MOBA-Like 固定版拍摄入口](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/docs/capture.md#请求与逐帧合同)用 `capture.html?shot=gameplay&seed=1&input=march&t=19.8&frames=49` 覆盖预警前到结算后。用原 `CaptureSession` 和实际 `createEffects` 复跑，敌方 Veyra R 的预警实体与网格在 tick 596、606、615 同时存在，595 未出现，616 均不存在；从出现到结算有 20 个逻辑 tick（0.67 秒）。[伤害范围按目标半径扩展](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/sim/simulation.ts#L1140-L1170)。这是拍摄入口的 CPU 定位，不是玩家看得见、来得及或能躲开的证明（本端 CPU 实测，2026-11-18）。
+**直接试用：取 MOBA-Like v24 的同一段交战。** 以 [固定版 `fa3076f` 的拍摄入口](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/docs/capture.md#请求与逐帧合同)为例，打开：
 
-若用这段取帧比较 v24 的画面，两版共同追加 `&lighting=forest-light-v1&materials=quiet-family-v1&scene=forest-lane-v1`。这些是该版[普通首页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/index.html#L1-L2)的默认配置，[独立拍摄页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/capture/client.ts#L60-L76)不会继承。不带参数三项都回到 baseline。若本轮改的就是其中一项，只改该变量，回读实际渲染配置；该命令仅校准取帧，不代替本机实拍默认入口。
+```text
+capture.html?shot=gameplay&seed=1&input=march&t=18.8&frames=109&lighting=forest-light-v1&materials=quiet-family-v1&scene=forest-lane-v1
+```
+
+1. 以 60 帧／秒播放第 0–103 帧，不给读者看后面的判定或图注。此样例从第 64 帧开始出现 Veyra R 预警，第 104 帧才命中；前导时间不算进反应窗口。
+2. 记录第一次回答后，播放第 104–108 帧并核实际伤害。加长窗口比只从 19.8 秒开始多 1 秒交战上下文；在原 `CaptureSession` 和 `createEffects` 的 CPU 复跑中，新增 60 帧没有目标预警，后 49 帧状态与特效逐帧相同，仍在 tick 596–615 预警，616 结算（0.67 秒）。[伤害范围按目标半径扩展](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/sim/simulation.ts#L1140-L1170)。
+3. 保留三个画面参数：[普通首页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/index.html#L1-L2)默认是森林场景、森林照明和 quiet 材质，[独立拍摄页](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/capture/client.ts#L60-L76)不继承，不带参数三项都回到 baseline。它不含玩家 HUD，只用于场内提示。上述定位是 CPU 实测，尚不能证明 GPU 画面、新玩家看懂或来得及躲开（2026-11-18）。
 
 **本节来源与范围**：Unity CLI 帧字段见 [CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)，Input System 合成输入见 [Input testing](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)，UE 自动化与输入模拟见 [Automation Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine)、[Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)，Roblox 试玩入口见 [Studio MCP](https://create.roblox.com/docs/studio/mcp)；以上均为各引擎官方文档（一手）。能力边界与选择判断为本仓研究。引擎契约原核实 2026-10-15（UTC+8）。
 
