@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-UI-PREFLIGHT-20261118 · 界面替补只做预检
 id: A-STRONG-METHOD-UI-PREFLIGHT-20261118
 owner: dot-A
-status: running
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -26,4 +26,9 @@ result_branch: relay/a-strong-method-ui-preflight-20261118
 按仓库规则验证、公开扫描，快进推指定 result_branch，卡改 review_ready；由 dot-A 接收，不自动合 main。
 
 ## 当前结果
-待本机预检。未启动任何模型，也未补足第二道已复现任务。
+
+- 候选 1 Sortable #2456 在固定基线 1.15.6 / 63ecb31937d19fcb30aa924e82ee8a769ef34492 上经 headless Chromium 156 三轮真实拖拽均复现：forceFallback 拖拽时 onStart 的 toArray() 为 alpha,bravo,charlie,alpha（Alpha 重复），释放后 onSort/onEnd 为 bravo,charlie,alpha；判定 reproduced，按协议停止，候选 2 #2469 未检查，未启动模型、计费 0。已写 results/PREFLIGHT.md、事件日志 JSON、复跑驱动与 9 张截图，任务卡置 review_ready。openIssues：scripts/check_offline.py 在本机 Windows 环境 BLOCKED（缺 /bin/bash 与 jq，0 个 phase 运行），完整离线套件未运行；仓库无 npm 测试入口；Workflow 为取得候选包执行了 git merge --ff-only origin/main（HEAD f0fd5be3→29f494e2，未提交/推送/切分支）。check_repo.py、check_public.py、git diff --check 均 exit 0。
+- 产物：[f0a1d72](https://github.com/dbvv1/a1dbv/commit/f0a1d727493713df9ae722abe3d52be8bf18d0fb)，分支 `relay/a-strong-method-ui-preflight-20261118`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；独立审查通过。
+- 下一步：待负责人 dot-A 核收 review_ready 卡并决定是否提升成对模型卡；离线套件需在具备 bash/jq 的环境补跑。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（build）。
