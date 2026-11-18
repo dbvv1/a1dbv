@@ -1,0 +1,14 @@
+{
+  "generated_agents_md_bytes": 51241,
+  "codex_visible_instructions_bytes": 32768,
+  "truncated": true,
+  "markers": {
+    "part1": true,
+    "part2": true,
+    "part3": true,
+    "part4": true,
+    "part5": false,
+    "part6": false
+  },
+  "cutoff_tail": " exact command that was run.\n- Rule 4.38: When touching module `demo_module_4_38"
+}
