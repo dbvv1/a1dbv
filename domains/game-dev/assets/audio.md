@@ -44,6 +44,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **让装饰声让出播放资格，不只让出音量。** 同一渲染回调可追赶多个模拟 tick，共用一个音频时钟。若可选出手声写入普通声的 25 ms 限流，即使更轻或同帧排序更低，下一 tick 的命中也可能消失。做法：装饰声不占普通起播／待播预算，但仍计入全局声部上限，满时先撤装饰声；同一回调中普通反馈优先。把新声源的对照加进现有假 `AudioContext` 夹具，再跑 `npm test -- tests/client/audio-critical.test.ts`，核对开关前后命中／护盾的 `source.start` 时刻，并对紧邻重叠录段用 `ffmpeg -i pair.wav -af ebur128=peak=true -f null -` 检查峰值。[原慢帧反例及运行边界](https://github.com/dbvv1/MOBA-Like/blob/79bdb57439d2ca3e49c6560271d4a598999f5ac5/docs/audio-critical.md)。本地候选的指定事件、模拟音频时钟和离线片段已核；不是原生设备播放、整局混音或试听验收。
 
+**先分「听不听得到」和「听起来隔不隔墙」。** FPS-Like 现有模拟用墙体射线决定敌声是否可听；声音层只收通过的事件 ID，再按距离与方向播放。受控探针复用原观察和播放代码，分别让墙体查询返回有墙／无墙：40 m 半径的枪声在 20 m 处仅无墙可听，在 12 m 处两路都播放，送入同样的 0.105 增益。若要加隔墙音色，只给原本可听的声音加低通或额外衰减；别用室内混响代替遮挡，也别因此让玩家或机器人收到原本不该听见的事件。试听先用同一位置、距离和武器的有墙／无墙两段，再另验原不可听点仍静音。见[可听判定](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/sim/game.ts#L244-L252)、[播放消费者](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/audio.ts#L33-L57)（2026-11-18，本端假音频输出与受控墙体查询；未验真实几何角点或试听，未改游戏）。
+
 ### 按每条录音的事件标记截取对照片段
 
 **做法：** 在实际经过关键点时，把里程／tick／事件和该次录制起点后的秒数一起保存。按各自标记裁出同一逻辑区间，不跨 A/B 共用秒数。先核报告对应的文件名、字节数和时间单调性，再以 `ffprobe -show_entries format=duration` 核时长；例如标记落在 12.5–18.1 秒的这一条，用 `ffmpeg -i mix.webm -af 'atrim=start=12.5:end=18.1,asetpts=PTS-STARTPTS,ebur128=peak=true' -f null -` 核该段原幅响度与真峰。比较刹车、撞栏等瞬态时，还须有相同事件序列；只有里程对齐的两次驾驶，可比较环境声所在区段，不能把不同事件当成混音遮蔽。
