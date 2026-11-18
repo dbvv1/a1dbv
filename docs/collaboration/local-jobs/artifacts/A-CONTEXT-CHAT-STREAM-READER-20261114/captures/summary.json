@@ -1,0 +1,48 @@
+{
+  "sdk_commit": "64fbde5d02b42ae5f9db668eb0184cdb3fc9d775",
+  "modes": [
+    {
+      "mode": "streaming",
+      "all_checks_pass": true,
+      "round1_last_response_id": "__fake_id__",
+      "round2_last_response_id": "__fake_id__",
+      "request_count": 3,
+      "failed_checks": []
+    },
+    {
+      "mode": "non-streaming",
+      "all_checks_pass": true,
+      "round1_last_response_id": null,
+      "round2_last_response_id": null,
+      "request_count": 3,
+      "failed_checks": []
+    }
+  ],
+  "comparison": {
+    "messages_identical_per_request": true,
+    "streaming_request_stream_field": [
+      true,
+      true,
+      true
+    ],
+    "non_streaming_request_stream_field": [
+      false,
+      false,
+      false
+    ],
+    "non_streaming_stream_field_present": [
+      false,
+      false,
+      false
+    ],
+    "round1_last_response_id": {
+      "streaming": "__fake_id__",
+      "non_streaming": null
+    },
+    "round2_last_response_id": {
+      "streaming": "__fake_id__",
+      "non_streaming": null
+    },
+    "server_state_fields_all_none": true
+  }
+}
