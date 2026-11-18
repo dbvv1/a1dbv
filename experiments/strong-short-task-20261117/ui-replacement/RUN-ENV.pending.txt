@@ -1,0 +1,13 @@
+待冻结，当前不得交模型或启动计时。
+目标：SortableJS/Sortable 1.15.6 / 63ecb31937d19fcb30aa924e82ee8a769ef34492
+提供 preflight.html；SHA-256 0640d39018716a39a3856aa96c5188b569ce135c1694c7429d383b2ddea7c39d
+基线 Sortable.js SHA-256 ef647f5de9f6229193bcf1c024e706b24aa1a73fb3876a1fc7b780f16d4200f7
+OS/Python/Node/浏览器版本：[待核，两臂相同]
+GPU 与截图/图像查看工具及可调用方式：[待核，不用 disable-gpu 驱动]
+工作目录：[目标检出相对入口；不公开宿主路径]
+静态服务：在目标检出根执行 python3 -m http.server 8765 --bind 127.0.0.1（如命令名/端口不同，在两臂统一冻结）。
+页面：http://127.0.0.1:8765/preflight.html
+复现：每轮重载，在 Alpha 中心按左键，右下各移动4 px，查看 start；分10步拖到 Charlie 下方，释放，查看 sort/end；三轮。
+已观察：既有 headless 预检三轮 start=[alpha,bravo,charlie,alpha]，sort/end=[bravo,charlie,alpha]。
+正式环境复现与图像实际查看：[待核，与上面动作一致；不加入修复提示]
+项目已有安装/测试/构建命令及需要的依赖版本：[从该固定版本项目文档核定；无对应入口写不适用，不伪造]

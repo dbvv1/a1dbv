@@ -34,3 +34,7 @@
 - [Click #3914](https://github.com/pallets/click/issues/3914)：云端在卡的固定 SHA 已复现 help 显示 MYAPP_PORT、missing/invalid 输出缺失变量名；这不是模型对照。本仓已有 `experiments/click-auto-envvar-error/` 补丁，因此属已知题而非未知发现；禁止执行者读取该材料，出题者不任盲评。
 - 仅本地试验，不向上游提交、评论或发 PR；尤其 Click 的贡献政策拒绝 AI 生成投稿。结果回各卡指定 a1dbv relay 分支，dot-A 接收。方向会话负责启动，不改用户账号/凭据、不扩收费服务。
 - 结果到达后决定 `docs/15-task-playbooks.md §2` 与 `templates/generic/.claude/skills/task-decisions/SKILL.md` 保留/精简/撤回哪些具体建议；若无差异则不为交付改页。卡片和本协议不算答案页进度。旧试验/隔离卡不被这次明确新授权自动关闭。
+
+## Sortable 替补状态（11-18）
+
+[预检接收](ui-replacement/results/RECEIPT.md)：#2456 固定版本 headless 三轮复现；[正式卡](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md) blocked，待实际只读隔离与真 GPU/看图通路，不先跑模型。Click 已有回执是[非正式探索记录](results/click/README.md)，不能计入干净对照；当前仍无两道有效的正式对照结果。
