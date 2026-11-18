@@ -2,7 +2,7 @@
 id: B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 6dedee31abc6bf77694dd02a23f3f9833084f2f5
 result_branch: relay/b-core-first-visible-compile-sources-20261113
@@ -18,8 +18,6 @@ result_branch: relay/b-core-first-visible-compile-sources-20261113
 
 ## 当前结果
 
-- 已按固定脚本完成 B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113 第 1 单元 explore：产出 docs/collaboration/local-jobs/artifacts/B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113/result.md（392 行），按 three.js acf77e4、Babylon fb6daf3、MOBA 79bdb574 源码行区分触发范围/完成信号/失败取消语义，并区分材质变体遗漏、纹理上传与首帧可用，给出 prepareFirstVisibleFrame 建议、quiet+forest 正例与换雾/灯/阴影类型反例（均为待执行断言）。git status/diff 与返回一致，仅此新增文件。未运行浏览器、GPU、vitest/unit-test；源码推断不作运行或性能结论。openIssues 未关闭：①L104 Canvas2D 回退‘跳过并把 backend 记进报告’与 WarmupReport.backend 仅 three-webgl2、且该分支不产出报告矛盾，需改为不产出报告只在调用方诊断记录 backend，或扩展类型并定义最小报告；②L59/L146 称 PCFSoftShadowMap 被‘静默改成’PCFShadowMap，实际先有 console warning，需改正措辞（结论不变）。
-- 产物：[5afda33](https://github.com/dbvv1/a1dbv/commit/5afda33ab4ff790bf4c8e4cc5914f9c438bc7e2c)，分支 `relay/b-core-first-visible-compile-sources-20261113`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 6dedee31 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；独立审查未通过或未完成。
-- 下一步：负责人接收后安排一次修正：按 openIssues 第 1、2 条改 result.md 对应段落，并复核两处表述与源码一致；随后按仓库流程提交。浏览器/GPU 实测与正反例执行仍留待消费者仓验证。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- **接收范围：源码比较与首帧测法，不采用预热接口。** [原始报告](https://github.com/dbvv1/a1dbv/blob/5afda33ab4ff790bf4c8e4cc5914f9c438bc7e2c/docs/collaboration/local-jobs/artifacts/B-CORE-FIRST-VISIBLE-COMPILE-SOURCES-20261113/result.md)留原提交。[验收指南](../../../domains/game-dev/02-verification-and-playtesting.md)收录冷开和首次实动作对照；现行森林版 fa3076f 后处理含选择性 Bloom，不能沿用旧分支的覆盖清单。
+- 审查更正：Three 0.186.1 将 PCFSoftShadowMap 改为 PCFShadowMap 时先告警，并非静默。当前接口草案的 WarmupReport 只描述 WebGL，Canvas 回退只应在调用方记录真实 backend，不能伪造 WebGL 报告。compileAsync 完成不等于链接成功、纹理已上传或首帧无停顿。
+- 未运行浏览器或 GPU，未接入或承诺性能收益。真实冷开确认存在相关卡顿后才考虑预热，不新增场景、任务或部署。
