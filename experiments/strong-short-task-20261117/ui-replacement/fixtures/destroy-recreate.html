@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>Sortable destroy/recreate preflight</title>
+<style>body{font:18px sans-serif;margin:40px}.lists{display:flex;gap:40px}ul{min-height:220px;width:300px;border:1px solid;padding:20px}li{padding:20px;margin:5px;background:#ddd}pre{white-space:pre-wrap}</style>
+<h1>Drag across lists before and after recreate</h1><button id="reset">Destroy and recreate same group</button><div class="lists"><ul id="left"><li data-id="alpha">Alpha</li><li data-id="bravo">Bravo</li></ul><ul id="right"><li data-id="charlie">Charlie</li></ul></div><pre id="log"></pre>
+<script src="Sortable.js"></script><script>
+const log=document.getElementById('log'); let instances=[]; let cycle=0;
+function record(event,detail){log.textContent+=JSON.stringify({cycle,event,detail})+'\n'}
+window.addEventListener('error',e=>record('error',e.message));
+function create(){instances=['left','right'].map(id=>new Sortable(document.getElementById(id),{group:'shared',animation:0,onAdd(e){record('add',{from:e.from.id,to:e.to.id})},onEnd(){record('end',instances.map(s=>s.toArray()))}}));record('created',instances.map(s=>s.toArray()))}
+document.getElementById('reset').addEventListener('click',()=>{instances.forEach(s=>s.destroy());cycle++;create()});create();
+</script>

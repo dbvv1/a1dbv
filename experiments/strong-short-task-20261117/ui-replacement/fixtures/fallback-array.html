@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Sortable fallback array preflight</title>
+<style>body{font:18px sans-serif;margin:40px}li{border:1px solid #aaa;padding:20px;margin:5px;list-style:none;width:300px;background:white}pre{white-space:pre-wrap}.ghost{opacity:.35}</style>
+<h1>Fallback drag: array must contain each item once</h1><p>Drag Alpha below Charlie. Observe onStart and onEnd arrays.</p><ul id="list"><li data-id="alpha">Alpha</li><li data-id="bravo">Bravo</li><li data-id="charlie">Charlie</li></ul><pre id="log"></pre>
+<script src="Sortable.js"></script><script>
+window.events=[]; const log=document.getElementById('log');
+const s=new Sortable(document.getElementById('list'), {forceFallback:true,animation:0,ghostClass:'ghost',onStart(){record('start')},onSort(){record('sort')},onEnd(){record('end')}});
+function record(event){const row={event,array:s.toArray()};events.push(row);log.textContent=JSON.stringify(events,null,2)}record('initial');
+</script>

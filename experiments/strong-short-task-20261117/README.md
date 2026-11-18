@@ -30,7 +30,7 @@
 
 ## 原题、已知污染与结果去向
 
-- [Excalidraw #9708](https://github.com/excalidraw/excalidraw/issues/9708)：原 issue 含完整 Mermaid 输入；固定源码见对应卡。本机预复现尚未运行。
+- [Excalidraw #9708](https://github.com/excalidraw/excalidraw/issues/9708)：原 issue 含完整 Mermaid 输入；固定源码见对应卡。11-18 本机预检未复现，已 blocked，未启动模型；见 [预检记录](results/excalidraw/PREFLIGHT.md)。替补采用[两个界面候选的预检包](ui-replacement/README.md)，未复现不进入两臂。
 - [Click #3914](https://github.com/pallets/click/issues/3914)：云端在卡的固定 SHA 已复现 help 显示 MYAPP_PORT、missing/invalid 输出缺失变量名；这不是模型对照。本仓已有 `experiments/click-auto-envvar-error/` 补丁，因此属已知题而非未知发现；禁止执行者读取该材料，出题者不任盲评。
 - 仅本地试验，不向上游提交、评论或发 PR；尤其 Click 的贡献政策拒绝 AI 生成投稿。结果回各卡指定 a1dbv relay 分支，dot-A 接收。方向会话负责启动，不改用户账号/凭据、不扩收费服务。
 - 结果到达后决定 `docs/15-task-playbooks.md §2` 与 `templates/generic/.claude/skills/task-decisions/SKILL.md` 保留/精简/撤回哪些具体建议；若无差异则不为交付改页。卡片和本协议不算答案页进度。旧试验/隔离卡不被这次明确新授权自动关闭。
