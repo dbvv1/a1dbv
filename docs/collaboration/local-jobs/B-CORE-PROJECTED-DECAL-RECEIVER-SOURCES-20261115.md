@@ -2,7 +2,7 @@
 id: B-CORE-PROJECTED-DECAL-RECEIVER-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-projected-decal-receiver-sources-20261115
@@ -19,8 +19,4 @@ page: domains/game-dev/04-client-modules.md@82e13fe6a5895b48baa0ff659bfd23019e4e
 
 ## 当前结果
 
-- explore 单元完成：产出渠道覆盖表、three.js DecalGeometry 与 Babylon CreateDecal 的逐行契约核对、Unity/Unreal/Godot/Bevy/O3DE/Flax 的接收者与呈现限制、FPS-Like 入口链与 ShotImpact 现状、可证伪正反例及 hit surface→接收网格→有界呈现池接口建议，最终 result.md 475 行；Workflow 内 35 个 agent、修正 1 轮、审查通过且无剩余。openIssues：未做任何实机/渲染复现，画面与性能结论需目标版本验证；Asset Store/Fab 成品未试用；引擎文档为当前稳定页，升级后需重核；部分论坛与商店链接对 curl 为反爬 403/412/521，SIGGRAPH 2018 HDRP PDF 404 已标未读；FPS-Like 消费者未改，接口建议留给后续实现单元。
-- 产物：[a582fde](https://github.com/dbvv1/a1dbv/commit/a582fdef1857ac676626a09584c6e1055ea0eb29)，分支 `relay/b-core-projected-decal-receiver-sources-20261115`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 82e13fe6 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；独立审查通过。
-- 下一步：后续实现单元需按接口建议接入 decal 事件、接收者 id/normal/triangle 与有界呈现池并补释放责任检查；负责人需安排目标版本实测验证画面与性能。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 只接收来源研究，不把长报告并入正文。[a582fde](https://github.com/dbvv1/a1dbv/commit/a582fdef1857ac676626a09584c6e1055ea0eb29)说明选择接收网格和投影裁剪是两道不同边界。用案例安装的 Three 0.186.1 独立 CPU 复核：分网格选择排除第二面；同网格、总深 0.20 包进反向平面，缩到本夹具的 0.05 才排除。已回写[反馈模块](../../../domains/game-dev/04-client-modules.md#打击感与反馈先让命中有含义再让重击有分量)。没有证实当前 FPS 需要墙面弹痕，不改玩法、资源、渲染或池。

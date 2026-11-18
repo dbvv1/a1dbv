@@ -2,7 +2,7 @@
 id: B-CORE-SHADOW-GRID-STABILITY-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: review_ready
+status: accepted
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-shadow-grid-stability-sources-20261115
@@ -19,8 +19,4 @@ page: domains/game-dev/04-client-modules.md@82e13fe6a5895b48baa0ff659bfd23019e4e
 
 ## 当前结果
 
-- 完成探索并写出 result.md：175 条核实来源（渠道覆盖 9 类）按 S/A/B/C/D 分级，给出 floor/round 中心、rounding matrix、floor min/max、snap min/max、near-plane 取整等实现对照与单位/失效边界；结论是 MOBA 单灯固定 44 世界单位 1024 图时，最小一步为保盒尺寸/方向/near-far/bias 只锁光空间平移，不引级联，是否需做须 dot 在真实机位先证实；含 44/1024=0.04296875 世界单位/texel 的小测试（亚格内矩阵不变、跨格恰一步，floor/round/Godot 2-texel 分开采样）及只转灯、缩放/紧贴拟合、远原点、晚一帧等反例。审查 pass（7 项问题两轮修复关闭，关键源码行号复跑核对）。openIssues：Unreal 官方 CSM 文档正文为 JS 空壳、r.Shadow.StabilizeCascades 源码私有未核；Valient ShaderX6 原文未读到；Godot 论坛 137013/104449 仅楼主帖；牛客与 Unity 中国社区仅标题壳；23 条 StackExchange/Unity Discussions 403、3 条 CSDN 521 已经 API/移动 UA 读到正文。未运行：浏览器/GPU、Unity/three.js 渲染对比、MOBA 实机机位、性能/画质测量；不声称抖动已修复。
-- 产物：[aef2cce](https://github.com/dbvv1/a1dbv/commit/aef2cceebe15b790493d54abd7a1b8cd3bc95cec)，分支 `relay/b-core-shadow-grid-stability-sources-20261115`。
-- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 82e13fe6 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；独立审查通过。
-- 下一步：负责人判断是否让 dot 在真实机位复现阴影抖动，证实后再按 result.md 的单灯最小步骤落 04-client-modules「世界光照与玩法提示」；未关闭的 Unreal/ShaderX6 等来源缺口保留为已知边界，不阻塞本卡。
-- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
+- 只接收来源研究，不把长报告并入正文。[aef2cce](https://github.com/dbvv1/a1dbv/commit/aef2cceebe15b790493d54abd7a1b8cd3bc95cec)里的 44／1024 是旧路径；固定生产森林照明的盒宽、盒高和请求尺寸为 54×44／2048²。用 Three 0.186.1 独立 CPU 复核格内相位不变、跨格一步，未锁及灯旋转／盒缩放为反例。已回写[世界照明模块](../../../domains/game-dev/04-client-modules.md#世界光照与玩法提示后处理只改世界不把提示一起压暗)。未在实际机位证实闪烁，不引入 CSM、不改当前光照。

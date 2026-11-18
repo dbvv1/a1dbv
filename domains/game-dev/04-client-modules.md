@@ -121,6 +121,8 @@ FPS 用累计射击列表的消费游标收取新结果；短命逐步事件批�
 3. **结算立即，演出短留。** 死亡立即更新生命和碰撞；当它触发回合结束时，停止玩法输入／推进，场景反馈保留 700 ms 再显菜单。存活／暂停时反馈年龄用模拟时钟，已结算回合才加有界实时时间，不能让暂停中的粒子自行过期，也不能为倒下动画延长生命。重开清反馈和计时。700 ms 是此例参数，不是通用推荐。
 4. **静音处理正在播放的声音。** `Soundscape` 持有活动声源，关声音立即逐个 `stop()`，而不只禁止下一次 `play()`；静音期间仍推进消费游标，重开清声源与游标，恢复声音不补播旧枪声。资源、混音和退出归 [声音模块](#audio-lifecycle)。
 
+**弹痕先选命中的表面，再裁投影体。** 当墙上确实需要留可辨的弹痕，让权威命中给出接收表面与法线，表现层选择对应网格或分片，用有上限的池管理实例与资源；不在绘制层重新射线。接收网格可以排除另一面独立墙，却不能排除同网格的背面。Three 0.186.1 CPU 反例：同一网格两片反向平面相隔 0.04，投影中心在前片、总深 0.20 时，两片各出两个三角；只传前片网格或把此例的总深收为 0.05，结果只剩前片两个三角。边界是从投影中心量到背面的局部距离与半深的关系，不是通用墙厚常量。[裁剪源码](https://github.com/mrdoob/three.js/blob/0af9729d0c143a86a1d725d6e2c3ad83301f3f34/examples/jsm/geometries/DecalGeometry.js#L151-L216) · [来源对照](https://github.com/dbvv1/a1dbv/commit/a582fdef1857ac676626a09584c6e1055ea0eb29)（源码／CPU 实测，2026-11-18，未接 FPS，未渲染）。
+
 **适用范围：** 这是单次即时射线、无联网预测的实现起点；穿透／弹跳须输出有序多接触，实体弹体在真实接触时产出结果。联网起手可及时反馈，关键命中／击杀默认等确认，再做预测收敛。若尸体还承担碰撞或复活玩法，寿命归规则层，不能按本例纯表现尾段删除。
 
 案例依据：[可玩 FPS-Like](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)，固定源码 `2e318db` 的 `src/sim/{physics,game}.ts`、`src/render/{feedback,canvas,scene,audio}.ts` 和对应测试，核实 2026-10-26；公开源码尚未同步，上述接口可在现有工程实现。旧逐帧规则哈希、落点／遮挡、死亡尾段与静音回归已通过，正常浏览器操作和非作者实图评估接受可见增量；仍未达到 CS2 参照品质，连续动作节奏与实际试听未评。
@@ -342,6 +344,8 @@ AI 可拆读写与补规则，先定按住式／定时式，人验连锁 boost�
 给 Agent 的回归输入应同时固定 gameplay、spawn、first-tower、spawn-to-tower 四机位，seed 1、模拟 tick 300（10 秒）、`march` 输入、1280×720／DPR 1／FOV 45，每组重复两次；核状态、相机、RGBA 重复一致，并核 baseline 与原图 hash 一致。正常可玩入口还要分别 smoke 灯光＋缓冲 v12、baseline＋缓冲 v12、baseline v11 与默认 v10。本次 475 项测试通过，3 局模拟回放零差异，四路 WebGL2 非空且无页面错误；构建 37 项 hash 与 Site v16 包逐项一致。
 
 实现起点：[main 固定提交 `27a40be`](https://github.com/dbvv1/MOBA-Like/commit/27a40bedaab6bd8bf737885afe952ef6db403f2c)的 `src/render/lighting-style.ts`（参数／角色）、`lighting-post.ts`（分层合成）、`world.ts`（可玩接线），以及 [quality.md](https://github.com/dbvv1/MOBA-Like/blob/27a40bedaab6bd8bf737885afe952ef6db403f2c/docs/quality.md)的四机位差距。以上为本 Web 案例采用与 SwiftShader **software** 图证；两人选择不等于目标图锚定的正式评分，亦未证明硬件 GPU 性能或目标画质达标。Unity／UE 的环境光、AO 与输出策略仍沿[场景光照页](unity/07-scene-rendering-and-lighting.md)按引擎管线接入，本次没有运行引擎。核实：2026-10-30（UTC+8）。
+
+**相机平移若使方向光阴影抖动，先核光空间投影格，不先上级联。** 固定正交灯盒宽高和灯向，分别用盒宽／高除以实际阴影纹理宽／高，将灯与目标一起锁到光空间 XY 格。生产森林照明请求的灯盒是 54×44、阴影图 2048²：未被设备缩减时每格约 0.02637／0.02148 世界单位，不能沿用旧 44／1024。用项目同版 Three 0.186.1 的 CPU 阴影矩阵实测，格中心移 0.49 格，固定点的 UV 不变；各轴跨至 0.51 格，只移动该轴一格；不吸附则格内也动。旋转灯或缩放灯盒会改变 UV，不能用同一零变化判据。先从目标机位证实问题并记录实际阴影纹理与阴影边界，再决定是否接入。[固定生产照明源码](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/render/world.ts#L53-L61) · [来源对照](https://github.com/dbvv1/a1dbv/commit/aef2cceebe15b790493d54abd7a1b8cd3bc95cec)（源码／CPU 实测，2026-11-18；未接入、未检查实际抖动或帧耗）。
 
 **FPS 复用时先预算额外 pass，不照抄 MOBA 的 AO 尺度。** [Site v17 旁置](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1&art=standards-v1&feel=ground-v1&lighting=courtyard-light-v1)可直接比较；v20 已把不含 ground 手感的灯光训练赛设为默认，旧 1v1 留旁置，正常开始门槛见[前台时钟采用](#web-foreground-clock)。 [FPS 固定采用源 `72356e2`](https://github.com/dbvv1/FPS-Like/tree/72356e28d7ab8850fddc422638894d6838145d1c/src/candidates/offline-training-v1/render)的 `lighting-post.ts`／`lighting-style.ts`／`scene.ts` 使用同类分层合成，但 AO 固定为物理输出宽高各一半、16 样本、半径 0.65、距离 0.001–0.008；ACES 曝光 1.05，方向光 2048² PCF 阴影。世界颜色通道每帧只更新一次阴影；世界深度重建仅在所有表面满足受限的不透明 Standard 契约（含无 alpha、位移、裁切或自定义 shader 等）时走等几何深度 shader，否则保留源 shader。玩法提示圈与相机武器独立合成，保自身深度／材质路径，Basic 提示不被 ACES 压淡；此例将 Basic 也归为 cue，复制到其他项目应先核其是否真是提示，不能把所有无光照场景物件都排除出世界层。
 
