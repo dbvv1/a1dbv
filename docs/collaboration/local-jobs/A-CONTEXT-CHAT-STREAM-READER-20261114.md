@@ -1,7 +1,7 @@
 # A-CONTEXT-CHAT-STREAM-READER-20261114 · 流式 Chat Completions 手动历史接收
 id: A-CONTEXT-CHAT-STREAM-READER-20261114
 owner: dot-A
-status: blocked
+status: review_ready
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 4ac4f0f958f0644c6245aad907b57fbba0caace1
@@ -27,7 +27,11 @@ page: docs/decisions/context-management.md@4ac4f0f958f0644c6245aad907b57fbba0caa
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- 读者在固定 SDK 64fbde5 上按页面手动历史分支完成两轮流式/非流式 Chat Completions 消费者：不传 session/服务端 ID，第二轮用 to_input_list()+新用户消息；46 项请求级断言与 434 项相关 SDK 测试均通过，页面全文 SHA-256 与任务卡一致且页面未改。taskDone=true。pageStuck：缺 Runner.run_streamed 示例、流式取历史只有一句顺序、SDK 行为结论绑定 1fc77bbc、session 未给入口。openIssues：consumer.py 顶部注释仍写 openai 3.55.0/httpx2 2.16.2（实际 3.29.0/2.14.0），按注释装依赖可能重现 4 个 span 用例失败；result.md 第 7 行“每轮实际发出 3 个请求”表述有误（实为每种模式 3 个）。未验：真实模型记忆/服务端接收、服务端会话参数与完整 replay 混用、SQLiteSession/Responses/原生客户端、SDK 全库测试、非 Windows/Python 3.13.5 环境。核对者已独立复跑，但 reviewed=false，不表示目标验收通过。
+- 产物：[6500a95](https://github.com/dbvv1/a1dbv/commit/6500a953b848eb34a85b1422e5ef8038a48f085c)，分支 `relay/a-context-chat-stream-reader-20261114`。
+- 检查：check_public（文件与新提交身份）、check_repo（已提交产物树） 通过；非读者核对有未解决项或未完成，交负责人接收。
+- 下一步：负责人修 consumer.py 版本注释与 result.md 第 7 行表述；评估是否在页面补 run_streamed 示例与流式取历史说明，并按需追验服务端会话组合。
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（reader-test）。
 
 ## 页面全文（JSON，解码后原样交付）
 ```json
