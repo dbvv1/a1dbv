@@ -1,7 +1,7 @@
 # A-CONTEXT-CHAT-STREAM-READER-20261114 · 流式 Chat Completions 手动历史接收
 id: A-CONTEXT-CHAT-STREAM-READER-20261114
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 4ac4f0f958f0644c6245aad907b57fbba0caace1
