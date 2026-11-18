@@ -2,7 +2,7 @@
 id: B-CORE-SCENERY-LOD-TRANSITION-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: blocked
+status: review_ready
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-scenery-lod-transition-sources-20261115
@@ -19,4 +19,8 @@ page: domains/game-dev/04-client-modules.md@82e13fe6a5895b48baa0ff659bfd23019e4e
 
 ## 当前结果
 
-- 原调用、工具或已登记进程尚未确认结束，保留产物与原调用身份，由维护者核清并解除本地隔离后接续；不自动重派。
+- result.md 已写入并通过独立审查：首屏给出默认保持无 LOD、按 chunk／整批选层、10%–15% 回差带、先硬切滞回后淡变及平台限制等结论；417 条已核实来源逐条带链接与理由，渠道覆盖 10 类合计 417，前 12 组含 three.js LOD.update 滞回公式与 50→55 m 回摆例、Star-Rush 三消费者文件；结论索引覆盖距离选点、往返阈、淡变双绘、平台不支持、快速回看＋雾反例、最小批次建议与停做条件；附录 148 条不可达按原因归类。未运行引擎／游戏／浏览器，无帧耗、截图或分数（任务不要求）；部分条目仅摘要或仅 URL 已在文中标注；无未关闭 issue。
+- 产物：[c3f028b](https://github.com/dbvv1/a1dbv/commit/c3f028b605e5eda09150fdba08c08c10ba428f1d)，分支 `relay/b-core-scenery-lod-transition-sources-20261115`。
+- 检查：check_public（文件与新提交身份）、check_repo 本单元无新增错误；基线 82e13fe6 已有问题：docs\collaboration\nonstar-return-intake-20261106.md:24: missing link target: local-jobs/artifacts/B-PIPE-MATERIAL-REUSE-READER-20261104/quiet-reader-production-proof.test.ts（保留告警，交负责人接收）；独立审查通过。
+- 下一步：接收端提交 result.md；本单元无剩余缺口
+- 执行：本机接收端，Claude Code＋DeepSeek 原生 Workflow（explore）。
