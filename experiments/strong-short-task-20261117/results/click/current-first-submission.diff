@@ -1,0 +1,179 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index b431725..1698392 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -3403,10 +3403,33 @@ class Option(Parameter):
+             value = value()
+         return value
+ 
++    def _get_envvar_names(self, ctx: Context | None) -> tuple[str, ...]:
++        """Get environment variable names for help and error messages."""
++        if not self.show_envvar:
++            return ()
++
++        envvar = self.envvar
++
++        if not envvar and (
++            self.allow_from_autoenv
++            and ctx is not None
++            and ctx.auto_envvar_prefix is not None
++            and self.name
++        ):
++            envvar = f"{ctx.auto_envvar_prefix}_{self.name.upper()}"
++
++        if not envvar:
++            return ()
++
++        if isinstance(envvar, str):
++            return (envvar,)
++
++        return tuple(str(var) for var in envvar)
++
+     def get_error_hint(self, ctx: Context | None) -> str:
+         result = super().get_error_hint(ctx)
+-        if self.show_envvar and self.envvar:
+-            envvars = [self.envvar] if isinstance(self.envvar, str) else self.envvar
++        envvars = self._get_envvar_names(ctx)
++        if envvars:
+             # An environment variable is allowed to feature a space or a comma on all
+             # platforms, hence the quotes around each.
+             var_str = ", ".join(f"'{var}'" for var in envvars)
+@@ -3601,21 +3624,9 @@ class Option(Parameter):
+     def get_help_extra(self, ctx: Context) -> types.OptionHelpExtra:
+         extra: types.OptionHelpExtra = {}
+ 
+-        if self.show_envvar:
+-            envvar = self.envvar
+-
+-            if not envvar and (
+-                self.allow_from_autoenv
+-                and ctx.auto_envvar_prefix is not None
+-                and self.name
+-            ):
+-                envvar = f"{ctx.auto_envvar_prefix}_{self.name.upper()}"
+-
+-            if envvar:
+-                if isinstance(envvar, str):
+-                    extra["envvars"] = (envvar,)
+-                else:
+-                    extra["envvars"] = tuple(str(d) for d in envvar)
++        envvars = self._get_envvar_names(ctx)
++        if envvars:
++            extra["envvars"] = envvars
+ 
+         # Temporarily enable resilient parsing to avoid type casting
+         # failing for the default. Might be possible to extend this to
+diff --git a/tests/test_options.py b/tests/test_options.py
+index 1d7f715..033d180 100644
+--- a/tests/test_options.py
++++ b/tests/test_options.py
+@@ -997,29 +997,89 @@ def test_show_envvar(runner):
+     assert "ARG1" in result.output
+ 
+ 
+-def test_show_envvar_auto_prefix(runner):
+-    @click.command()
+-    @click.option("--arg1", show_envvar=True)
+-    def cmd(arg):
+-        pass
++@pytest.mark.parametrize(
++    ("args", "exit_code", "message"),
++    [
++        (["--help"], 0, "--port INTEGER"),
++        ([], 2, "Error: Missing option '--port'"),
++        (["--port", "oops"], 2, "Error: Invalid value for '--port'"),
++    ],
++)
++@pytest.mark.parametrize(
++    ("envvar", "show_envvar", "allow_from_autoenv", "expected_envvars"),
++    [
++        (None, True, True, ["MYAPP_PORT"]),
++        ("", True, True, ["MYAPP_PORT"]),
++        ([], True, True, ["MYAPP_PORT"]),
++        ("PORT", True, True, ["PORT"]),
++        (["PORT", "ALT_PORT"], True, True, ["PORT", "ALT_PORT"]),
++        (None, False, True, []),
++        ("PORT", False, True, []),
++        (None, True, False, []),
++        ("PORT", True, False, ["PORT"]),
++    ],
++)
++def test_show_envvar_auto_prefix(
++    runner,
++    args,
++    exit_code,
++    message,
++    envvar,
++    show_envvar,
++    allow_from_autoenv,
++    expected_envvars,
++):
++    @click.command(context_settings={"auto_envvar_prefix": "MYAPP"})
++    @click.option(
++        "--port",
++        type=int,
++        required=True,
++        envvar=envvar,
++        show_envvar=show_envvar,
++        allow_from_autoenv=allow_from_autoenv,
++    )
++    def cli(port):
++        click.echo(f"port={port}")
+ 
+-    result = runner.invoke(cmd, ["--help"], auto_envvar_prefix="TEST")
+-    assert not result.exception
+-    assert "TEST_ARG1" in result.output
++    result = runner.invoke(
++        cli, args, env={"MYAPP_PORT": None, "PORT": None, "ALT_PORT": None}
++    )
++    assert result.exit_code == exit_code
++    assert message in result.output
++    if expected_envvars:
++        if exit_code == 0:
++            names = ", ".join(expected_envvars)
++        else:
++            names = ", ".join(repr(var) for var in expected_envvars)
++        assert f"env var: {names}" in result.output
++    else:
++        assert "env var:" not in result.output
++    if expected_envvars != ["MYAPP_PORT"]:
++        assert "MYAPP_PORT" not in result.output
++    assert cli.params[0].envvar == envvar
+ 
+ 
+-def test_show_envvar_auto_prefix_dash_in_command(runner):
++@pytest.mark.parametrize(
++    ("args", "exit_code"),
++    [(["--help"], 0), ([], 2), (["--baz", "oops"], 2)],
++)
++def test_show_envvar_auto_prefix_dash_in_command(runner, args, exit_code):
+     @click.group()
+     def cli():
+         pass
+ 
+     @cli.command()
+-    @click.option("--baz", show_envvar=True)
++    @click.option("--baz", type=int, required=True, show_envvar=True)
+     def foo_bar(baz):
+         pass
+ 
+-    result = runner.invoke(cli, ["foo-bar", "--help"], auto_envvar_prefix="TEST")
+-    assert not result.exception
++    result = runner.invoke(
++        cli,
++        ["foo-bar", *args],
++        auto_envvar_prefix="TEST",
++        env={"TEST_FOO_BAR_BAZ": None},
++    )
++    assert result.exit_code == exit_code
+     assert "TEST_FOO_BAR_BAZ" in result.output
+ 
+ 
+@@ -1200,6 +1260,7 @@ def test_missing_envvar_sequence(runner, envvar, expected):
+     result = runner.invoke(click.Command("cli", params=[option]))
+     assert result.exit_code == 2
+     assert f"Error: Missing option {expected}." in result.output
++    assert option.get_error_hint(None) == expected
+ 
+ 
+ def test_case_insensitive_choice(runner):

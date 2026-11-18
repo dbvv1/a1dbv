@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-CLICK-20261117 · 自动环境变量错误提示成对先导
 id: A-STRONG-METHOD-CLICK-20261117
 owner: dot-A
-status: ready
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -43,4 +43,4 @@ result_branch: relay/a-strong-method-click-20261117
 不重派原有三卡，不解除其他写者隔离；原调用未知时保全，不能另起进程重复同组。
 
 ## 当前结果
-待方向会话启动；尚无模型对照结果。固定基线预检与模型能力分账，执行、盲评、采用均未完成。
+review_ready（11-18 方向会话）：两臂都修对、功能等价；非作者盲评判现行推荐臂略优（共用函数收拢推导逻辑，短任务臂复制一份），短任务臂墙钟 7 分 20 秒对 12 分 14 秒、输入 token 约一半。单题各一次，不足以改推荐页。计量、隔离审计、复跑与盲评见 [结果](../../../experiments/strong-short-task-20261117/results/click/README.md)。
