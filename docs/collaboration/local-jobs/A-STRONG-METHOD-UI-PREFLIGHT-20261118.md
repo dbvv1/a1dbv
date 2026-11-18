@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-UI-PREFLIGHT-20261118 · 界面替补只做预检
 id: A-STRONG-METHOD-UI-PREFLIGHT-20261118
 owner: dot-A
-status: ready
+status: running
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
