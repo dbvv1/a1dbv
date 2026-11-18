@@ -1,7 +1,7 @@
 # A-MIGRATION-CATTRS-DECIMAL-READER-20261114 · Decimal 消费者接收旧 PR
 id: A-MIGRATION-CATTRS-DECIMAL-READER-20261114
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 6764ab019c94d63fe02af06596a5c0e1f8d9446f
