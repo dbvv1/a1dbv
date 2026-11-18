@@ -1,7 +1,7 @@
 # A-TEAM-RULER-BUDGET-READER-20261114 · 共享规则生成与 Codex 实际输入
 id: A-TEAM-RULER-BUDGET-READER-20261114
 owner: dot-A
-status: ready
+status: running
 kind: reader-test
 target_repo: dbvv1/a1dbv
 base_ref: 55937fe5e473121b408697d21358fa1b0edada3c
