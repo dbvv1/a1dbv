@@ -48,6 +48,10 @@
 
 **帧耗和完整流程绑定同一次运行。** 从开局到终局连续采样，注明采样起止、实际 renderer、分辨率及暂停／页面隐藏区间；保留长帧，不把慢帧夹到模拟步长，也不用平均 FPS 隐去尾部停顿。比较新版与当前默认时保持同档、同入口规则和同输入方案。加速模拟、固定截图和短时采样各自报告，不冒充整局渲染成本。脚本实现这些检查只代表具备取证入口，真实运行结果回来前仍记未验。[^complete-match-evidence]
 
+**短命效果在交付时留快照，不在整局末尾查存活。** 接受指令不等于效果已交付。用只读快照在效果存续窗口内同时记录实际生成的对象、位置、到期 tick 和匹配的表现对象；后续检查界面与重开时复用这份快照，别要求效果一直存活。没生成、没接入表现层、错位置或观察时已经过期都不算通过。
+
+MOBA-Like 的原检查在 R 技能及多轮 HUD 改尺寸后才问 E 区域是否还在。在原版的固定步长 CPU 复现中，Morrow E 于 tick 11 生成区域并挂接两个网格，147 按期移除；到 191，旧断言会报失败。用项目的固定步长入口核交付与到期两个点，可以检验断言时序；网格记录不是屏幕像素，也不能据此确定历史浏览器失败原因。[原浏览器断言](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/tests/client/browser-smoke/run.mjs#L208-L217) · [技能时长配置](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/content/catalog.ts#L483-L501)（本端 CPU 实测，2026-11-17）。
+
 **本节来源与范围**：Unity CLI 帧字段见 [CLI release notes](https://docs.unity.com/en-us/unity-cli/release-notes)，Input System 合成输入见 [Input testing](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.19/manual/Testing.html)，UE 自动化与输入模拟见 [Automation Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine)、[Automation Driver](https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-driver-in-unreal-engine)，Roblox 试玩入口见 [Studio MCP](https://create.roblox.com/docs/studio/mcp)；以上均为各引擎官方文档（一手）。能力边界与选择判断为本仓研究。引擎契约原核实 2026-10-15（UTC+8）。
 
 ## 3. 一个真实案例：答对了，为什么还走不出去？
