@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-CLICK-20261117 · 自动环境变量错误提示成对先导
 id: A-STRONG-METHOD-CLICK-20261117
 owner: dot-A
-status: ready
+status: running
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
