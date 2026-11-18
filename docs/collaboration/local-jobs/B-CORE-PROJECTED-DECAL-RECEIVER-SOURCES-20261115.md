@@ -2,7 +2,7 @@
 id: B-CORE-PROJECTED-DECAL-RECEIVER-SOURCES-20261115
 owner: dot-B
 kind: explore
-status: ready
+status: running
 target_repo: https://github.com/dbvv1/a1dbv
 base_ref: 82e13fe6a5895b48baa0ff659bfd23019e4e3f07
 result_branch: relay/b-core-projected-decal-receiver-sources-20261115
