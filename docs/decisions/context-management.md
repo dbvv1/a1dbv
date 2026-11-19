@@ -86,6 +86,10 @@ Cursor 侧聊有父背景，不是摆脱旧假设的干净会话，也不是只�
 
 **🧪 使用 `OpenAIChatCompletionsModel` 且应用已持有完整历史时，去掉 `conversation_id`、`previous_response_id`，保持 `auto_previous_response_id=False`；下一轮回传 `result.to_input_list()` 加新用户消息。** 不要同时再接自动保存历史的 `session`。
 
+以下两种写法任选其一，放在异步函数内运行，假设 `agent` 已使用 `OpenAIChatCompletionsModel`。
+
+**非流式：等本轮完成，再追加下一条用户消息。**
+
 ```python
 from agents import Runner
 
@@ -96,7 +100,26 @@ next_input = result.to_input_list() + [
 result = await Runner.run(agent, next_input)
 ```
 
-不要只传 `final_output` 或工具结果；历史必须保留用户、带 `tool_calls` 的 assistant 和匹配 `tool_call_id` 的 tool 消息。流式运行先消费完 `result.stream_events()`，再取历史。检查实际发出的请求，而不只看最终回复。
+**流式：`run_streamed()` 本身不加 `await`；消费事件直到本轮正常完成，再取历史。**
+
+```python
+from agents import Runner
+
+result = Runner.run_streamed(agent, "第一条用户消息")
+async for event in result.stream_events():
+  pass  # 在这里处理或展示事件，不提前取下一轮历史
+
+next_input = result.to_input_list() + [
+  {"role": "user", "content": "接着上一轮继续"}
+]
+result = Runner.run_streamed(agent, next_input)
+async for event in result.stream_events():
+  pass
+```
+
+最后一段文字出现不等于运行结束，提前取历史可能漏掉仍在处理的工具结果；若停在工具审批，先恢复并完成该轮，不追加新消息。不要只传 `final_output` 或工具结果：历史须保留用户、带 `tool_calls` 的 assistant 和匹配 `tool_call_id` 的 tool 消息。检查实际请求，而不只看最终回复。
+
+流式顺序依据：[官方流式指南](https://openai.github.io/openai-agents-python/streaming/)；固定 SDK `64fbde5` 的[已接收读者验证](../../reader-tests/A-CONTEXT-CHAT-STREAM-READER-20261114-u1.md)覆盖无审批暂停的两轮合成 Chat 请求，不代表真实服务或模型记忆验证。
 
 **适配器忽略服务端参数，不代表 Runner 没裁历史。** 在 SDK `1fc77bbc`，三个设置均可让第二次 Chat 请求只剩工具消息；`strict_feature_validation=True` 能挡两个显式 ID，却不能可靠挡 `auto_previous_response_id`。去掉这些设置是避开该组合，不是 SDK 修复。需要服务端续接时走支持它的 Responses API，按契约传增量，不再叠加完整历史；只在服务端的旧历史也不会自动回到本地。
 
