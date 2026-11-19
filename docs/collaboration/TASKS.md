@@ -50,7 +50,7 @@
 
 ### A：试验收口
 
-- 最高优先：[两题 strong 卡](../../experiments/strong-short-task-20261117/README.md)，方向会话待启动。
+- 最高优先：[strong 方法对照](../../experiments/strong-short-task-20261117/README.md)：Click 留探索不重派；Sortable 待隔离/GPU 回执，勿先跑。
 
 [11-12 已完成段](archive/completed-through-2026-11-17.txt)；旧试验未收口不新开。
 
