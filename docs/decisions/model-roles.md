@@ -85,9 +85,11 @@ Cloudflare 的生产代码评审链在 10 月复盘中公布了按角色取舍�
 - **重复读长材料、重复派同一调查**：先收窄输入与分工；长会话中途只换 effort 时，核对[保缓存入口](../02-models-and-cost.md#同模型换推理档保留缓存前缀)。
 - **质量已达标，只是等得太久**：再比较提速选项；模型、effort、速度模式分开选择。
 
-**高 effort 的整项费用也可能更低。** VulcanBench 作者用同一 Codex 0.159.0、Sol 6.1，在 23 道旧程序重建题上每档各跑一次：`medium` 通过 22 题，`high` 通过 23 题；按 token 回算的每题 API 等价费用从 $0.40 降到 $0.33，原因是 high 的整项 token 更少。可借的是比较完成任务的投入，而非把 high 设为省钱档。该次使用 ChatGPT Pro，美元数不含裁判费用、不是订阅实扣；公开材料可重算分数与费用，候选补丁及隐藏答案未公开。
+**从 6.1 Sol 换到 6.2 Sol，先重跑一项已验收的代表任务。** 从原修复前的同一提交开两个工作树，用同一客户端、提示、推理档和速度档，只换模型。先确认回归检查在原提交会失败，再用它验收两份补丁，最后比较从启动到验收的时间和实际用量；漏过已知回归就保留旧配置，别把更快返回当成更快修好。若两组都达标，再按同样方法比较升档是否值得。
 
-**依据**：[独立作者评测] [VulcanBench 五档结果](https://vulcanbench.com/benchmarks/swe-v4-gpt61-sol-v318.html)、[固定复现范围](https://github.com/morganlinton/VulcanBenchCOM/blob/e4c7e6f6d345d72d8299db37cff1165f8d33007a/assets/data/swe-v4-gpt61-sol-v318/REPRODUCING.md)；2026-10-01 发布、2026-10-28 核读，未复跑模型。
+外部结果说明为什么要分开看：Corti 两轮用 OpenCode `max` 跑相同六个公开 bug，6.1 Sol 约 19 分钟、6/6，6.2 Sol 14 分钟、5/6（含失败）；这是竞品团队分日各跑一次的自报。VulcanBench 的 23 项旧程序重建中，6.2 Sol 的 `low` 和 `xhigh` 都是 23/23，但分别为 2.8 和 8.2 分钟／题，约 $0.23 和 $0.46／题；同任务的 6.1 历史组用 CLI 0.159.0，6.2 用 0.166.0，不能把耗时差全归给模型。同一评测的 6.1 组里，`medium` 过 22/23、约 $0.40／题，`high` 反而过 23/23、约 $0.33／题：升档也可能减少整项投入，仍须看本轮结果。VulcanBench 美元数不含裁判费用，是按 token 回算的 API 等价费用，不是 Codex 订阅实扣。
+
+**依据**：[Corti 6.1 一轮](https://corti.ai/blog/corti-s1-model-race)、[6.2 一轮](https://corti.ai/blog/corti-s1-gpt-6-2-model-race)；[VulcanBench 6.2 五档及 6.1 历史组](https://vulcanbench.com/benchmarks/swe-v4-gpt62-sol-v331.html)、[6.1 原结果](https://vulcanbench.com/benchmarks/swe-v4-gpt61-sol-v318.html)及[6.1 固定复现范围](https://github.com/morganlinton/VulcanBenchCOM/blob/e4c7e6f6d345d72d8299db37cff1165f8d33007a/assets/data/swe-v4-gpt61-sol-v318/REPRODUCING.md)。2026-11-20 核读，未复跑模型；VulcanBench 可重算公开指标，补丁和隐藏答案未公开。
 
 **换审查配置时，逐项对照新增与丢失的发现，再算完整流程成本。** CodeRabbit 冻结输入回放 13 个真实 PR，保持按角色的 `low/medium/high` 阶梯，只切换 Sonnet 5.5 thinking：按常规可执行评论计，开启抓到 6 项、关闭抓到 5 项；开启补获两项，却把关闭能正常报告的一项只报到 diff 外。每次 $0.47／$0.41 是 Claude 调用按价表回算的费用，不含摘要、验证小模型与人工处理；这不是单独升 effort 的效果。另与 Sonnet 5 对照的 44 PR 组尚未完成质量裁判，评论减少不代表质量改善。
 
