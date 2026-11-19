@@ -170,6 +170,8 @@ jrnl 的真实未决问题把 `2022-03-12 23:59` 读成次日 `00:59`。Agent �
 
 **依据与边界**：[用户日志与复现步骤，非已确认修复] [Codex #61679](https://github.com/openai/codex/issues/61679)；[维护者渠道判定] [OpenCode #64598](https://github.com/anomalyco/opencode/issues/64598)因非官方代理而关闭，仍需官方渠道复现。核读 2026-11-19；本仓未复跑报告中的故障，不据此判定 6.2 相对 6.1 的能力或普遍故障率。离线命令已在 CLI 0.167.0-alpha.4 实跑；固定源码 [0.166.0 目录](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/models-manager/models.json)未含 6.2，[0.169.1 目录](https://github.com/openai/codex/blob/rust-v0.169.1/codex-rs/models-manager/models.json)已含。官方[最低 CLI 版本仍为 0.166.0](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)；目录差异不证明线上刷新失败，也不构成升级即可修复的证据。
 
+**内置目录有该型号，本地选择器却没有：先查有没有旧目录覆盖。** 看当前生效的 `config.toml` 或选中的 profile 是否设置了 [`model_catalog_json`](https://learn.chatgpt.com/docs/config-file/config-reference#model_catalog_json)，再看它指向的 JSON 是否缺目标 `slug`。若确认是自己已不用的旧快照，先备份配置，再移除这项覆盖、重启并复查选择器；组织管理的配置不要自行改。没有这项覆盖就继续核客户端、账号开放和实际提供方。[Windows 用户 #60707](https://github.com/openai/codex/issues/60707)移除旧快照的覆盖后恢复了 6.1 Sol／Terra 目录项；这是用户实报，不是 6.2 故障复现（2026-11-20 核读）。
+
 **清理启动负担时，先删冲突和无关材料，必要约束保留。** 近期模型实践与独立 Factory 按需加载支持这一机制；若负担已经小、失败模式也未改变，就不继续删规则。输入节约不等于调试准确率提高。
 
 局限：客户端操作按所用产品核对；全量重读分流来自 AOCI 公开报告与固定源码核查，本轮未重放现场循环或实测恢复收益。
