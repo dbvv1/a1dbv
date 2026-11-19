@@ -244,13 +244,16 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 | 限制 | 按产品和计划区分；当前 Codex/Work Pro 无 5 小时限制，Plus 等有时间窗口额度，周限制也可能适用 | 速率限制及适用的账户/项目开销控制 |
 | 适合 | 个人交互开发 | CI、批处理、团队计费、自建工具 |
 
-**Codex / Work 的三种计量口径**（6.2 一行 2026-11-19 补核，其余沿用本节原日期）：
+**Codex / Work 的三种计量口径**（Fast 分型号与 6.2 Ultrafast 于 2026-11-19 补核，其余沿用本节原日期）：
 
 | 速度（相对同一模型 Standard） | 订阅内额度消耗 | 另购 credits / Enterprise 按量 credits |
 |---|---|---|
-| Fast | 2.5 倍 | 2 倍 |
+| GPT-6.2 Astra / Sol Fast | 2 倍 | 2 倍 |
+| GPT-6.1 Sol / Terra、GPT-6 Astra / Sol / Luna Fast | 2.5 倍 | 2 倍 |
 | GPT-6 Astra / GPT-6.1 Sol Ultrafast | 8 倍 | 6 倍 |
 | GPT-6.2 Astra / Sol Ultrafast（以资格为准） | 6 倍 | 3 倍至 2027-02-28（PT），此后 6 倍 |
+
+Fast 分型号倍率依据：[官方 Speed multipliers](https://learn.chatgpt.com/docs/pricing#speed-multipliers)（2026-11-19 核读）。
 
 Pro $200 明确包含 **Codex 的 GPT-6.2 Sol Ultrafast**，不含 6.2 Astra Ultrafast。额度倍率是相对同模型 Standard 的总倍率，不叠乘 Fast 的倍率；生成速度也不等于任务总耗时，等待工具、构建或测试时先看瓶颈。[套餐额度与资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex) · [另购 credits 费率](https://help.openai.com/en/articles/11481834-chatgpt-rate-card-business-enterpriseedu-credit-based-pricing)
 
