@@ -28,6 +28,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 [^audio-practical-case]: Star 源重建 `af569f88309a31c9000965eb879b079ff9955631`，[源与配方][rail-source]；运行状态门禁 `a6e3cf4323fc61df0772f09b0b29adfd3bdd833b`，[实现](https://github.com/dbvv1/Star-Rush-Reborn/blob/a6e3cf4323fc61df0772f09b0b29adfd3bdd833b/audio.js)。沿用 2026-10-25／26 的工程证据和未听验边界，不声称本轮重跑或新部署。
 
+**AI 制作中，把声音接入与音效挑选分别留证。** Pantoframe 用生成器给同一事件做数个变体，由作者听后决定留下哪一个；Junya 按小节边界切循环，让配乐随首领阶段在拍点切换，作者仍认为配乐缺乏个性。该团队还遇到标题页一暂停，总混音跟着归零。按上文的同段对照试听，另在标题、暂停恢复与第一次进入战斗实际录音。若执行环境只能测峰值、静音及触发时刻，可以发现信号丢失，最终音色选择明确留给能听见成品的一方。此处是作者报告与方法推断，未复听这两部作品。[Pantoframe 制作复盘](https://dolobgames.itch.io/pantoframe/devlog/1779821/directing-the-directors-cut-how-one-human-and-one-ai-agent-made-pantoframe-in-4-days) · [Junya 作者工作日志](https://neoautark.itch.io/junya/devlog/1781786/junya-devlog-a-diary-of-four-days-directing-ai-agents)（2026-11-19 核实）
+
 <a id="web-scene-mix"></a>
 
 ## 网页整场景混音：总线、声部和场景状态一起改
