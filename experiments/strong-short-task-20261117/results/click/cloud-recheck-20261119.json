@@ -1,0 +1,233 @@
+{
+  "date_utc": "2026-11-19",
+  "os": "Linux",
+  "python": "3.12.14",
+  "base_sha": "8abb77a8432e03ed14a95f972b44f905279415a7",
+  "accept_sha256": "853585c3e47d7e541663b5bca9fc0a8ee63df17842efb8bb7e174b84857c7e55",
+  "invocation": "PYTHONPATH=<fixed-checkout>/src PYTHONDONTWRITEBYTECODE=1 python3 accept.py",
+  "scope": "Unmodified acceptance script, source imports in real subprocesses; not model runs or installed-package verification.",
+  "results": [
+    {
+      "arm": "baseline",
+      "returncode": 1,
+      "passed": 9,
+      "total": 13,
+      "cases": [
+        {
+          "case": "help shows MYAPP_PORT",
+          "pass": true,
+          "detail": "Usage: tmpyymq4h2r.py [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "missing shows MYAPP_PORT, exit 2",
+          "pass": false,
+          "detail": "Usage: tmpgyobbayd.py [OPTIONS] | Try 'tmpgyobbayd.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "invalid shows MYAPP_PORT, exit 2",
+          "pass": false,
+          "detail": "Usage: tmpvydmq6f9.py [OPTIONS] | Try 'tmpvydmq6f9.py --help' for help. |  | Error: Invalid value for '--port': 'oops' is not a valid integer. | "
+        },
+        {
+          "case": "env value used",
+          "pass": true,
+          "detail": "port=8080 | "
+        },
+        {
+          "case": "argv beats env",
+          "pass": true,
+          "detail": "port=9 | "
+        },
+        {
+          "case": "invalid env value names MYAPP_PORT, exit 2",
+          "pass": false,
+          "detail": "Usage: tmpo3lejfg7.py [OPTIONS] | Try 'tmpo3lejfg7.py --help' for help. |  | Error: Invalid value for '--port': 'bad' is not a valid integer. | "
+        },
+        {
+          "case": "explicit envvar shown, not auto",
+          "pass": true,
+          "detail": "Usage: tmp307samy4.py [OPTIONS] | Try 'tmp307samy4.py --help' for help. |  | Error: Missing option '--port' (env var: 'PORT'). | "
+        },
+        {
+          "case": "show_envvar=False hides",
+          "pass": true,
+          "detail": "Usage: tmphukvasce.py [OPTIONS] | Try 'tmphukvasce.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "allow_from_autoenv=False hides",
+          "pass": true,
+          "detail": "Usage: tmpmv9zw0ni.py [OPTIONS] | Try 'tmpmv9zw0ni.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "no prefix: no env hint",
+          "pass": true,
+          "detail": "Usage: tmpg6v00i7v.py [OPTIONS] | Try 'tmpg6v00i7v.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "nested missing shows MYAPP_ADMIN_SERVE_PORT",
+          "pass": false,
+          "detail": "Usage: tmpxrbr95d7.py admin serve [OPTIONS] | Try 'tmpxrbr95d7.py admin serve --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "nested help same name",
+          "pass": true,
+          "detail": "age: tmpu18jjlzu.py admin serve [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_ADMIN_SERVE_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "nested env works with shown name",
+          "pass": true,
+          "detail": "port=7 | "
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "arm": "current",
+      "returncode": 0,
+      "passed": 13,
+      "total": 13,
+      "cases": [
+        {
+          "case": "help shows MYAPP_PORT",
+          "pass": true,
+          "detail": "Usage: tmpeod4gmtd.py [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "missing shows MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "Usage: tmpzyuc_wnq.py [OPTIONS] | Try 'tmpzyuc_wnq.py --help' for help. |  | Error: Missing option '--port' (env var: 'MYAPP_PORT'). | "
+        },
+        {
+          "case": "invalid shows MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "sage: tmpc7rnup60.py [OPTIONS] | Try 'tmpc7rnup60.py --help' for help. |  | Error: Invalid value for '--port' (env var: 'MYAPP_PORT'): 'oops' is not a valid integer. | "
+        },
+        {
+          "case": "env value used",
+          "pass": true,
+          "detail": "port=8080 | "
+        },
+        {
+          "case": "argv beats env",
+          "pass": true,
+          "detail": "port=9 | "
+        },
+        {
+          "case": "invalid env value names MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "Usage: tmp5ri6jyjp.py [OPTIONS] | Try 'tmp5ri6jyjp.py --help' for help. |  | Error: Invalid value for '--port' (env var: 'MYAPP_PORT'): 'bad' is not a valid integer. | "
+        },
+        {
+          "case": "explicit envvar shown, not auto",
+          "pass": true,
+          "detail": "Usage: tmpuxkydr6k.py [OPTIONS] | Try 'tmpuxkydr6k.py --help' for help. |  | Error: Missing option '--port' (env var: 'PORT'). | "
+        },
+        {
+          "case": "show_envvar=False hides",
+          "pass": true,
+          "detail": "Usage: tmpja90opye.py [OPTIONS] | Try 'tmpja90opye.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "allow_from_autoenv=False hides",
+          "pass": true,
+          "detail": "Usage: tmpl5b1yooa.py [OPTIONS] | Try 'tmpl5b1yooa.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "no prefix: no env hint",
+          "pass": true,
+          "detail": "Usage: tmplt09nz7f.py [OPTIONS] | Try 'tmplt09nz7f.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "nested missing shows MYAPP_ADMIN_SERVE_PORT",
+          "pass": true,
+          "detail": "ge: tmpctv66xru.py admin serve [OPTIONS] | Try 'tmpctv66xru.py admin serve --help' for help. |  | Error: Missing option '--port' (env var: 'MYAPP_ADMIN_SERVE_PORT'). | "
+        },
+        {
+          "case": "nested help same name",
+          "pass": true,
+          "detail": "age: tmpippjaftu.py admin serve [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_ADMIN_SERVE_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "nested env works with shown name",
+          "pass": true,
+          "detail": "port=7 | "
+        }
+      ],
+      "stderr": ""
+    },
+    {
+      "arm": "short",
+      "returncode": 0,
+      "passed": 13,
+      "total": 13,
+      "cases": [
+        {
+          "case": "help shows MYAPP_PORT",
+          "pass": true,
+          "detail": "Usage: tmp3efjbf67.py [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "missing shows MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "Usage: tmpqril0qql.py [OPTIONS] | Try 'tmpqril0qql.py --help' for help. |  | Error: Missing option '--port' (env var: 'MYAPP_PORT'). | "
+        },
+        {
+          "case": "invalid shows MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "sage: tmpzbrjhtpp.py [OPTIONS] | Try 'tmpzbrjhtpp.py --help' for help. |  | Error: Invalid value for '--port' (env var: 'MYAPP_PORT'): 'oops' is not a valid integer. | "
+        },
+        {
+          "case": "env value used",
+          "pass": true,
+          "detail": "port=8080 | "
+        },
+        {
+          "case": "argv beats env",
+          "pass": true,
+          "detail": "port=9 | "
+        },
+        {
+          "case": "invalid env value names MYAPP_PORT, exit 2",
+          "pass": true,
+          "detail": "Usage: tmp9i635_h7.py [OPTIONS] | Try 'tmp9i635_h7.py --help' for help. |  | Error: Invalid value for '--port' (env var: 'MYAPP_PORT'): 'bad' is not a valid integer. | "
+        },
+        {
+          "case": "explicit envvar shown, not auto",
+          "pass": true,
+          "detail": "Usage: tmpj_h2ikgp.py [OPTIONS] | Try 'tmpj_h2ikgp.py --help' for help. |  | Error: Missing option '--port' (env var: 'PORT'). | "
+        },
+        {
+          "case": "show_envvar=False hides",
+          "pass": true,
+          "detail": "Usage: tmp11bu4afa.py [OPTIONS] | Try 'tmp11bu4afa.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "allow_from_autoenv=False hides",
+          "pass": true,
+          "detail": "Usage: tmptlqm_g7z.py [OPTIONS] | Try 'tmptlqm_g7z.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "no prefix: no env hint",
+          "pass": true,
+          "detail": "Usage: tmpb8uls0rv.py [OPTIONS] | Try 'tmpb8uls0rv.py --help' for help. |  | Error: Missing option '--port'. | "
+        },
+        {
+          "case": "nested missing shows MYAPP_ADMIN_SERVE_PORT",
+          "pass": true,
+          "detail": "ge: tmpdqn6xqf0.py admin serve [OPTIONS] | Try 'tmpdqn6xqf0.py admin serve --help' for help. |  | Error: Missing option '--port' (env var: 'MYAPP_ADMIN_SERVE_PORT'). | "
+        },
+        {
+          "case": "nested help same name",
+          "pass": true,
+          "detail": "age: tmpe82k69a8.py admin serve [OPTIONS] |  | Options: |   --port INTEGER  [env var: MYAPP_ADMIN_SERVE_PORT; required] |   --help          Show this message and exit. | "
+        },
+        {
+          "case": "nested env works with shown name",
+          "pass": true,
+          "detail": "port=7 | "
+        }
+      ],
+      "stderr": ""
+    }
+  ]
+}
