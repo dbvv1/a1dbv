@@ -21,7 +21,8 @@
 |---|---|---|
 | 重复语法／API 替换 | 用目标版本官方 codemod；代表性文件试改后补规则外语义 | 已改、未改与警告清楚；零命中不等于没有旧调用 |
 | 跨文件类型、引用或框架升级 | 先用框架迁移器／类型工具，保留项目要求的分析范围 | 开发、发布入口与真实返回值匹配；构建产物可运行 |
-| 依赖大版本升级／接收旧 PR | 先核所有仍支持入口的版本契约，再读跨版本指南、用当前包管理器更新声明和锁文件 | 主入口、辅助路径、复制客户端的真实请求都符合原目标；共享 pin 不破坏其他平台 |
+| 依赖大版本升级 | 先核所有仍支持入口的版本契约，再读跨版本指南、用当前包管理器更新声明和锁文件 | 主入口、辅助路径、复制客户端的真实请求都符合原目标；共享 pin 不破坏其他平台 |
+| 接收旧迁移 PR | 固定当前主干和候选，只把所需差量接到当前主干；不顺手升级依赖或刷新锁文件 | 用整合后产物验目标行为，也验候选分叉后主干新增的行为 |
 | 分阶段切换，多环境仍用不同版本 | 沿 alias、resolver、类型映射与 adapter 核实际 runtime | 每个支持入口对应预期版本；全部切完才撤旧版支架 |
 | 公开 API／协议兼容 | 固定旧调用方、配置及协议版本，对照迁移前后 | 原生编译与真实行为都符合契约；自动回退不能证明新版可用 |
 | 持久数据结构变化 | 沿项目受支持迁移器，先核写入者、事务与恢复点 | 失败恢复、重开后的业务行／schema、后续读写都通过 |
@@ -57,6 +58,20 @@
 Hermes 的 [SDK 2 候选](../../experiments/anthropic-sdk-migration/README.md#sdk2-current-candidate)实际经过 timeout 类型、认证、主/辅助/流式边界的逐层修复；仅改主 helper 会漏掉直接 stream。修好这些局部请求后仍不能更新全产品默认：新的 native API 不再支持非默认采样，官方也要求 Bedrock 旧模型保留旧 SDK/API。第三方网关能够序列化旧参数不等于它接受新版 API header。这类共享 pin 冲突先阻止扩量，不用换模型或删除功能降低原目标。
 
 依据：[官方跨版本升级](https://github.com/anthropics/anthropic-sdk-python/blob/v2.3.0/MIGRATION.md)、[API 支持范围与参数变化](https://platform.claude.com/docs/en/api/migration-2026-10-21)、[真实需求 #142796](https://github.com/NousResearch/hermes-agent/issues/142796)、[Bedrock 原帖与后续对照](https://github.com/anthropics/anthropic-sdk-python/issues/2031#issuecomment-6796169642)；2026-11-13 固定源码与内存请求实测，未调用真实服务。依赖的所有消费者都只有单一平台/简单类型变化时，不额外搭多平台矩阵。
+
+## 接收旧迁移 PR：从当前主干接差量
+
+**先固定当前主干与 PR head 两个提交，不把旧 PR 整棵树当新版。** 把两者分别记作 `base`、`candidate`（下列是占位 ref，先换成已核对的引用）：
+
+```bash
+git merge-base base candidate
+git rev-list --left-right --count base...candidate
+git log --oneline base..candidate
+```
+
+先核 PR 独有提交，再在当前主干的独立检出只应用已审过的提交（单个普通提交可用 `git cherry-pick <SHA>`）。变更日志的并列功能条目可两边都保留；代码冲突按两边的行为和测试合并。若要交付 wheel，按源码提交、产物 SHA-256 和实际导入路径核身份，不按自动生成的开发版本号推断候选更新。
+
+[cattrs 的读者复跑](../../reader-tests/A-MIGRATION-CATTRS-DECIMAL-READER-20261114-u1.md)中，旧 PR 比基线少 6 个提交，只多 1 个。旧 PR wheel 的 Decimal 消费者 24/24 通过，却有 6 项 typed-deque 回归失败；接到现有基线后两组 24/24、11/11 都过。上述 wheel 验证仅覆盖固定的 Windows / CPython、JSON／PyYAML Decimal 路径和 typed-deque 子集，修订页未由新读者复测。
 
 ## 怎样验收，什么时候停止扩量
 
