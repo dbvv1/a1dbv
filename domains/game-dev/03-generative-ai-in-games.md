@@ -161,6 +161,20 @@ npm run serve
 
 **依据**：[Saltline 固定镜像说明](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/README.md)、[游戏启动与观察入口](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L6182-L6189)、[原作者帖（本轮读取受限）](https://x.com/felixrieseberg/status/2119925633564463609)、[Evensong 音频实现](https://evensong-phi.vercel.app/src/audio/audio.js)。核实 2026-11-12，证据为源码、静态预览和明确标注的镜像转述；实玩、同机位参照图、试听及案例采用未完成。
 
+### 全 AI 制作怎样落到玩家的一次操作上
+
+**先保留一段玩家能亲手重复的操作。** 设想玩家从雨地走进棚里，举起武器，再开第一枪。美术决定他第一眼看见谁；模型与材质要在这个距离有分量；动作、声音和敌人的反应共同交代这一枪何时命中；转头和恢复控制时的帧间隔影响下一步操作。让执行者自己选最妨碍体验的一处，改完按同一路线、正常速度再玩。需要定位原因时，才拆开看原像素裁切、动作帧或性能记录。局部变好却无法在游玩中辨认，保留为局部结论。
+
+| 从哪里开始查 | 成品或作者留下的证据 | 下一款游戏可怎样验证 |
+| --- | --- | --- |
+| 场景里的材质能否通过操作辨认 | Saltline 按落脚位置取地表类型；脚步事件驱动水面效果和声音，进出指定室内区域还会渐变武器湿度。这里核到成品源码，生成过程及声音听感另计。 | 找到自己的地表或环境状态，让玩家跨过边界。先走和听，再近看贴图；检查脚已经落到另一侧时声音与表面反应是否跟上。 |
+| 模型和动作分别合格，组合后为什么失真 | The Rejected Hero 由人定玩法与美术、试玩取舍，AI 接入 KayKit 模型与动作。作者报告，单角度正确的握姿到了实玩却失真，导入骨架缺少原资产的持握挂点。团队还测了攻击接触帧与踩地脚滑移，按地速和体型匹配步态。 | 在玩家实际距离完成一次转身、迈步或攻击，对齐输入、动作接触、判定和反馈。静止展示可以看轮廓；握持是否滑动、命中是否有分量，要看连续过程。 |
+| 单提示作品哪些做法值得复用 | Abyssal Garden 的作者公开了初始提示，指定海带林、透水光束和沉船，要求实机飞行和只看渲染的视觉检查。按作者复盘，菜单、碰撞、画质档与音频在首稿后补入。Ashlands 的公开复盘则承认，承诺的实物参照始终没有取得，“胜过 Morrowind”这一项评分依赖对原作的记忆。 | 看原提示、谁挑选或修过资产、用什么玩家行为验证、后续还有哪些干预。自由游览能检验运动中的空间感；战斗还需检验目标可读性、受击后果和输入响应。 |
+
+用一段可玩的版本记录开发知识时，写清「执行者自己选了什么」「玩家在哪个动作能感觉到变化」「换到什么情境会失效」。投入、模型名和检查次数可解释成本；不同作品同时换了模型、题材、资源和运行环境时，无法从成品差距单独估算模型贡献。一个可复查的反例见[大厅材质样板的试玩与近景对照](../../docs/collaboration/demo-trial-20261117.md#fps-大厅材质样板的收益边界r8)。
+
+核实于 2026-11-19。Saltline 为[成品镜像源码](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html)静读；其余为[The Rejected Hero 作者的动画与试玩复盘](https://thecallofdiamond.itch.io/the-rejected-hero/devlog/1776953/the-rejected-hero-building-a-game-with-an-ai-agent-in-the-open-glass-box-dev-log)、[Abyssal Garden 初始提示](https://github.com/Noniv/abyssal-garden/blob/main/prompt.txt)、[作者对后续提示的说明](https://www.reddit.com/r/ClaudeAI/comments/1xw376f/i_built_a_swimmable_underwater_world_in_one_97_kb/)和[Ashlands 项目自评](https://github.com/addable-labs/ashlands/blob/main/EVALUATION.md)。外部作品的操作与听感未在此对比中实测。
+
 ### 让制作端自己跑一圈：先用一个可玩空间试整景方法
 
 **适合**没有美术、已经知道玩家要做什么，但正常操作视角下还缺空间层次的网页项目。先选一段两三分钟可玩的空间，让同一执行者在目标 GPU 上自己截取玩家视角、看图并修改。不要把材质、灯光、特效拆给几个人各自交孤立小样。开始前留原图，确认完整 brief 已送达；每轮记录最明显的差距，先解决最影响玩家读路、辨人或瞄准的一处。若没有看图能力，就先交能看实图的执行者，不用测试绿灯代替。
