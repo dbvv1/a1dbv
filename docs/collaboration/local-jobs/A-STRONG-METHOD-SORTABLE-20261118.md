@@ -13,6 +13,7 @@ result_branch: relay/a-strong-method-sortable-20261118
 固定 SortableJS/Sortable 1.15.6 / 63ecb31937d19fcb30aa924e82ee8a769ef34492；headless 真实浏览器缺陷已复现，但正式执行门槛未过。
 
 ## 先解除阻塞，不先跑模型
+云端已完成[源码到页面产物的构建预检](../../../experiments/strong-short-task-20261117/ui-replacement/BUILD-PREFLIGHT-20261119.md)：提供精确命令与锁定版本；仍需 Windows/实际 runner 确认，不解除下列阻塞。
 按[接收与隔离门槛](../../../experiments/strong-short-task-20261117/ui-replacement/results/RECEIPT.md)逐项回传有效隔离配置、合成读边界探测、真 GPU 截图/看图与固定复现证据。
 仅使用已有获准环境，不自行改用户安全设置；若做不到，保持 blocked。独立目录/新会话/事后没发现越界均不能替代实际读隔离。
 完成 RUN-ENV.txt 实值冻结、两臂提示与页面哈希；dot-A 核收后才改 ready，本卡 blocked 状态禁止启动两臂。
