@@ -24,9 +24,9 @@ claude --model claude-sonnet-5-5 --effort medium
 
 ### 确认速度后再开始任务
 
-**先读当前速度，不盲输切换命令。** Codex CLI 会保存速度选择，单次 `--model` 覆盖不保证回到 Standard。在 CLI 输入 `/` 查看当前模型可用命令，核界面显示的活动速度；可用 `/statusline` 配置页脚显示 Fast，但官方没有承诺它也显示 Ultrafast。若明确处于 Fast，重复 `/fast`；若明确处于 Ultrafast，重复 `/ultrafast`，再确认已回到 Standard。已是 Standard 就不切换，无法确认则先查清，不把“未写速度参数”当作 Standard。速度选择会保存，不属于上面仅本次生效的模型参数。
+**先读当前速度，不盲输切换命令。** Codex CLI 会保存速度选择，单次 `--model` 覆盖不保证回到 Standard。在 CLI 输入 `/` 查看当前模型可用命令，核界面显示的活动速度；CLI 0.170.0 可在 `/statusline` 启用 `model-with-reasoning`，在页脚同时看模型、推理档与 `fast`／`ultrafast`。速度标签依赖当前模型目录；没显示标签不等于 Standard。若明确处于 Fast，重复 `/fast`；若明确处于 Ultrafast，重复 `/ultrafast`，再确认已回到 Standard。已是 Standard 就不切换，无法确认则先查清，不把“未写速度参数”当作 Standard。速度选择会保存，不属于上面仅本次生效的模型参数。
 
-**依据**：[官方 CLI 速度控制](https://learn.chatgpt.com/docs/agent-configuration/speed#codex-cli-controls)，2026-11-19 核读；本仓未运行这些切换命令。
+**依据**：[官方 CLI 速度控制](https://learn.chatgpt.com/docs/agent-configuration/speed#codex-cli-controls)、[CLI 0.170.0 页脚实现](https://github.com/openai/codex/blob/rust-v0.170.0/codex-rs/tui/src/chatwidget/status_surfaces.rs#L726-L730)及[快照测试](https://github.com/openai/codex/blob/rust-v0.170.0/codex-rs/tui/src/chatwidget/tests/status_and_layout.rs#L4509-L4576)，2026-11-19 核读；未实跑新版界面，页脚也不代表服务端实扣。
 
 ## 按任务分配，而不是全员一起升档
 

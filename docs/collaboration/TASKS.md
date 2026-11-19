@@ -54,7 +54,7 @@
 
 [11-12 已完成段](archive/completed-through-2026-11-17.txt)；旧试验未收口不新开。
 
-- **未收口**：Decimal、Chat-stream、Ruler 原卡交方向会话核原调用后执行提交，不重派；Hermes／Skills 保持原隔离。四条已发布路线仅核到隔离读者验证，实际采用未知。
+- **旧卡接收**：Decimal、Chat-stream、Ruler 已按各卡限定范围接收，不重派。Hermes／Skills 尚未收口，保持原隔离。四条已发布路线仅核到隔离读者验证，实际采用未知。
 
 ## 待人工验收
 
