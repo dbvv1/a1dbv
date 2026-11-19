@@ -34,3 +34,20 @@ Node 启动器避开了项目 npm 脚本中的 Windows `set NODE_ENV=umd&&` 语�
 云端 Chromium 在页面启动前因 `socket() EPERM` 阻塞，未关闭沙箱或改安全设置。因此没有新的原版/重建版拖拽对比；文件逐字节一致支持沿用原基线产物，但不冒充本次浏览器、GPU 或模型看图验证。
 
 方向会话可直接使用已验证的构建入口，不必重新摸索源码与 bundle 的关系。正式运行仍需原卡规定的读边界、网络边界、有效指令/工具、GPU/图像查看和相同 runner 验证。既有预检驱动只采集事件，不自动判通过；若外置验收，须由调度者从受控实际运行采集三轮完整事件并核唯一 ID/顺序，不能把 exit 0 或模型自报 JSON 当质量通过。本次没有新增验收程序或改变冻结口径。
+
+## 调度侧采样核心检查（不交模型）
+
+[check_core.py](check_core.py) 是只读的单用途检查器，仅支持本题三轮 fixture 及既有驱动的累积快照格式；不改冻结验收口径，不解除正式卡 blocked。只由 dot/方向会话在两臂之外使用，不能放进给模型的输入包。
+
+从 a1dbv 根目录运行：
+
+```sh
+python3 experiments/strong-short-task-20261117/ui-replacement/check_core.py experiments/strong-short-task-20261117/ui-replacement/results/fallback-preflight-result.json
+python3 experiments/strong-short-task-20261117/ui-replacement/test_check_core.py
+```
+
+第一条对已提交真实基线应返回 **1**：三轮 start 均重复 alpha，这是预期的负例。第二条验证该真实负例与合成输入，正常通过时返回 0；其中“正确数组”和多个 sort 的阳性仅为确定性合成数据，不是修复或浏览器实测。负例覆盖错误末态、重复 ID；不可用输入覆盖缺事件/轮次、累积快照不一致、坏 JSON/重复键、错误顶层类型和缺文件。不复制原始回执。
+
+检查器退出码：**0** 仅表示所支持的采样核心检查通过；**1** 有核心反例；**2** 输入不可用或超出支持格式，不直接判实现失败。它核三轮事件完整性、每个采样事件的三个 ID 各一次、initial/start 与末次 sort/end 的预期顺序及首尾 DOM；允许多个 sort，不把旧 headless 的单次 sort 当固定时序。
+
+中间 sort 缺少逐事件对应的 DOM 快照，因此只核 ID，不声称已证明所有排序时刻正确。检查器不验证日志来源、采集保护、截图、GPU、控制台、兼容行为或维护质量，也不启动浏览器。调度者须另外取得并核对真实运行证据，不能接受模型自报 JSON 替代；exit 0 不是完整质量通过。现有记录中的 404 留给原审查，不在此程序中静默解释或豁免。
