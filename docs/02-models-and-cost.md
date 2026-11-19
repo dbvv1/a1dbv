@@ -259,6 +259,8 @@ Pro $200 明确包含 **Codex 的 GPT-6.2 Sol Ultrafast**，不含 6.2 Astra Ult
 
 API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
 
+**ChatGPT 订阅内用量与赠送的 API credits 分开核。** 符合资格的 Pro／Business 在关联的 API 组织激活权益后，API 赠额可抵该组织的 Responses、Decisions 等付费用量；**API-key 登录的 Codex 不在抵扣范围内**，赠额也不增加 ChatGPT／登录态 Codex 的限额。免费赠额耗尽后，有已购 API credits 会继续扣费。Sign in with ChatGPT（SIWC）直接使用订阅用量是另一条路径，当前推理入口仍是 Responses，不能因为 Decisions 可用 API 赠额，就把它接到 SIWC 订阅用量流程。先核调用渠道、关联组织与有效权益，再判断实际支出，不凭订阅名称推定资格。依据：[官方 API 赠额覆盖范围](https://developers.openai.com/api/docs/guides/chatgpt-api-credits#what-the-credits-cover) · [SIWC 推理入口](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference#2-call-the-responses-api)；2026-11-19 核读，未读取账户或激活权益。
+
 **Claude：先分清 5 小时与周额度，再判断是否要升级。** 旧 Max 20x 已自动改名 Ultra，月费不变；不能把旧名称里的“20x”和当前“每周 10x”直接相除，得出额度减半。
 
 | 网页订阅（月付、税前） | 5 小时窗口 | 每周额度（相对 Pro） |
