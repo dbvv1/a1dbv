@@ -14,13 +14,19 @@ codex --model gpt-6.2-sol
 claude --model claude-sonnet-5-5 --effort medium
 ```
 
-上述参数只覆盖本次启动。Codex CLI 需 0.166.0+；用 `/model` 核实际型号与 effort，速度先用 Standard。6.2 不可用时保留已验证配置。Sonnet 5.5 需 Claude Code v2.1.284+，Haiku 5.5 需 v2.1.293+。第三方提供方沿用已获准入口；无法确认实际模型或档位就记未知，不按客户端名称推断。[6.2 CLI 与账号资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)（2026-11-19 核读）
+上述参数只覆盖本次启动。Codex CLI 需 0.166.0+；用 `/model` 核实际型号与 effort；`--model` 不重置已保存的速度，按下方步骤确认 Standard。6.2 不可用时保留已验证配置。Sonnet 5.5 需 Claude Code v2.1.284+，Haiku 5.5 需 v2.1.293+。第三方提供方沿用已获准入口；无法确认实际模型或档位就记未知，不按客户端名称推断。[6.2 CLI 与账号资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)（2026-11-19 核读）
 
 **按原标准接收，再决定是否沿用配置。** 看实际 diff 是否完成目标并保留约束，运行相关检查；修 bug 要重放触发路径。检查缺依赖且当前不允许安装时，列明未跑项，保留验收缺口；不能据此判为模型能力不足，`taskDone` 或审查标签也不能替代实际结果。比较漏项、纠正轮次和等待，把主 Agent、子 Agent、重试、检查与返工的投入一起算。
 
 **依据**：[官方配置] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude CLI 参数](https://code.claude.com/docs/en/cli-reference)、[Claude 型号与版本要求](https://code.claude.com/docs/en/model-config#model-aliases)；原核实 2026-10-26，Haiku 版本要求补核 2026-10-28。本地帮助核验针对旧入口；6.2 命令以现行官方文档为据，未启动模型任务。
 
 **读者反馈**：[jrnl 配置修复](../collaboration/local-jobs/A-MODEL-EFFORT-READER-20261029.md)：读者沿用表外后端、effort 未知；返工的本机真实 CLI／官方测试仍缺，未完整验收。记录核读 2026-11-01，不新增模型优劣结论或修订页照做验收。
+
+### 确认速度后再开始任务
+
+**先读当前速度，不盲输切换命令。** Codex CLI 会保存速度选择，单次 `--model` 覆盖不保证回到 Standard。在 CLI 输入 `/` 查看当前模型可用命令，核界面显示的活动速度；可用 `/statusline` 配置页脚显示 Fast，但官方没有承诺它也显示 Ultrafast。若明确处于 Fast，重复 `/fast`；若明确处于 Ultrafast，重复 `/ultrafast`，再确认已回到 Standard。已是 Standard 就不切换，无法确认则先查清，不把“未写速度参数”当作 Standard。速度选择会保存，不属于上面仅本次生效的模型参数。
+
+**依据**：[官方 CLI 速度控制](https://learn.chatgpt.com/docs/agent-configuration/speed#codex-cli-controls)，2026-11-19 核读；本仓未运行这些切换命令。
 
 ## 按任务分配，而不是全员一起升档
 
@@ -33,7 +39,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 **先补缺上下文和有效检查，再判断能力缺口。** 子 Agent 也按任务难度选：探索未知根因、解决矛盾证据，不能仅因它是“子任务”就降档。Codex 子 Agent 未显式配置时继承父级模型与 effort；分档时明确指定该角色的两项设置。需要额外角色时用[原生委派](../08-multi-agent.md#6-操作手册从一个大任务到并行执行)，已有单 Agent 能完成的工作保持原样。
 
-Codex 的 Sol effort 默认随客户端而异；这里明确选 `medium` 是本页起点。Luna 的 `high`、Astra 的 `low` 来自官方起步建议；同名 effort 不能跨模型当成同等投入。
+Codex 的 Sol effort 默认随客户端而异；本页沿用客户端实际选定值，不统一指定 `medium`。Luna 的 `high`、Astra 的 `low` 来自官方起步建议；同名 effort 不能跨模型当成同等投入。
 
 **依据**：[官方任务定位与档位] [OpenAI Models](https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort)、[子 Agent 模型选择](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)、[Claude effort](https://code.claude.com/docs/en/model-config#choose-an-effort-level)；[既有判断](../02-models-and-cost.md#1-从默认起步按缺口调整)，原核实 2026-10-22；官方入口重核 2026-10-26。
 
