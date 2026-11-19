@@ -6,14 +6,14 @@
 
 [离线模型与 effort 查看器](../experiments/model-effort-comparison-20261027/README.md)：筛选 8 款模型、42 种配置，对照 AA 成绩与 API 估算费用（2026-10-27 静态快照）。
 
-**✅ 当前默认：已有模型的有效配置能稳定达到目标，就保留；新开始、范围清楚的日常编码，Codex 选 GPT-6.1 Sol + `medium`，Claude Code 选 Sonnet 5.5 + `medium`。** 这是本仓库给新读者的起点，不是客户端出厂默认，也不是两者效果相同的实测结论；型号须在当前账号、客户端与服务商中可用。依据与实践边界见第 1 节。 **〔10月保留〕**
+**已有配置达标就保留。新任务缺可靠配置且账号可用时，Codex 先试 GPT-6.2 Sol、沿用客户端实际选定的 effort、用 Standard 速度；Claude Code 起点仍是 Sonnet 5.5 + `medium`。** 这是用当前官方入口做一次可验收的交付，不是本仓实测的 6.2 升级收益。依据与回退条件见第 1 节。
 
 **按角色选推理档：实现和协调用中档起步，跨文件找遗漏的代码质量审查 🧪 直接试同模型 `high`。** 同一长任务中途只换推理投入时，走[保缓存的换档入口](#同模型换推理档保留缓存前缀)，不要把它与换模型混为一谈。近期独立生产比较支持这一区分：审查升档带来更多后续采用，而协调器升档未带来有意义的发现增量。保留能改善目标覆盖的那一档，核查与等待抵消收益就撤回。下文给出同题依据与边界。
 
 **首次启动只影响本次调用，不改持久设置**：
 
 ```bash
-codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'
+codex --model gpt-6.2-sol
 claude --model claude-sonnet-5-5 --effort medium
 ```
 
@@ -54,7 +54,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 | 任务条件 | 当前选择 | 起点与撤回条件（非本仓库效果排名） |
 |---|---|---|
-| 范围清楚的日常功能开发、写测试，尚无稳定配置 | ✅ 采用日常起点 | Codex：GPT-6.1 Sol + `medium`；Claude Code：Sonnet 5.5 + `medium`。已有配置稳定达标则不必换 |
+| 范围清楚的日常功能开发、写测试，尚无稳定配置 | 试用日常起点 | Codex：GPT-6.2 Sol（可用时，先沿用客户端 effort）；Claude Code：Sonnet 5.5 + `medium`。已有配置稳定达标则不必换 |
 | 跨文件代码质量审查、明确的回归保护目标，或已出现有效覆盖不足 | 🧪 为该角色比较更高 effort | 可直接从同模型 `high` 起步；与已验证配置比有效发现与保护，不把实现／协调角色自动一起升档；没有增益就撤回 |
 | 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | Codex：GPT-6 Astra + Light（`low`）；Claude Code：Opus 5.5 + `medium`，验证要求高可从 `high` 起步。开放式难题再评 [Fable 5.2](#fable-52-choice)；不能达到目标或新增投入不值得就撤回 |
 | 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档，返工抵消节省就撤回 |
@@ -63,7 +63,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 **🧪 有现成反馈的整合任务，也可比较“轻量模型＋既有反馈”。** 已有可运行接口契约、故障样例和行为检查时，轻量模型不必只做检索与格式化：让 Agent 使用这些反馈，人保持同一业务接收标准，比较漏项、返工、等待和维护投入，节省被抵消就撤回；不为降模型先重建整套 harness。近期同题实验与本仓契约工具试用支持把这条路线列为候选，**尚未证明当前任务的模型收益，也不替换上述日常起点**。组合选择与反馈范围详见[模型与反馈组合](research/2026-10-22-frontier-trials.md#模型与反馈组合现成契约能帮到哪一层)。
 
-**日常起点的依据**：Codex 官方模型指南推荐 GPT-6.1 Sol 用于编码，但要求从客户端默认 effort 起步；同页把 `medium` 定位为兼顾速度与规划深度，所以本页为没有已验证配置的新读者明确选 `medium`，不把它说成官方统一默认。Claude Code 模型配置把 Sonnet 用于日常编码：Sonnet 5.5 的 `medium` 用于范围明确的工程任务，`high` 用于更重验证的工作。以上只支持起点选择，不证明本项目上的相对效果或总成本。
+**日常起点的依据（Codex 2026-11-19 补核）**：官方将 6.2 Sol 定位为日常编码起点，并建议先沿用客户端选定的 effort。CLI 需要 0.166.0 或更新版；Work 的 Light／Medium 默认不要当作 Codex 默认。先核 `codex --version` 和本次会话实际型号、effort、速度；新模型不可用时继续用已验证配置。Claude 官方仍建议 Sonnet 5.5 从 `medium` 处理明确工程任务。没有同题质量、总耗时与返工证据前，不默认替换已有配置。[Codex 模型指南](https://learn.chatgpt.com/docs/models#choosing-a-model) · [客户端资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)
 
 **effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，Claude API 默认仍是 `high`；Codex 的 Sol 默认依客户端而异，Astra 官方建议从 Light（配置值 `low`）开始。同名 effort 不代表跨型号、跨代等强度。
 
@@ -139,7 +139,7 @@ claude --model claude-fable-5-2 --effort medium
 
 ### 换模型与升 effort：先过行为门，再比较新增质量
 
-**✅ 保留 Sol 6.1 + medium 作为日常候选；“更高综合分”不能替代必需行为通过。** Stet 的近期同题维护比较使用同一 Codex、medium 和单次尝试；公开的 replay-provenance 样本两模型都未过隐藏测试，6.1 的综合分仍较高。它支持继续评估当前起点，不支持把综合赢家直接当合格交付，或承诺用户成本减半；隐藏失败原因未公开完整核定，也不据此宣判能力不足。详见[产物与最高水平卡](research/2026-10-10-audit.md#p65模型换代与effort的实际质量差异)。
+**历史 Sol 6.1 + medium 对照：“更高综合分”不能替代必需行为通过。** Stet 的同题维护比较使用同一 Codex、medium 和单次尝试；公开的 replay-provenance 样本两模型都未过隐藏测试，6.1 的综合分仍较高。这不支持把综合赢家当作合格交付，也不证明 6.2 的收益。详见[产物与最高水平卡](research/2026-10-10-audit.md#p65模型换代与effort的实际质量差异)。
 
 **先核扣分是否真的违反需求，再升模型。** 同文另一个 ignored-files 样本，两者通过测试且综合分相同；清单却包含指定测试名的要求，而公开提示没有该名字。缺少直接断言可能值得补测，但“没按参考实现命名”不能直接判为语义错误。
 
@@ -178,6 +178,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 | [GPT-6.1 Terra](#terra-effort-evidence)（`gpt-6.1-terra`，Standard ≤272K） | $1 | $0.05 | $5 | 2026-10-27 |
 | Mistral Large 4（预览，限时价） | $0.68（原价 $1.36） | $0.07 | $2.09（原价 $4.18） | 2026-10-15 |
 | GPT-6 Sol（`gpt-6-sol`，Standard ≤272K） | $2 | $0.20 | $10 | 2026-10-11（UTC+8） |
+| [GPT-6.2 Sol](https://developers.openai.com/api/docs/models/gpt-6.2-sol)（`gpt-6.2-sol`，Standard ≤272K） | $2 | $0.10 | $10 | 2026-11-19 |
 | GPT-6.1 Sol（`gpt-6.1-sol`，Standard ≤272K） | $2 | $0.10 | $10 | 2026-10-11（UTC+8） |
 | Grok 4.7（基础档 ≤200K） | $2 | $0.50 | $6 | 2026-10-15 |
 | **Claude Sonnet 5.5** | $2 | $0.10（2026-10 减半） | $10 | 2026-10-15 |
@@ -188,6 +189,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 ### 表中未展开的计费维度
 
+- **自建 GPT-6.2 API**：`gpt-6.2-sol` 和 `gpt-6.2-astra` 已独立上线。升级多轮工具循环不要只换 ID；按[迁移指南](https://developers.openai.com/api/docs/guides/latest-model)保留工具调用、结果与 reasoning items 的顺序，回放原任务验收。[Sol API 价表](https://developers.openai.com/api/docs/models/gpt-6.2-sol)中的 Fast 为同上下文 Standard 的 2 倍；Ultrafast 为 3 倍至 2027-02-28（PT），此后 6 倍。API 计费不套用下方订阅消耗倍率。
 - **Fable 5.2**：标准 5 分钟／1 小时缓存写入分别为 $10／$16，读取 $0.20／百万 token；Fast 输入／输出为 $16／$80，不等于提高 effort。Anthropic 路线的交互 Code 要在 5.2 上明确启用 `/fast`，旧 `fastMode: true` 不能当作已启用凭据；Google Agent Platform 的 Fast 需 v2.1.322+，按其独立入口配置。按实际供应商价表核账，不把“最多 2.5 倍输出速度”当整项任务提速。依据：[官方模型价表](https://platform.claude.com/docs/en/models/fable-5-2/overview)、[Fast 入口与价格](https://code.claude.com/docs/en/fast-mode)；核实 2026-11-12（UTC），未启用或调用。
 - **Terra**：Standard 的 30m／12h 缓存写入分别为 $1.25／$2.50；总输入 >272K 时，整次请求的输入／缓存费率乘 2，输出乘 1.5。Fast 为 Standard 的 2 倍，Batch／Flex 为一半；不能把 Sol 的 Ultrafast 可用性套给 Terra。
 - **长上下文与速度**：`gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。精确模型页见本节末。
@@ -242,12 +244,15 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 | 限制 | 按产品和计划区分；当前 Codex/Work Pro 无 5 小时限制，Plus 等有时间窗口额度，周限制也可能适用 | 速率限制及适用的账户/项目开销控制 |
 | 适合 | 个人交互开发 | CI、批处理、团队计费、自建工具 |
 
-**Codex / Work 的三种计量口径**（2026-10-10 UTC，依据见本节末）：
+**Codex / Work 的三种计量口径**（6.2 一行 2026-11-19 补核，其余沿用本节原日期）：
 
 | 速度（相对同一模型 Standard） | 订阅内额度消耗 | 另购 credits / Enterprise 按量 credits |
 |---|---|---|
 | Fast | 2.5 倍 | 2 倍 |
 | GPT-6 Astra / GPT-6.1 Sol Ultrafast | 8 倍 | 6 倍 |
+| GPT-6.2 Astra / Sol Ultrafast（以资格为准） | 6 倍 | 3 倍至 2027-02-28（PT），此后 6 倍 |
+
+Pro $200 明确包含 **Codex 的 GPT-6.2 Sol Ultrafast**，不含 6.2 Astra Ultrafast。额度倍率是相对同模型 Standard 的总倍率，不叠乘 Fast 的倍率；生成速度也不等于任务总耗时，等待工具、构建或测试时先看瓶颈。[套餐额度与资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex) · [另购 credits 费率](https://help.openai.com/en/articles/11481834-chatgpt-rate-card-business-enterpriseedu-credit-based-pricing)
 
 API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
 
@@ -275,7 +280,7 @@ Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` �
 
 **2026 下半年的变化**：
 
-- **Pro 200：购买时查当前套餐与用量，不再沿用 10-17 的过渡说明。** 当前官方定价页列出 $100／$200／$500 月费档、Pro 无 5 小时限制、$500 档可用 Ultrafast；这些不是无限用量承诺。旧“10-29 后转较低额度”的条件只保留在[历史核查](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)，不作为现行购买建议。本轮未核实后续额度调整，不能据此断言旧安排仍执行或已取消；“20 倍降 10 倍”与[社区体感](11-community-pulse.md#7-中文社区额度与交付自述)也不能代替当前限额。依据：[官方 Pricing](https://learn.chatgpt.com/docs/pricing)，核实 2026-10-31（UTC）。
+- **Pro 200：购买时查当前套餐与用量，不再沿用 10-17 的过渡说明。** 原核读时官方定价页列出 $100／$200／$500 月费档及 Pro 无 5 小时限制；6.2 的 Ultrafast 资格见上表。这些不是无限用量承诺。旧“10-29 后转较低额度”的条件只保留在[历史核查](research/2026-10-10-audit.md#pro-200-新旧订户条件2026-10-17-补核)，不作为现行购买建议。本轮未核实后续额度调整，不能据此断言旧安排仍执行或已取消；“20 倍降 10 倍”与[社区体感](11-community-pulse.md#7-中文社区额度与交付自述)也不能代替当前限额。依据：[官方 Pricing](https://learn.chatgpt.com/docs/pricing)，核实 2026-10-31（UTC）。
 - **GPT-5.5 已从 ChatGPT 登录的 Codex 退役**：2026-10-14 19:00 UTC 起生效；OpenAI API 和 API-key 登录的 Codex 不受影响。受影响配置按当前可用模型与任务需要替换，不统一指定继任型号，见 [Codex 选择](01-agents/codex.md#2-模型按任务与实际用量选择)。
 - **Claude 订阅耗尽速度只有历史个案**：版本、任务与套餐不同，不能据此推定当前普遍可用天数；范围见 [Claude](01-agents/claude-code.md#6-已知问题与社区反馈)。
 

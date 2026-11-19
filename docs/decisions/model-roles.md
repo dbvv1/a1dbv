@@ -1,6 +1,6 @@
 # 强弱模型、推理档位和成本怎么选
 
-**已有配置达标就保留；日常新任务用 Sol 6.1＋`medium` 或 Sonnet 5.5＋`medium` 起步，边界验证和代码质量审查直接试同模型 `high`。** 🟡 本页起点沿用 [02 的选择](../02-models-and-cost.md#1-原则按任务分档而不是追榜单)；本仓真实任务上的模型与 effort 净收益仍待验证。
+**已有配置达标就保留；没有稳定配置的日常新任务，Codex 有 GPT-6.2 Sol 就先试客户端选定的 effort 和 Standard 速度，Claude Code 仍从 Sonnet 5.5＋`medium` 起步。** 边界验证与代码审查可按缺口试同模型 `high`，不把速度档当推理档。🟡 见 [02](../02-models-and-cost.md#1-从默认起步按缺口调整)；本仓未验证 6.2 相对已有配置的净收益。
 
 ## 第一步：只改这一次任务
 
@@ -8,17 +8,17 @@
 
 ```bash
 # Codex
-codex --model gpt-6.1-sol -c 'model_reasoning_effort="medium"'
+codex --model gpt-6.2-sol
 
 # Claude Code
 claude --model claude-sonnet-5-5 --effort medium
 ```
 
-Codex 的 `-c`、Claude 的 `--effort` 都只覆盖本次启动；型号与档位须在当前账号和客户端可用。Sonnet 5.5 要求 Claude Code v2.1.284+，下表的 Haiku 5.5 要求 v2.1.293+。第三方提供方或表外模型沿用当前获准入口，记录本次可见的实际模型 ID 与 effort；无法确认就记未知，不由客户端名称或其他模型的同名档位推断。
+上述参数只覆盖本次启动。Codex CLI 需 0.166.0+；用 `/model` 核实际型号与 effort，速度先用 Standard。6.2 不可用时保留已验证配置。Sonnet 5.5 需 Claude Code v2.1.284+，Haiku 5.5 需 v2.1.293+。第三方提供方沿用已获准入口；无法确认实际模型或档位就记未知，不按客户端名称推断。[6.2 CLI 与账号资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)（2026-11-19 核读）
 
 **按原标准接收，再决定是否沿用配置。** 看实际 diff 是否完成目标并保留约束，运行相关检查；修 bug 要重放触发路径。检查缺依赖且当前不允许安装时，列明未跑项，保留验收缺口；不能据此判为模型能力不足，`taskDone` 或审查标签也不能替代实际结果。比较漏项、纠正轮次和等待，把主 Agent、子 Agent、重试、检查与返工的投入一起算。
 
-**依据**：[官方配置] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude CLI 参数](https://code.claude.com/docs/en/cli-reference)、[Claude 型号与版本要求](https://code.claude.com/docs/en/model-config#model-aliases)；原核实 2026-10-26，Haiku 版本要求补核 2026-10-28。命令参数已核文档与本地 Codex 帮助，未启动模型任务。
+**依据**：[官方配置] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)、[Claude CLI 参数](https://code.claude.com/docs/en/cli-reference)、[Claude 型号与版本要求](https://code.claude.com/docs/en/model-config#model-aliases)；原核实 2026-10-26，Haiku 版本要求补核 2026-10-28。本地帮助核验针对旧入口；6.2 命令以现行官方文档为据，未启动模型任务。
 
 **读者反馈**：[jrnl 配置修复](../collaboration/local-jobs/A-MODEL-EFFORT-READER-20261029.md)：读者沿用表外后端、effort 未知；返工的本机真实 CLI／官方测试仍缺，未完整验收。记录核读 2026-11-01，不新增模型优劣结论或修订页照做验收。
 
@@ -26,7 +26,7 @@ Codex 的 `-c`、Claude 的 `--effort` 都只覆盖本次启动；型号与档�
 
 | 眼前的工作 | Codex 起点 | Claude Code 起点 | 保留这项选择的条件 |
 |---|---|---|---|
-| 范围清楚的功能、测试与日常协调 | Sol 6.1＋`medium` | Sonnet 5.5＋`medium` | 能按现有要求交付，检查与返工可接受 |
+| 范围清楚的功能、测试与日常协调 | GPT-6.2 Sol＋客户端选定的 effort（可用时） | Sonnet 5.5＋`medium` | 能按现有要求交付，检查与返工可接受 |
 | 跨文件审查、追调用链、查边界遗漏 | 同模型试 `high` | 同模型试 `high` | 找到更多可核实的问题或补足关键验证；协调器无需跟着升档 |
 | 架构取舍、跨模块疑难 bug、复杂重构 | Astra＋`low`（Light）起步 | Opus 5.5＋`medium`；重验证可试 `high` | 有明确的推理或质量需要，可以直接选，不必先用轻量模型失败一次 |
 | 明确的检索、提取、按既有模式批量小改 | Luna＋`high` | Haiku 5.5＋`medium` | 输出容易核对；发现遗漏或返工抵消节省就恢复原配置 |
@@ -35,7 +35,7 @@ Codex 的 `-c`、Claude 的 `--effort` 都只覆盖本次启动；型号与档�
 
 Codex 的 Sol effort 默认随客户端而异；这里明确选 `medium` 是本页起点。Luna 的 `high`、Astra 的 `low` 来自官方起步建议；同名 effort 不能跨模型当成同等投入。
 
-**依据**：[官方任务定位与档位] [OpenAI Models](https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort)、[子 Agent 模型选择](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)、[Claude effort](https://code.claude.com/docs/en/model-config#choose-an-effort-level)；[既有判断](../02-models-and-cost.md#1-原则按任务分档而不是追榜单)，原核实 2026-10-22；官方入口重核 2026-10-26。
+**依据**：[官方任务定位与档位] [OpenAI Models](https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort)、[子 Agent 模型选择](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)、[Claude effort](https://code.claude.com/docs/en/model-config#choose-an-effort-level)；[既有判断](../02-models-and-cost.md#1-从默认起步按缺口调整)，原核实 2026-10-22；官方入口重核 2026-10-26。
 
 ## 先委派哪种小任务，何时收回
 
