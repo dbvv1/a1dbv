@@ -141,6 +141,8 @@ python3 -m http.server 8765 --bind 127.0.0.1
 
 依据（2026-11-16 UTC，源码与作者自报，未实玩或在 FPS-Like 采用）：[原需求](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/prompts/04-fps.md)、[追加系统提示](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/prompts/builder_system_04.md)、[运行脚本](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/scripts/run.sh#L5-L11)、[作者成本与通关说明](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/README.md#L79-L125)、[录屏脚本的自动瞄准、保血与步进](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/scripts/rec/auto04.js#L11-L23)、[调试入口与动态缩放](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/demos/04-fps/index.html#L1211-L1239)、[画质开关与渲染尺寸](https://github.com/wquguru/fable52-fps-repro/blob/a7e1df3ce32eb2bb05e23ae457fe5fe2bffab961/demos/04-fps/index.html#L729-L751)。
 
+**正常入口独立复玩（2026-11-19）。** 使用上述固定版本的游戏 HTML 和它指定的 Three.js 0.170.0，通过本地浏览器资源路由加载。Playwright 点击 ENTER，等待第一波 HUD，发送 W 输入、用鼠标开火，再按 R。HUD 弹匣／备弹依次是 30／180、29／180、30／179，无页面运行异常。先前按固定墙钟等候的一次取样仍在 STAND BY，未能断言已射击；等到相应画面状态再核弹量，才区分输入结果与采样时机。测试未调用游戏的调试步进、补血或自动瞄准。此次为 800×450 无头 Chromium／SwiftShader，只验证开局及一次操作回路；三波通关、硬件 GPU 帧耗与人耳听感仍未实测。
+
 ### Formula Minus One：混合供给仍需设计与清理
 
 **待试线索是先定视觉主题、再组合资源；图像转 3D 尚不能当作免清理生产线。** 六个月复盘明确写出铅笔草图→图像生成→Tripo→Blender 清理瑕疵，音乐先在 MIDI 键盘起稿再生成，声音还用现成资源。作者重写半低模／双色风格指南，重做角色、菜单与关卡。它支持混合供给和持续设计；清理是否全由 Agent 完成未交代，尚不能作为“无需人工美术修补”的完整样板。[社区：作者自述]
