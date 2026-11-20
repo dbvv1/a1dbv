@@ -173,6 +173,7 @@ OpenAI 的对应划分（developers.openai.com）：
 - 这正是 [14 规律一](14-synthesis.md#1-规律一验证覆盖与自主权分开判断) 的落地：能锐化的验证器就锐化，干活的和评判的分开。
 
 ### 4.5 安全与成本
+
 **先复用现成执行环境的安全、预算与停止机制，再补自己的控制；数据边界不合格的路线直接排除。**
 - **请求超时不等于整项任务截止时间**：先核实际 SDK／传输版本的 `timeout` 限制连接、读写等待还是整次请求，再核 SDK 与应用各自的重试、退避及流读取范围。需要限制整项任务耗时时，优先用现有执行环境的总时限与取消机制，确认覆盖重试等待和工具步骤；仅调小 `timeout` 或设置 `max_retries` 不足以保证按时停止。OpenAI Python SDK 的 HTTPX2 读超时与 Go 的整次请求超时提供不同契约，详见[固定证据](research/2026-10-12-long-task-evidence.md#请求超时重试与整项任务截止时间)。**局限**：这些普通 API SDK／HTTP 客户端契约不代表 Codex／dot 的停止行为；动作结果未知仍按 [20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)对账。
 - **长期凭证尽量留在执行环境外**：Managed Agents 云沙箱 vault 可在出口替换占位符；限制目标 host，支持时优先只在请求 header 注入。隐藏密钥不等于限制其使用权限；自托管沙箱需自己的凭证处理。
@@ -181,6 +182,11 @@ OpenAI 的对应划分（developers.openai.com）：
 - **先按数据硬约束排除部署路线**：当前 OpenAI Agents API 仅支持美国数据驻留、不支持 ZDR，自托管沙箱也不改变；不符合要求就不采用该服务，换 SDK 仍须另核模型服务的数据边界。
 - **只开启需要的联网工具**：Managed Agents 的 `limited` 云环境 `allowed_hosts` 也约束 `web_search`／`web_fetch`，工具与环境的域名名单须匹配；自托管沙箱的防火墙不限制这类服务端工具，仍需单独约束。
 - **有限选项判断有缺口才试决策接口**：反复出现的语义路由、分类或检查项预筛，现有规则／模型在质量、等待或成本上不足时，再比较 OpenAI Decisions API 或开源决策模型；不把开放式规划整体改成选项打分。误报、漏报、复核和升级计入总成本，无净收益就撤回。阈值须按目标任务校准，回退与权限由程序守住，详见 [02](02-models-and-cost.md#21-新类别决策模型2026-09-起)及[原始契约与比较范围](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)。
+
+**自建 GPT‑6.2 Sol／Astra 的后台代码审查：要续流，还是要折扣？** 需要看实时输出时，用 `background=True, stream=True`，窗口留默认 `soonest`；保存 response ID 和最后事件序号，断线后按 `starting_after` 接回。能等时，改用 Standard 的非流式 HTTP：`background=True, service_tier="default", stream=False, background_options={"completion_window": "2h"}`（也可选 `8h`）；记录 response ID，用 webhook 唤醒或查询终态，不能把非流式响应事后变成事件流。
+
+- 窗口针对**每次模型响应**，不包应用调工具后的整条任务。工具返回后另发请求：保持同一 API 项目、模型、处理档和窗口，沿用仅用于关联排队的 `continuation_id`；历史要另用 `previous_response_id` 或显式重放，工具结果带原 `call_id`。整项任务仍须单独计时。
+- **已核版本**：用 `httpx.MockTransport` 测 Python SDK 3.52.0／3.53.0。前者拒绝 `background_options`，没发 HTTP；后者捕获了「新建 → 按 ID 读取 → 带工具结果续接」三步，确认队列 ID 与历史 ID 分开传。只验证 SDK 发出的请求，未测线上权限、排队、费用，不是 Codex／Work 的长任务设置。见[官方后台模式](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows)。
 
 **依据**：[一手] [outcomes 契约](https://platform.claude.com/docs/en/managed-agents/define-outcomes)（2026-10-15 UTC+8）、[vault 与适配范围](https://platform.claude.com/docs/en/managed-agents/vaults)、[CLI reference](https://code.claude.com/docs/en/cli-reference)、[Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets)、[Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)、[Agents API 概览](https://developers.openai.com/api/docs/guides/agents-api/overview)、[web 工具限制](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)、固定证据；[研究] [22 评估](22-agent-evaluation.md)、[14 规律一](14-synthesis.md#1-规律一验证覆盖与自主权分开判断)、[20 §9](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)、[02](02-models-and-cost.md#21-新类别决策模型2026-09-起)、[S1d](research/2026-10-10-audit.md#s1d--2026-10-16-决策接口的评分与执行边界)；核实 2026-10-22。
 
