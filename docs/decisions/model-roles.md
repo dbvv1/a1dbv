@@ -37,11 +37,11 @@ claude --model claude-sonnet-5-5 --effort medium
 | 架构取舍、跨模块疑难 bug、复杂重构 | Astra＋`low`（Light）起步 | Opus 5.5＋`medium`；重验证可试 `high` | 有明确的推理或质量需要，可以直接选，不必先用轻量模型失败一次 |
 | 明确的检索、提取、按既有模式批量小改 | Luna＋`high` | Haiku 5.5＋`medium` | 输出容易核对；发现遗漏或返工抵消节省就恢复原配置 |
 
-**先补缺上下文和有效检查，再判断能力缺口。** 子 Agent 也按任务难度选：探索未知根因、解决矛盾证据，不能仅因它是“子任务”就降档。Codex 子 Agent 未显式配置时继承父级模型与 effort；分档时明确指定该角色的两项设置。需要额外角色时用[原生委派](../08-multi-agent.md#6-操作手册从一个大任务到并行执行)，已有单 Agent 能完成的工作保持原样。
+**先补缺上下文和有效检查，再判断能力缺口。** 子 Agent 也按任务难度选：探索未知根因、解决矛盾证据，不能仅因它是“子任务”就降档。在读取本地配置的 Codex 中，普通新子 Agent 以父级本轮的模型和 effort 为起点；调用没指定的项先查 `[agents]` 默认值，自定义角色的显式设置还能覆盖。调用或 `[agents]` 选了型号、两处都没设 effort 时，用该型号的默认档。给轻量任务单独分档时，同时指定 `gpt-6-luna` 与 `high`，不要只换型号。需要额外角色时用[原生委派](../08-multi-agent.md#6-操作手册从一个大任务到并行执行)，已有单 Agent 能完成的工作保持原样。
 
 Codex 的 Sol effort 默认随客户端而异；本页沿用客户端实际选定值，不统一指定 `medium`。Luna 的 `high`、Astra 的 `low` 来自官方起步建议；同名 effort 不能跨模型当成同等投入。
 
-**依据**：[官方任务定位与档位] [OpenAI Models](https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort)、[子 Agent 模型选择](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)、[Claude effort](https://code.claude.com/docs/en/model-config#choose-an-effort-level)；[既有判断](../02-models-and-cost.md#1-从默认起步按缺口调整)，原核实 2026-10-22；官方入口重核 2026-10-26。
+**依据**：[官方任务定位与档位] [OpenAI Models](https://learn.chatgpt.com/docs/models#pick-a-reasoning-effort)、[子 Agent 模型选择](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)、[0.170.0 子线程配置实现](https://github.com/openai/codex/blob/rust-v0.170.0/codex-rs/core/src/agent/child_config.rs#L222-L278)、[Claude effort](https://code.claude.com/docs/en/model-config#choose-an-effort-level)；[既有判断](../02-models-and-cost.md#1-从默认起步按缺口调整)，原核实 2026-10-22；官方入口重核 2026-10-26。子 Agent 官方指南、固定源码和内置目录补核 2026-11-20；未跑 Work 或子线程模型。
 
 ## 先委派哪种小任务，何时收回
 
