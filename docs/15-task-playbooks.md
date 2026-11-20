@@ -596,9 +596,20 @@ flowchart TD
 
 给已有Agent的定向任务可写：“审这段发送及错误处理：分别检查提交前、提交后写记录前、写入后同步失败；用隔离替身核实际副作用与返回状态，指出下一步该检查什么，不把报错自动解释为可以重试。”不必换工具或增加评审轮数。
 
-**接收结果不是改成成功，而是保留已提交事实、撤回‘未记录’断言。** [已合入#20](https://github.com/parasxos/postbag/pull/20)的[固定实现](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/postbag.py#L560-L569)改报“记录无法确认”，要求重发前查账本和接收会话；[公开回归](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/test_review_core.py#L187-L227)分别断言无记录／已有一条记录，且替身只被调用一次。这里核过源码与合入状态，未重跑；Agent归因来自作者，不证明双模型优于单次定向评审。
+**接收结果不是改成成功，而是保留已提交事实、撤回「未记录」断言。** [已合入的 Postbag #20](https://github.com/parasxos/postbag/pull/20)把提交后记录失败改报「记录无法确认」；在重发前查账本和接收会话。
 
-**依据**：[社区：本人实践] Postbag 作者 1.4.0 发布评审自述；[经验] 定向评审任务写法；[一手：源码／接收记录；范围] Postbag #20 固定实现与公开回归；核过源码与合入状态，未重跑，Agent 归因来自作者，不证明双模型优于单次定向评审；核实 2026-10-25。
+**复跑：** 在 [Postbag 固定提交 `b21325f6`](https://github.com/parasxos/postbag/commit/b21325f6ec2517238aefc03d7ef5abcc76de92de) 根目录用 POSIX、Python 3.10+ 和 pytest：
+
+```sh
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
+  test_postbag.py::test_letter_recorded_only_after_delivery \
+  test_review_core.py::test_a_send_that_fails_before_the_record_is_written_leaves_no_record \
+  test_review_core.py::test_fsync_failure_after_the_record_landed_says_to_inspect_the_bag
+```
+
+三项覆盖替身调用抛错后无记录、模拟提交后写入失败仍无记录、以及同步失败却已有一条记录。后两项的替身各只调用一次；不要用相同的报错推断账本状态或可重试。Linux／Python 3.12.14／pytest 8.4.2 实跑 3/3 通过；只把提示改回「未记录」时，`fsync` 用例在提示断言处失败，恢复原文后又通过。替身不发真实消息，不验证真实送达或磁盘持久性。
+
+**依据**：[社区：本人实践] Postbag 作者 1.4.0 发布评审自述；[一手／复验] [固定实现](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/postbag.py#L560-L569)与[公开回归](https://github.com/parasxos/postbag/blob/b21325f6ec2517238aefc03d7ef5abcc76de92de/test_review_core.py#L187-L227)（2026-11-20）。Agent 归因来自作者，不证明双模型优于单次定向评审。
 
 ## 9. 文档、提交信息、发布说明
 
