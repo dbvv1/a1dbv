@@ -27,7 +27,7 @@ t.pending[0].resolve(payload(1));await t.settled();await pause();
 assert.match(dom.window.document.body.textContent,/Page 1/);assert.equal(dom.window.document.querySelector('button').disabled,false);
 dom.window.document.querySelectorAll('button')[1].click();await pause();
 assert.equal(dom.window.document.querySelector('tbody').textContent.includes('Page 1'),true);
-assert.equal(dom.window.document.querySelectorAll('button')[1].disabled,patched);
+assert.equal(dom.window.document.querySelectorAll('button')[1].disabled,patched,'Next must be disabled while the existing rows are pending');
 assert.equal(dom.window.document.querySelectorAll('button')[0].disabled,patched);
 assert.equal(dom.window.document.querySelector('strong').parentElement.textContent.trim().endsWith(String(patched)),true);
 console.log(patched?'PASS pending controls disabled; old row retained':'BASELINE FAILURE CONFIRMED: pending controls remain enabled; old row retained');

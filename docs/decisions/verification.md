@@ -65,6 +65,12 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 **依据**：[Git worktree](https://git-scm.com/docs/git-worktree)、[Git 索引枚举](https://git-scm.com/docs/git-ls-files)；[本仓误报修复与回归](https://github.com/dbvv1/a1dbv/commit/5f8b0b10e9e3fbf173253e2179afcab5cd06b193)。2026-10-30 在 POSIX 实跑上述同一回归，旧版因目标问题失败、新版通过，并复现未跟踪子目录的 0 项问题；修订页的本机新读者验收仍待补。
 
+### 交互 bug：别只验完成后的画面
+
+**等待状态错误时，先观察请求已在等待，再断言 UI 怎么表现。** 不要等“Loading 正确显示”才开始检查，否则旧版会变成超时，拿不到实际错误。SvelteKit [翻页案例](../../experiments/svelte-refetch/README.md#一条命令复跑原版和修正版)两版都能构建；同一断言在旧组件因等待时 Next 仍可点而失败，修后旧行保留、两按钮禁用、完成后显示新行，拒绝时进入原失败边界。
+
+按案例的一条命令可重复取得原版失败原因、修后结果和两份构建回执；再按交付需要补真实浏览器。11-20 复跑的是编译组件、实际 handler 与独立 SSR；未复跑全应用浏览器，已有 Chrome 回执只覆盖此前修后正常路径。
+
 ## 按产品承诺选证据
 
 | 承诺 | 实际检查 | 接收范围 |
