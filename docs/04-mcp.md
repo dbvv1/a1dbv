@@ -66,7 +66,11 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 ### 从规范到可运行实现
 
-**升级前固定客户端/SDK/服务端版本，验证能力发现、`input_required`、断流恢复与参数错误处理。** 规范确认了会话、MRTR 和结果字段变化；读写工具还要定义业务幂等性，见 [20](20-codex-long-horizon.md) 和 [S5 来源](research/2026-10-10-audit.md)。
+**先确认当前连接实际用的协议，再验工具结果。** 在 Codex CLI 0.171.0，合资格的第三方 MCP 与托管 HTTP `codex_apps` 分别受 `mcp_2026_07_28`、`codex_apps_mcp_2026_07_28` 控制；两开关默认关，托管入口还可能回退。不要为了让某个工具列出来，盲改两条路径或把第三方结果套给托管服务。
+
+有已获准的服务端诊断时，只核发现方法、协议字段和目标工具名，不采集参数正文或凭据。旧路看 `initialize` 请求／响应版本；现代路看 `server/discover` 以及后续 `tools/list` 的协议元数据。两路都列到工具只证明发现；再用同一已授权只读输入和已知返回值验运行。用到 `input_required`、断流恢复或写入时才补相应反例，写入结果未知先[对账](20-codex-long-horizon.md#9-超时后动作究竟发生了吗)。
+
+[固定发布源码](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/app-server/README.md#hosted-codex-apps-mcp-protocol) · [上游夹具](https://github.com/openai/codex/tree/rust-v0.171.0/scripts/mcp_conformance)。2026-11-20 正式 Linux 二进制实跑两个相匹配的第三方回环夹具：默认 `initialize` 发 `2025-06-18`，现代路 `server/discover` 与 `tools/list` 携 `2026-07-28`，均列出同名 `echo`。这不是同一服务的单变量比较；线程启动受环境限制，未实跑工具返回、托管连接或模型。
 
 ### 异步工具：完成的是哪一层
 
