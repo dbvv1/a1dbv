@@ -245,7 +245,7 @@ JS
 
 下载／查看：[网页 HTML](../../experiments/g1-tide-post.html) · [规则 core](../../experiments/g1-tide-post-core.mjs) · [画面与输入 UI](../../experiments/g1-tide-post-ui.mjs) · [规则测试](../../experiments/g1-tide-post.test.mjs) · [模拟 UI 回归](../../experiments/g1-tide-post-ui.test.mjs) · [生成提示、版本与文件摘要](../../experiments/g1-tide-post-assets.json)。保留仓库目录结构，图片在 `docs/img/g1-tide-*.png`；只有 HTML 一个文件并不能离线双击运行。
 
-1. 在仓库根目录执行 `node --test experiments/g1-tide-post*.test.mjs`，先核规则、旧档与模拟 UI；需要支持 `node:test` 的 Node 环境。
+1. 在仓库根目录执行 `node --test experiments/g1-tide-post.test.mjs experiments/g1-tide-post-ui.test.mjs`，先核规则、旧档与模拟 UI；需要支持 `node:test` 的 Node 环境。
 2. 浏览器运行须由**你获准使用的 HTTP 静态服务**提供仓库根目录，再打开 `experiments/g1-tide-post.html`。ES module 不按 `file://` 双击交付；确认 `.mjs` 响应类型为 `text/javascript`。独立 v1 预览曾因返回 `text/plain` 不执行，修正服务 MIME 后才跑通；本文不启动服务器。
 3. 用方向键／WASD 或按钮移动，空格等待，R 重开；选单可切基线／筏关卡，切换重开。保存只将 JSON 写入文本框，自行复制保留，没有自动存档或浏览器存储读取。
 4. 先看页底资产状态，再看画面。代码配置 11 个 ID 映射、复用 9 个唯一运行文件；失败会明确报错并保留几何占位，**占位可操作不算生成图片已加载**。
