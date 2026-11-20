@@ -1,20 +1,22 @@
 # Vue 项目中用 Serena 从接口找到实现类
 
-**遇到 `find_implementations` 的 `Unhandled method textDocument/implementation (-32601)`，先核实际语言服务器路由。** [真实问题 #2218](https://github.com/oraios/serena/issues/2218)中，Vue adapter 把请求交给不支持它的 Vue LS；[本补丁](fix.patch)按已有 definition／rename 路径委派给 companion TypeScript server，并声明相应能力。已有 IDE／TS 服务能完成查询时，继续原入口即可。
+**遇到 `find_implementations` 的 `Unhandled method textDocument/implementation (-32601)`，先核实际语言服务器路由。** [真实问题 #2218](https://github.com/oraios/serena/issues/2218)中，Vue adapter 把请求交给不支持它的 Vue LS；[上游 #2242](https://github.com/oraios/serena/pull/2242) 已将请求转给 companion TypeScript server，并声明相应能力。已经用上游[合并提交 `addcff04`](https://github.com/oraios/serena/commit/addcff046f9f8bbaff5391a74f600083ca785f47) 或包含它的版本，不再叠加本仓[旧补丁](fix.patch)。截至 2026-11-20，[稳定版 v2.1.0](https://github.com/oraios/serena/releases/tag/v2.1.0) [尚不含该提交](https://github.com/oraios/serena/compare/addcff046f9f8bbaff5391a74f600083ca785f47...v2.1.0)；已有 IDE／TS 查询入口可用时，继续沿用，没必要为这个问题切到开发版。
 
 ## 已审候选与恢复条件
 
 - 上游基线：[773a77e19f0da348f505640c33a8b4e1d7817dc2](https://github.com/oraios/serena/commit/773a77e19f0da348f505640c33a8b4e1d7817dc2)。补丁 5 文件、55 行新增，其中生产改动 12 行；没有改依赖或 hover。
 - 补丁 SHA-256：`3a803ea2a23f783bbbe802c5d3a1be3eb48143d9e8d0730ba11d8a69cd31ca26`。可在该固定基线应用 `fix.patch` 后复跑下方检查。
 - 本地候选提交：`195392e55503f44804995028de325c1506d7b446`，尚未在上游或 fork 发布；公开可恢复产物是本目录补丁。
-- 独立新上下文审查通过。**暂停旧候选投稿，跟进已有同题 [PR #2242](https://github.com/oraios/serena/pull/2242)。** 另一作者已提交相同的 Vue→TypeScript 实现查询委派，并补充跨文件、多实现、Vue SFC、工具入口与路由检查；截至 2026-11-05，该 PR 仍开放、未合并。
+- 独立新上下文审查通过。旧候选停止投稿；另一作者的同题 PR 于 2026-11-19 合入上游。合并版的 Vue adapter、三份测试与三份夹具，与已独立验收的 PR head 相同；依赖锁文件已变，不能直接沿用 11-05 的 55/55。
 - 已在 2026-11-05 实跑其固定 [head `c5cd0949`](https://github.com/oraios/serena/commit/c5cd0949ed32b23b4294da32181f2f64b7c57bc5)，结果见下节。后续“真实验证”与 MCP 入口仍是本仓原候选的历史实测；不再为重复投稿推进 fork／CLA，原补丁保持不变。
 
 ## 上游替代候选的真实验收
 
+**合并提交独立复验（2026-11-20）：55/55。** 在 [合并提交 `addcff04`](https://github.com/oraios/serena/commit/addcff046f9f8bbaff5391a74f600083ca785f47) 原树，按其依赖锁重新安装，用下方 pytest 的三组路径重跑，单例超时设为 90 秒，55 项在 93.74 秒通过。Linux、Python 3.12.14、Node 24.22.3，Vue LS 3.1.5、TypeScript 5.9.3、TS LS 5.1.3；核实际导入为该提交的 adapter。覆盖路由、Vue suite 与 Serena 工具级消费者，不是稳定版、MCP stdio、IDE 或全库回归。合并版未重新做失败对照；下列失败与 55/55 仍归 PR head。
+
 **该固定 PR 已覆盖原补丁未验的 Vue SFC 内接口及 TS→Vue 跨文件实现查询。** 在隔离 HOME／Serena 配置中，用其锁定开发依赖运行路由测试 8 项、Vue suite 45 项、公开 `FindImplementationsTool` 2 项，共 **55/55 通过**；真实 LS 返回多个实现、跨文件／SFC 内类的准确位置和源码，未实现接口返回空集。路由 8 项含模拟对照，不将全部 55 项都称真实 LS 查询。
 
-同一测试树仅将 Vue adapter 换回父提交 `ede329aa` 版本，新增四组实现查询均以真实 LSP `-32601` 失败；恢复后核源码与 PR 一致、工作树干净。这是既有替代候选的验收，不是新增修复或上游已接受证明。
+同一测试树仅将 Vue adapter 换回父提交 `ede329aa` 版本，新增四组实现查询均以真实 LSP `-32601` 失败；恢复后核源码与 PR 一致、工作树干净。这是旧 PR head 的失败对照，与后来的合并提交复验分开。
 
 Linux、Python 3.13.5、Node 24.22.1；Vue LS 3.1.5、TypeScript 5.9.3、TS LS 5.1.3。固定 PR checkout 先按贡献文档运行 `uv sync --frozen --extra dev --python 3.13`，再用独立可写目录作 `HOME`、`SERENA_HOME` 和 `TMPDIR`，设 `SERENA_USAGE_REPORTING=false` 后运行：
 

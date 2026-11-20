@@ -206,7 +206,9 @@ NODE
 
 ## 符号编辑与完整流程：只为实际增量留下它们
 
-**Serena 只在宿主缺所需符号操作时试。** 按[实试入口](../../experiments/serena-symbol-edit.md#研究记录固定环境与执行细节)配置项目与语言，先读 `initial_instructions`；2.1.1.dev0 新配置默认 REPL，独立符号工具需 `--agent-interface tools`。读当前正文再替换、审 diff、跑测试；同方法并发先协调，旧正文可能覆盖新修改。Vue 接口的实试范围另见[专门记录](../../experiments/serena-vue-implementation/README.md#真实-mcp-stdio-入口)，模型／IDE 客户端及业务收益待验。原核实 2026-10-24～27。
+**Serena 只在宿主缺所需符号操作时试。** 按[实试入口](../../experiments/serena-symbol-edit.md#研究记录固定环境与执行细节)配置项目与语言，先读 `initial_instructions`；2.1.1.dev0 新配置默认 REPL，独立符号工具需 `--agent-interface tools`。读当前正文再替换、审 diff、跑测试；同方法并发先协调，旧正文可能覆盖新修改。原核实 2026-10-24～27。
+
+**Vue 接口查询报 LSP `-32601` 时，先核 Serena 版本。** 上游 [#2242](https://github.com/oraios/serena/pull/2242) 已修，包含该提交的版本不再叠加本仓旧补丁；截至 11-20，最新稳定版 v2.1.0 还不含修复。能用已有 IDE／TS 查询就先沿用，按[Vue 实试](../../experiments/serena-vue-implementation/README.md)核一条真实接口查询；11-20 合并提交定向复跑 55/55，未验模型或 IDE 客户端。
 
 **首次在 Claude Code 试 Superpowers：** 在目标仓库启动 `claude`，用官方入口 `/plugin install superpowers@claude-plugins-official` 打开详情，核新增组件后选 **Install for you, in this repo only（local scope）**。project scope 写入供协作者共享的仓库配置，不是个人试用。按安装摘要完成加载，再在普通终端运行 `claude plugin list` 核版本、作用域与启用状态。其他宿主按[官方安装入口](https://github.com/obra/superpowers/blob/v7.0.1/README.md#installation)，勿套用 [Claude 的作用域](https://code.claude.com/docs/en/discover-plugins#choose-an-install-scope)。
 
