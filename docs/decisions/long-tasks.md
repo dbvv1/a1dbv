@@ -58,7 +58,9 @@
 
 只有前两项时，可把它当“一次后台任务已接回”；第三项尚无证据，就保留“持续自动续接未验”。本机需跨回合运行时，另核现有接收器／调度器是否保持工作、结果由谁接收；没有配置可用的触发入口就先按有人接回使用。不要靠不断发“继续”、重复派任务或增加权限补出一次伪无人值守测试。
 
-**Codex CLI 的 `/side` 用来短暂岔开，不当作恢复入口。** 回主线前，把需要保留的决定和产物位置写进原任务记录。侧聊默认是临时的；即使使用支持保存侧聊的本机全屏模式，也先确认重启后同一侧聊能打开并接受新输入，而不是只看到回放。见[官方命令说明](https://learn.chatgpt.com/docs/developer-commands?surface=cli#start-a-side-chat-with-side)及[0.167.0 的回放案例](https://github.com/openai/codex/issues/62649)。2026-11-20 核读文档和 0.170.0 源码，未实跑重启；旧案例不证明新版保存路径失效。
+**Codex CLI 的 `/side` 用来短暂岔开，不当作恢复入口。** 回主线前，把需要保留的决定和产物位置写进原任务记录。0.167.0 的侧聊是临时的；0.171.0 默认开启 TUI workspace，但只有兼容的本机全屏与已保存历史才能持久化，条件不符仍可能是临时侧聊。若靠侧聊接续，先确认重启后同一侧聊能打开并接受新输入，不只看到回放。见[旧版回放案例](https://github.com/openai/codex/issues/62649)、[0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0)与[存储选择](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app_server_session.rs#L1372-L1394)；核读源码，未实跑侧聊重启。
+
+已有获准的 Codex app-server 和空闲原任务时，可用[原 UUID 非交互续接](../20-codex-long-horizon.md#codex-remote-resume-idle-thread)核一个剩余验收；不把这个入口当成关机恢复或自动唤醒。
 
 <a id="旧写者状态未知时接收固定成果与接管旧树分开"></a>
 

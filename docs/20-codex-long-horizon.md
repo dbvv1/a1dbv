@@ -117,6 +117,19 @@ Spec Kit #3752 报告把 16 个场景压成 4 条故事后误判完成；本仓�
 
 **历史显示缺失时，先区分原始记录丢失与读取／投影停滞，再选恢复动作。** 对已确认的版本缺陷，先保留原数据、核对实际运行的后端是否包含修复，再用受支持的 resume 检查原来缺失的轮次；原生恢复足够时，不再增加修复脚本或直接改数据库。[Codex 的重复序号恢复报告](research/2026-10-10-codex-continuity.md#6-2026-10-14原生恢复已够时撤回手工修复)在不改 SQLite／JSONL 的条件下恢复了三轮历史。局限是特定 CLI 版本与故障形态的公开自报，不代表删除的原始数据、全部 Desktop 故障或任务语义都已恢复。
 
+<a id="codex-remote-resume-idle-thread"></a>
+
+**已有获准的 Codex app-server 和原任务 UUID，才用非交互续接。** CLI 0.171.0 可在服务器的空闲原线程里新起一轮；这不是接管仍在运行的轮次，也不是自动重启服务器。先核服务器上的任务、工作目录、权限和待验项，只发一个已授权的剩余验收步骤：
+
+```sh
+codex exec resume --remote "$APP_SERVER_ADDR" --json "$THREAD_UUID" \
+  '核对当前受检版本，只运行原任务中尚未完成的只读验收，交回实际输出。'
+```
+
+这条路径不接受客户端的模型、cwd 或沙箱覆盖，使用服务器配置，且本轮不会提示批准；只在服务器的现有权限符合任务要求时用。核 JSONL 的同一 `thread.started` UUID、`turn.completed`、退出码和实际产物或测试输出。没收到终态就先查原线程与产物，断连不等于没做；Ctrl-C 会请求中断本轮，不是安全脱离。
+
+[0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0) · [固定实现](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/exec/src/remote.rs) · [上游接续测试](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/cli/tests/queue.rs#L419-L473)。2026-11-20 以正式 Linux 二进制在隔离云端用回环合成服务核到同 UUID 的 resume 与新 turn、结果和完成事件；活动线程、断线、非 UUID 与指定客户端模型四种反例均非零退出。未跑真实 app-server 持久化、模型任务、跨机或关机恢复。
+
 **压缩失败后，不把已出现的部分摘要当作恢复依据。** 先核对运行版本，通过正常续接／恢复检查原消息与工具结果；已有结果可核实时，不因压缩失败重跑副作用操作。官方修复将摘要记录延后到响应成功完成，见[失败压缩的提交边界](research/2026-10-12-long-task-evidence.md#失败压缩的提交边界)。局限是响应完成、历史替换与落盘成功仍是不同边界，且所核最新稳定／预发布 tag 尚未包含该修复。
 
 ### 交接时重新核对活资源与约束
