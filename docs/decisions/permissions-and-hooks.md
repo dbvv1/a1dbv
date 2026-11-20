@@ -62,6 +62,8 @@ network_access = false
 
 `acceptEdits` 也会自动批准工作目录及 `additionalDirectories` 内的 `rm`、`mv` 等常用文件系统命令；写受保护路径或被识别的 `rm`／`rmdir` 关键路径删除仍需询问。上例在缺必需沙箱依赖时退出，并禁止 unsandboxed retry。**先检查已有 `excludedCommands` 及其设置层**：有效条目可让命令直接在沙箱外运行，新增上面四项不会清空它们；沙箱为 admin-required 时，仓库设置里的排除项会被忽略，不能据此推断用户或托管层也没有排除项。
 
+**验 Agent 的沙箱，别用自己手输的命令替代。** 用当前会话的 `/sandbox` 查看有效配置，再让 Claude 通过它的 Bash 工具执行无害检查。从 v2.1.260 起，手输的 `!` shell-mode 命令通常不在这道边界内；严格后台会话和启用子进程环境清理的 Linux 会话例外。依据：[Claude Code 严格沙箱](https://code.claude.com/docs/en/sandboxing#turn-off-the-retry-with-strict-sandbox-mode)，2026-11-21 核读，未运行客户端。
+
 - **需要访问新服务**：按实际用途批准目标域名。要锁定列表，在用户级、托管配置或 `--settings` 设 `sandbox.network.strictAllowlist`（v2.1.219+）；项目／本地设置中的该键无效。文件工具与 WebFetch 另受工具权限约束。
 - **环境里有秘密**：默认命令可读取多数宿主文件，也继承环境变量；同时限制文件工具读取与命令子进程的凭证。`sandbox.credentials` 的 deny 条目合并，其他设置层不能撤销已有 deny；默认没有内建凭证拒绝清单。需要把 Hook、MCP 一并限制时，改用整个 Agent 的容器／虚拟机边界。
 
