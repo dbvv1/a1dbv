@@ -61,7 +61,7 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 | Claude Code | `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md` | 原生 AGENTS 入口从 v2.1.277 起提供，部分 provider／禁遥测会话到 v2.1.281 才支持。默认检查当前目录及祖先：有 `CLAUDE.md`、`.claude/CLAUDE.md` 或 `CLAUDE.local.md` 就不走 AGENTS 回退；用户级 `~/.claude/CLAUDE.md` 不触发这个抑制。子目录按需发现，不能假定所有指令已在开场加载 |
 | Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。单包任务可用 `--cd` 在目标包启动并带入根到 cwd 链；根会话跨兄弟包仍缺自动发现。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来。codex-cli 0.154.0 fixture 只核对上下文组装（根启动根 1／包 0，包目录启动根 1／包 1），不证明模型遵守 |
 | Gemini CLI | `GEMINI.md`（可配置文件名） | 未重核，按目标客户端文档确认 |
-| OpenCode V2 | `AGENTS.md`（workspace 内嵌套） | 读文件或列目录时发现 workspace 内嵌套 AGENTS，nearest-first、去重；compaction／revert 可重载，已加载规则文件被改后不自动重载。只核官方文档契约，未实跑采用，不证明模型效果 |
+| OpenCode V2 | `AGENTS.md`；v2.3.1 起回退 `CLAUDE.md` | 同目录优先 AGENTS，[回退和两种关闭方式已实跑](decisions/instruction-files.md#opencode-claude-fallback)。读文件或列目录还可按需发现 workspace 内嵌套指令，近处优先、去重；压缩／回退后可重新发现。嵌套动态刷新仍仅核文档 |
 | Cursor / Copilot 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，未重核 |
 
 **✅ 已有 AGENTS 跨包需求且客户端可选时，优先采用现成的动态发现，不默认自研 Codex。** Claude Code 的既有原生规则仍保留；OpenCode V2 在读取文件／列目录时发现 workspace 内嵌套 AGENTS，是现成候选；单包任务沿用 Codex 原生 `--cd` 链。本仓当前没有真实跨包采用成果，不能把文档／源码契约写成已采用或模型已遵守。
@@ -70,7 +70,7 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 - **跨仓库时**：`--add-dir` 只增加可访问目录，不默认加载其指令；额外目录加载开关覆盖 CLAUDE 文件与 rules，不覆盖原生 AGENTS 发现。确实需要共享约定时，选择相应 CLAUDE 入口或显式导入，并核实外部导入批准状态，不能只看目录可读。
 - **验证加载时**：新版本用 `/memory` 核对原生 AGENTS 路径，导入入口用 `/context all` 展开 Memory files；`InstructionsLoaded` 不报告原生 AGENTS，但会报告 CLAUDE 导入（`include`）。没有该事件不能证明 AGENTS 没读，事件存在也不证明模型遵守了规则。
 
-**关键局限**：以上是官方加载契约、发布记录与一次 codex-cli fixture 的上下文组装核对，不是模型效果实测；详细优先级、版本差异及反例见[共享指令加载证据](research/2026-10-13-context-tool-choice.md#共享指令发现导入与加载证据)。需要多工具生成配置时可评估 [rulesync](https://github.com/dyoshikawa/rulesync)，但生成文件仍须通过目标客户端的加载检查。
+**关键局限**：以上是官方加载契约、发布记录和 Codex／OpenCode 的上下文组装核对，不是模型效果实测；详细优先级、版本差异及反例见[共享指令加载证据](research/2026-10-13-context-tool-choice.md#共享指令发现导入与加载证据)。需要多工具生成配置时可评估 [rulesync](https://github.com/dyoshikawa/rulesync)，但生成文件仍须通过目标客户端的加载检查。
 
 **依据**：[一手] [Claude Code memory](https://code.claude.com/docs/en/memory)、[Codex AGENTS.md 官方文档](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[OpenCode V2 instructions](https://opencode.ai/v2/docs/instructions/)、Claude Code／Codex 官方加载契约与发布记录、rulesync README；[本仓已接收调查] [A-CODING-ADOPTION-001 固定产物](https://github.com/dbvv1/a1dbv/commit/b36de7dcac07b183dba7c5cf3fac41991ca5bef3)（2026-10-25，复用其已核事实，含 Codex 固定源码 970111f6 与 fixture 结果）；[经验] 建议；核实 2026-10-24。
 

@@ -107,6 +107,12 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 
 **把复述当内容核对，把工具信息当加载证据，把真实修改当行为验收。** 无工具复述答对，记为“规则在当前上下文可见”；先出现 Read／`cat` 再答对，记为“任务中读取后答对”，启动状态仍查工具侧证据。只列外层 `CLAUDE.md` 时，共享文件的启动展开待验。路径确认后仍要核关键契约与下节的实际执行。预期文件缺失就查版本、目录与导入，再开新会话；提问里不要粘贴规则正文。
 
+<a id="opencode-claude-fallback"></a>
+
+**OpenCode v2.3.1 恢复了 `CLAUDE.md` 回退。** 旧版为了共用 Claude 项目加过手工注入的，先在新会话核实际加载，再停用重复注入。同目录优先 `AGENTS.md`；缺它时才读该目录的 `CLAUDE.md`，全局亦如此。不要沿用 v1 的「只关全局」判断：`OPENCODE_DISABLE_CLAUDE_CODE_PROMPT=1` 和 `OPENCODE_DISABLE_CLAUDE_CODE=1` 都关掉全局和项目的 `CLAUDE.md`，后者还会停用 `.claude` Skills（Skills 依据官方文档）。
+
+用发布版 Linux CLI 在五个独立临时 HOME 实跑（2026-11-20），本地假端点分别看到了每层的回退、同目录优先和两种关闭结果；只核带编码任务的请求，不拿自动标题请求作证。`debug config` 不是实际发送内容；需复验时可参照[上游模拟端点复现](https://github.com/anomalyco/opencode/issues/53402#issuecomment-6454157922)。这证明请求装载，不证明模型遵守或会话内动态刷新。依据：[v2.3.1 发布记录](https://github.com/anomalyco/opencode/releases/tag/v2.3.1)、[加载与关闭选项](https://opencode.ai/docs/instructions/#claudemd-fallback)。
+
 更多排障见 [03：加载规则](../03-context-engineering.md#21-各工具的加载规则一手)。
 
 **依据**：[官方] [Claude 导入、原生加载与去重](https://code.claude.com/docs/en/memory)、[2.1.281 条目的后续发布记录](https://github.com/anthropics/claude-code/blob/v2.1.285/CHANGELOG.md#21281)、[Codex 指令发现](https://learn.chatgpt.com/docs/agent-configuration/agents-md)与[项目根配置](https://learn.chatgpt.com/docs/config-file/config-advanced#project-root-detection)；文档／源码重核 2026-11-03，未据此重跑客户端。项目信任状态也会影响 Codex 加载：[0.166.0 源码](https://github.com/openai/codex/blob/rust-v0.166.0/codex-rs/core/src/agents_md.rs)保留跳过未信任项目的逻辑，但 [0.150.1 相反报告](https://github.com/openai/codex/issues/41499)仍未关闭，当前运行行为待验，不把它当访问控制。共享方案尚待真实多工具任务的加载与行为验收。
