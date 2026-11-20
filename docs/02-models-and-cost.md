@@ -56,7 +56,7 @@ claude --model claude-sonnet-5-5 --effort medium
 |---|---|---|
 | 范围清楚的日常功能开发、写测试，尚无稳定配置 | 试用日常起点 | Codex：GPT-6.2 Sol（可用时，先沿用客户端 effort）；Claude Code：Sonnet 5.5 + `medium`。已有配置稳定达标则不必换 |
 | 跨文件代码质量审查、明确的回归保护目标，或已出现有效覆盖不足 | 🧪 为该角色比较更高 effort | 可直接从同模型 `high` 起步；与已验证配置比有效发现与保护，不把实现／协调角色自动一起升档；没有增益就撤回 |
-| 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | Codex：GPT-6 Astra + Light（`low`）；Claude Code：Opus 5.5 + `medium`，验证要求高可从 `high` 起步。开放式难题再评 [Fable 5.2](#fable-52-choice)；不能达到目标或新增投入不值得就撤回 |
+| 困难的跨模块重构、架构或疑难 bug；已有推理缺口或明确更高质量目标 | 🧪 直接选更强能力 | 按[模型分工的困难任务行](decisions/model-roles.md#按任务分配而不是全员一起升档)选择当前可用的强模型和 effort。开放式难题再评 [Fable 5.2](#fable-52-choice)；不能达到目标或新增投入不值得就撤回 |
 | 目标明确、结果容易检查的检索型子 Agent、批量小改、格式化 | 🧪 尝试轻量模型 | Claude Haiku 5.5、GPT-6 Luna；复杂调查不因交给子 Agent 就自动降档，返工抵消节省就撤回 |
 | 反复出现的有限选项语义判断 | 🧪 有具体缺口才试决策接口 | 规则或当前模型在质量、等待、成本上不足时再比较；分数、回退与授权见第 2.1 节 |
 | 离线 / 保密 | 🧪 评估本地开源权重 | Qwen 3.8 27B、Qwen3.6-35B-A3B；硬件、质量与数据路径条件见第 5 节 |
@@ -65,7 +65,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 **日常起点的依据（Codex 2026-11-19 补核）**：官方将 6.2 Sol 定位为日常编码起点，并建议先沿用客户端选定的 effort。CLI 需要 0.166.0 或更新版；Work 的 Light／Medium 默认不要当作 Codex 默认。先核 `codex --version` 和本次会话实际型号、effort、速度；新模型不可用时继续用已验证配置。Claude 官方仍建议 Sonnet 5.5 从 `medium` 处理明确工程任务。没有同题质量、总耗时与返工证据前，不默认替换已有配置。[Codex 模型指南](https://learn.chatgpt.com/docs/models#choosing-a-model) · [客户端资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)
 
-**effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，Claude API 默认仍是 `high`；Codex 的 Sol 默认依客户端而异，Astra 官方建议从 Light（配置值 `low`）开始。同名 effort 不代表跨型号、跨代等强度。
+**effort 不跨接口照搬**：Claude Code 的 Sonnet 5.5 默认 `medium`，Claude API 默认仍是 `high`；Codex 按[具体型号和客户端](decisions/model-roles.md#按任务分配而不是全员一起升档)核档位。同名 effort 不代表跨型号、跨代等强度。
 
 **保留的是有效配置，不只是旧名称。** 先核客户端与运行后端、实际模型、effort、工具和历史回传契约，再判断质量缺口。DeepSeek 旧 `deepseek-v4-flash`／`deepseek-v4-flash-vision-exp` 已退役但请求仍接受，转由 V4.1-Flash-1017 服务；Gemini 10-08 将旧 3.7／3.5 Flash 请求路由至 3.8／3.6。已知路由变化后重新核代表任务，不能凭配置文件没改或模型自报身份认定未迁移；可得时记录响应模型版本。缺上下文先补输入，检查不足再升 effort，充分尝试仍失败再换更强模型。模型身份与采用资格详见 [S1f](research/2026-10-10-audit.md#s1f--2026-10-20-模型身份与采用资格)。
 
