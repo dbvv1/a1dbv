@@ -68,6 +68,8 @@
 
 **帧耗和完整流程绑定同一次运行。** 从开局到终局连续采样，注明采样起止、实际 renderer、分辨率及暂停／页面隐藏区间；保留长帧，不把慢帧夹到模拟步长，也不用平均 FPS 隐去尾部停顿。比较新版与当前默认时保持同档、同入口规则和同输入方案。加速模拟、固定截图和短时采样各自报告，不冒充整局渲染成本。脚本实现这些检查只代表具备取证入口，真实运行结果回来前仍记未验。[^complete-match-evidence]
 
+**对照帧间隔前，先核面板有没有剪掉最慢的帧。** 取连续前台原始帧时间戳，报告 p95、最长间隔和长停顿次数；切到后台与恢复另外记。若模拟每帧限制追赶量，等长的墙钟片段可能已经跑到不同场景：对齐赛道位置和运行 tick 窗，分别报墙钟秒数及运行 tick 差除以模拟频率。升降档响应仍按墙钟计。反例：Star 的 F2 排除 1 s 及以上间隔；用「九帧 16.7 ms、一帧 1,200 ms」的合成序列复算，面板口径约 60 FPS／p95 16.7 ms，原始序列却是 7.4 FPS／p95 1,200 ms。取[整局观察器](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/tests/smoke-full-race.mjs#L37-L51)的时间戳而非游戏面板；它当前固定 High，不能代验 Auto。依据：[面板采样](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/race-features.js#L106-L110)、[模拟循环](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/race.js#L215-L218)（源码与合成复算，2026-11-20；不是实机帧耗）。
+
 **短命效果在交付时留快照，不在整局末尾查存活。** 接受指令不等于效果已交付。用只读快照在效果存续窗口内同时记录实际生成的对象、位置、到期 tick 和匹配的表现对象；后续检查界面与重开时复用这份快照，别要求效果一直存活。没生成、没接入表现层、错位置或观察时已经过期都不算通过。
 
 MOBA-Like 的原检查在 R 技能及多轮 HUD 改尺寸后才问 E 区域是否还在。在原版的固定步长 CPU 复现中，Morrow E 于 tick 11 生成区域并挂接两个网格，147 按期移除；到 191，旧断言会报失败。用项目的固定步长入口核交付与到期两个点，可以检验断言时序；网格记录不是屏幕像素，也不能据此确定历史浏览器失败原因。[原浏览器断言](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/tests/client/browser-smoke/run.mjs#L208-L217) · [技能时长配置](https://github.com/dbvv1/MOBA-Like/blob/fa3076ffc8d1304bd64e74f8dc1a6f2a5167d939/src/content/catalog.ts#L483-L501)（本端 CPU 实测，2026-11-17）。
