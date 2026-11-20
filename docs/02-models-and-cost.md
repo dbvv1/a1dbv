@@ -189,7 +189,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 ### 表中未展开的计费维度
 
-- **自建 GPT-6.2 API**：`gpt-6.2-sol` 和 `gpt-6.2-astra` 已独立上线。升级多轮工具循环不要只换 ID；按[迁移指南](https://developers.openai.com/api/docs/guides/latest-model)保留工具调用、结果与 reasoning items 的顺序，回放原任务验收。[Sol API 价表](https://developers.openai.com/api/docs/models/gpt-6.2-sol)中的 Fast 为同上下文 Standard 的 2 倍；Ultrafast 为 3 倍至 2027-02-28（PT），此后 6 倍。API 计费不套用下方订阅消耗倍率。
+- **自建 GPT-6.2 API**：`gpt-6.2-sol` 和 `gpt-6.2-astra` 已独立上线。升级多轮工具循环不要只换 ID；按[迁移指南](https://developers.openai.com/api/docs/guides/latest-model)保留工具调用、结果与 reasoning items 的顺序，回放原任务验收。[Sol API 价表](https://developers.openai.com/api/docs/models/gpt-6.2-sol)中的 Fast 为同上下文 Standard 的 2 倍；Ultrafast 为 3 倍至 2027-02-28（PT），此后 6 倍。API 计费不套用下方订阅消耗倍率。 [API Ultrafast 驻留](https://developers.openai.com/api/docs/guides/ultrafast-mode#availability)方面，6.2 Sol／Astra 仅支持美国，6.1 Sol 可选美国或欧盟；有欧盟驻留要求时，先核对相应端点与处理档，不把旧版 Ultrafast 配置直接沿用到 6.2。
 - **Fable 5.2**：标准 5 分钟／1 小时缓存写入分别为 $10／$16，读取 $0.20／百万 token；Fast 输入／输出为 $16／$80，不等于提高 effort。Anthropic 路线的交互 Code 要在 5.2 上明确启用 `/fast`，旧 `fastMode: true` 不能当作已启用凭据；Google Agent Platform 的 Fast 需 v2.1.322+，按其独立入口配置。按实际供应商价表核账，不把“最多 2.5 倍输出速度”当整项任务提速。依据：[官方模型价表](https://platform.claude.com/docs/en/models/fable-5-2/overview)、[Fast 入口与价格](https://code.claude.com/docs/en/fast-mode)；核实 2026-11-12（UTC），未启用或调用。
 - **Terra**：Standard 的 30m／12h 缓存写入分别为 $1.25／$2.50；总输入 >272K 时，整次请求的输入／缓存费率乘 2，输出乘 1.5。Fast 为 Standard 的 2 倍，Batch／Flex 为一半；不能把 Sol 的 Ultrafast 可用性套给 Terra。
 - **长上下文与速度**：`gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。精确模型页见本节末。
