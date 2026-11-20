@@ -94,7 +94,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 **交互式客户端按下列入口核对；API、SDK 或子代理若不提供这些入口，就不要硬套斜杠命令。** 有宿主提供的加载回执时核对文件来源；没有则把启动加载标为待验，继续核当前可见内容与真实任务结果。手动读文件不能补出启动证据，也不必为补证另开未授权客户端。[一次非交互读者实做](https://github.com/dbvv1/jrnl/blob/8d9895233ae9c8f1e6c878eb5461c0be13b0d0fd/reader-tests/A-INSTRUCTION-FILES-READER-20261103-u1.md#第二步加载入口与当前上下文按当前接口能做到的程度)遇到了这个入口差异；其文档产物已沿原卡完成定点修订，启动加载仍待独立回执，不计为共享方案通过（2026-11-03）。
 
 - **Claude 原生 AGENTS**：先用 `claude --version` 与 `/config` 确认上述版本条件及 **Project instructions** 入口；该项不可见或设为 `claude-md`／`managed-only` 时，不按原生 AGENTS 已加载处理。v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 不列原生 AGENTS，改问当前项目规则并对照文件。
-- **Claude 显式导入**：用 `/context` 查看 **Memory files**，确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
+- **Claude 显式导入**：用 [`/context all`](https://code.claude.com/docs/en/memory#set-up-a-project-claudemd) 展开 **Memory files**（全屏模式的裸 `/context` 折叠列表），确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
 - **Codex**：上方启动命令已把无工具核对放进第一轮提示，直接对照返回的项目规则；不要先让它泛泛总结，再补“不读文件”的限制。它从项目根到当前目录每层最多取一份，优先 `AGENTS.override.md`、再取 `AGENTS.md`／配置的备用文件名，默认合计上限 32 KiB。缺规则时核实际项目根（默认 `.git`，可由 `project_root_markers` 改变）、覆盖文件和长度，不只看文件是否存在。
 
 核对时选共享文件里已有的一条项目特有契约和一条检查命令，不另加暗号。已在目标目录新开交互会话、尚未给首轮任务的读者，可直接发下面这段；用了上方 Codex 启动命令就无需再发：

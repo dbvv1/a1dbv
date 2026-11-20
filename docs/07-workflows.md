@@ -56,7 +56,9 @@
 
 **依据**：[一手] [Claude Code 最佳实践](https://code.claude.com/docs/en/best-practices)、[/goal](https://code.claude.com/docs/en/goal)、[Anthropic effective harnesses](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[C 编译器](https://www.anthropic.com/engineering/building-c-compiler)；[一手：团队自报；研究：采用判断] [OpenAI 自用复盘（2026-02-11）](https://openai.com/index/harness-engineering/)；[一手；经验：采用边界] `/goal` 的成本与撤回；[研究] [/goal 现有核查](research/2026-10-12-long-task-evidence.md#2026-10-15按故障选择压缩清空与停止检查)。`/goal` 与 harness 案例不是独立验收或净收益证明。
 
-## 2. 标准节奏：探索 → 计划 → 实现 → 提交 ✅
+<a id="2-标准节奏探索--计划--实现--提交-"></a>
+
+## 2. 默认直接实现，按缺口加计划或规格 ✅
 
 **已有项目加一个完整功能，默认是“原生 Agent + 项目自己的反馈”，不是先选一套流程。** 这里的“完整功能”指用户可感知、要从实现接到真实入口、做完必须能实际运行验收的一项功能；它可能涉及多个文件或旧消费者，但文件数不是路线开关，跨多个文件、层或消费者只提高写契约的收益，不是自动门槛。项目里已有入口、约定、测试和真实消费者时，让 Agent 先读这些并在执行中规划；只有缺会改变实现的决定、缺能区分错误的检查，或缺共享契约／交接／审计依据时，才补窄规格、测试或完整规格框架。**默认路线胜在少一层产物、反馈直接来自项目本身；它输给规格路线的情况是这些依据缺失，而不是“功能大”或“文件多”。**
 
@@ -139,7 +141,9 @@ Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agen
 
 **依据**：[一手] [Claude Code best practices](https://code.claude.com/docs/en/best-practices)、[Anthropic effective harnesses](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)、[Spec Kit existing-project](https://github.github.com/spec-kit/guides/existing-projects.html)、[Kiro Quick Spec](https://kiro.dev/docs/specs/quick-spec/)、[OpenSpec workflows](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md)、[BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)；[社区：单例] [Marmelab 引用的日期显示例子](https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html)，不是该文作者的一次实跑；[一手：厂商自报；未独立复现] [Uvik 基准](https://uvik.net/blog/spec-driven-development-benchmark/)，50 单 brownfield Python、单团队／单模型，±10 个百分点噪声、规格阶段35.1% token，页面标注更新2026-10-08早于所称运行日2026-10-15且未链接原始CSV，本仓2026-10-22已决定不据其排名调评级；[经验] 本节条件选择复用本仓MDX采用记录及计划产物核查（2026-10-21）；核实2026-10-25。
 
-## 3. 大功能：访谈式 Spec ✅
+<a id="3-大功能访谈式-spec-"></a>
+
+## 3. 关键决定未定：访谈式 Spec ✅
 
 **只有尚有会改变实现的关键取舍、且现有资料答不了时，才用访谈式 Spec；“大功能”三个字不自动触发。** §2 已给出何时选窄规格，这里展开写法：只补不可从现有资料取得的决定，视觉偏好先用样品澄清，再写已确认约束。
 
@@ -182,43 +186,15 @@ Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agen
 
 强 Agent 已稳定完成规划、实现和验证时，小任务不必再套完整规格、逐任务子 Agent 和多轮评审。出现具体能力缺口或有依据的质量目标时，按 [05](05-skills-and-plugins.md) 补最小必要资料或方法；目标清楚时保持自主推进。删流程要保留目标反馈：已知用户反例须改变下一动作，局部测试通过不能替代全部范围；“知道尚未完成却停工”的反例与源码核对见 [续接研究](research/2026-10-10-codex-continuity.md)。对 Superpowers、组合式 Skills 与轻量结对的实际比较见 [24 社区工作流](24-community-workflows.md)。**[经验：采用判断]**
 
-## 3.5 Fable 级模型时代的提示与收尾 ✅
+<a id="35-fable-级模型时代的提示与收尾-"></a>
 
-**用完整任务加完成标准和停止条件取代逐步提示；需要判断时再补设计与交接材料。**
+## 3.5 给完整任务，让反馈决定下一步
 
-**交代任务**
-```
-把支付接口从旧 client 迁到新 client。
-完成标准：所有接口都用新 client，旧 client 已删除，测试套件全部通过。
-只有当某个测试失败、而你解释不了原因时，才停下来问我。
-```
-- 一条消息给出**完整任务 + 完成标准 + 停止条件**，然后放手让它做。
-- 删掉“think carefully / 一步步思考”这类话：模型自己会思考，改用 effort 控制。
-- 运行中想起什么，直接追加消息，不必重启任务。
-- 设计类任务：**列出要避开的具体样式**（只说“别太普通”只会换成另一种默认风格）。
+**目标清楚就交完整任务，不逐步遥控。** 用 [§2 的起手提示](#2-标准节奏探索--计划--实现--提交-)交代目标、会改变实现的事实和可验收交付。已有测试能覆盖就复用，缺能区分对错的检查才补；运行反馈来自相关命令或真正的用户入口，不以截图张数或绿色构建代替结果。
 
-**开局的短提示**
-- `First run the tests`：让 Agent 知道有测试套件、大致了解项目规模、进入“测试心态”。
-- `Use red/green TDD`：预期行为已有依据、且需要补可执行检查时，先写测试、确认因目标问题失败，再实现；不把尚未决定的产品偏好锁成断言。
+必要权限缺失、关键决定无依据或有不可逆操作时，停相应动作，其他可独立推进的工作继续。交付先说阻塞，再交改动、实际证据和未验项，不强制三段标题；任务专有这次写在任务里，确需跨会话再用[现有接续记录](decisions/context-management.md#跨压缩或新会话保留下一步需要的事实)。
 
-**长任务**
-- 在 CLAUDE.md 里写**停止规则**（模板已包含）：不需要你时继续做，只在无法继续或要做破坏性操作时停下。
-- 在 `TASKS.md` 或已有记录中维护最新目标、进度与验证；恢复时重读并核对当前状态。文件存在不保证已加载或仍有效，见 [20 恢复边界](20-codex-long-horizon.md#4-恢复包必须包含最新任务而非最长历史)。
-- 审计和迁移中**可独立调查的部分**可拆给子 Agent；实际迁移先对齐共享接口和依赖顺序。**主 Agent 要逐个检查子 Agent 交回的证据**，再验证整合结果，见 [08](08-multi-agent.md)。
-
-**收尾与验证**
-- 总结格式固定为：**Blocked on me / Changed / Found**，先看需要你决定的事项。
-- **Agent 式手工测试**：测试通过不等于能用，让 Agent 用 `python -c`、curl、浏览器自动化实际跑一遍。
-- 要求它“**标出无法确认的内容，并说明查过哪里**”。
-- 评审提示：“只列你会因此拒绝合并的问题，给出文件、行号、原因，以及怎么证明它是错的。”
-
-**理解与交接**
-- **线性走读**：让 Agent 为代码写一份逐段讲解，适合接手 vibe 出来的代码。
-- **术语对齐**：评审前让 Agent 列出它自创的术语和含义，你改名后它全局替换；长期维护一份 GLOSSARY.md（Lobsters 上的做法）。
-- **交接**：确需换会话或交给另一工具时，复用现有任务记录，补当前目标、已验结果和未决事项；只需腾空间则按 [03](03-context-engineering.md#3-会话层面的上下文管理) 选压缩。不要假定 `/handoff` 是内置命令，应核对当前宿主／扩展，普通提示也可整理交接。
-- **PR 礼仪**：不要把自己都没审过的代码丢给同事；PR 要小，并附上证据（手工测试记录、截图）。
-
-**依据**：[一手] Anthropic《Getting the most out of Opus 5.5》；[社区] Simon Willison《Agentic Engineering Patterns》；[经验：采用判断] 恢复记录与交接材料；[一手：当前命令表；经验：采用判断] `/handoff` 不是内置命令。
+短说明与当前起手提示哪套在同题更好，仍待[有效对照](../experiments/strong-short-task-20261117/README.md)。不要用模型代际或一次 demo 宣布胜负。
 
 ## 4. 测试驱动（TDD）🧪
 
