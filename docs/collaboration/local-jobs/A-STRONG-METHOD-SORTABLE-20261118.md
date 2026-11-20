@@ -15,6 +15,7 @@ result_branch: relay/a-strong-method-sortable-20261118
 ## 先解除阻塞，不先跑模型
 云端已完成[源码到页面产物的构建预检](../../../experiments/strong-short-task-20261117/ui-replacement/BUILD-PREFLIGHT-20261119.md)：提供精确命令与锁定版本；仍需 Windows/实际 runner 确认，不解除下列阻塞。
 按[接收与隔离门槛](../../../experiments/strong-short-task-20261117/ui-replacement/results/RECEIPT.md)逐项回传有效隔离配置、合成读边界探测、真 GPU 截图/看图与固定复现证据。
+视觉预检不另造工具：若 [11-17 的 `shot.mjs` 路径](../demo-trial-20261117.md#L5-L18)能在当前隔离中复用，沿用截图与看图通路，不照搬游戏脚本。从实际跑固定拖拽页的同一浏览器实例带回有效 renderer、相关硬件加速状态、截图及模型基于图像的观察；显卡清单、帧率、截图或 GPU 进程单独都不够（[SwiftShader 可在 GPU 进程里软件渲染](https://chromium.googlesource.com/chromium/src/+/main/content/browser/gpu/fallback.md#swiftshader)）。
 仅使用已有获准环境，不自行改用户安全设置；若做不到，保持 blocked。独立目录/新会话/事后没发现越界均不能替代实际读隔离。
 完成 RUN-ENV.txt 实值冻结、两臂提示与页面哈希；dot-A 核收后才改 ready，本卡 blocked 状态禁止启动两臂。
 
