@@ -24,6 +24,7 @@
 |---|---|---|
 | 接受这类修复，允许直接提 PR | 复现问题，做单一目的补丁，补回归并运行项目要求的检查 | 能说明失败输入、修复行为和检查结果，diff 没有无关变化 |
 | 要求先讨论／批准方案，或 issue 到 `Ready` 才可实现 | 沿现有 issue／discussion 取得所需决定 | 对应方案或任务状态满足规则；open、标签和 bot 回复不能代替批准 |
+| 投稿资格随作者或邀请变化 | 从可信上游同一提交读规则和凭证名单，核实际投稿账号、邀请与名额 | 区分可以投稿与免分流；不采用候选分支里的规则或名单 |
 | 不接外部代码贡献 | 按项目允许的入口贡献诊断、复现或设计反馈 | 材料补充了缺失证据，而不是另一份被禁止的代码投稿 |
 | 要求本人写、签 CLA／DCO 或完成准入 | Agent 只整理允许的事实材料，本人完成专属步骤 | 规则要求的本人行动确已完成；不把 AI 草稿换署名当成本人写作 |
 | 已有同题修复或提案 | 对比行为覆盖，收起重复部分或协调剩余差量 | 说清还缺什么；提案不等于已修复，main 已修也不等于 release 已发 |
@@ -38,6 +39,8 @@
 **披露参与方式，贡献者承担解释和后续责任。** 披露工具做了什么、自己怎样检查；若目标项目有专门格式，按它填写。不能让 Agent 代替本人完成项目明确要求的人类写作、签署或责任声明。项目没要求某个统一标签，也不应照搬另一项目的标签。
 
 来源：项目维护者的固定贡献规则：[Codex](https://github.com/openai/codex/blob/67f0994b532b8740f14b5b738af7b7b2a915b1d6/docs/contributing.md)（核实 2026-10-31）；[Goose](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/CONTRIBUTING.md)及 [AGENTS 的探索例外](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/AGENTS.md#contribution-workflow)、[Serena](https://github.com/oraios/serena/blob/ede329aaf0c824bea75455a2926f01420d7aa620/CONTRIBUTING.md)（核实 2026-10-30）。这些来源支持操作选择，投稿前仍读目标项目最新规则。
+
+**资格按投稿人核，不按项目名一概判断。** [T3 Code 的变更](https://github.com/pingdotgg/t3code/pull/38456)允许名单内的贡献者为未获邀的小功能直接开 PR，最多同时 3 个此类功能 PR，不能跳过评审；普通贡献者仍先走 Ideas，未开放的改动类型不变。按[当前固定贡献规则](https://github.com/pingdotgg/t3code/blob/ccabed086ad47294173769c77d2d44e55bb8bd0d/CONTRIBUTING.md#vouched-features)和[同版本分流规则](https://github.com/pingdotgg/t3code/blob/ccabed086ad47294173769c77d2d44e55bb8bd0d/.agents/skills/contribution-triage/SKILL.md#L41-L61)，`VOUCHED.td` 与 `TRIAGE_EXEMPTIONS.td` 分开核。别拿仓库权限、PR 标签或历史合入替代名单。2026-11-21 只读比对合入前后与现行规则，未投稿。
 
 ## 实现到投稿：让 Agent 产出可审材料
 
