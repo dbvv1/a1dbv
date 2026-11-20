@@ -58,6 +58,8 @@
 
 只有前两项时，可把它当“一次后台任务已接回”；第三项尚无证据，就保留“持续自动续接未验”。本机需跨回合运行时，另核现有接收器／调度器是否保持工作、结果由谁接收；没有配置可用的触发入口就先按有人接回使用。不要靠不断发“继续”、重复派任务或增加权限补出一次伪无人值守测试。
 
+**命令转后台后，按原 ID 收子进程退出码，不重跑。** OpenCode 2.3.1 的前台等待超时后，工具可以已是 `completed`，原命令却仍是 `running`。保留 shell ID，等同一 ID 的终态并核命令自己的退出码；外层 CLI 退出 0 不算命令成功。用官方 2.3.1 CLI 和本地模拟提供方，实跑两次良性命令：各自只启动一次、原 PID 不变，按原 ID 各收到一条终态，shell 分别退出 0 和 7，外层 CLI 两次均退出 0。依据：[2.3.1 发布](https://opencode.ai/changelog/v2.3.1)、[上游同进程与最终结果用例](https://github.com/anomalyco/opencode/blob/v2.3.1/packages/core/test/tool-shell.test.ts#L1442-L1545)；2026-11-21 Linux，未验断线或重启。
+
 **Codex CLI 的 `/side` 用来短暂岔开，不当作恢复入口。** 回主线前，把需要保留的决定和产物位置写进原任务记录。0.167.0 的侧聊是临时的；0.171.0 默认开启 TUI workspace，但只有兼容的本机全屏与已保存历史才能持久化，条件不符仍可能是临时侧聊。若靠侧聊接续，先确认重启后同一侧聊能打开并接受新输入，不只看到回放。见[旧版回放案例](https://github.com/openai/codex/issues/62649)、[0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0)与[存储选择](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app_server_session.rs#L1372-L1394)；核读源码，未实跑侧聊重启。
 
 已有获准的 Codex app-server 和空闲原任务时，可用[原 UUID 非交互续接](../20-codex-long-horizon.md#codex-remote-resume-idle-thread)核一个剩余验收；不把这个入口当成关机恢复或自动唤醒。
