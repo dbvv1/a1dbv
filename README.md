@@ -12,7 +12,7 @@
 | 选 Claude Code、Codex 还是 Cursor | [01 Agent 选择](docs/01-agents/README.md) | 🟡 |
 | 模型、推理档与强弱分工怎么选、多贵 | [按任务分工](docs/decisions/model-roles.md) · [计费明细](docs/02-models-and-cost.md) | 🟡 |
 | CLAUDE.md／AGENTS.md 怎么写 | [共享规则、加载首验与真实团队样例](docs/decisions/instruction-files.md) | 🟡 |
-| 怎样让 Agent 自己验证、别只报完成 | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | ✅ 真实用户路径／输出读回 |
+| 怎样让 Agent 自己验证，包括前端与 UI | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | ✅ 真实用户路径／输出读回／窄屏回归 |
 | 上下文怎么管、会话越聊越笨怎么办 | [按症状压缩、重开与恢复检查点](docs/decisions/context-management.md) | 🟡 |
 | 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | 🟡 |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ 既有授权接入查 CI |
@@ -22,7 +22,6 @@
 | 权限、沙箱与 Hooks 怎么配 | [工作区自主执行与必要边界](docs/decisions/permissions-and-hooks.md) | 🟡 |
 | 调试、Agent 跑偏或谎报完成 | [17 排障](docs/17-troubleshooting.md)、[15 调试](docs/15-task-playbooks.md) | ✅ 因果定位／回归 |
 | 测试驱动、规格驱动、计划模式 | [按缺口选计划、测试与规格](docs/decisions/planning-and-tests.md) | ✅ Oil UI 失败先行／回归 |
-| 前端与 UI 任务 | [真实组件、用户路径与失败恢复](docs/decisions/verification.md) | ✅ 真实交互／窄屏回归 |
 | 遗留代码与大迁移 | [先核平台与行为契约，再迁移和验消费者](docs/decisions/migrations.md) | 🟡 Windows 新读者已验局部消费者；路径步骤已补，改后待复测 |
 | 新模型、工具或流程值得换吗 | [用真实任务比较质量与总投入](docs/decisions/tool-adoption.md) | ✅ exporter 同题比较／保留 |
 | 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/decisions/product-improvement.md) | ✅ exporter 输入校验改进 |
@@ -35,10 +34,6 @@
 
 
 ---
-
-## 一句话
-
-> **让 AI 扩大能做的事情，同时保留对结果的理解与判断。** 本仓库关注真实开发能力、人的关键反馈，以及工具和流程的收益与代价。→ [研究方向与选题标准](docs/research/README.md)、[14 深度分析](docs/14-synthesis.md)
 
 ## 一页纸：怎样把 AI 编程用好
 
@@ -58,7 +53,7 @@
 | 文档 | 内容 |
 |---|---|
 | [docs/decisions/](docs/decisions/) | 按读者问题给出选择、可复制起步与何时不适用 |
-| [docs/README.md](docs/README.md) | 证据层阅读路径、核心建议归属、逐页成熟度与评级 |
+| [docs/README.md](docs/README.md) | 证据层阅读路径、核心建议归属与采用评级 |
 | [00 现状总览](docs/00-state-of-ai-coding.md) | 2026 年 AI coding 的格局、趋势、共识与争议 |
 | [01 Coding Agent](docs/01-agents/README.md) | Agent 对比矩阵与选型；Claude Code / Codex / Gemini CLI / 开源 Agent / IDE 类深度页 |
 | [02 模型与成本](docs/02-models-and-cost.md) | 模型档位、价格、订阅 vs API、额度、国内 Coding Plan、本地模型、基准测试可信度 |

@@ -1,6 +1,6 @@
 # Skill 安装成功却读不到：核父目录链接，再选 copy
 
-**🧪 用 dotfiles 软链接管理 `~/.claude/skills`，且一次给 Claude Code、Codex 安装同一 Skill 时，先验安装后的实际路径；断链时可改用 `--copy`，不要只重复安装。** 复制会产生独立副本，后续须从同一来源重新分发更新。普通目录、只装 Claude 和直指共享根的链接在本次均正常，不建议因此全面禁用软链接。
+**11-20 复验：旧版 1.7.4 的父链接断链可用 [1.9.0](https://github.com/vercel-labs/skills/releases/tag/v1.9.0) 修复，`--copy` 仅是旧版兜底。** Linux、Node 24.22.3、隔离 HOME；新装对照为 `use` exit 1／0，随后在同一旧版失败夹具上仅换 CLI、重装同一项，父链接不变、子项仍为链接、正文与源逐字节相同，Claude 关联出现。只核资源读取，未运行客户端模型。
 
 ## 真实需求与结果
 
@@ -21,14 +21,16 @@
 
 ## 给已有安装的读者
 
+以下是 1.7.4 的旧版兜底。可用 1.9.0 修复的项目先复验链接，不把 copy 当更新步骤。
+
 1. **先看实际位置。** 检查目标 Skill 的 `SKILL.md` 是否可读、父目录与子项各自是否链接；只观察，不整目录替换。保留原内容、来源版本及自行修改的副本。
 2. **确认是同一断链场景，再对该 Skill 用 copy。** 在已有可信 `skills` CLI 上，以已审阅的本地来源执行 `skills add <该Skill目录> --global --agent claude-code codex --copy`，保留交互确认；不要对整个个人 Skill 集合批量覆盖。
 3. **核结果而非安装宣言。** 用 `skills use <实际Claude安装路径>` 读取并对照源正文，`skills list --global --agent claude-code --json` 核关联；再回所用客户端验证发现与实际任务。这里未运行 Claude／Codex 模型，文件可读不代表客户端采用成功。
 4. **保一个编辑源，明确分发更新。** copy 不是同步；改源文件后不会自动更新所有副本。若现有链接健康，继续沿用，无需迁移。
 
-固定主干的 `createSymlink` 在计算相对路径时解析父级，却未解析 `linkDir` 自身；既有断链的判断又可能提前返回，解释了重装不修复。上游已有修复 PR #2283，本次未重复提补丁，也未执行其候选代码。原报告来自三月，九月有修复活动；本次十月正式包复现，不把旧报告称为本周新故障。
+固定主干的 `createSymlink` 在计算相对路径时解析父级，却未解析 `linkDir` 自身；既有断链的判断又可能提前返回，解释了重装不修复。上游已有修复 PR #2283，10 月原实验未重复提补丁、未执行候选代码；11 月仅复跑已发布版本。原报告来自三月，九月有修复活动；本次十月正式包复现，不把旧报告称为本周新故障。
 
-**依据**：[真实使用者 #481](https://github.com/vercel-labs/skills/issues/481)、[官方 1.7.4 用法](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/README.md)、[同版安装模式](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/src/add.ts)、[固定主干链接实现](https://github.com/vercel-labs/skills/blob/92a9a34ac3bf88e695e468b90c7bf32f163d32c8/src/installer.ts)、[未合并 PR #2283](https://github.com/vercel-labs/skills/pull/2283)。源码、PR 状态及实际 CLI 核实 2026-10-31；未跑上游完整套件、Windows／macOS 或模型，最高水平与模型收益未知。
+**依据**：[真实使用者 #481](https://github.com/vercel-labs/skills/issues/481)、[官方 1.7.4 用法](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/README.md)、[同版安装模式](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/src/add.ts)、[固定主干链接实现](https://github.com/vercel-labs/skills/blob/92a9a34ac3bf88e695e468b90c7bf32f163d32c8/src/installer.ts)、[修复 PR #2283](https://github.com/vercel-labs/skills/pull/2283)。源码、PR 状态及实际 CLI 核实 2026-10-31；未跑上游完整套件、Windows／macOS 或模型，最高水平与模型收益未知。
 
 ## 复跑
 

@@ -25,6 +25,34 @@ Node 24.22.1、pnpm **11.17.0**；消费者 **@tanstack/cli 0.70.0** 和 **@play
 
 已有[上游 PR #207](https://github.com/TanStack/intent/pull/207)试图增加多根发现，但核查时仍 open、未合并；其作者测试使用临时目录布局。这里不重复写修复，也不把 PR 的 delimiter 支持当成已发布功能。
 
+<a id="reader-single-root-intent"></a>
+
+## 已有全局安装：只查这一包
+
+在现有 pnpm 项目、已安装的 `intent` 可执行文件所在环境，用 Bash／Zsh 获取目标包的实际根。下面选 Playwright；换包时同时更换包名和 load 的 Skill 标识：
+
+```sh
+(
+set -eu
+ROOT=$(pnpm ls -g --json --depth 0 | node -e '
+const fs = require("node:fs"), path = require("node:path");
+const name = process.argv[1];
+const entries = JSON.parse(fs.readFileSync(0, "utf8"));
+const paths = [...new Set(entries.flatMap(e =>
+  Object.entries(e.dependencies ?? {}).filter(([n]) => n === name).map(([, p]) => p.path)))];
+const suffix = path.sep + "node_modules" + path.sep + name.split("/").join(path.sep);
+if (paths.length !== 1 || !paths[0]?.endsWith(suffix)) {
+  console.error("未找到唯一的目标安装路径；先核 pnpm 全局包列表。"); process.exit(2);
+}
+console.log(paths[0].slice(0, -name.split("/").join(path.sep).length - 1));
+' '@playwright/cli')
+INTENT_GLOBAL_NODE_MODULES="$ROOT" intent list --global-only --json
+INTENT_GLOBAL_NODE_MODULES="$ROOT" intent load '@playwright/cli#playwright-cli' --global-only --json
+)
+```
+
+先核列表中的包名、版本和 `source=global`，再核 load 的路径与非空正文。**每次 load 都带相同的单根覆盖，不把两根用冒号拼在一起。** 上方 pnpm 11.17.0 实测中，Intent 0.3.6／0.5.6 默认均为零；逐根找到 TanStack CLI 的五个和 Playwright CLI 的一个 Skill，六份正文均能加载，拼根仍为零。这里只恢复当前命令读取，不持久修改配置或保证 Agent 自动发现已恢复。
+
 ## 在一次性目录复跑
 
 需要已有 Node 24、npm 和 POSIX shell。在本知识库根目录执行；所有新安装进入临时目录，关闭安装脚本，不调用 TanStack／Playwright CLI、不下载浏览器、不创建账号或模型会话。此脚本是上述固定版本的回归探针，未来修复后预期零列表的断言应失败，届时重新核实而不是压绿。

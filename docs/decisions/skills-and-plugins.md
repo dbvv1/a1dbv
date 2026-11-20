@@ -11,7 +11,7 @@
 | 经常替换完整方法，宿主没有符号编辑 | 🧪 Serena：读取当前方法，再按文件＋符号编辑 | 原生 IDE／LSP 已够用，或多人同时写同一方法 |
 | 需求或架构未定 | 🧪 Superpowers：Claude Code 按下文 local scope 在当前仓库试用；已装者按任务分流 | 别只为清楚的小 bug 新装整套；⛔ 暂缓全局强制完整流程 |
 | 团队反复做项目检查、发布准备或迁移 | 先复用项目 Skill：按 `AGENTS.md` 的触发条件读对应 `SKILL.md`，选定流程入 Git | 一次性小修；别照搬其他项目整套规则 |
-| 跨客户端共用 Skill，安装成功却读不到 | 🧪 先核目标路径；dotfiles 父链接断链时，对单个 Skill 用 copy | 健康链接不改；copy 副本须另行更新 |
+| 跨客户端共用 Skill，安装成功却读不到 | 🧪 先核版本与实际路径；旧版父链接断链先试 1.9.0 修复 | 健康链接不改；copy 副本须另行更新 |
 
 **第一步先查已有能力，避免重复安装。** 把方括号换成当前任务：
 
@@ -30,20 +30,14 @@
 <a id="ecc-search-first"></a>
 ## ECC search-first：复用提醒，不是整包安装理由
 
-**🧪 这份窄 Skill 把“先查仓内、核可用渠道、再决定复用或小改”集中在一起；已有项目方法能做到，就继续原流程。** [同一 Inspector 真实问题的事后对照](../../experiments/ecc-search-first/README.md)中，ECC 与本仓方法都找到了现有字符串解析器，也都发现空值契约不兼容；选择相同，没有新增被采用候选。离线函数探针复核了这一个反例，不是前瞻效率或模型收益实验。
-
-它适合提醒总是先造新组件的 Agent 检查已有能力；本轮未安装整套 ECC／hooks，也不据 Star 数或单例对照改本页核心推荐。官方 [search-first](https://github.com/affaan-m/ECC/blob/b38be6a7f6350964d59328b52f0624e1d1d552d1/skills/search-first/SKILL.md) 与[使用者复用反馈](https://github.com/affaan-m/ECC/issues/3680)均已读；后者明确没有证明原轮 ECC 激活或因果作用。核实与只读对照：2026-11-02；原生读者验收及评级不变。
+**已有项目方法能先查复用，就不为 search-first 装整套 ECC。** [Inspector 同题事后对照](../../experiments/ecc-search-first/README.md)两路都找到现成解析器，也都因空值契约不兼容而不采用；没发现新增可用候选，未测前瞻效率或模型收益。
 
 <a id="skills-linked-parent"></a>
 ## 共用 Skill：安装成功，还要读到客户端那份
 
-**🧪 用 dotfiles 链接管理 `~/.claude/skills`、同时给 Claude Code 与 Codex 安装时，先核目标文件；确认断链后，对该 Skill 改用 `--copy`。** 不整目录替换，不靠重复安装求恢复；先保留自定义内容及来源版本。
+**已知父目录软链接导致断链，先试包含修复的 `skills` 1.9.0，再考虑复制。** 先看 `skills --version`，用 `skills use <实际 Claude 安装路径>` 读正文；仅 `list` 有名字不算成功。对单个已审阅的 Skill 重装后再读，健康链接不必改。
 
-在已有可信 `skills` CLI 上，将已审阅的单个本地 Skill 目录传给 `skills add <该Skill目录> --global --agent claude-code codex --copy`，保留交互确认。随后用 `skills use <实际Claude安装路径>` 对照完整正文，并在 `skills list --global --agent claude-code --json` 中核 Claude 关联；最后回客户端验实际任务。**copy 会留下独立副本，继续只维护一个源，再显式更新各副本。** 健康链接不必改成 copy。
-
-[正式包 1.7.4 实跑](../../experiments/skills-linked-parent/README.md)中，双客户端＋深层 dotfiles 父链接的安装、原命令重装都 exit 0，却留下悬空子链接，实际 `use` exit 1；加 copy 后正文恢复。列表三次都有名称，但失败时 `agents` 为空。普通目录、仅装 Claude（自动 copy）、父链接直指共享根三个对照都成功，故不是“所有软链接坏了”。此处验文件资源消费，尚未验 Claude／Codex 模型采用。
-
-**依据**：[真实使用者 #481](https://github.com/vercel-labs/skills/issues/481)、[官方固定版用法与安装模式](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/README.md)、[既有修复 PR #2283](https://github.com/vercel-labs/skills/pull/2283)。2026-10-31 Linux CLI 实跑及非作者新目录复跑；PR 仍未合并，未验原生 Windows／macOS。本页采用评级不变。
+同一隔离 Linux HOME，1.7.4 双客户端安装退出 0，实际 `use` 退出 1；用 1.9.0 原地重装，保留父子链接，`use` 退出 0，正文逐字节一致。暂不能升级且确认是旧版断链，再对单项用 `--copy`；独立副本要显式更新。见 [v1.9.0 修复](https://github.com/vercel-labs/skills/releases/tag/v1.9.0)与[完整旧版对照及新版复验](../../experiments/skills-linked-parent/README.md)。未跑模型采用。
 
 <a id="cursor-synced-skill-owner"></a>
 ## Cursor 云端 Skill：同步会搬位置，Automation 是另一入口
@@ -57,52 +51,17 @@
 **依据**：[官方同步与 Automation 契约](https://cursor.com/docs/skills)、[十月共享 Skill／覆盖旧副本报告及员工澄清](https://forum.cursor.com/t/sync-skills-for-cloud-agents-overwrote-local-cursor-skills-with-an-old-snapshot-then-hung-at-50-of-50/174945)、[Automation 原反馈与纠正](https://forum.cursor.com/t/cursor-automations-dont-see-custom-user-skills/174578)。2026-10-31 核原文；覆盖报告为 Cursor 3.24.18／macOS 15.7.9，未找到已修版本，不据单例断言所有版本都会覆盖。
 
 <a id="openspec-pi-discovery"></a>
-## Pi 与 Codex 共用 OpenSpec：保留生成文件，只限定 Pi 的加载
+<a id="pi-与-codex-共用-openspec保留生成文件只限定-pi-的加载"></a>
+## Pi 与 Codex 共用 OpenSpec：升级后先撤旧排除
 
-**🧪 已同时配置 Pi 与 Codex、启动时出现 OpenSpec 同名 Skill 警告，在 Pi 的项目设置里只排除共享副本。** 保留 `.pi/skills` 的 Pi 版和 `.pi/prompts` 命令模板，`.agents/skills` 继续供其他客户端使用；两份都由 OpenSpec 更新。先确认它们是同一安装生成的副本，自定义过的同名内容须先比较取舍。
+**OpenSpec 2.x 不沿用 Pi 的旧排除。** 2.0 起的项目安装统一用 `.agents/skills/`，不再生成 `/opsx:*`。从 1.x 升级先保全改过的内建 Skill 和附加文件，跑 `openspec update --dry-run` 看将改什么；需要两个客户端从项目读取就用 project scope。用实际客户端核 `openspec-propose`：Pi 用 `/skill:openspec-propose`，Codex 用 `$openspec-propose`。
 
-将这一项合并到项目 `.pi/settings.json` 的既有 `skills` 数组，不覆盖其他设置：
-
-```json
-{
-  "skills": ["!**/.agents/skills/openspec-*/SKILL.md"]
-}
-```
-
-**重新加载后，同时核有效 Skill 与 `/opsx-*` prompts，不能只看警告消失。** OpenSpec 1.15.0／1.16.0＋Pi 1.4.0 的[实际生成、加载与更新](../../experiments/openspec-pi-discovery/README.md)均保留 6 个原生 Skill、6 个 prompts，冲突从 6 降为 0，更新后内容与设置不变。宽排除 `!skills/openspec-*` 却把两目录的 OpenSpec Skill 全排掉；仅装共享目标又不生成 Pi prompts。`disable-model-invocation` 只隐藏自动描述，冲突仍在。这里验证资源加载，未测模型采用或工作流收益；本页评级不变。
-
-**依据**：[真实使用者 #2180](https://github.com/Fission-AI/OpenSpec/issues/2180)、[维护者迁移计划](https://github.com/Fission-AI/OpenSpec/issues/2180#issuecomment-6535807358)、[Pi 资源配置](https://pi.dev/docs/latest/settings#resources)与[Skill 加载约定](https://pi.dev/docs/latest/skills)。本仓 Linux CLI／SDK 实跑及非作者独立复跑：2026-10-31；macOS 原报告与原生 Windows 未复现。此配置只适用于上述重复安装场景，不是通用禁用共享 Skills 的规则。
+OpenSpec 1.16.0 → 2.1.1 的真实临时迁移保留 6 个共享 Skill，移除 6 个旧 Pi 命令与 6 个旧 Pi 技能副本。Pi 1.4.0 的 SDK 实际读取：留着旧排除是 0 个，撤掉后 6 个，冲突 0。仅仍用 1.15／1.16 且确认是同名双份的项目，保留[旧版窄排除](../../experiments/openspec-pi-discovery/README.md#哪种选择保留原入口)。见[升级边界](https://openspec.dev/docs/upgrade-to-2)、[2.1.1](https://github.com/Fission-AI/OpenSpec/releases/tag/v2.1.1)及[迁移实测](../../experiments/openspec-pi-discovery/README.md#openspec-2-upgrade-recheck)。未执行模型工作流或 Codex 客户端。
 
 <a id="intent-pnpm-global"></a>
 ## pnpm 全局装过 CLI，Intent 却找不到 Skill
 
-**🧪 已用 pnpm 11 全局包时，先核真实安装根，再让 Intent 一次读取一根；空列表不等于包里没有 Skill。** 只用项目依赖的读者仍沿用下文的本地解析，不需要改成全局安装。项目已有 `intent.skills`／exclude 策略时也先核策略，不为试通删除它们。
-
-在现有 pnpm 项目、已安装的 `intent` 可执行文件所在环境，用 Bash／Zsh 获取目标包的实际根。下面选 Playwright；换包时同时更换包名和 load 的 Skill 标识：
-
-```sh
-(
-set -eu
-ROOT=$(pnpm ls -g --json --depth 0 | node -e '
-const fs = require("node:fs"), path = require("node:path");
-const name = process.argv[1];
-const entries = JSON.parse(fs.readFileSync(0, "utf8"));
-const paths = [...new Set(entries.flatMap(e =>
-  Object.entries(e.dependencies ?? {}).filter(([n]) => n === name).map(([, p]) => p.path)))];
-const suffix = path.sep + "node_modules" + path.sep + name.split("/").join(path.sep);
-if (paths.length !== 1 || !paths[0]?.endsWith(suffix)) {
-  console.error("未找到唯一的目标安装路径；先核 pnpm 全局包列表。"); process.exit(2);
-}
-console.log(paths[0].slice(0, -name.split("/").join(path.sep).length - 1));
-' '@playwright/cli')
-INTENT_GLOBAL_NODE_MODULES="$ROOT" intent list --global-only --json
-INTENT_GLOBAL_NODE_MODULES="$ROOT" intent load '@playwright/cli#playwright-cli' --global-only --json
-)
-```
-
-先核列表中的包名、版本和 `source=global`，再核 load 的路径与非空正文。**每次 load 都带相同的单根覆盖，不把两根用冒号拼在一起。** [真实 pnpm 11.17.0 安装](../../experiments/intent-global-discovery/README.md)中，Intent 0.3.6／0.5.6 默认均为零；逐根找到 TanStack CLI 的五个和 Playwright CLI 的一个 Skill，六份正文均能加载，拼根仍为零。这里只恢复当前命令读取，不持久修改配置或保证 Agent 自动发现已恢复。
-
-**依据**：[Intent 全局扫描契约](https://tanstack.com/intent/latest/docs/overview)、[使用者 #206](https://github.com/TanStack/intent/issues/206)、[单根检测源码](https://github.com/TanStack/intent/blob/248c6f02605b12f9a31be069fabd945361f701bf/packages/intent/src/shared/utils.ts#L294-L342)。2026-10-31 Linux 正式包实跑及非作者复跑；[多根修复 PR #207](https://github.com/TanStack/intent/pull/207)仍未合并。未执行两个 CLI 的工作流或模型，不据此上调 Skill 采用评级。
+**Intent 0.3.6／0.5.6 在 pnpm 11 全局列表为空时，先查 `pnpm ls -g` 指到的实际包根。** 每次 `list`／`load` 都用同一个 `INTENT_GLOBAL_NODE_MODULES`；两个根分别查，不拼接，也不改来源限制。[复制命令与实测](../../experiments/intent-global-discovery/README.md#reader-single-root-intent)在实验页，项目依赖不走这个兜底。
 
 ## 先定位实际依赖，再选文档或源码
 

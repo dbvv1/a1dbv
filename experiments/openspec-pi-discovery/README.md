@@ -1,8 +1,14 @@
 # OpenSpec 跨客户端安装：消除 Pi 冲突，保留技能和命令
 
-**已同时配置 Pi 与 Codex 时，在 Pi 的项目设置里窄排除 `.agents` 的 OpenSpec 副本，保留两个生成目录。** 不手删会被更新重建的文件，也不把“没有警告”当成加载成功。直接配置见[读者入口](../../docs/decisions/skills-and-plugins.md#openspec-pi-discovery)。
+**本页旧排除只适用于 OpenSpec 1.15／1.16 的 Pi＋Codex 双份生成。** 升到 2.x 后移除这一条排除，保留其他 Pi 设置；先看[新版迁移复验](#openspec-2-upgrade-recheck)。
 
-自然消费者是 [OpenSpec #2180](https://github.com/Fission-AI/OpenSpec/issues/2180)：使用者在 1.15.0／macOS 报告每次启动 Pi 都有六条同名警告，手删后 `update` 又生成；原帖没有 fresh-project 复现。以下由本仓在 Linux 用正式包生成新项目重放，不是报告者的原项目或 macOS 实测。维护者只[表示将转向共享目录](https://github.com/Fission-AI/OpenSpec/issues/2180#issuecomment-6535807358)，当前没有已发布闭环证据，不另写迁移补丁。
+自然消费者是 [OpenSpec #2180](https://github.com/Fission-AI/OpenSpec/issues/2180)：使用者在 1.15.0／macOS 报告每次启动 Pi 都有六条同名警告，手删后 `update` 又生成；原帖没有 fresh-project 复现。以下由本仓在 Linux 用正式包生成新项目重放，不是报告者的原项目或 macOS 实测。维护者只[表示将转向共享目录](https://github.com/Fission-AI/OpenSpec/issues/2180#issuecomment-6535807358)，当时没有已发布闭环证据，未另写迁移补丁。
+
+<a id="openspec-2-upgrade-recheck"></a>
+
+## OpenSpec 2.x 迁移复验（2026-11-20）
+
+在隔离 Linux HOME 用 npm 正式包 1.16.0 生成 Pi＋Codex 项目，改用 2.1.1 先 `update --dry-run --json`，再 `update`。6 个共享 Skill 留在 `.agents/skills`，清掉旧 `.pi/skills` 的 6 份及 `.pi/prompts` 的 6 个命令。Pi 1.4.0 `DefaultResourceLoader` 在同一迁移树带旧排除得到 0 个；移除那条排除实际读到 6 个共享 Skill，0 同名诊断、0 旧命令。未执行 Codex 客户端或模型。真实仓库先比较预览并备份手改内容，不照搬对临时夹具的覆盖。依据：[2.0 迁移](https://github.com/Fission-AI/OpenSpec/releases/tag/v2.0.0)、[2.1.1](https://github.com/Fission-AI/OpenSpec/releases/tag/v2.1.1)、[升级指南](https://openspec.dev/docs/upgrade-to-2)。
 
 ## 哪种选择保留原入口
 
