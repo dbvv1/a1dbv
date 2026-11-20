@@ -71,7 +71,26 @@ git log --oneline base..candidate
 
 先核 PR 独有提交，再在当前主干的独立检出只应用已审过的提交（单个普通提交可用 `git cherry-pick <SHA>`）。变更日志的并列功能条目可两边都保留；代码冲突按两边的行为和测试合并。若要交付 wheel，按源码提交、产物 SHA-256 和实际导入路径核身份，不按自动生成的开发版本号推断候选更新。
 
-[cattrs 的读者复跑](../../reader-tests/A-MIGRATION-CATTRS-DECIMAL-READER-20261114-u1.md)中，旧 PR 比基线少 6 个提交，只多 1 个。旧 PR wheel 的 Decimal 消费者 24/24 通过，却有 6 项 typed-deque 回归失败；接到现有基线后两组 24/24、11/11 都过。上述 wheel 验证仅覆盖固定的 Windows / CPython、JSON／PyYAML Decimal 路径和 typed-deque 子集，修订页未由新读者复测。
+[cattrs 的读者复跑](../../reader-tests/A-MIGRATION-CATTRS-DECIMAL-READER-20261114-u1.md)中，旧 PR 比基线少 6 个提交，只多 1 个。旧 PR wheel 的 Decimal 消费者 24/24 通过，却有 6 项 typed-deque 回归失败；接到现有基线后两组 24/24、11/11 都过。当时为 Windows / CPython、JSON／PyYAML Decimal 和 typed-deque 子集；下方另有同口径 Linux 复跑。修订页仍未由新读者复测。
+
+### Python 库的发布验收：安装三个 wheel，让同一消费者说话
+
+1. **各自构建基线、旧候选、整合三个 wheel。** 记录源码提交、实际受检树与 wheel 的 SHA-256；分开输出目录，每个新环境只装一个 wheel。用该环境的解释器核 `cattrs.__file__`（其他库换成相应模块），路径必须在该环境，不从工作树导入。两个 wheel 的版本字符串也可能相同。
+2. **同一份新增行为检查＋同一份主干回归，分别跑三次。** 新行为在旧基线应因预定原因失败，主干保护则应在基线通过。不要从每个旧候选自己取“主干回归”，否则它落后的测试也会一起消失。
+3. **只收“两列都绿”的整合包。** 收原始退出码、预期失败诊断、日志及包哈希，不能用观察脚本的“成功写 JSON”代替 pytest 结果。
+
+| cattrs 的同一份测试 | 基线包 | 旧 PR 包 | 整合包 |
+|---|---:|---:|---:|
+| Decimal JSON／PyYAML 消费者 | 2 过、22 失败 | 24/24 | 24/24 |
+| 来自基线的 msgspec typed-deque | 11/11 | 5 过、6 失败 | 11/11 |
+
+从本仓根目录可直接复跑这三份公开源码与产物（Bash 4+、Git、CPython 3.12、uv；需下载公开依赖）：
+
+```sh
+bash artifacts/A-MIGRATION-CATTRS-DECIMAL-READER-20261114/replay_posix.sh
+```
+
+[脚本](../../artifacts/A-MIGRATION-CATTRS-DECIMAL-READER-20261114/replay_posix.sh)只在新临时目录工作，输出 6 组日志及 `builds.tsv`，不覆盖既有证据；结果已在 Linux CPython 3.12.14 复跑。这是固定案例的 wheel 验收，不是自动整合任意 PR，也不替代 Windows 原生或上游完整 CI。
 
 ## 怎样验收，什么时候停止扩量
 

@@ -11,7 +11,7 @@
 **把目标、要保留的行为和实际改动一起交给评审者。** 只给一句“帮我 review”或作者的完成总结，容易漏掉需求和未进入摘要的文件。
 
 1. **定范围。** 说明是未提交改动、某个提交，还是分支相对哪个基线；核实际 Git 差异及新增文件，固定已提交部分的版本。只审一个功能就写清边界，发现其他问题另列，不顺手扩大修补。
-2. **选入口。** Codex 用 `/review` 选择对应范围；Claude Code 用 `/code-review`。已有 Agent 也可直接按下方请求审查。确需排除作者的实现推理时，另开干净上下文，只给需求、验收与可核查产物；不要把终端默认 fork 当成无历史评审。
+2. **选入口。** Codex 用 `/review` 选择对应范围；Claude Code 按下文显式选范围。已有 Agent 也可直接按下方请求审查。确需排除作者的实现推理时，另开干净上下文，只给需求、验收与可核查产物；不要把终端默认 fork 当成无历史评审。
 3. **追行为。** 从真实输入沿调用方查到输出，检查新逻辑是否满足目标、旧调用方是否仍能用、测试是否保护这件事。复用对应版本的已有检查结果；缺证时只运行必要且获准的检查，运行失败与代码缺陷分开报告。
 4. **逐条决定。** 有触发条件与影响的先修；契约支持现实现的保留；只有猜测的先补证据。修后回到原失败路径，并检查新增差量和仍未关闭的风险；不要为清空意见反复改代码。
 
@@ -27,6 +27,10 @@ git ls-files --others --exclude-standard
 两份 diff 分别是「上次提交 → 暂存区」和「暂存区 → 工作树」；最后一条只列未跟踪路径，评审当前工作树时还须读取其正文。只审下一次提交时，以暂存内容为准，用 `git show ":path/to/file"` 读取对应文件，不把工作树里的后续修正当作已暂存。`git diff HEAD` 只看工作树相对 HEAD 的净变化，会漏掉暂存后又在工作树撤回的差异；不要为了评审自动 `git add`。忽略文件和子模块内部变化按实际交付范围另核。
 
 依据：[Git diff 的比较对象](https://git-scm.com/docs/git-diff)、[未跟踪文件与忽略规则](https://git-scm.com/docs/git-ls-files)；命令语义核实 2026-11-11。此处补普通 Agent 的取材步骤，不改变各客户端原生评审入口的实现。
+
+**审已提交的分支，固定两端而不是猜默认范围。** 在 Claude Code 里用 `/code-review BASE...HEAD`，把两端换成确认过的提交；终端用 `git diff --name-status BASE...HEAD` 对账。三点 diff 从共同祖先到右端提交，不包括未提交改动；审远端 PR 则用 `/code-review 1234`。裸命令会按默认基线取改动或加上未提交内容，不作固定边界。
+
+本仓实跑 `78f2ccd...26e3e45` 涉及 15 个路径，只审末次提交有 10 个，漏掉前两次的改动。这个校验只核 Git 输入范围，没有运行 Claude 评审。[官方范围语法](https://code.claude.com/docs/en/code-review-local#choose-what-to-review)，2026-11-20 核对。
 
 给已有 Agent 的评审请求可以直接这样说：
 
@@ -151,7 +155,7 @@ git ls-files --others --exclude-standard
 
 **模型与 effort 不按客户引言直接选。** Opus 5.5 发布页的低 effort 优势来自 Deloitte 客户转述，未公开其缺陷集、样本量与误报判定。可作为候选线索，不能据此默认低 effort 足够或替代本仓配对评估。原始归属与边界见依据行。
 
-**依据**：[一手] [Claude 评审文档](https://code.claude.com/docs/en/code-review#review-a-diff-locally)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)、[Codex CLI](https://learn.chatgpt.com/docs/codex/cli)、`security-guidance` 2.0.13 固定源码；[一手／本仓工具实跑] [OpenCodeReview delegation](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/pages/src/content/docs/en/integrations/delegate.md)，2026-10-23 UTC+8，未测评审质量与费用收益；[本仓工具实跑／研究：条件采用] [Git 全清单对账 preview](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)；[一手；研究：采用判断，2026-10-14 UTC，未运行] [security-guidance 运行层与数据路径](research/2026-10-12-baml-and-review.md#安全插件从提醒到自动模型评审)；[一手：2026-10-15 UTC 官方契约；研究：采用判断] [评审窗口与输入历史](research/2026-10-12-baml-and-review.md#评审窗口与输入历史的区别)；[一手：固定补丁与测试定义；研究：采用判断，2026-10-15 UTC] [依赖升级观察点](research/2026-10-12-development-conditions.md#后续依赖升级旧观察点过时不等于消费者结果可以丢)；[一手：厂商刊载客户自述；研究：采用判断] [Opus 5.5 客户转述](research/2026-10-12-baml-and-review.md#调查模型转述与第三方服务的采用边界)；[一手／社区／研究] 测试树核对 [Immich 的故障测试撤回](research/2026-10-13-immich-handover.md#补充证据新对象通过不等于原失败对象已恢复)、[LangGraph 的复测树与最终整合树](research/2026-10-12-long-task-evidence.md#完成状态正确已完成动作仍可能被重新执行)；[经验：采用判断] 工具选择与输入交接 [输入交接记录](research/2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)；核实 2026-10-24。
+**依据**：[一手] [Claude 评审文档](https://code.claude.com/docs/en/code-review-local#choose-what-to-review)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)、[Codex CLI](https://learn.chatgpt.com/docs/codex/cli)、`security-guidance` 2.0.13 固定源码；[一手／本仓工具实跑] [OpenCodeReview delegation](https://github.com/alibaba/open-code-review/blob/375f64cd6f67a48a135da83cfcf59c52669a09cb/pages/src/content/docs/en/integrations/delegate.md)，2026-10-23 UTC+8，未测评审质量与费用收益；[本仓工具实跑／研究：条件采用] [Git 全清单对账 preview](research/2026-10-22-frontier-trials.md#ocr-delegation-trial)；[一手；研究：采用判断，2026-10-14 UTC，未运行] [security-guidance 运行层与数据路径](research/2026-10-12-baml-and-review.md#安全插件从提醒到自动模型评审)；[一手：2026-10-15 UTC 官方契约；研究：采用判断] [评审窗口与输入历史](research/2026-10-12-baml-and-review.md#评审窗口与输入历史的区别)；[一手：固定补丁与测试定义；研究：采用判断，2026-10-15 UTC] [依赖升级观察点](research/2026-10-12-development-conditions.md#后续依赖升级旧观察点过时不等于消费者结果可以丢)；[一手：厂商刊载客户自述；研究：采用判断] [Opus 5.5 客户转述](research/2026-10-12-baml-and-review.md#调查模型转述与第三方服务的采用边界)；[一手／社区／研究] 测试树核对 [Immich 的故障测试撤回](research/2026-10-13-immich-handover.md#补充证据新对象通过不等于原失败对象已恢复)、[LangGraph 的复测树与最终整合树](research/2026-10-12-long-task-evidence.md#完成状态正确已完成动作仍可能被重新执行)；[经验：采用判断] 工具选择与输入交接 [输入交接记录](research/2026-10-12-baml-and-review.md#后续任务相同-brief-与过期接口)；核实 2026-10-24。
 
 ### PR / CI
 

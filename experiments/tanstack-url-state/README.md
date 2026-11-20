@@ -1,5 +1,7 @@
 # 在官方 Router 示例里，把筛选变成可分享的页面状态
 
+来源入口：[Intent 0.5 的随包分发说明](https://tanstack.com/blog/intent-0.5-skills-you-can-maintain)。
+
 核实时间：2026-10-24。🧪 试用：给已经使用 TanStack Router 的项目，按当前安装包加载窄领域 Skill，再用真实应用的导航验收它。无需为两个字段再装 Zod，也无需启用整套 agent hooks。[本轮实测／研究]
 
 本产物在官方 React basic 示例上新增 Posts 标题筛选、A→Z／Z→A 排序、清空与返回结果；不是上游缺陷修复或真实客户委托。读者可直接运行，也可把 `posts-search.ts` 和父路由的 search 配置迁入现有项目。

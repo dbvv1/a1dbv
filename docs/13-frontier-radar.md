@@ -48,14 +48,14 @@
 | **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | Luca 保留分流与 V2EX 去留并存 | 🧪 按项目试用，本仓未安装运行 |
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | Faruk 实际重构未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | Luca 使用与中文短试无明显差异并存 | 🧪 [2.1.0符号编辑实试](../experiments/serena-symbol-edit.md)，不替代版本核对 |
-| **版本文档MCP：Context7** | 从已索引版本取对应API片段，再核原文tag | 已有MCP入口时先resolve再传精确libraryId，缺版本则回官方文档 | 生成文档修复回执说明普通刷新未必重建生成页 | 🧪 [匿名两版查询与截图](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)已试，未测模型效果 |
+| **版本文档 MCP：Context7** | 匹配已索引的版本，不用来替代官方文档 | 直接用 Top 5 的精确查询入口 | [生成文档刷新回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)：普通 Refresh 与从主干重建曾是不同动作 | 🧪 已验两版检索，未验生成代码 |
 | **规格接力：OpenSpec** | 二改漏带旧场景时，CLI 阻止整块规格被覆盖；归档后留下当前约定 | 跨角色或连续二改可试；明确小改沿用任务与测试 | 两次改动实试及采用／退出详见[OpenSpec 记录](research/2026-10-22-frontier-trials.md#openspec规格接力与协作落点)：`--skip-specs` 会留下旧规格，归档不等于实现完成 | 🧪 [已试1.14.3 CLI](07-workflows.md#openspec让下一位接手当前约定而不只是旧计划)，未测Agent／团队收益 |
 | **并行写入：Git worktree** | 每个独立写入任务保留自己的目录、分支和未提交现场 | 先用原生入口或Git，跨树管理成为瓶颈再评估管理器 | 事故后采用与集成后收缩并发支持条件使用 | ✅ 借用机制，[隔离／合入／脏树保护与截图](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)已验 |
 | **环境准备：Worktrunk** | 同步复制所选依赖副本，完成后才启动测试／Agent | 多棵树反复准备环境时试；已有原生入口／脚本够用就不换 | 使用者复制慢反馈提醒不能承诺零成本；大树复制失败已有修复 | 🧪 [0.81.0双树依赖与立即测试](../experiments/worktrunk-ready.md)已试并独立重放，未测模型／性能收益 |
 | **增量测试反馈：pytest-testmon** | 用执行关系从既有测试选择本次反馈 | 测试昂贵且相关目标不易列全时试；小套件先直接跑文件 | Polylogue 采用与[暂缓的成本比较](research/2026-10-12-development-feedback.md#新增选测能力先比较改动类型与完整运行成本)并存 | 🧪 [2.2.0历史改动重放](../experiments/testmon-feedback.md)已试；成熟工具，未测模型／净提速 |
 | **依赖接续：GitHub gh-stack** | 父层修订后在所属工作树重排子层，按恢复日志继续 | 子任务依赖未合入父层时用；独立任务仍用普通worktree | 多Agent使用者的旧版缺口与官方0.2.0工作树支持 | 🧪 [依赖接续与跨树恢复](08-multi-agent.md#有依赖的分支更新父层再接续消费者)；[0.3.0 子模块故障实试](../experiments/gh-stack-submodule/README.md)：失败可能部分完成，勿用 ignore=all 掩盖；未测远端PR／模型收益 |
 | **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | 实践者由MCP转CLI与调用后仍漏验收支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
-| **组件反馈：Storybook stories／MCP** | 复用真实组件，用 story 状态和交互断言接回 Agent | 已有 Storybook、状态交互难以只靠源码判断时用；MCP 资料工具另按缺口选择 | GitButler 接入后改按需使用；本仓 Maka 续改实际跑通 4 个目标 play | 🧪 [真实组件续改路线](23-browser-verification.md#先让真实组件接住续改再验完整应用)；MCP／docs toolset 未试 |
+| **组件资料：Storybook MCP** | 组件故事负责反馈；MCP 只补资料缺口 | 已有 story play 按 Top 5 直接用，不先加 MCP | [GitButler 的按需接入与实际版本](collaboration/local-jobs/A-STORYBOOK-ADOPTION-001.md) | 👀 MCP 未试，docs toolset 受框架与 manifest 限制 |
 
 **想让Agent真正验网页？** 已有项目依赖时，先用 `npx --no-install playwright --version` 确认本地版本，再查 `npx playwright cli --help`，不必先全局安装；CLI提供动作，Skill提供用法，能直接用CLI时也不强求先装Skill。
 
@@ -68,12 +68,6 @@
 ![任务分流图：目标与验收不清先澄清，清楚后实现、回归并实际操作，再按交接或语义定位缺口选计划或Serena，无缺口则保持原路线](img/2026-10-23-workflow-choice.svg)
 
 图：条件分流，不是安装顺序；新增Skill／MCP的模型收益未测（可复现图源详见[图源](img/2026-10-23-workflow-choice.dot)）。
-
-**直接试用版本文档检索**：先让 Context7 列出库的实际版本，选择与项目相符的完整 ID；例如本次 `/pydantic/pydantic/v1.10.18` 返回 `model.dict()`，`/pydantic/pydantic/v2.9.2` 返回 `model_dump()`，引用也分别指向同版源码。这里选择历史版本验证分流，不建议读者降级依赖。
-
-![Context7真实云端终端：两次匿名精确版本查询返回不同方法，原文链接分别匹配Pydantic v1.10.18与v2.9.2](img/2026-10-23-context7-version-query.png)
-
-图：终端展示本次已保存的真实响应摘录，不是模型答题或生成代码效果。
 
 **还不知道该读哪个模块？** [DeepWiki只读导览实试](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)能先指向相关文件，再回固定源码核语义；它不替代精确版本API查询，暂不计入上表广用项。
 
@@ -99,14 +93,14 @@
 |---|---|---|---|---|
 | [原生侧问：解释、调查与改方向分开](decisions/context-management.md#编码途中想问一句先选侧问改变要求仍回主线) | 编码继续时问清决定或比较方案；Claude `/btw` 解释已有上下文，Cursor 本地 `/side` 可持续调查并 `@` 接回 | 两家官方契约；独立作者 Cursor 3.22.7 短对话操作，来源见入口 | 未试用；核读 2026-11-09，非本周新发布功能 | 👀 Claude 侧问无工具；Cursor 侧聊不支持 Cloud Agents，带父背景；改变执行要求仍回主线 |
 | [ECC search-first](decisions/skills-and-plugins.md#ecc-search-first) | 将仓内优先搜索与复用判断压成窄 Skill，适合 Agent 经常先造新组件的场景 | 294,952★快照；官方 Skill 与使用者 #3680，原轮激活／因果未确认 | [真实 Inspector 问题事后对照](../experiments/ecc-search-first/README.md)：两方法同选仓内小改；现有 parser 16/17 匹配、空值反例复核；2026-11-02 | 🧪 只读方法／函数探针，未装整包；无新增采用或提速证据，不替换 Top 5 |
-| [Skill 安装成功却断链](decisions/skills-and-plugins.md#skills-linked-parent) | dotfiles＋多客户端时验实际路径，确认断链再对单个 Skill 用 copy | skills #481 与既有未合并 PR；[本轮发现范围](../experiments/skills-linked-parent/README.md#这轮来源发现为什么选它) | 1.7.4 四布局六步：双客户端断链、重装无效、copy恢复；单客户端／共享根别名正常；2026-10-31 | 🧪 非作者复跑；只验正文读取，非模型采用。另有 [Cursor 同步存储／Automation 提醒](decisions/skills-and-plugins.md#cursor-synced-skill-owner)，未试用 |
-| [Vitest 升级后跨文件漏 env](15-task-playbooks.md#vitest-reused-worker-env) | Agent 修连片失败前先核 worker 状态：默认隔离对照，必要时每文件入口复位 | 真实后端测试用户 #11423；官方 setup／env 语义与未合并 PR | 4.1.11／5.0.5、同 Node／Vite 七组：新版8文件2worker漏值；setup与默认隔离全过，两版单worker均漏；2026-10-31 | 🧪 unstubEnvs 不恢复直接赋值；独立新目录复跑，字符串哨兵，非数据库／模型验收 |
+| [Skill 安装成功却断链](decisions/skills-and-plugins.md#skills-linked-parent) | 先核实际版本和读正文；旧父链接缺陷已修 | [1.9.0 发布](https://github.com/vercel-labs/skills/releases/tag/v1.9.0) | 1.7.4 的失败夹具在同一 HOME 用 1.9.0 修复，正文读回 | 🧪 copy 仅为不能升级的旧版兜底；未运行模型 |
+| [Vitest 升级后跨文件漏 env](15-task-playbooks.md#vitest-reused-worker-env) | Agent 修连片失败前先核 worker 状态：默认隔离对照，必要时每文件入口复位 | [用户 #11423](https://github.com/vitest-dev/vitest/issues/11423) 仍开；[#11441](https://github.com/vitest-dev/vitest/pull/11441) 已关闭未合并，v5.1.1 未复跑 | 4.1.11／5.0.5、同 Node／Vite 七组：新版8文件2worker漏值；setup与默认隔离全过，两版单worker均漏；2026-10-31 | 🧪 unstubEnvs 不恢复直接赋值；独立新目录复跑，字符串哨兵，非数据库／模型验收 |
 | [RTK 的 uv 短失败无恢复](03-context-engineering.md#rtk-uv-short-failure) | 已用过滤器但失败丢诊断：先核已发生结果，下一次保留原生输出 | 真实用户 #4860；已有 500-byte 源码门槛补实际执行 | OSS 1.1.0、tee／SQLite 各6条件：499无记录、500完整取回且不重跑；2026-10-31 | 🧪 排除外层 uv 不排除内层 pytest；独立门槛复跑，未验模型／Windows |
 | [Intent 的 pnpm 全局漏发现](decisions/skills-and-plugins.md#intent-pnpm-global) | 已全局装过 CLI 却列不出 Skill：按实际包根逐个读取，不重装、不拼根 | 真实使用者 #206；已有 PR #207 未合并 | pnpm 11.17.0 实际安装；Intent 0.3.6／0.5.6 默认 0，逐根 5＋1，六份正文均加载；2026-10-31 | 🧪 只修单次读取，不恢复自动多根；非作者复跑，消费者工作流／模型未验 |
-| [OpenSpec／Pi 同名 Skill](decisions/skills-and-plugins.md#openspec-pi-discovery) | 已混用 Pi 与 Codex：保留生成目录，仅在 Pi 窄排除共享副本 | 真实用户 #2180；Pi 官方资源排除与实际加载器 | 1.15.0／1.16.0 各8个条件：6冲突→0，6 skills＋6 prompts及更新后内容保留；2026-10-31 | 🧪 宽排除会吞掉两份 Skill，零警告不够；独立1.16复跑，未调模型 |
+| [OpenSpec／Pi 升级](decisions/skills-and-plugins.md#openspec-pi-discovery) | 2.x 项目共享 Skill，不保留旧 Pi 排除 | [2.x 迁移和旧版区别](../experiments/openspec-pi-discovery/README.md#openspec-2-upgrade-recheck) | 1.16→2.1.1 实跑；保留旧排除读 0 个，撤掉后 6 个 | 🧪 先备份手改、预览更新，未验模型流程 |
 | [Knip 活测试入口误报](09-review-and-quality.md#knip-live-test-entry) | Agent 清理 unused 前，先核框架入口；已用 workspace 项目精确补测试 entry | 真实用户 #2247；现有修复 PR 仍被要求处理否定模式回归 | 6.43.0／6.44.0 两误报→0，原1项测试仍过，真正未用控制仍报告；2026-10-31 | 🧪 不把测试归安全删除，不用 ignore 压绿；独立6.44复跑，未验模型／完整产品 |
 | [Agent Framework 工具调用 ID](../experiments/agent-framework-call-id/README.md) | 已用 Python SDK 且工具外派需 provider ID：先核原始 ID，再用函数中间件临时取值 | 真实用户 #9454 的代理／回放需求；公共 API 尚待规划 | 1.22.0／1.24.0／固定主干各 9 场景；无中间件缺 context ID，但框架结果 ID 保留；2026-10-31 | 🧪 metadata 非空可能来自框架回填；脚本模型＋内存代理，真实服务与跨会话回放未验 |
-| [Repomix 分块包输入回流](../experiments/repomix-split-input/README.md) | 已用打包器、上下文包每轮变大时，先查旧分片是否再成输入；干净输入＋树外输出可避免这条路径 | 使用者 #1920、维护者 #1921 已合入，正式版 1.18.1 尚未含；来源见入口 | 本仓两份公开源码：旧版三轮 2→3→3 文件；已修主干与树外输出均保持 2。16 次 CLI、相关测试 54／57 通过 | 🧪 只迁新输出不清除树内旧分片；不用宽泛 glob 吞掉用户文件。不替换按需读取默认，未测模型收益 |
+| [Repomix 分块包输入回流](../experiments/repomix-split-input/README.md) | 已用打包器、上下文包每轮变大时，先查旧分片是否再成输入；干净输入＋树外输出可避免这条路径 | [正式版 1.19.0](https://github.com/yamadashy/repomix/releases/tag/v1.19.0) 已含 #1921 | 11-20 复跑正式包：旧版三轮 2→3→3，已修版 2→2→2；核实际分片清单 | 🧪 只迁新输出不清除树内旧分片；不用宽泛 glob 吞掉用户文件。不替换按需读取默认，未测模型收益 |
 | <a id="agent-reach-public-trial"></a>[Agent-Reach：按平台动作补读取缺口](research/2026-10-29-agent-reach-trial.md) | 现有入口取不到中文平台／视频原文时，按具体 search、read 动作试，不以渠道总体正常代替验收 | 官方 1.6.0 与 Reddit #868、HN／LINUX DO 真实反馈；从官方 GitHub 安装，避开 PyPI 同名包 | 隔离安装固定源码：公开 GitHub 搜索返回5条，issue读取遭代理403；新增决定性原文0篇，中文平台／视频未试 | 🧪 保现有搜索默认；遇访问拒绝停止对应入口。此前漏项由外部带入，[时间窗与目录漏检复盘](research/2026-10-29-agent-reach-trial.md#漏项归因窗口漏掉旧项目目录也不保证收录)可直接核对 |
 | <a id="test-protection-contract-change"></a>[测试保护：给合法规格变更留接收路径](https://secondtimeisabug.com/blog/coding-agent-guardrails-270-runs/) | 规格改变旧断言时，先明确哪些测试须保留、哪些须随契约更新及由谁接收；不要把“测试只读”直接复制为无人值守默认 | 作者公开270次运行；[固定任务计划](https://github.com/second-time-is-a-bug-book/book-companion/blob/b0a04d5b584b7d1c6afc8b9c365c19073929b570/experiment/tasks/BATCH-2.md)的T4明确需要修改旧测试 | 本仓未试用；只读复算[公开记录](https://github.com/second-time-is-a-bug-book/book-companion/tree/b0a04d5b584b7d1c6afc8b9c365c19073929b570/experiment/results)：有规则的T4中23/30次留下旧单测失败；三条件首过率未见清晰提高 | 👀 作者同一小项目，未公开轨迹／补丁，遗留失败计入了停下等人；不据此撤掉测试保护或宣称门禁无效 |
 | [Goose／LiteLLM 别名丢图](collaboration/inbox.md#goose-litellm-vision-payload) | 元数据说支持图片却看不到图时，查真实 HTTP payload 与配置优先级，在格式化前解析能力 | #13158 使用者报告、固定源码与非作者审查，来源见入口 | 回环 HTTP／Wiremock：基线 2 失败＋7 对照通过，本地候选扩展 18 项通过 | 🧪 历史排障；上游主干已修、v1.57.0 未含；旧实现不再投稿，真实代理未验 |
@@ -129,16 +123,15 @@
 | [Luban 配置生产链](../experiments/luban-data-production/README.md) | 游戏多表引用与生成消费者成为日常负担时，让 AI 改作者源而非生成文件 | 5.1.0／MIT，官方源码与社区对照见 [WP11](research/2026-10-14-game-wp11-gameplay-architecture.md#data-production-chain)；2026-10-26 核实 | 真实生成→TS 编译→Tables 加载、字段／引用二改，3 测试含 5 类非法输入通过 | 🧪 小量沿已有 JSON／SO；strict 失败仍可产文件，须看退出码／报告；未验原生游戏接入 |
 | [show-me 最小结构 diff](../experiments/show-me-symlink-handoff.md) | 交接互相影响的分支时，先标判断顺序和每条回归位置 | 固定 `653b6411` 的 Skill 与真实组合反馈 #12，链接见记录 | 手动应用表达形状：212 行原 diff 配 26 行交接，熟悉补丁的接收者 4/4 定位分支与测试 | 🧪 简单 diff 直接审；插件未调用，未测理解提速；代码候选仍待完整检查 |
 | [Hippo 显式退役](../experiments/hippo-public-guidance-retrieval.md) | 跨工具保存历史决定，手动标明哪条被替换 | 固定 `4d078af8`；外部 #346 只是测试提议 | 隔离组件保留旧行并排除当前召回；四个中文问题失去词项后返回相同前五条，未取出新的主引擎和发布原段；新行 `source` 仍指旧段、`artifact_ref` 为空 | ⛔ 本仓指导仍用 Git 原文＋`rg`；替代关系与引用须人工回源，未接宿主集成或私人记忆 |
-| [context-mode 原块检索](../experiments/context-mode-retrieval.md) | 反复查长资料时按关键词取回原文，不只接模型摘要 | Pi 使用者保留与退出并存，额外提示／重复工具负担见记录 | 固定源码组件实跑 8 文件／344 块；三条中文问句两条零命中，关键词与限定来源补回原块 | 🧪 已知文件仍选 `rg`＋分段读；前三块不保证条件齐全，动态来源须核版本与存续，未接全套插件 |
+| [context-mode 原块检索](../experiments/context-mode-retrieval.md) | 中文资料按关键词取原块，漏条件再缩到同源 | 使用者保留与退出并存，额外成本见记录 | 8 文件／344 块；三问两条零命中，跨来源前三漏掉同源限制 | 🧪 已知文件还是用 `rg`；未接全套插件 |
 | [DevTools离线堆分析](../experiments/browserless-heap.md) | 已有快照时让Agent追对象持有链，不再手抄DevTools表 | 1.12.0 取消分析工具的浏览器依赖 | 三阶段合成ESM快照取回LoadCache链段，无浏览器调用 | 🧪 缓存保留不自动等于应用泄漏，未测模型收益 |
 | MCPorter | shell-only Agent临时调用已授权的公开MCP | 日用复盘与官方入口详见[该记录](../experiments/mcporter-public-read.md#来源与验证范围)；不据自报评效率 | 0.16.0匿名取TanStack/router资料，全文落盘后提取目标章 | 🧪 已有原生入口就沿用，不自动导入客户端配置 |
 | Context Hub | 查库文档时带回已验证的项目经验 | 社区提出与Context7的区别，详见[原帖及核查](research/2026-10-22-frontier-trials.md#context-hub把库文档与已验证经验一起交接) | 0.1.4实际保存Next经验，新进程取回含备注文件 | 🧪 单项目先用项目文档；发布包与主干备注语义不同 |
-| QMD词法／混合检索 | 已有索引、同义表达难定位时，显式组合词法与语义，再取原文 | 中文词法与扩写问题须分别处理，排名不裁决现状 | [2.8.3完整混合接收](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)：11文档155块，旧过程仍排当前路线之前 | 🧪 本次CPU日常交接仍选rg／词法；常驻索引与GPU收益未测 |
+| QMD 词法／混合检索 | 已有索引且关键词找不到同义内容时再试 | 命中不等于现行结论；检查索引是否落后 | [2.8.3 实试](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)：混排把旧过程排第一 | 🧪 已知位置先用 `rg`，CPU 建索引和重排耗时见实测 |
 | Lychee离线深链反馈 | 多页改标题后，让Agent连同入链源检查章节入口 | OpenTelemetry生产内部检查与中文技能仓库采用配置 | [0.24.2真实维护](research/2026-10-22-frontier-trials.md#lychee改完文档验链接能否落到那一节)：找出并修复2条旧深链，GitHub渲染回核 | 🧪 按需补片段反馈；不替代内容核实，不验证外链 |
 | OMP 的 LSP 改名预览 | 跨文件迁移前，让 Agent 看见语言服务实际准备改哪些引用 | 官方、实际用户与 [Actual 迁移预览](research/2026-10-22-frontier-trials.md#omp-semantic-runtime) | 🧪 18.12.6 已在真实 JS→TS 需求只读预览；服务在线但返回空编辑，未执行 apply／DAP | 把预览当编辑清单，不当迁移验收；开发别名与真实构建入口分别核对，由类型／运行消费者接收 |
 | DebugMCP standalone | 无IDE时向MCP客户端提供断点／变量工具 | 用户#31的无IDE需求与发布回执，不是普遍收益证明 | [0.1.2与pdb同输入实试](../experiments/python-debugger-entry.md)均完成观察，输出可见性有差别 | 🧪 pdb够用就不装，CLI与扩展Skill须分开 |
 | Agentation | 把多条页面批注复制给不同编码客户端 | Nodum十月采用为维护者自报 | [3.1.2两条批注导出／刷新实试与截图](../experiments/agentation-feedback.md)，排序后旧标记未跟随对象 | 🧪 原生评论够用就不装，旧定位须复核 |
-| TanStack Intent | 已用TanStack的项目可从安装包取得窄领域配方 | 维护者0.5发布说明说明随包交付与维护的区别 | [实际加载后完成可分享筛选](../experiments/tanstack-url-state/README.md#新版真实浏览器接收)，已有真实浏览器截图 | 🧪 包内版本标记仍需核对 |
 | Graphicle | 用跨文件图和行号导航陌生仓库 | 339★及HN 48分／15评为关注快照 | 0.1.4定位与两文件反例已有[真实输出截图](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对) | 🧪 同名错边仍在，不据图删测试 |
 | GPT with Taste | 为嫌输出啰嗦的人提供明确偏好 | linux.do首帖208 Likes为关注快照 | 隔离安装与恢复已有[真实输出截图](research/2026-10-22-frontier-trials.md#gpt-with-taste安装保文件不代表保有效指令) | 🧪 先保旧配置，不自动合并instructions |
 | InstaLanding的HTML参照法 | 用可运行参照探索UI方向 | Reddit原帖可读但热度未核 | 三状态衍生页完成，浏览器接收未完成 | 👀 DOM-stub通过不等于视觉通过 |
@@ -151,10 +144,6 @@
 
 版本、耗时、许可及未验范围留在[对应试用记录](research/2026-10-22-frontier-trials.md)，以上均未证明模型质量或完整成本收益。
 
-**已知交付入口先用 `rg`／词法，不为一次接收临时建混合索引。** 本次 QMD 在 CPU 上为 11 份完整文档建向量耗时 33m26s，带重排首问 349.906s，仍把旧过程排第一。已有索引时，可按版本 Skill 写 `intent`／`lex`／`vec`，CPU 不值得等重排则显式 `--no-rerank`；结果仍按补丁、实际验证、当前约定分别取原文。原文更新后还要看 pending，不能由“有向量”推成“新内容已嵌入”。[实试范围、来源与撤回条件](research/2026-10-22-frontier-trials.md#qmd-hybrid-intake)，核实 2026-10-25 UTC。
-
-**中文长资料先用关键词找原块，漏关键条件就缩到指定来源。** context-mode 的本次组件实试能保存并返回原文，但两条完整问句零命中，跨来源前三块还漏了“同源正文”的决定性限制；单个关键词或限定来源后补回。已知路径继续 `rg`，反复查询多份长资料才考虑临时索引；索引时间不能替代原文核实日期。[实际问题、入口与取舍](../experiments/context-mode-retrieval.md)，核实 2026-10-26 UTC。
-
 **新候选只补当前缺口：** Agent-Reach 的增量是逐动作核路由与真实正文，当前试验未补回新原文；测试保护反例的增量是识别合法规格更新和等待人的成本。两项均不支持替换本周 Top 5。Agent-Reach 原运行与来源核实为 2026-10-29；测试保护原实验为 10-13～14，本轮 10-29 核固定规则、任务、方法及记录并复算计数，未重跑模型。
 
 **候选里值得记住的两点**：Graphicle的可用导航与错误作用域边可以同时存在；Taste的安装不等于保留旧instructions的有效性。其余候选先保发现价值，未试用不写成推荐默认。用户新链接优先放[收件箱](collaboration/inbox.md)，每条处理结果回到本表，是否已试用以本表结果为准。
@@ -163,11 +152,7 @@
 
 **接手陌生仓库，不知道先用哪一个？** [15 的接手任务卡](15-task-playbooks.md#1-理解陌生或遗留代码)按模块、符号、依赖版本与调用例分流，最后交回修改落点和相关检查，不要求装齐工具。
 
-**依据**：[一手／社区／本仓实测] 下表取证与复现（详见[总记录](research/2026-10-22-frontier-trials.md)）；[一手] [chrome-devtools-mcp 1.12.0](https://github.com/ChromeDevTools/chrome-devtools-mcp/releases/tag/chrome-devtools-mcp-v1.12.0)、[MCPorter](https://github.com/openclaw/mcporter)、[Context Hub](https://github.com/andrewyng/context-hub)、[QMD](https://github.com/tobi/qmd)、[DebugMCP](https://github.com/microsoft/DebugMCP/tree/main/npm/cli)、[Agentation](https://www.agentation.com/)、[TanStack Intent](https://github.com/TanStack/intent)、[Graphicle](https://github.com/graphicle-ai/graphicle)、[GPT with Taste](https://github.com/NB-Corp/gpt-with-taste)、[InstaLanding](https://github.com/RayVelez27/instalanding.ai)、[Coucou](https://github.com/Louis-CFM/coucou)、[Whiteboard](https://github.com/devdotfast/whiteboard)、[Oil UI](https://github.com/oil-oil/oil-ui)、[VibeWise](https://github.com/nykooi1/vibe-wise)、[OpenCodeReview](https://github.com/alibaba/open-code-review)；[社区] [QMD issue #976](https://github.com/tobi/qmd/issues/976)、[DebugMCP #31](https://github.com/microsoft/DebugMCP/issues/31)、[Nodum 采用](https://github.com/nodummd/nodum/blob/main/tasks/nodum-master-plan.md#6-progress-log)、[TanStack 0.5 发布说明](https://tanstack.com/blog/intent-0.5-skills-you-can-maintain)、[Graphicle HN](https://news.ycombinator.com/item?id=50088713)、[GPT with Taste linux.do](https://linux.do/t/topic/3016674)、[InstaLanding Reddit](https://www.reddit.com/r/ClaudeAI/comments/1x22sap/i_built_20_free_opensource_html_pages_you_can_use/)、[Whiteboard HN](https://news.ycombinator.com/item?id=49833867)、[OpenCodeReview 迁移自述](https://github.com/alibaba/open-code-review/issues/1020#issuecomment-6163982899)；[本仓实试] 各条试用记录见上表链接；[一手] [diff-cover 10.6.0](https://pypi.org/project/diff-cover/)、[datasette 固定源码](https://github.com/simonw/datasette/tree/a8e13cc489b41f2f9a5aa691f5eb1bedf99a0e0b) 与 [#2946](https://github.com/simonw/datasette/issues/2946)；[社区：实践者] [Hammant 测试选择](https://paulhammant.com/2026/10/20/agents-guess-which-tests-to-run/)、[中文运维规则](https://blog.csdn.net/qq_37940081/article/details/168444547)；[研究] [TDAD](https://arxiv.org/abs/2603.17973)、候选筛选与未验范围；[本仓窄试] 合成 diff 的 JSON／退出码探针，见 [A-FRONTIER-SELECTION-001](collaboration/local-jobs/A-FRONTIER-SELECTION-001.md#决定性窄试实际执行)；核实 2026-10-24（diff-cover 候选 2026-10-25）。
-
-**已有 Storybook 就把它用作真实组件的反馈入口，不必先加 MCP。** 从当前组件契约开始，把正常、失败恢复和进行中状态做成可执行故事，交给 Agent 修复并复验；应用数据与桌面宿主仍回实际应用接收。Maka 的侧聊模型选择已用这条路线完成两处续改，详见 [23 的起点与验收](23-browser-verification.md#先让真实组件接住续改再验完整应用)。组件资料确有缺口时再评估 MCP；其 docs toolset 支持范围依赖框架与 manifest，当前仍 preview。
-
-**依据**：[一手] [Storybook 文档](https://storybook.js.org/docs/ai/mcp/overview)、[安全修复](https://github.com/storybookjs/storybook/security/advisories/GHSA-f2ph-cmg5-wxc8)；[一手：采用与撤回] [GitButler 接入](https://github.com/gitbutlerapp/gitbutler/pull/16053)及[撤掉全任务强制清单](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)；[社区：作者小试] [UI Verify](https://uiverify.ai/blog/storybook-mcp)，非独立生产比较；[社区／开源] [中文讨论](https://linux.do/t/topic/2771937)与[邻近实现](https://github.com/gamecrafters-io/base-ui/blob/ed701de4b0d35ce686c2b265b329efae517969d7/README.md)；[本仓实际采用] [固定补丁、82 项受影响测试与 4 个 play](collaboration/local-jobs/A-STORYBOOK-ADOPTION-001.md#本地执行端最终独立差量复核)，使用假服务与真实组件，未调用 MCP，不推断资料工具的因果收益；核实 2026-10-25。
+**依据**：各条实试链接以及[前沿研究记录](research/2026-10-22-frontier-trials.md)；原始来源汇总保存在[固定版](https://github.com/dbvv1/a1dbv/blob/26e3e4564af0a7b6fbdd88659e293d8445efb020/docs/13-frontier-radar.md#L166-L170)。历史核查时间保留在各条。
 
 ### 🧪 新意实验：让应用交接当前实现，而不只留聊天
 
