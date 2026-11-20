@@ -233,7 +233,9 @@ Terminal-Bench 的固定运行分析里，一次改错代码层，一次在工�
 
 <a id="p28-windows-launcher"></a>
 
-**Windows 工具在命令启动前失败时，先查执行器，不继续改项目代码或提示词。** 若错误指向 MXC launcher 的卷枚举，核实际执行的二进制／版本、工作目录与沙箱路径；常量命令也只能在已授权的原环境检查，另一个终端成功不证明该入口正常。公开网络卷修复只收窄隐式读取根的展开，不能把它当作权限不足而直接提权、关闭沙箱或删除映射。**局限：补丁合入不等于已进入所用客户端；所核稳定CLI仍未包含该修复。**
+**Windows 工具在命令启动前失败时，先查执行器，不继续改项目代码或提示词。** 若错误指向 MXC 启动器的卷枚举，先核实际执行的二进制、版本和工作目录。旧版 CLI 可升级到含修复的版本（已核 Codex CLI 0.171.0），再用同一入口、原工作目录和原沙箱权限重试一条无副作用的最小命令；另一终端成功不算验证。
+
+**新版仍失败时，先读具体启动错误。** [0.171.0 的发布源码](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/mxc-sandbox/src/windows.rs#L95-L117)会从默认读取范围排除无关的网络卷，但保留策略或命令工作目录所在的共享盘，显式授权仍按原策略处理。继续核工作目录和显式授权，不为排错放宽权限、关闭沙箱或删除映射。这是 CLI 发布源码确认，未在 Windows 实跑，也不代表桌面端已用同一版本。
 
 **依据**：[一手：上游自动轨迹分析，固定 57fd2b9，未独立复跑] [Terminal-Bench #2114](https://github.com/harbor-framework/terminal-bench/pull/2114#issuecomment-5879421239)；[研究；经验：采用与撤回] [AgentDebugX](https://arxiv.org/html/2607.18754v1)、[独立前缀续跑研究](https://arxiv.org/html/2610.17633v1)；[一手：维护记录／测试；经验：采用判断] 2026-10-22（UTC+8）[PostHog 公开二改反例](research/2026-10-13-browser-healing-outcomes.md#p56续补录制可用与采集策略分别验收)；[一手／社区；研究：采用判断，未运行客户端或验证新提示方案] 2026-10-18（UTC+8）[Codex 告警与历史完整性记录](research/2026-10-10-codex-continuity.md#恢复后告警当前可写与历史完整性)；[研究] 2026-10-16（UTC+8）[Windows 启动层补研](research/2026-10-10-codex-continuity.md#windows启动层补研卷枚举失败不等于命令被拒)；[一手／研究] [Codex PR #54363](https://github.com/openai/codex/pull/54363)；[经验：诊断建议] API／工具失败与测试不稳定的排查顺序；[经验：由固定补丁提炼，未运行应用] UI 加载阶段的观察时机；[一手] 官方[纠偏建议](https://code.claude.com/docs/en/best-practices#course-correct-early-and-often)；核实 2026-10-22。
 
