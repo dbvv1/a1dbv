@@ -25,3 +25,5 @@ result_branch: relay/b-star-dnf-browser-20261119
 ## 当前结果
 
 候选已有组装客户端前后证据；专项浏览器未启动。此卡不预占拍摄槽、不让普通接收端认领，不挤掉已在途任务。原槽退出与获准的启动入口均确认后，才由方向会话处理。
+
+- **原槽对账，不重拍**：由方向会话请原本机接收端维护者按 `B-STAR-COAST-READ-TURN-20261117` 核原外层启动器。[认领](https://github.com/dbvv1/a1dbv/commit/b4b1150ee5e07453529ab325b2008920d73c0c40)、[终态标未知](https://github.com/dbvv1/a1dbv/commit/2018a28a832b67766104a4eb2266c76c6e0e8f4a)、[交回](https://github.com/dbvv1/a1dbv/commit/21e6285c02b0759b79e91cfae3b128b999fdb078)分别在 11-18 11:30:58、12:47:33、13:14:09 UTC；这些是 Git 记录时间，不是进程启停时间。[分步退出回执](https://github.com/dbvv1/Star-Rush-Reborn/blob/66b5abbf6f193561cca408c86c8a91511afb2c5d/docs/quality/capture/B-STAR-COAST-READ-TURN-20261117/run-exit.json)没有原启动器身份或共享槽释放结果。交回原调用终态及其浏览器、预览和共享槽已清的确认即可，不再拍图；确认前仍不启本卡，不改开赛限制。
