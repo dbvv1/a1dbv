@@ -212,6 +212,16 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 **依据**：[一手] [Claude 价格](https://platform.claude.com/docs/en/about-claude/pricing)（2026-10-11／2026-10-15）、[Haiku 5.5 模型页](https://platform.claude.com/docs/en/models/haiku-5-5/overview)、[系统卡 §8.9.3](https://www-cdn.anthropic.com/e1080d6bf5ae2018ea3c2f414064be03232f5be5/Claude%20Haiku%205.5%20System%20Card.pdf#page=128)（2026-10-16）；[一手] [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)（2026-10-15）、[GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol)、[GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol)（2026-10-11）、[GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)、[Mistral Large 4](https://docs.mistral.ai/models/mistral-large-4)、[Grok 4.7](https://docs.x.ai/developers/models/grok-4.7)、[Gemini 价格](https://ai.google.dev/gemini-api/docs/pricing)（2026-10-15）；[一手] [OpenAI 缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)、[OpenAI 价表](https://developers.openai.com/api/docs/pricing)、[Claude 缓存指南](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Claude Code 成本文档](https://code.claude.com/docs/en/costs)；[研究] 计费口径、预算边界与缓存选择（2026-10-21，未实测）；核实 2026-10-15 至 2026-10-21；新增 [Terra 官方价格](https://developers.openai.com/api/docs/models/gpt-6.1-terra)核实 2026-10-27。
 
+<a id="gpt-62-responses-cache-compare"></a>
+
+### GPT-6.2 自建 Responses：缓存异常先比较请求形状
+
+**固定指令反复被记为未缓存时，先只改它在请求里的位置。** [OpenAI 缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching#how-prefix-matching-works)明确：从 GPT-6.2 起，顶层 `instructions` 在可缓存前缀之后，即使重复也按未缓存输入计。用相同模型、工具、缓存设置和后续消息，从两个新会话分别试顶层 `instructions`，以及把同一段固定文本放到 `input` 开头的 `developer` 消息；不同时发送两份。用首轮后的 `usage.input_tokens_details.cached_tokens` 看命中；比较总成本要包含首轮，按价表区分缓存读、缓存写和普通输入，不以诊断里的 `cache_hit` 单独推断费用。已用 OpenCode 的读者先核是否已含 2.3.2 的修复，不必另改提示；原生 Codex／Work 不照搬 API 字段。
+
+OpenCode 维护者用约 9.2k token 的固定指令与五个工具做对照：API key 路径上，6.2 Sol 的第二步，旧形状读取 0 个缓存 token，新形状读取 9,632 个（总输入分别为 9,670／9,663）。6.1 Sol 在同组两种形状都能命中。**如果指令需要逐轮替换，别整块搬到历史里。** `previous_response_id` 不继承顶层 `instructions`，而头部消息属于历史；迁移后核下一轮与压缩后是否仍只用当前指令、不重复注入。没有确认行为与用量改善就保留旧配置。
+
+依据：[OpenCode 请求与实测对照](https://github.com/anomalyco/opencode/pull/64542)、[续接与压缩变更](https://github.com/anomalyco/opencode/pull/64544)、[v2.3.2](https://github.com/anomalyco/opencode/releases/tag/v2.3.2)、[Responses 参数契约](https://developers.openai.com/api/reference/resources/responses/methods/create)、[原使用者反馈](https://github.com/openai/codex/issues/62312)。2026-11-20 核读，未重跑 API；该契约和对照不用于推断 Codex 订阅扣减或其他接口的缓存行为。
+
 <a id="同模型换推理档保留缓存前缀"></a>
 
 ### 同模型换档：保留缓存前缀

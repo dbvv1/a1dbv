@@ -83,6 +83,7 @@ Cloudflare 的生产代码评审链在 10 月复盘中公布了按角色取舍�
 **依据**：[官方计费与查看入口] [OpenAI Work／Codex](https://learn.chatgpt.com/docs/pricing)、[Claude Code `/usage`](https://code.claude.com/docs/en/costs#using-the-usage-command)；查看入口核读 2026-10-28，套餐名称按 [02](../02-models-and-cost.md#3-订阅额度与成本控制)补核 2026-10-31；未读取账户用量。
 
 - **重复读长材料、重复派同一调查**：先收窄输入与分工；长会话中途只换 effort 时，核对[保缓存入口](../02-models-and-cost.md#同模型换推理档保留缓存前缀)。
+- **换成 6.2 后，自建 Responses 的缓存读突然下降**：先用相同内容对照 [`instructions` 与头部 `developer` 消息](../02-models-and-cost.md#gpt-62-responses-cache-compare)；现成 OpenCode 先核版本，别先改模型或缩短任务。
 - **质量已达标，只是等得太久**：再比较提速选项；模型、effort、速度模式分开选择。
 
 **从 6.1 Sol 换到 6.2 Sol，先重跑一项已验收的代表任务。** 从原修复前的同一提交开两个工作树，用同一客户端、提示、推理档和速度档，只换模型。先确认回归检查在原提交会失败，再用它验收两份补丁，最后比较从启动到验收的时间和实际用量；漏过已知回归就保留旧配置，别把更快返回当成更快修好。若两组都达标，再按同样方法比较升档是否值得。
