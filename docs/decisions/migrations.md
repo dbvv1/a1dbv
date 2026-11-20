@@ -43,9 +43,9 @@
 
 来源：[Sentry 迁移指令](https://github.com/getsentry/sentry/blob/8891ab865ca741f83cbcd20349bd21c03ad92ffc/static/AGENTS.md#L30-L39)、[环境选择](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.ts#L8-L39)、[构建消费者断言](https://github.com/getsentry/sentry/blob/9d75e921c32de2d4c122fbc5e4cff39d16175172/build-utils/react-router.test.ts#L28-L162)；原核实 2026-11-03，固定源码复核 2026-11-08。这是已完成迁移的历史机制，不是 Sentry 当前仍运行旧版的判断。
 
-**验检查工具的实际规则，别只看绿灯。** ESLint 9→10 时，在原 CI 工作目录、用项目入口分别对根目录和子包的代表文件跑 `eslint --print-config <文件>`，再用一条已知违规核严重度和退出码。v10 从各受检文件所在目录向上找配置；子包可能用另一套规则。若原来就要求统一根配置，用普通模块承载共享实现并从根配置导出，或给该检查显式指定 `--config` 后复验。保留有意设置的子包差异。
+**验检查工具的实际规则，别只看绿灯。** ESLint 9→10 时，在原 CI 工作目录、用项目入口分别对根目录和子包的代表文件跑 `eslint --print-config <文件>`，再用一条已知违规核严重度和退出码。v10 从各受检文件所在目录向上找配置；子包可能用另一套规则。若原来就要求统一根配置，用普通模块承载共享实现并从根配置导出，或给该检查显式指定 `--config`。从 CI 和子包钩子的各自工作目录复验：即使配置和目标文件都是绝对路径，指定 `--config` 后相对 `files` 模式仍按工作目录匹配。保留有意设置的子包差异。
 
-在 [ESLint 上游固定夹具](https://github.com/eslint/eslint/tree/4e6c4ac042e321da8fc29ce53ed03c86dcaa44a7/tests/fixtures/lookup-from-file)的根目录对 `subdir/code.js` 实跑：9.39.4 默认是 `no-unused-vars` error／退出 1；同版开启新版查找或 10.0.0 默认都是 warn／退出 0；10.0.0 显式 `--config ./eslint.config.js` 恢复 error／1。根目录的 `code.js` 两版仍是 error／1。依据：[查找规则与旧旗标](https://eslint.org/docs/latest/use/migrate-to-10.0.0#new-configuration-file-lookup-algorithm)、[Gutenberg 把共享实现改为普通模块](https://github.com/WordPress/gutenberg/pull/77215)；2026-11-21 Linux、Node 24.22.3 运行 ESLint 夹具，不是 Gutenberg 全仓或编辑器复验。
+在 [ESLint 上游固定夹具](https://github.com/eslint/eslint/tree/4e6c4ac042e321da8fc29ce53ed03c86dcaa44a7/tests/fixtures/lookup-from-file)的根目录对 `subdir/code.js` 实跑：9.39.4 默认是 `no-unused-vars` error／退出 1；同版开启新版查找或 10.0.0 默认都是 warn／退出 0；10.0.0 显式 `--config ./eslint.config.js` 恢复 error／1。根目录的 `code.js` 两版仍是 error／1。依据：[查找规则与旧旗标](https://eslint.org/docs/latest/use/migrate-to-10.0.0#new-configuration-file-lookup-algorithm)、[Gutenberg 把共享实现改为普通模块](https://github.com/WordPress/gutenberg/pull/77215)；2026-11-21 Linux、Node 24.22.3 运行 ESLint 夹具。另用子包范围规则最小样例固定两个绝对路径，只改工作目录，让 v10 从根目录的 error／1 变为子包目录的 warn／0；未运行真实钩子或 Gutenberg 全仓。
 
 ## 共享依赖升级：先核是否还能保留原行为
 
