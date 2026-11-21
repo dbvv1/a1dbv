@@ -65,14 +65,18 @@ Hermes 的 [SDK 2 候选](../../experiments/anthropic-sdk-migration/README.md#sd
 
 ## 接收旧迁移 PR：从当前主干接差量
 
-**先固定当前主干与 PR head 两个提交，不把旧 PR 整棵树当新版。** 把两者分别记作 `base`、`candidate`（下列是占位 ref，先换成已核对的引用）：
+**先固定当前主干与 PR head 两个提交，不把旧 PR 整棵树当新版。** 把两者分别记作 `base`、`candidate`（下列是占位 ref，先换成已核对的引用）。先查历史，再算分叉：
 
 ```bash
+git rev-parse --is-shallow-repository
 git merge-base base candidate
+# 确认有共同基线且所需历史完整后，再运行下面三条。
 git rev-list --left-right --count base...candidate
 git log --oneline base..candidate
 git cherry -v base candidate
 ```
+
+**浅检出中两个 SHA 都存在，也不代表中间历史齐全。** 找不到共同基线或历史仍在浅边界截断时，先在审查副本补齐两端历史，再判断分叉，不改已固定的 SHA；补齐后仍无共同基线，就不要把它当普通旧 PR 接收。用本仓两个已知祖先关系的提交实跑，深度 1 时找不到共同基线、左右各报 1 个，补齐所需历史后是 0／3。依据：[Git 浅仓库机制](https://git-scm.com/docs/shallow)、[补历史命令](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---deepenltdepthgt)；2026-11-21 Linux 实跑。
 
 **提交历史只判断新旧 SHA；要不要接，查当前主干是否已保留该行为。** `git cherry` 的 `-` 表示主干历史有等价补丁，不表示后来未撤销；`+` 表示没找到等价补丁，不排除通过压缩或重写实现。用 `git show <SHA>` 看补丁，读主干对应文件并跑原回归；已有行为就不重复应用，确有缺项才在当前主干的独立检出接已审差量（单个普通提交可用 `git cherry-pick <SHA>`）。合并提交不靠这份清单判断。变更日志的并列功能可两边都保留；代码冲突按两边的行为和测试合并。
 
