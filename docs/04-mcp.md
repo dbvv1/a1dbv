@@ -150,6 +150,14 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 **组合服务还要实际跟随工具返回的资源链接。** [FastMCP 当前主干对照](../experiments/fastmcp-resource-receipt/README.md)中，两个 namespace 的资源目录可读，工具却返回旧 URI，客户端跟链均失败；本地整合候选才读回配置并完成两个真实代码消费。首版虽有 157 项相关测试通过，独审仍发现 raw 结果类型及子类字段丢失，补修后再验为 158 项通过并重新完成候选消费。范围是外层 stdio、内层 in-process mount；原 PR 仍 Draft、历史 CI 失败，本地候选没有托管 CI，不升级默认或读者状态。依据：[用户与维护者 #4154](https://github.com/PrefectHQ/fastmcp/issues/4154)、[既有 #4845](https://github.com/PrefectHQ/fastmcp/pull/4845)及上述实测；核实 2026-11-02。
 
+### 升级自己维护的服务：先比较实际公布的接口
+
+**要升级自维护的 MCP 服务时，分别启动固定基线与候选构建，比较两者公布的工具、能力和资源；再用目标客户端跑受影响的一个真实只读任务。** 不拿源码 diff、工具数量或连接成功当作兼容。Reference Servers 将 `npm run interface-diff -- --base <已核定的SHA> --server <服务名>` 接入本地和 CI；在该仓库按既有安装与验证步骤运行。差异用来选验收范围，不自动等于破坏；探测没跑成不能写“无差异”。没有自己的发布流程时，不为一次临时读任务搭门禁。
+
+**接报告先查探测错误，再看接口差异。** 正式 `mcp-server-diff@3.0.0` 实跑官方 Memory `2.2.1` 与 `2026.7.4`：两边都公布 9 个工具、1 个资源，但有输入 schema 版本与工具注解差异；正常差异和目标进程不存在两次都退出 1，且都标 `results[].hasDifferences`。用 `results[].error`（或报告中的错误端点）先把探测失败分开，同版本对照无差异、退出 0。参考仓库的包装器将普通差异列为提示，只在探测错误时失败。
+
+依据：[固定 CI 检查](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/.github/workflows/everything-mcp-diff.yml#L9-L40)、[本地命令与范围](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/docs/quality-gate.md#L115-L135)、[维护者的实际接收记录](https://github.com/modelcontextprotocol/servers/issues/5218)。2026-11-21 在 Linux 复跑已发布 stdio 接口并用上游分类函数核回执；未调用工具、未用真实数据、未跑整个 CI。
+
 ## 5. 在 Claude Code 中接入与撤回
 
 **✅ 先在 `/mcp` 看已有连接；已有插件提供同一服务时不要再手工加一份。** 确有缺口再按[官方 MCP 配置](https://code.claude.com/docs/en/mcp)选择远程 HTTP 或本地 stdio。项目级 `.mcp.json` 可共享，但只提交环境变量引用，不提交 token；安装命令、服务器地址和工具权限都要评审。插件能自启它打包的服务器，不能只看名称。
