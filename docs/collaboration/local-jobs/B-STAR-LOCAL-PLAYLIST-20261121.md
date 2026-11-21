@@ -21,7 +21,7 @@ result_branch: relay/b-star-local-playlist-20261121
 
 ## 交付
 
-两版并列记录实际 bundle 摘要、Chromium／renderer、普通入口、播放尝试次数、原生 `playing` 或错误码、提示及按钮文本、选下一首后的状态、控制台错误和真实退出。原生媒体流状态不等于听过；明确试听未验。只交短验证记录，不宣称整局、画面品质或上线。
+两版并列记录实际 bundle 摘要、Chromium／renderer、普通入口、可观察到的原生起播或错误（如浏览器媒体诊断可用）、提示及按钮文本、选下一首后的状态、控制台错误和真实退出。JS `play()` 尝试次数沿离线回归；普通浏览器取不到时记未测，不加监听钩子。候选的 `new Audio()` 不在 DOM 中；Chromium 的[暂停态拒播](https://github.com/chromium/chromium/blob/156.0.8078.79/third_party/blink/renderer/core/html/media/html_media_element.cc#L3161-L3195)早于原生 [`kPlay` 日志](https://github.com/chromium/chromium/blob/156.0.8078.79/third_party/blink/renderer/platform/media/web_media_player_impl.cc#L1007-L1042)，零条日志不等于零次重试。原生媒体流状态不等于听过；明确试听未验。只交短验证记录，不宣称整局、画面品质或上线。
 
 ## 当前结果
 
