@@ -39,6 +39,8 @@
 
 同一隔离 Linux HOME，1.7.4 双客户端安装退出 0，实际 `use` 退出 1；用 1.9.0 原地重装，保留父子链接，`use` 退出 0，正文逐字节一致。暂不能升级且确认是旧版断链，再对单项用 `--copy`；独立副本要显式更新。见 [v1.9.0 修复](https://github.com/vercel-labs/skills/releases/tag/v1.9.0)与[完整旧版对照及新版复验](../../experiments/skills-linked-parent/README.md)。未跑模型采用。
 
+**Codex 已启用 Skill，不等于看到了它声明的 MCP 依赖。** 保留 `SKILL.md` 的名称、描述与共享正文，把 Codex 的 `dependencies.tools` 放到同一 Skill 目录下的 `agents/openai.yaml`。已有获准的 app-server 时，用项目真实目录调用 `skills/list`（`cwds` 指向该目录，`forceReload: true`），核实际 Skill 的 `dependencies.tools`，别只看 `enabled`。Linux 官方 0.171.0 用同名 Skill 前后对照：两次都启用且无发现错误，依赖从 frontmatter 挪到 YAML 后才出现。依据：[官方文件格式](https://learn.chatgpt.com/docs/build-skills#optional-metadata)、[真实缺依赖反馈](https://github.com/openai/codex/issues/62717)；2026-11-21 复跑，只验声明被宿主读到，未发模型轮次或连接 MCP。
+
 <a id="cursor-synced-skill-owner"></a>
 ## Cursor 云端 Skill：同步会搬位置，Automation 是另一入口
 
