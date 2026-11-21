@@ -152,15 +152,14 @@ OpenAI 的对应划分（developers.openai.com）：
 
 ### 4.2 上下文：先复用按需加载，再按 API 契约保缓存
 **先复用按需加载与缓存契约，再补自己的上下文逻辑。**
-- 多工具先试宿主已有的工具搜索和 Skill，不因“工具多”就手写循环。Anthropic 的 deferred tool search 把定义通过引用加入对话、保持前缀；普通增删顶层 `tools` 不自动享有这个性质，也不能把同一保证套给任意 MCP 元工具。
-- 需要中途改变业务工具时，先查目标模型／平台支持的追加接口：Claude 支持的模型可追加 system 消息，inline-tools beta 可追加工具定义；不要改写旧前缀，也不要为保缓存拒绝必要的模型或权限调整。顶层工具、系统、消息与 effort 的分层规则统一见 [02 缓存边界](02-models-and-cost.md#2-价格快照api-美元百万-token)。
+- 多工具先试宿主已有的工具搜索和 Skill，不手写发现循环。Claude 的 deferred tool search 用引用加载定义；自建 GPT‑6.2 Responses Agent 若工具目录固定，先用托管搜索：在 `tools` 加 `{"type":"tool_search"}`，按用途用 `namespace` 分组，只给不常用的组内 function 加 `"defer_loading":true`。常用的直接保留；工具集合要按运行时业务信息筛选、无法预先声明时，再用客户端搜索。
+- **先验调度再比省了多少。** 托管搜索回来的 `tool_search_output` 是加载记录，不是要应用执行的工具；用随后 `function_call` 的 `namespace` 和 `name` 找处理器，以该调用的 `call_id` 回 `function_call_output`。例如同一个 PR 查测试状态，固定模型和工具目录，对照全部预载与按需加载，核调用是否正确、任务是否完成，再比整项用量与时间；只声明调用方获准的工具，调用前仍按参数核权限；延迟加载不是权限控制。
+- 需要中途改变业务工具时，先查目标模型／平台支持的追加接口：Claude 支持的模型可追加 system 消息，inline-tools beta 可追加工具定义；不要改写旧前缀；普通增删顶层 `tools` 不能当作保缓存的追加接口，也不要为保缓存拒绝必要的模型或权限调整。顶层工具、系统、消息与 effort 的分层规则统一见 [02 缓存边界](02-models-and-cost.md#2-价格快照api-美元百万-token)。
 - 长任务先用现成 harness 的上下文编辑、压缩与跨会话记录；只有所需状态或控制流无法表达时，才补自己的逻辑。
 
 **出现容量或停滞问题，先改对应机制，不直接换整套循环。** Lewis 的 8月同模型对照在紧窗口有效、宽窗不保持同样优势；对照是满窗即停的顺序记录，不是已有压缩的当前 CLI。Agent 保留原始记录并交接收结果，人核干预是否真的触发、是否改善任务；原缺陷消失就撤重复逻辑。
 
-这些是特定 API 的契约，不代表 CLI／SDK 已暴露每个 beta 开关；具体反例和适用模型见 [S6a](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)。
-
-**依据**：[一手] [工具搜索契约](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)、[中途变更契约](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages)；[研究] [Lewis 8月同模型对照](https://arxiv.org/html/2608.26218)、[S6a 选型补核](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)；核实 2026-10-22。
+**依据**：[Claude 工具搜索](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)与[中途变更](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages)、[Lewis 8月同模型对照](https://arxiv.org/html/2608.26218)与[选型反例](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)（核实 2026-10-22）；[Responses 工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search)（核实 2026-11-22）。Python SDK 3.53.0 捕获了预载／延迟加载的两种请求，并用模拟响应跑通同名函数分流和回传；未测线上发现、缓存或成本，不是 Codex 配置。
 
 ### 4.3 组合工具调用：程序化工具调用
 **🧪 只在代码能替代中间判断时采用**：批量独立查询、大结果过滤／聚合，或后续参数可由代码直接算出的依赖调用，先试现成 API／harness 的程序化工具调用；每步都要模型重新判断、用户审批或保留原生引用／文件时，默认直接调用，不因“调用多”就改写循环。Anthropic 与 OpenAI 当前文档均按任务形状区分；前者还报告过顺序单调用评测成本上升、质量未变的反例。
