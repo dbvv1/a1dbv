@@ -71,15 +71,18 @@ Hermes 的 [SDK 2 候选](../../experiments/anthropic-sdk-migration/README.md#sd
 git merge-base base candidate
 git rev-list --left-right --count base...candidate
 git log --oneline base..candidate
+git cherry -v base candidate
 ```
 
-先核 PR 独有提交，再在当前主干的独立检出只应用已审过的提交（单个普通提交可用 `git cherry-pick <SHA>`）。变更日志的并列功能条目可两边都保留；代码冲突按两边的行为和测试合并。若要交付 wheel，按源码提交、产物 SHA-256 和实际导入路径核身份，不按自动生成的开发版本号推断候选更新。
+**提交历史只判断新旧 SHA；要不要接，查当前主干是否已保留该行为。** `git cherry` 的 `-` 表示主干历史有等价补丁，不表示后来未撤销；`+` 表示没找到等价补丁，不排除通过压缩或重写实现。用 `git show <SHA>` 看补丁，读主干对应文件并跑原回归；已有行为就不重复应用，确有缺项才在当前主干的独立检出接已审差量（单个普通提交可用 `git cherry-pick <SHA>`）。合并提交不靠这份清单判断。变更日志的并列功能可两边都保留；代码冲突按两边的行为和测试合并。
+
+依据：[Git cherry 的补丁等价规则](https://git-scm.com/docs/git-cherry)。2026-11-21 用 cattrs 的[原 Decimal 修复](https://github.com/python-attrs/cattrs/commit/2e883761ca61b076c3de45a5d976952226347c2c)在两个临时基线上实跑：换 SHA 接入后，两棵树相同，但旧命令仍列出原提交；再撤销接入，改动已不在当前树，`git cherry` 却仍标 `-`。这两次仅验证 Git 的区分方法，库行为另按下方消费者跑。
 
 [cattrs 的读者复跑](../../reader-tests/A-MIGRATION-CATTRS-DECIMAL-READER-20261114-u1.md)中，旧 PR 比基线少 6 个提交，只多 1 个。旧 PR wheel 的 Decimal 消费者 24/24 通过，却有 6 项 typed-deque 回归失败；接到现有基线后两组 24/24、11/11 都过。当时为 Windows / CPython、JSON／PyYAML Decimal 和 typed-deque 子集；下方另有同口径 Linux 复跑。修订页仍未由新读者复测。
 
 ### Python 库的发布验收：安装三个 wheel，让同一消费者说话
 
-1. **各自构建基线、旧候选、整合三个 wheel。** 记录源码提交、实际受检树与 wheel 的 SHA-256；分开输出目录，每个新环境只装一个 wheel。用该环境的解释器核 `cattrs.__file__`（其他库换成相应模块），路径必须在该环境，不从工作树导入。两个 wheel 的版本字符串也可能相同。
+1. **各自构建基线、旧候选、整合三个 wheel。** 按源码提交、实际受检树与 wheel 的 SHA-256 核身份，不按生成的开发版本号推断候选更新；分开输出目录，每个新环境只装一个 wheel。用该环境的解释器核 `cattrs.__file__`（其他库换成相应模块），路径必须在该环境，不从工作树导入。两个 wheel 的版本字符串也可能相同。
 2. **同一份新增行为检查＋同一份主干回归，分别跑三次。** 新行为在旧基线应因预定原因失败，主干保护则应在基线通过。不要从每个旧候选自己取“主干回归”，否则它落后的测试也会一起消失。
 3. **只收“两列都绿”的整合包。** 收原始退出码、预期失败诊断、日志及包哈希，不能用观察脚本的“成功写 JSON”代替 pytest 结果。
 
