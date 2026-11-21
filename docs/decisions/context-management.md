@@ -128,6 +128,18 @@ async for event in result.stream_events():
 
 依据：[OpenAI Agents SDK 官方状态策略](https://github.com/openai/openai-agents-python/blob/1fc77bbc8ac1446690f6ba62dd0d52779bdcf43f/docs/running_agents.md#choose-a-memory-strategy)、[实际故障 #5454](https://github.com/openai/openai-agents-python/issues/5454)、[参数校验源码](https://github.com/openai/openai-agents-python/blob/1fc77bbc8ac1446690f6ba62dd0d52779bdcf43f/src/agents/models/openai_chatcompletions.py#L543-L574)，核实 2026-11-09。
 
+<a id="responses-reasoning-continuity"></a>
+
+### GPT-6.2 Responses：默认追加，不回改已经发过的历史
+
+**保留原顺序回传工具调用和结果；改规则就追加，不把旧消息改成“好像一开始就这样”。** 长期规则放在首条 `developer` 消息，新变化追加一条；只影响本轮的规则用 GPT-6.2 的顶层 `instructions`，API 会放到 `input` 后。旧工具结果有更正时，保留原结果并在后面说明更正。若必须去掉错误或不应保留的内容，就交付干净历史和已核实状态，不能以保住旧推理为由保留它。
+
+**分开看推理连续性和缓存。** 回改某个旧工具结果或在前面插入消息，可能使其后的 reasoning item 被移除。排障可从同一轮公开或合成历史开两个后续请求：一个追加更正，一个只改原工具结果，其他条件相同。读 Responses 的 `input_transformations`，把 `prefix_mismatch` 对应的 `id` 在前轮 `output` 中找出来；另记缓存 token 与任务结果。缓存命中不能证明推理没丢。跨模型家族或降级也可能移除旧推理，交明确进度与剩余验收，不假定新模型接得上隐含思路。
+
+官方压缩有例外：用 `/responses/compact` 时按说明省略 `instructions`，下次按原顺序回传返回的窗口；不要把自制摘要插进旧工具链，再假设后面的推理还可沿用。
+
+依据：[OpenAI 前缀与诊断](https://developers.openai.com/api/docs/guides/keep-prefix-unchanged#auditing-your-integration-for-prefix-changes) · [推理项移除条件](https://developers.openai.com/api/docs/guides/reasoning#reasoning-item-removal-across-requests)，2026-11-21 核读。仅适用于自建 Responses；未跑两组 API 请求，不据此解释 Codex 客户端个案。
+
 ---
 
 [验证范围与个例](../research/2026-11-10-context-case-evidence.md)：当前起手已用于 [Click 的真实 CLI 修复](../../experiments/click-auto-envvar-error/README.md)；当前检查点方法又由独立新上下文读者用于[接续 BMAD 迁移修复](../../experiments/bmad-migration-receipt/README.md#接收范围)。读者先核指定正文、公开补丁与已完成范围，再复现并修剩余的只读日志故障，原有迁移行为经独立消费者复验保留。本页仍为 🟡：这支持按检查点接续，不是 Claude／Codex 原生压缩或自动恢复的验证，也未验长期无人值守；侧问未试用。继续阅读：[常驻指令](instruction-files.md) · [长任务](long-tasks.md)。
