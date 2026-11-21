@@ -65,11 +65,15 @@ Quick 的“无站点 owner”不等于平台无人维护，员工可覆盖站�
 | **允许用哪些 Agent 和插件** | 维护允许清单；闭源行为可能需逆向核实（隐写标记事件），开源也查遥测／自更新（DeepSeek Harness 桌面版默认遥测） |
 | **哪些数据可以发给云端模型** | 区分公开／内部代码、客户数据与密钥；密钥留在获准认证边界。Read deny 不覆盖任意子进程间接读取，凭证代理不保证绝对保密，按 [10](10-security.md#3-防护原则) 核实际入口与隔离。 |
 | **数据保留** | 按实际登录组织、服务入口、模型和功能放行；商业条款下默认不训练不等于零保留，购买 Enterprise 也不自动启用 ZDR。见下方已核边界 |
-| **数据驻留** | 分别核存储、推理、端点／第三方地区；Anthropic `inference_geo`（`us`／`global`）与 workspace geo 分开。OpenAI GPT-6.1 Sol 的 US／EU 支持仍受组织、协议及项目／端点约束，见下方 |
+| **数据驻留** | 分别核存储、推理、端点／第三方地区；Anthropic `inference_geo`（`us`／`global`）与 workspace geo 分开。OpenAI 逐项核组织、API 项目、地区域名、端点、模型和速度档；GPT-6.2 选档见下方 |
 | **隐私预期** | 2026-10，Anthropic 向警方报告了用户对话中的威胁内容，HN 上的提醒是“你不是在和秘密好友聊天”。敏感内容不要放进云端对话 |
 | **本地模型** | 强合规先核模型、harness、搜索／MCP、遥测外发；再按量化、上下文与任务比本地／自托管质量和总成本，不预设能力差距（见 [02 第 5 节](02-models-and-cost.md#5-本地--开源权重模型)）。 |
 
-**地区边界（2026-10-15，UTC+8 核对）**：Anthropic 官方当前 workspace geo 仅有 US，US-only 推理按标准 token 费率的 1.1 倍计费；`inference_geo` 不能配置 EU 驻留。OpenAI 官方要求非 US 地区获批滥用监控控制并签适用的 Modified Retention amendment，按实际模型、端点和功能核地区支持。**局限：这些 API 条件不能直接外推到聊天产品、整个 Agent 工具链或第三方处理；不替代自身合同审核。**
+**有欧盟驻留要求时，GPT-6.2 不要沿用旧版 Ultrafast 配置。** OpenAI 当前表在 `/v1/responses` 与 `/v1/chat/completions` 列 GPT-6.2 Astra／Sol 的 Standard／Fast 支持美国和欧盟驻留；Ultrafast 仅美国。升级既有欧盟流程时，先以合资格项目和相应的地区域名核 Standard／Fast，再查依赖工具；欧盟项目身份或请求成功都不能让美国专用档满足欧盟要求。按请求选处理地区也需项目启用该功能，不能只换域名。系统数据与第三方 MCP 不继承这项保证，不外推到整个 Agent 或聊天产品。
+
+Anthropic 按其地区文档核 workspace 和实际推理设置；原 2026-10-15 核对记录为 workspace geo 仅 US、US-only 推理费率 1.1 倍，`inference_geo` 不能设置 EU。
+
+**GPT-6.2 依据**：[OpenAI API 项目与地区支持表](https://developers.openai.com/api/docs/guides/data-residency#api-endpoint-tool-and-model-support) · [Ultrafast 地区限制](https://developers.openai.com/api/docs/guides/ultrafast-mode#availability)，2026-11-21 核读；未创建项目或执行计费请求。
 
 **依据**：[一手] [Anthropic 官方地区边界](https://platform.claude.com/docs/en/manage-claude/data-residency)、[OpenAI 官方数据指南](https://developers.openai.com/api/docs/guides/your-data)、[10 的防护原则](10-security.md#3-防护原则)；[社区] 插件行为、遥测与 HN 隐私提醒；[研究] 准入、数据保留与驻留边界；[经验] 入口隔离与准入取舍；核实 2026-10-22。
 
