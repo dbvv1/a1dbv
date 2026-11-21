@@ -228,9 +228,17 @@ OpenCode 维护者用约 9.2k token 的固定指令与五个工具做对照：AP
 
 **✅ 同一长任务只换推理投入，先保留已有上下文，不为保缓存全程锁档。** 自建 GPT-6 Responses、standard 单 Agent 集成可保持请求级 `reasoning.effort` 原值，在两次响应之间、下一条用户消息前追加 `configuration_update`，只改目标 effort；使用 `previous_response_id` 保留更新，手动回传历史则保留其原位置。这保持原前缀的缓存复用条件，不保证命中、提速或更低总费用。现成 Codex／Work 用户使用产品档位入口，不把这些 API 字段当作客户端操作说明。
 
-**接已有 harness 前先核压缩方式与回执口径。** 此 API 机制不能直接与自动压缩／自动截断组合，独立 `/responses/compact` 也不接受含这些更新的历史；官方支持显式 `compaction_trigger`，压缩后重新追加目标 effort。更新项不能相邻；响应 `reasoning.effort` 仍报告请求基线，不能单凭该字段判换档未生效。已有 [Codex 固定源码与社区报告](research/2026-10-10-codex-continuity.md#4-2026-10-11-追查有相关修复不等于整个问题已解决)也区分基线和追加更新，但不证明订阅产品与此 API 完全同实现；跨模型切换、前缀改写及实际账单另核缓存指南（见本节依据）。
+**先分清压缩入口。** 换过 effort 或输出格式的历史可用服务端自动压缩；`truncation: "auto"` 不是该入口，仍不接受含更新的历史。
 
-**依据**：[一手] [官方操作与限制](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation)、[缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)（2026-10-24）；[研究] 已有认识回流，未调用 API、未实测客户端，非新模型收益；核实 2026-10-24。
+| 压缩方式 | 下一轮怎样接回配置 |
+|---|---|
+| `/responses` 的 `context_management` 自动压缩 | API 在 `compaction` 后附一条新 `configuration_update`，分别保留最新明确的 effort 与输出格式。手动回放时按原顺序保留这两项；用 `previous_response_id` 时历史部分只传新输入，不自行裁剪。 |
+| `/responses` 显式 `compaction_trigger` | 把 trigger 放在本轮输入末尾，旧更新保留；返回的摘要不会附新更新。在摘要之后、下一条用户消息之前，自行追加一条含所有已改字段的更新；用响应 ID 续接时历史部分只发新更新和用户消息。显式摘要不恢复旧 `additional_tools`，重给下轮需要的工具。 |
+| 独立 `/responses/compact` | 仍拒绝含更新的历史，包括通过 `previous_response_id` 继承的。要用此入口，从完整历史保存最新显式字段，仅滤掉配置更新项再压缩；保留返回的整个窗口，再补一条合并更新及新用户消息。后续请求保持原请求级基线，并重给所需工具。 |
+
+**核实际送入和保留的更新项，不只看响应的 `reasoning.effort`。** 该字段仍报告请求基线。官方显式压缩示例允许 effort 与格式各占一条相邻更新；恢复时合成一条，不据此推断重复更新同一字段的行为。原生 Codex 的[基线与档位记录](research/2026-10-10-codex-continuity.md#4-2026-10-11-追查有相关修复不等于整个问题已解决)不是这套 API 行为的验证。
+
+**依据**：[官方换档与限制](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation)、[自动压缩](https://developers.openai.com/api/docs/guides/compaction#server-side-compaction)、[显式与独立压缩](https://developers.openai.com/api/docs/guides/compaction)、[缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)；2026-11-21 核读，未运行真实 API 或客户端。
 
 <a id="21-新类别决策模型2026-09-起"></a>
 
