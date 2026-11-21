@@ -621,19 +621,11 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
 
 ### 已验补丁怎样交给上游
 
-**✅ 沿项目现有贡献入口交付：让 Agent 先读 CONTRIBUTING、PR 模板和原 issue，再决定提交实现、提案还是讨论。** 起点是固定补丁／head SHA、原需求和已验记录；复用原结果，只补当前入口要求的文档、测试与披露。
+把原需求、固定的补丁 head SHA 和已验证范围交给 Agent，从[贡献决策页的项目门槛](decisions/upstream-contributions.md#按项目的门槛选路)选讨论、提案或实现，再按该页准备材料。获准发出后核远端 head、检查和维护者回复。纯本地改动沿原验收。
 
-| 当前条件 | 下一步 |
-|---|---|
-| 项目允许直接 PR，改动符合当前范围 | 在原分支交实现 PR，附行为变化、兼容取舍、用户文档与复现检查；已有 PR 就继续原处 |
-| 邀请制或要求先合提案 | 先满足贡献资格，再按改动类型交付；OpenSpec 的 bug/docs 获邀后直接交实现，feature 先合 proposal 再交 implementation |
-| 设计仍需讨论或验证尚缺 | 按项目入口先讨论；允许草稿时用 Draft 说明待决项与完成条件，资格和人审要求仍须满足 |
+两个项目特例，不套给其他上游：OpenSpec 的贡献从 issue 开始，外部贡献者等维护者邀请。获邀后，bug／文档用一份 PR，功能先合 proposal 再交实现。Maka 要人类贡献者实际审阅负责，按要求披露实质 AI 使用并保留 `Generated-by`；AI 独审不能写成人审，适用的 ICLA 由本人办理。
 
-Agent 将验证对应到具体 SHA 和受检范围，续改只补受影响路径。旧版全量与新版定向结果分别写；需要 UI 证据时使用构建后的实际应用。人核改动是否值得上游维护、diff 是否支持说明，以及署名、来源和贡献资格。
-
-Maka 要求人类贡献者实际审阅负责、披露实质 AI 使用并保留 `Generated-by`；AI 独审不能写成人审，适用的 ICLA 由本人办理。发出后核远端 head、检查和维护者回复，合并或明确拒绝后收口。纯本地改动沿原验收，不额外制造上游流程。
-
-**依据**：[一手：贡献规范] [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/CONTRIBUTING.md)、[Maka](https://github.com/apache/maka/blob/main/CONTRIBUTING.md)、[ASF协议](https://www.apache.org/licenses/contributor-agreements.html)、[Memos贡献](https://usememos.com/docs/development/contributing)与[测试](https://usememos.com/docs/development/testing)；[经验：采用回流] 贡献入口与验证交接；规范核实2026-10-25 UTC。
+**依据**：[OpenSpec 贡献规范](https://github.com/Fission-AI/OpenSpec/blob/main/CONTRIBUTING.md)（2026-11-21 重核）、[Maka 贡献规范](https://github.com/apache/maka/blob/main/CONTRIBUTING.md)（2026-11-21 重核）与 [ASF 协议](https://www.apache.org/licenses/contributor-agreements.html)（原核实 2026-10-25）。
 
 ## 10. 原型和一次性脚本
 
