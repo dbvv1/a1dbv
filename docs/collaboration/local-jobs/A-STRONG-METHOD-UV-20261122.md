@@ -17,7 +17,7 @@ result_branch: relay/a-strong-method-uv-20261122
 ```text
 uv pip install --offline --no-config --no-cache --no-python-downloads --python <Python3.13> --target <新临时目录> --default-index <打印的文件URL> --dry-run "fixturepkg<=0.1.0"
 ```
-核本题仍退出 1、两项撤回版本仅以撤回解释，核隔离边界并冻结 RUN-ENV.txt、两提示、索引文件哈希。模型只收到索引、RUN-ENV.txt 及[现行提示](../../../experiments/strong-short-task-20261117/inputs/uv-resolver/current.txt)或[三段提示](../../../experiments/strong-short-task-20261117/inputs/uv-resolver/short.txt)之一，不收到本卡、真实 issue 评论、验收控制、其他臂或上游解法。待 dot-A 核收改 ready 才启动；模型不可用不换代。
+核本题仍退出 1、两项撤回版本仅以撤回解释，核隔离边界并冻结 RUN-ENV.txt、两提示、索引文件哈希。模型只收到索引、RUN-ENV.txt 及[现行提示](../../../experiments/strong-short-task-20261117/inputs/uv-resolver/current.txt)或[三段提示](../../../experiments/strong-short-task-20261117/inputs/uv-resolver/short.txt)之一，不收到本卡、真实 issue 评论、验收控制、其他臂或上游解法。预检回执先交本卡指定分支；经 dot-A 核收后，仅由方向会话手动启动。不进普通 ready 队列；模型不可用不换代。
 
 ## 验收与交回
 - 核心：同一 CLI 复跑仍解析失败、退出 1；对同时不兼容 Python 的撤回版本，输出清楚交代 Python 约束，可以同时列两因或归入准确的 Python 总结，不要求固定句式。

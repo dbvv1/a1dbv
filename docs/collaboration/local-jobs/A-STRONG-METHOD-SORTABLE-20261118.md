@@ -17,7 +17,7 @@ result_branch: relay/a-strong-method-sortable-20261118
 按[接收与隔离门槛](../../../experiments/strong-short-task-20261117/ui-replacement/results/RECEIPT.md)逐项回传有效隔离配置、合成读边界探测、真 GPU 截图/看图与固定复现证据。
 视觉预检不另造工具：若 [11-17 的 `shot.mjs` 路径](../demo-trial-20261117.md#L5-L18)能在当前隔离中复用，沿用截图与看图通路，不照搬游戏脚本。从实际跑固定拖拽页的同一浏览器实例带回有效 renderer、相关硬件加速状态、截图及模型基于图像的观察；显卡清单、帧率、截图或 GPU 进程单独都不够（[SwiftShader 可在 GPU 进程里软件渲染](https://chromium.googlesource.com/chromium/src/+/main/content/browser/gpu/fallback.md#swiftshader)）。
 仅使用已有获准环境，不自行改用户安全设置；若做不到，保持 blocked。独立目录/新会话/事后没发现越界均不能替代实际读隔离。
-完成 RUN-ENV.txt 实值冻结、两臂提示与页面哈希；dot-A 核收后才改 ready，本卡 blocked 状态禁止启动两臂。
+完成 RUN-ENV.txt 实值冻结、两臂提示与页面哈希；预检回执先交本卡指定分支；经 dot-A 核收后，仅由方向会话手动启动两臂。不进普通 ready 队列。
 
 ## 解除阻塞后的明确输入
 只发 `experiments/strong-short-task-20261117/ui-replacement/inputs/fallback-array/short.txt` 或 `current.txt` 全文、同一 RUN-ENV.txt。
