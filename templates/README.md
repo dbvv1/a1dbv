@@ -78,7 +78,7 @@ generic/
 | explore-frontier | 本仓 M6 探索方法的可复用版，两个 dot 与其他会话共用 |
 | write-task-guide | 写答案页和操作指南：真实任务实做、照做实测、按卡点改页面；本仓决策页按它写 |
 | handoff | 跨会话交接时保存必要进度；同任务腾空间与跨会话恢复的选择见 [03 会话动作分流](../docs/03-context-engineering.md#3-会话层面的上下文管理) |
-| CLAUDE.md 的停止规则、TASKS.md、Blocked on me / Changed / Found | Anthropic《Getting the most out of Opus 5.5》 |
+| CLAUDE.md 只保留 Claude 专属入口和停止规则，通用流程写在共享文件 | [如何只维护一份公共指令](../docs/decisions/instruction-files.md) |
 | AGENTS.md 不堆重复概览和 lint 规则 | 所引研究在指定样本中未见概览可靠收益；避免复制可由代码获得的信息，不禁止有任务价值的架构地图（[03](../docs/03-context-engineering.md)） |
 | 评审只报会拒绝合并的问题，并说明如何证明它会出错 | Anthropic 官方评审提示 |
 | REVIEW.md 的结构（严重度、证据门槛、Nit 上限、复审收敛） | Claude Code Review 文档（[09](../docs/09-review-and-quality.md#用-reviewmd-调教评审)） |
