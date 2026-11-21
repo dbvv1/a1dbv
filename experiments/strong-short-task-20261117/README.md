@@ -1,6 +1,6 @@
 # 强模型短任务与现行推荐：两题成对先导
 
-**状态：尚无有效正式对照。** Click 有探索性运行，Sortable 待本机前置核验。11-17 用户指定最高优先候选：真实结果反馈、三段短任务、强模型长回合与较少流程约束。这里比较两套提示包，不把差异归因单一因素；两道窄 bug 题仅能发现问题，可能出现双方全通过的天花板，不能证明通用或游戏创作优劣。
+**状态：尚无有效正式对照。** Click 只保留探索结果；替补的界面题 Sortable 和 CLI 题 uv 都待方向会话本机前置核验。11-17 用户指定最高优先候选：真实结果反馈、三段短任务、强模型长回合与较少流程约束。这里比较两套提示包，不把差异归因单一因素；两道窄 bug 题仅能发现问题，可能出现双方全通过的天花板，不能证明通用或游戏创作优劣。
 
 ## 启动合同（仅方向会话阅读，不注入被测模型）
 
@@ -14,6 +14,8 @@
 
 ## 冻结质量口径
 
+下表保留原题口径。替补题的判定见各自任务卡；两题沿用下述盲评与分账。
+
 非作者核查者只拿随机 X/Y 产物、共同需求、固定输入与验收矩阵，不看提示/过程/成本；先写判定再揭盲。只能称标签隐藏，代码可能泄露路线。保存原始首交，不先帮一组修再比较。盲评后若返工，两组同样给缺陷描述、同上限并另计；首交与返工结果分开。
 
 | 题 | 首要验收 | 保留行为/失败路径 |
@@ -25,8 +27,9 @@
 
 ## 任务卡
 
-- [Excalidraw](../../docs/collaboration/local-jobs/A-STRONG-METHOD-EXCALIDRAW-20261117.md)
-- [Click](../../docs/collaboration/local-jobs/A-STRONG-METHOD-CLICK-20261117.md)
+- [原 Excalidraw](../../docs/collaboration/local-jobs/A-STRONG-METHOD-EXCALIDRAW-20261117.md)／[原 Click](../../docs/collaboration/local-jobs/A-STRONG-METHOD-CLICK-20261117.md)：保留记录，不重派。
+- [Sortable 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md)：待实际隔离、真 GPU 截图/看图和环境冻结。
+- [uv 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-UV-20261122.md)：离线发行版已复现，固定源码构建与本机隔离待核；不重派 Click。
 
 ## 原题、已知污染与结果去向
 
