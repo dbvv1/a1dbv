@@ -193,11 +193,19 @@ Google 10 月 29 日公告则明确：Jules 在 11 月 11 日后只读，12 月 
 
 **修复改变哈希覆盖的状态时，分开接收输入兼容与终局哈希兼容。** 同一命令仍得到相同胜负和时长，也可能与旧 hash 不兼容；记录变化原因、旧／新 hash 及仍可读取的输入。同一固定版本重放不一致仍须修复。
 
-**当前默认：用原生 profile 看校准差距，用现行 brief 判断阶段合入。** MOBA-Like 的 `--verify-targets normal|mirror|difficulty` 仍逐项保留报告、目标失败退出 1；各 profile 分别检查，不能互相替代。2026-10-26 的 brief 已把这些目标改为渐进校准：能玩、`npm test` 和构建通过、没有新增异常，就合入 `main`，指标差距留在主干继续改。实际可玩证据由产品负责人提供，构建绿不能代替；新增异常或契约破坏也不能归为普通调参差距。该次只改 brief，仍记录 seed136 超时和高难胜率 74%（目标 80%），不是修复超时。
+**这个历史案例把校准差距与阶段合入分开。** 当时 MOBA-Like 的 `--verify-targets normal|mirror|difficulty` 仍逐项保留报告、目标失败退出 1；各 profile 分别检查，不能互相替代。2026-10-26 的 brief 已把这些目标改为渐进校准：能玩、`npm test` 和构建通过、没有新增异常，就合入 `main`，指标差距留在主干继续改。实际可玩证据由产品负责人提供，构建绿不能代替；新增异常或契约破坏也不能归为普通调参差距。该次只改 brief，仍记录 seed136 超时和高难胜率 74%（目标 80%），不是修复超时。
 
-**复查固定历史 JSON 时，复用[窄接收器与命令](../templates/generic/fixed-delivery-review.md#对真实批量-json-加一个接收检查)，不把它接成当前合入门禁。** 显式传入局数、种子与内容版本，再核报告的分母、终局、异常和时长。后续在生产者正式提供的新入口，独立接收端实际运行 200 局：CLI 退出 0，报告却含 199 终局／1 超时，接收器据此退出 1。这项历史失败保留；它只核该批次报告，不决定当前客户端能否合入。
+**复查固定历史 JSON 时，在本知识库根目录用下列命令；不接到现行合入门禁。** 正式入口实际运行的 200 局中，CLI 退出 0，报告为 199 终局／1 超时；报告检查退出 1。它核分母、终局、异常、卡死、时长与报告中的抽查重放字段，不执行独立引擎重放，也不评估对称、胜率和技能统计。
 
-**依据**：[本仓独立接收／源码核对，2026-10-25] [固定 CLI 的退出条件](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tools/sim.ts#L537-L539)、[回放测试](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tests/replay.test.ts#L7-L28)及[需求目标](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/docs/brief.md#自动验收目标)；[生产者实际采用回传](collaboration/local-jobs/B-MOBA-SIMULATION-001.md#当前结果)确认补齐了版本匹配的异常证据；其批量运行与回放为生产者回传，不是首轮独立接收端运行，未测方法提效。 [一手需求变更，核实 2026-10-26] [8137894 仅改 brief](https://github.com/dbvv1/MOBA-Like/commit/81378940a56ea9e2e9a541b7eeac0a03efaf4377)、[现行阶段合入与校准要求](https://github.com/dbvv1/MOBA-Like/blob/81378940a56ea9e2e9a541b7eeac0a03efaf4377/docs/brief.md#L37-L62)。
+```bash
+python3 scripts/check_moba_batch.py \
+  docs/collaboration/local-jobs/artifacts/B-MOBA-SIMULATION-001/v2-200-seed1.json \
+  --games 200 --seed 1 --content-version 2
+```
+
+[首轮接入、旧门槛与检查器证据（固定历史版）](https://github.com/dbvv1/a1dbv/blob/123b345b428b2d7c74f9ad08bac277c344c14219/templates/generic/fixed-delivery-review.md#对真实批量-json-加一个接收检查)。
+
+**依据**：[本仓独立接收／源码核对，2026-10-25] [固定 CLI 的退出条件](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tools/sim.ts#L537-L539)、[回放测试](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/tests/replay.test.ts#L7-L28)及[需求目标](https://github.com/dbvv1/MOBA-Like/blob/d5f465ce55e2f2280ba4cfe06ce0bcfad7843ce8/docs/brief.md#自动验收目标)；[生产者实际采用回传](collaboration/local-jobs/B-MOBA-SIMULATION-001.md#当前结果)确认补齐了版本匹配的异常证据；其批量运行与回放为生产者回传，不是首轮独立接收端运行，未测方法提效。 [一手需求变更，核实 2026-10-26] [8137894 仅改 brief](https://github.com/dbvv1/MOBA-Like/commit/81378940a56ea9e2e9a541b7eeac0a03efaf4377)、[当时的阶段合入与校准要求](https://github.com/dbvv1/MOBA-Like/blob/81378940a56ea9e2e9a541b7eeac0a03efaf4377/docs/brief.md#L37-L62)。
 
 ## 5. 其他厂商的并行与多 Agent 方式（2026-10）
 

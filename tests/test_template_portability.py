@@ -50,6 +50,18 @@ class TemplatePortabilityTests(unittest.TestCase):
       self.assertTrue(any("missing link target" in e and "task-decisions" in e
                           for e in report["errors"]), report)
 
+  def test_fixed_delivery_and_reviewer_are_copyable(self):
+    with tempfile.TemporaryDirectory() as directory:
+      target = Path(directory)
+      for relative in ("fixed-delivery-review.md", ".claude/agents/code-reviewer.md"):
+        destination = target / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / "templates/generic" / relative, destination)
+      code, report = self.check(target)
+      self.assertEqual(0, code, report)
+      self.assertEqual(2, report["checked_files"])
+      self.assertEqual([], report["errors"])
+
   def test_each_codex_skill_is_independently_copyable(self):
     for name in ("checkpoint-resume", "verify-completion"):
       with self.subTest(skill=name), tempfile.TemporaryDirectory() as directory:
