@@ -346,14 +346,16 @@ PostHog 在同名重命名与引用查询的五题对照后，实际撤回了新
 |---|---|---|
 | 一直规划、不实施 | 目标清楚时切执行模式 | 原生 Plan 禁止实施修改；普通 `update_plan` 清单不是 Plan 模式 |
 | effort 改了，行为没变 | 查当前模式的生效设置 | CLI Plan 有单独覆盖，普通 effort 更新不改活动 Plan mask |
-| CLI 已升级或固定，模型目录／行为仍旧 | 核 CLI、选中 daemon 包与运行 app-server 版本 | 包安装成功不等于后台已切换；有带版本输出的公开个案，不是普遍故障 |
+| 选择器没有 GPT‑6.2，或升级后列表没变 | 核实际运行的 app-server 版本和 provider，再把它的目录与界面比对 | CLI 已升级不等于 UI 的后台已切换；目录有型号也不等于账号能实际调用 |
 | 长会话首输出慢，尚未跑工具 | 保存必要状态后比较新会话 | #52555 单对测量输入不同，reasoning token 为零仍有延迟差异；不能承诺压缩会提速 |
 | 知道未完成却结束回合 | 继续已授权剩余工作，让反例改变下一动作 | #52345/#50771 是具体自述；运行时续接不等于业务验收 |
 | 想重写底层提示来提速 | 先删重复项目流程，保留目标反馈 | schema 强烈不建议 `model_instructions_file`，不作为默认优化 |
 
+**能读取同一 app-server 的目录时，按三种结果排查。** 用 `model/list` 比较 `includeHidden:false` 与 `true`；两次都用同一后端；知道 provider ID 就显式传 `modelProvider`，从第一页按 `nextCursor` 查完。默认列表有该 ID、选择器却没有，先查界面过滤或扩展版本。只在 `includeHidden:true` 时出现且 `hidden:true`，这是目录标记，不是 UI 漏显示。两次列表都没有，就先核该后端版本、provider、账号与工作区范围，不根据另一份 CLI 的列表或更新器“已最新”推断原因。
+
 **需要重现性时，先决定是否需要共享后台。** 不需要时可按入口评估非 daemon 路径；需要时再用已部署版本支持的 pin／更新偏好。0.162.1 已支持关闭自动更新，`daemon update --from-cli` 可固定当前 CLI 包，但会重启并可能中断工作；关闭自动启动、关闭更新、固定包不是同一操作。先读固定官方说明（见本节依据），安排切换窗口后核运行端，不默认强杀／清 socket。两项公开撤回配置支持这条中间路线，尚无同一长任务恢复验收或净省证明。
 
-**依据**：[一手] 0.163.0 发布与固定测试定义、[daemon README](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/app-server-daemon/README.md)；[社区] 两项公开撤回配置；[研究] 2026-10-20 未运行，见[证据与反例](../research/2026-10-10-codex-continuity.md#有效配置与续接动作2026-10-20)；核实 2026-10-20。
+**依据**：[一手] 0.163.0 发布与固定测试定义、[daemon README](https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/app-server-daemon/README.md)；[社区] 两项公开撤回配置；[研究] 2026-10-20 未运行，见[证据与反例](../research/2026-10-10-codex-continuity.md#有效配置与续接动作2026-10-20)；核实 2026-10-20。目录分流据 [App Server 模型列表](https://learn.chatgpt.com/docs/app-server#list-models-modellist)、[VS Code 内置二进制的列表与界面不同](https://github.com/openai/codex/issues/62279)和[Windows 刷新后的缓存缺项](https://github.com/openai/codex/issues/62187)的用户报告；11-22 用 0.171.0 Linux stdio 和三份本地目录验证正常可见、隐藏与缺失，页大小为 1，未验证真实账号，没复现 IDE／桌面问题或请求推理。
 
 ## 来源
 
