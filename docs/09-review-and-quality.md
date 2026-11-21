@@ -28,9 +28,13 @@ git ls-files --others --exclude-standard
 
 依据：[Git diff 的比较对象](https://git-scm.com/docs/git-diff)、[未跟踪文件与忽略规则](https://git-scm.com/docs/git-ls-files)；命令语义核实 2026-11-11。此处补普通 Agent 的取材步骤，不改变各客户端原生评审入口的实现。
 
-**审已提交的分支，固定两端而不是猜默认范围。** 在 Claude Code 里用 `/code-review BASE...HEAD`，把两端换成确认过的提交；终端用 `git diff --name-status BASE...HEAD` 对账。三点 diff 从共同祖先到右端提交，不包括未提交改动；审远端 PR 则用 `/code-review 1234`。裸命令会按默认基线取改动或加上未提交内容，不作固定边界。
+**审已提交的分支，固定两端而不是猜默认范围。** 在 Claude Code 里用 `/code-review BASE...HEAD`，把两端换成确认过的提交；终端用 `git diff --name-status BASE...HEAD` 对账。三点 diff 从共同祖先到右端提交，不包括未提交改动。裸命令会按默认基线取改动或加上未提交内容，不作固定边界。
 
 本仓实跑 `78f2ccd...26e3e45` 涉及 15 个路径，只审末次提交有 10 个，漏掉前两次的改动。这个校验只核 Git 输入范围，没有运行 Claude 评审。[官方范围语法](https://code.claude.com/docs/en/code-review-local#choose-what-to-review)，2026-11-20 核对。
+
+**审远端 PR，也要确认报告真的对应目标。** GitHub PR 可用 `/code-review 1234`；非 GitHub 宿主不照搬纯数字入口，先从该宿主确认 PR 的基线与 head，用固定两端或它实际给出的 diff 审查。若读取失败后报告改审当前分支，即使列了问题，也不接收为该 PR 的结果。
+
+[Windows 用户实报](https://github.com/anthropics/claude-code/issues/111425)中，2.1.329 在自托管 Azure DevOps 的 `gh pr diff` 失败后转审了无关的本地改动。2026-11-21 用官方 Linux 2.1.328／2.1.329 和合成非 GitHub 远端向回环模拟端点采集首请求：只有 .329 的内置指令指定用 GitHub 查数字目标，命令失败或被拒就改审本地 diff 并提示改了范围。未执行 `gh` 或真实评审；这是该构建与目标写法的证据，不外推到所有 PR 入口。
 
 给已有 Agent 的评审请求可以直接这样说：
 
