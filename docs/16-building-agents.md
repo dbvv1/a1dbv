@@ -120,6 +120,8 @@ OpenAI 的对应划分（developers.openai.com）：
 
 **依据**：[一手] [OpenAI SandboxAgent](https://developers.openai.com/api/docs/guides/agents/sandboxes)、[Agents API Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)、[app-server 当前契约](https://learn.chatgpt.com/docs/app-server)、Claude／Codex SDK 固定文档、Claude Agent SDK 安装文档（未运行验证）；[研究] [S6a 选型补核](research/2026-10-10-audit.md#s6a--2026-10-15-sdk托管选型补核)；核实 2026-10-22。
 
+**用 Codex TypeScript SDK 交截图时，把要检查的问题和图片放在同一轮。** 给 `thread.run` 同时传非空 `{ type: "text", text: "检查窄屏提交按钮是否被遮挡" }` 和 `{ type: "local_image", path: imagePath }`。Linux 上用官方 SDK／CLI 0.171.0 复测：仅传有效 PNG 会报 `No prompt provided via stdin`，模拟端点未收到请求；加文字越过该检查，本次环境未能启动会话。较早的 Windows [使用者对照](https://github.com/openai/codex/issues/60996)已在模拟端点收到带文字的同一图片。接入时另用实际入口核图片随请求到达、有针对图片内容的观察，再判断是否完成视觉验收。依据：[固定 SDK 的文本拼接](https://github.com/openai/codex/blob/295eca93394bb83a6ec8e0841033f3997f97fcbd/sdk/typescript/src/thread.ts#L145-L158)、[CLI 的空提示处理](https://github.com/openai/codex/blob/295eca93394bb83a6ec8e0841033f3997f97fcbd/codex-rs/exec/src/lib.rs#L2554-L2559)；2026-11-21，未调用真实模型。
+
 ### 工具外派时，分别验证框架回传与服务端关联
 
 **🧪 已用 Python Agent Framework 且外部服务按 provider ID 存结果时，先核原始 ID，再用函数中间件取得调用上下文。** Core 1.22.0／1.24.0 无函数中间件时，工具 context 没有 ID，框架回传结果却仍带 ID；按工具名、参数或完成顺序配对会漏掉同参并发调用。先跑[可复制对照与临时取值入口](../experiments/agent-framework-call-id/README.md)，不为这个缺口重写整个循环。
