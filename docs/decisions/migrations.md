@@ -113,6 +113,10 @@ bash artifacts/A-MIGRATION-CATTRS-DECIMAL-READER-20261114/replay_posix.sh
 
 来源：[Angular 官方 Karma→Vitest 迁移指南](https://angular.dev/guide/testing/migrating-to-vitest)区分默认 Node DOM、真实浏览器与需另迁的 reporter／覆盖率配置；核实 2026-11-10。
 
+**核源码齐不齐，先对固定提交的文件清单，再查磁盘；不用为此补齐全部历史。** 用 `git ls-tree -r --full-tree --name-only <固定提交>` 列路径，逐项确认本轮需要的文件实际在磁盘上；要验证完整源码，就核全表。普通跟踪文件核内容时，在可信仓库根用 `git hash-object --path=path/to/file -- path/to/file` 按当前生效属性算 Git blob，再和 `git rev-parse '<固定提交>:path/to/file'` 比。不一致先核 `git check-attr -a -- path/to/file` 和过滤配置；既不把 CRLF 的原始字节差异当改动，也不为对上哈希改规则。链接、子模块与产物按各自用法另外验，不能靠文本哈希确认可用。
+
+在 Git 2.56.1 的合成仓实跑：同一深度 1 的提交可完整检出，也可由稀疏检出漏掉消费者文件而 `git status` 干净；CRLF 文件的原始哈希不匹配，按路径转换后匹配，改正文后转换哈希仍能发现差异。依据：[Git 目录树](https://git-scm.com/docs/git-ls-tree)、[按路径计算 blob](https://git-scm.com/docs/git-hash-object)与[换行规则](https://git-scm.com/docs/gitattributes#_end_of_line_conversion)；2026-11-22 Linux 合成验证，未跑原生 Windows 或真实迁移。
+
 本页不适用于把纯内部重构统一升级成双版本兼容流程；没有持久状态的语法改写也无需数据库恢复演练。批量与并行只在迁移单元可独立接收时增加。
 
 [历史实测、读者卡点与未验范围](../research/2026-11-10-migration-case-evidence.md)：原任务证据保留；Windows 新读者已采用路线完成旧/新 SDK 局部消费者，路径卡点已改回步骤；改后路线尚未通过两项真实任务及新读者复测，保持 🟡。
