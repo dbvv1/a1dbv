@@ -46,6 +46,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **让装饰声让出播放资格，不只让出音量。** 同一渲染回调可追赶多个模拟 tick，共用一个音频时钟。若可选出手声写入普通声的 25 ms 限流，即使更轻或同帧排序更低，下一 tick 的命中也可能消失。做法：装饰声不占普通起播／待播预算，但仍计入全局声部上限，满时先撤装饰声；同一回调中普通反馈优先。把新声源的对照加进现有假 `AudioContext` 夹具，再跑 `npm test -- tests/client/audio-critical.test.ts`，核对开关前后命中／护盾的 `source.start` 时刻，并对紧邻重叠录段用 `ffmpeg -i pair.wav -af ebur128=peak=true -f null -` 检查峰值。[原慢帧反例及运行边界](https://github.com/dbvv1/MOBA-Like/blob/79bdb57439d2ca3e49c6560271d4a598999f5ac5/docs/audio-critical.md)。本地候选的指定事件、模拟音频时钟和离线片段已核；不是原生设备播放、整局混音或试听验收。
 
+**结算提示没响，先查它有没有被调度，不要先加大音量。** 若结算声为枪声／命中反馈让路，按声部类别和实际增益判定，不用「还有节点存活」一票否决。FPS-Like 的[回合提示候选](https://github.com/dbvv1/FPS-Like/blob/f3ddecdd26cd4a702e2d81515f6fb85d06f734f0/src/candidates/offline-training-v1/render/audio.ts#L87-L155)反例：在假音频输出中，无脚步时结算声起播；敌人恰在 13 m 脚步半径上，脚步增益为零，但创建的节点使一次性结算声被跳过。验收用同一超时结算对照三段：无冲突、只有零增益脚步、真实枪声／命中重叠；同时记结算事件、跳过原因与结算声是否起播。前两段应起播，第三段应保留原关键反馈并压掉可选提示；不因此给接近静音的声部设一条通用听觉阈值。2026-11-21，受控音频探针，不是浏览器录音或试听；未进入默认。
+
 **先分「听不听得到」和「听起来隔不隔墙」。** FPS-Like 现有模拟用墙体射线决定敌声是否可听；声音层只收通过的事件 ID，再按距离与方向播放。受控探针复用原观察和播放代码，分别让墙体查询返回有墙／无墙：40 m 半径的枪声在 20 m 处仅无墙可听，在 12 m 处两路都播放，送入同样的 0.105 增益。若要加隔墙音色，只给原本可听的声音加低通或额外衰减；别用室内混响代替遮挡，也别因此让玩家或机器人收到原本不该听见的事件。试听先用同一位置、距离和武器的有墙／无墙两段，再另验原不可听点仍静音。见[可听判定](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/sim/game.ts#L244-L252)、[播放消费者](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/audio.ts#L33-L57)（2026-11-18，本端假音频输出与受控墙体查询；未验真实几何角点或试听，未改游戏）。
 
 ### 按每条录音的事件标记截取对照片段
