@@ -126,7 +126,7 @@ codex exec resume --remote "$APP_SERVER_ADDR" --json "$THREAD_UUID" \
   '核对当前受检版本，只运行原任务中尚未完成的只读验收，交回实际输出。'
 ```
 
-这条路径不接受客户端的模型、cwd 或沙箱覆盖，使用服务器配置，且本轮不会提示批准；只在服务器的现有权限符合任务要求时用。核 JSONL 的同一 `thread.started` UUID、`turn.completed`、退出码和实际产物或测试输出。没收到终态就先查原线程与产物，断连不等于没做；Ctrl-C 会请求中断本轮，不是安全脱离。
+这条路径只传文本，不接受客户端的模型、cwd 或沙箱覆盖，且本轮不会提示批准；只在服务器的现有权限符合任务要求时用。0.171.0 的 `resume` 子命令即使传入有效 UUID，加 `--image` 也可能误报 UUID 错误；2026-11-21 隔离 Linux 对照在连接前拒绝带图命令，纯文本命令才到达回环服务的 `thread/resume`。要让 Agent 看新截图，用目标宿主已支持的图片入口，再核实际观察。核 JSONL 的同一 `thread.started` UUID、`turn.completed`、退出码和实际产物或测试输出。没收到终态就先查原线程与产物，断连不等于没做；Ctrl-C 会请求中断本轮，不是安全脱离。
 
 [0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0) · [固定实现](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/exec/src/remote.rs) · [上游接续测试](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/cli/tests/queue.rs#L419-L473)。2026-11-20 以正式 Linux 二进制在隔离云端用回环合成服务核到同 UUID 的 resume 与新 turn、结果和完成事件；活动线程、断线、非 UUID 与指定客户端模型四种反例均非零退出。未跑真实 app-server 持久化、模型任务、跨机或关机恢复。
 
