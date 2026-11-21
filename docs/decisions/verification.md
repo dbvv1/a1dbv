@@ -28,6 +28,8 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
 
+**重命名或删除共享文件时，确认整树引用检查真的启动。** 检查器扫描整树，也可能先被变更文件规则跳过。用项目现有整树入口核未改的引用方，不为此重跑无关检查。[Apache Magpie 的 CI](https://github.com/apache/magpie/blob/94f36f38e3752755d76a70bcf3207b729e508b36/.github/workflows/pre-commit.yml#L260-L325)把全仓 Lychee 独立于 PR 差量的 prek，PR 和 main 都有独立执行步骤。用该项目真实入链、目标文件和离线配置做局部复跑：基线通过；仅改目标文件名时，`prek run lychee --from-ref <基线> --to-ref HEAD` 显示 Skip／退出 0，`prek run lychee --all-files` 则失败；CI 原 Lychee 命令也报告断链。2026-11-21 用 prek 0.3.5、固定 Lychee 0.24.2，未跑托管 CI。
+
 ## 已有补丁：同一条回归，要真正跑到旧、新两份实现
 
 **回归与修复在同一个提交里时，把候选回归放到旧实现上再跑一次。** 只跑旧提交自带的测试，可能根本没有覆盖这次错误。先在两个独立检出核版本；用同一输入与断言，确认旧版因目标行为失败、新版通过。若新测试依赖新 API 或新夹具，改用两版都支持的真实入口复现，避免把导入或启动失败算成检出原问题。
