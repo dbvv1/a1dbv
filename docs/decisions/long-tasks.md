@@ -45,9 +45,9 @@
 
 **先对齐接口、数据含义和失败行为，再并行写。** 文件不同不代表决定独立；worktree 也不隔离端口、数据库、依赖或服务。所需未跟踪资料和环境要各自准备。Python editable 开发尤其要用测试的同一解释器核实际模块来源，避免在新树测到主检出；[命令、wheel 与 namespace 边界](../08-multi-agent.md#11-python-worktree确认测试实际导入哪份代码)按需读。
 
-**启用 worktree 后，先核它从哪一个提交开始。** 有指定基线时，首次回执用 `git rev-parse HEAD` 核起点；任务只要求包含某个上游提交时，用 `git merge-base --is-ancestor <必需SHA> HEAD`。不符先保留现有改动并停相关写入，在已确认基线上另建隔离树；不一律改用最新 main。不要根据错误树里没找到文件就改实现。
+**启用 worktree 后，先核它从哪一个提交开始。** 有指定基线时，首次回执用 `git rev-parse HEAD` 核起点；任务只要求包含某个上游提交时，用 `git merge-base --is-ancestor <必需SHA> HEAD`。若祖先检查返回 1，先用 `git rev-parse --is-shallow-repository` 确认是否浅克隆：即使两个 SHA 都能读到，必要父链未取全也只能记未证实，先在已有足够历史的审查检出核同一对 SHA。确认实际基线不符后，再保留现有改动、停相关写入并另建隔离树；不一律改用最新 main。不要根据错误树里没找到文件就改实现。
 
-依据：[Hermes 使用者遇到旧锚点](https://github.com/NousResearch/hermes-agent/issues/146056)与[固定版的创建代码](https://github.com/NousResearch/hermes-agent/blob/aeb5a071069dbd85d85f2c8d44337f16df29d475/hermes_cli/kanban_db_workspace.py#L689-L704)。2026-11-21 在真实源码中调用创建函数：旧锚点创建成功但落后两提交，不包含指定的 [回归提交](https://github.com/NousResearch/hermes-agent/commit/26264afd174206eb3b2c5be3f4ea976a554c7a18)；按已获取的基线 SHA 另建时，祖先检查通过且找到该测试。验证的是起点与测试文件，不是测试运行或守护进程的接续。
+依据：[Hermes 使用者遇到旧锚点](https://github.com/NousResearch/hermes-agent/issues/146056)与[固定版的创建代码](https://github.com/NousResearch/hermes-agent/blob/aeb5a071069dbd85d85f2c8d44337f16df29d475/hermes_cli/kanban_db_workspace.py#L689-L704)。2026-11-21 在真实源码中调用创建函数：旧锚点创建成功但落后两提交，不包含指定的 [回归提交](https://github.com/NousResearch/hermes-agent/commit/26264afd174206eb3b2c5be3f4ea976a554c7a18)；按已获取的基线 SHA 另建时，祖先检查通过且找到该测试。验证的是起点与测试文件，不是测试运行或守护进程的接续。 另用本仓相隔两提交实跑 [Git 浅历史](https://git-scm.com/docs/shallow)边界：只取两端时关系检查退出 1，补齐中间历史后同一对 SHA 退出 0，实际 HEAD 未变。
 
 已有 Git 和准备脚本够用就沿用。具体缺口才试 [Worktrunk 的依赖准备](../../experiments/worktrunk-ready.md)、[Portless 的端口与状态隔离](../../experiments/portless-state-isolation/README.md)或 [gh-stack 的依赖分支](../../experiments/gh-stack-submodule/README.md)。Teams 仍属实验功能，`/resume`／`/rewind` 不恢复 in-process 队员；普通具名子代理也可能互发消息，不能仅凭这一点选 Teams。
 
