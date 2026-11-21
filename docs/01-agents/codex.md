@@ -309,19 +309,16 @@ PostHog 在同名重命名与引用查询的五题对照后，实际撤回了新
 
 **接续前核目标、文件与活进程，不只核聊天 ID。** fork 不是文件快照；新聊天也不保证新运行环境，共享 daemon 沿用启动时环境。先对账未知的部署／发布结果，再续接；不要用清上下文修后台配置，详见[有效配置证据](../research/2026-10-10-codex-continuity.md#有效配置与续接动作2026-10-20)。
 
-**换 provider 后旧聊天无法继续，先核保存的 provider ID 与实际后端配置。** 0.167.1 的 app-server 仍要求两者相同；两个 provider 都显示为“OpenAI”、甚至指向同一服务，也不能当作同一 ID。按错误分流：
+**只改了默认 provider，要续原聊天就保留原 provider 的定义，不必把全局默认改回。** 正式 0.168.0 的 app-server 已按线程保存的 provider ID 恢复；0.167.1 仍按旧检查。两个 provider 同名或同 URL，也不等于同一个 ID。桌面 App 看实际内置或连接的 app-server，不能拿系统 CLI 版本代替。
 
-| 错误 | 继续原聊天前先做什么 |
+| 恢复时的情况 | 怎么做 |
 |---|---|
-| `modelProviderMismatch` | 保留原 provider 定义，在实际运行后端选择原 ID；仅给 `thread/resume` 加 provider 参数不能绕过保存值检查 |
-| `modelProviderNotConfigured` | 恢复仍获准使用的原 provider 定义，再恢复聊天 |
-| `modelProviderPolicyConflict` | 按当前组织策略处理，配置冲突未解除前不重试输入 |
+| `modelProviderNotConfigured` | 补回仍获准使用的原 ID 定义，再续原聊天；无需改新线程的默认 |
+| `modelProviderMismatch`，或提示恢复时不能换 provider | 移除显式 provider 覆盖，保留线程原 ID；旧后端才需在该后端选回原 ID |
+| `modelProviderPolicyConflict` | 先处理组织策略冲突，不重试输入或绕过策略 |
+| 确实要换 provider | 新开聊天交接。CLI 可引用旧会话生成待发送草稿，不会自动迁移完整历史；先核可分享材料、当前工作区和未完成动作 |
 
-**需要换 provider，就明确选择新聊天交接。** CLI 0.167.0 提供旧记录查看与新聊天交接入口；0.167.1 的实现是在新聊天编辑框放入引用旧会话的待发送草稿，并非自动迁移完整历史或恢复同一 ID。确认材料允许交给新 provider，再核目标、约束、工作区和未完成动作，不改历史记录或数据库中的 provider 标签。
-
-**要在同一后端、不切换当前默认就恢复原聊天，需核实际构建是否包含 [#59503](https://github.com/openai/codex/pull/59503)。** 该修复按旧聊天保存的 provider 恢复，仍拒绝恢复时显式换 provider，也保留缺定义与托管策略检查。它已合入上游 main，但 0.167.1 发行源码仍是旧检查。桌面 App 的构建号要对应其实际内置或连接的 app-server，系统 CLI 版本不代表它；查不到修复是否已进入该后端，就保留原聊天并标为恢复未确认，不凭 PR merged 或 App 显示已更新认定已修。
-
-**依据**：[一手：0.167.1 恢复契约](https://github.com/openai/codex/blob/rust-v0.167.1/codex-rs/app-server/README.md#model-provider-admission)与[对应实现](https://github.com/openai/codex/blob/rust-v0.167.1/codex-rs/app-server/src/config_manager.rs#L538-L619)、[固定修复](https://github.com/openai/codex/blob/e115d5f90d56d32785b9b01d4c376d7abf94ea7d/codex-rs/app-server/src/config_manager.rs#L522-L589)、[0.167.0 发布说明](https://learn.chatgpt.com/docs/changelog)与[0.167.1 新聊天草稿测试](https://github.com/openai/codex/blob/rust-v0.167.1/codex-rs/tui/src/app/tests/new_session_tests.rs#L636-L790)；[真实用户报告](https://github.com/openai/codex/issues/58865)与[桌面版本／同名 ID 反馈](https://github.com/openai/codex/issues/59323)。本仓 Linux 0.167.1 原生 stdio 合成会话实测：provider 不匹配及请求参数覆盖均被拒绝，失败前后历史可读、原记录字节不变；同 provider 对照在沙箱辅助进程初始化失败，未完成恢复。未发送模型 turn，未验证真实账户或桌面聊天；新聊天草稿仅核源码。核实与实跑：2026-11-11。
+**依据**：[0.168.0 正式版](https://github.com/openai/codex/releases/tag/rust-v0.168.0)、[恢复实现](https://github.com/openai/codex/blob/rust-v0.168.0/codex-rs/app-server/src/config_manager.rs#L521-L589)与[上游恢复回归](https://github.com/openai/codex/blob/rust-v0.168.0/codex-rs/app-server/tests/suite/v2/thread_resume.rs#L6971-L7016)、[0.167.1 契约](https://github.com/openai/codex/blob/rust-v0.167.1/codex-rs/app-server/README.md#model-provider-admission)与[新聊天草稿测试](https://github.com/openai/codex/blob/rust-v0.167.1/codex-rs/tui/src/app/tests/new_session_tests.rs#L636-L790)、[客户端用户反馈](https://github.com/openai/codex/issues/59323)。Linux stdio 合成会话：11-11 用 0.167.1 核旧版拒绝；11-21 用正式 0.168.0 核原 ID 缺定义、显式换 ID 都被拒绝，历史可读且原记录字节不变。保留原 ID、只改默认时，0.168.0 已越过配置校验，但本次启动被沙箱辅助进程挡住；成功恢复据上游回归，未用真实账号、模型或桌面 App。
 
 **旧线程恢复后，别仅凭新全局默认判断档位。** 0.164.0 的 app-server 恢复路径补回保存的 tier、推理摘要与 personality，显式请求覆盖优先；保存的 tier 和当前模型实际支持的 tier 仍分开。范围只限这三项，[缺字段与快照归属的精确行为](../research/2026-10-10-codex-continuity.md#冷恢复的保存设置01640窄修订)不能外推为全部权限／配置恢复。
 
