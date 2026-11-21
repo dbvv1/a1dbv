@@ -156,9 +156,9 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 **接报告先查探测错误，再看接口差异。** 正式 `mcp-server-diff@3.0.0` 实跑官方 Memory `2.2.1` 与 `2026.7.4`：两边都公布 9 个工具、1 个资源，但有输入 schema 版本与工具注解差异；正常差异和目标进程不存在两次都退出 1，且都标 `results[].hasDifferences`。先用 `results[].error` 区分端点探测失败；同版本对照退出 0。参考仓库的包装器提示普通差异，只对端点探测错误报失败。
 
-**退出 0 也要确认目录读全。** 用原比较器去掉 `-q` 看是否有列表报错，并核对两版应公布的目录；遇到 `nextCursor`，用客户端把两边都翻到末页再比较。两种 stdio 握手路径的合成对照都复现：只改第二页工具 schema，或两边的 `tools/list` 都报错，3.0.0 均退出 0，且没有 `results[].error`；同一改动放在首页才报差异。目录缺失或没读全时，验收仍未完成。
+**退出 0 也要核目录覆盖与关键参数。** 用原比较器去掉 `-q` 看是否有列表报错，并核对两版应公布的目录；遇到 `nextCursor`，用客户端把两边都翻到末页再比较。两种 stdio 握手路径的合成对照都复现：只改第二页工具 schema，或两边的 `tools/list` 都报错，3.0.0 均退出 0，且没有 `results[].error`；同一改动放在首页才报差异。目录缺失或没读全时，验收仍未完成。若输入用 `prefixItems` 按位置约束，直接核客户端拿到的原始 schema（保留数组顺序），再验旧输入：合成对照中，比较器漏报两项换位，但旧输入在新 schema 下已不通过。
 
-依据：[固定 CI 检查](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/.github/workflows/everything-mcp-diff.yml#L9-L40)、[本地命令与范围](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/docs/quality-gate.md#L115-L135)、[维护者的实际接收记录](https://github.com/modelcontextprotocol/servers/issues/5218)、[比较器 v3.0.0 探测源码](https://github.com/SamMorrowDrums/mcp-server-diff/blob/v3.0.0/src/probe.ts)、[MCP 分页规范](https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination)。2026-11-21 在 Linux 实跑已发布接口及合成分页／列表错误对照，未调用工具或跑整个 CI。
+依据：[固定 CI 检查](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/.github/workflows/everything-mcp-diff.yml#L9-L40)、[本地命令与范围](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/docs/quality-gate.md#L115-L135)、[维护者的实际接收记录](https://github.com/modelcontextprotocol/servers/issues/5218)、[比较器 v3.0.0 探测源码](https://github.com/SamMorrowDrums/mcp-server-diff/blob/v3.0.0/src/probe.ts)、[MCP 分页规范](https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination)、[JSON Schema 位置约束](https://json-schema.org/draft/2020-12/json-schema-core#section-10.3.1.1)。2026-11-21 在 Linux 实跑已发布接口及合成分页／列表错误／位置约束对照，未调用工具或跑整个 CI。
 
 ## 5. 在 Claude Code 中接入与撤回
 
