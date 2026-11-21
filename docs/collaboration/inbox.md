@@ -300,7 +300,7 @@ Foremerge 核对的是调用方给定提交包含已接受内容，**不验证�
 
 ### 2026-10-28：MCP 迁移，先固定消费者再读接口差异
 
-👀 **升级 MCP SDK／协议时，先比两版服务实际暴露的工具、schema、能力与资源，再用固定旧／新协议客户端验真实调用；本仓未试用。** 官方 servers 的 [interface-diff 脚本](https://github.com/modelcontextprotocol/servers/blob/1a9554d1ad252bc834f1fce9a7048ccc321ec980/scripts/interface-diff.mjs)已在 [#4975](https://github.com/modelcontextprotocol/servers/pull/4975)合入，入口为 `npm run interface-diff -- --base <ref> --report-dir <dir>`，需在该项目构建并启动两版服务。差异留给审阅，构建或探测失败报错；普通重命名继续项目原生测试。
+已转入 [MCP 升级答案](../04-mcp.md#升级自己维护的服务先比较实际公布的接口)，看当前命令与探测范围；下文保留旧／新协议消费者的迁移证据。
 
 **先读差异报告采用的协议与能力。** 真实迁移 [#5131](https://github.com/modelcontextprotocol/servers/pull/5131)的客户端自动协商最新协议，实际比较旧版 `initialize` 与新版 `server/discover`；旧消费者兼容另由 Inspector 的 `--protocol-era legacy`／`modern` 和 SDK 客户端验证。其 Claude Code 实测只覆盖协商后的现代协议。维护者和工具作者的[原始采用讨论](https://github.com/modelcontextprotocol/servers/issues/4860)指向该交付；这是一份运行时协议迁移的接收做法，当前本仓没有匹配的自然迁移任务。核实：2026-10-27 UTC。
 

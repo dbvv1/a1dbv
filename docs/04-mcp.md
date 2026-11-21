@@ -154,9 +154,11 @@ Ramp 的 [Tools](https://builders.ramp.com/post/building-laminar/tools) 从预�
 
 **要升级自维护的 MCP 服务时，分别启动固定基线与候选构建，比较两者公布的工具、能力和资源；再用目标客户端跑受影响的一个真实只读任务。** 不拿源码 diff、工具数量或连接成功当作兼容。Reference Servers 将 `npm run interface-diff -- --base <已核定的SHA> --server <服务名>` 接入本地和 CI；在该仓库按既有安装与验证步骤运行。差异用来选验收范围，不自动等于破坏；探测没跑成不能写“无差异”。没有自己的发布流程时，不为一次临时读任务搭门禁。
 
-**接报告先查探测错误，再看接口差异。** 正式 `mcp-server-diff@3.0.0` 实跑官方 Memory `2.2.1` 与 `2026.7.4`：两边都公布 9 个工具、1 个资源，但有输入 schema 版本与工具注解差异；正常差异和目标进程不存在两次都退出 1，且都标 `results[].hasDifferences`。用 `results[].error`（或报告中的错误端点）先把探测失败分开，同版本对照无差异、退出 0。参考仓库的包装器将普通差异列为提示，只在探测错误时失败。
+**接报告先查探测错误，再看接口差异。** 正式 `mcp-server-diff@3.0.0` 实跑官方 Memory `2.2.1` 与 `2026.7.4`：两边都公布 9 个工具、1 个资源，但有输入 schema 版本与工具注解差异；正常差异和目标进程不存在两次都退出 1，且都标 `results[].hasDifferences`。先用 `results[].error` 区分端点探测失败；同版本对照退出 0。参考仓库的包装器提示普通差异，只对端点探测错误报失败。
 
-依据：[固定 CI 检查](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/.github/workflows/everything-mcp-diff.yml#L9-L40)、[本地命令与范围](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/docs/quality-gate.md#L115-L135)、[维护者的实际接收记录](https://github.com/modelcontextprotocol/servers/issues/5218)。2026-11-21 在 Linux 复跑已发布 stdio 接口并用上游分类函数核回执；未调用工具、未用真实数据、未跑整个 CI。
+**退出 0 也要确认目录读全。** 用原比较器去掉 `-q` 看是否有列表报错，并核对两版应公布的目录；遇到 `nextCursor`，用客户端把两边都翻到末页再比较。两种 stdio 握手路径的合成对照都复现：只改第二页工具 schema，或两边的 `tools/list` 都报错，3.0.0 均退出 0，且没有 `results[].error`；同一改动放在首页才报差异。目录缺失或没读全时，验收仍未完成。
+
+依据：[固定 CI 检查](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/.github/workflows/everything-mcp-diff.yml#L9-L40)、[本地命令与范围](https://github.com/modelcontextprotocol/servers/blob/c799c8552b0f27b7a33a7b9233773da144dddcf5/docs/quality-gate.md#L115-L135)、[维护者的实际接收记录](https://github.com/modelcontextprotocol/servers/issues/5218)、[比较器 v3.0.0 探测源码](https://github.com/SamMorrowDrums/mcp-server-diff/blob/v3.0.0/src/probe.ts)、[MCP 分页规范](https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/pagination)。2026-11-21 在 Linux 实跑已发布接口及合成分页／列表错误对照，未调用工具或跑整个 CI。
 
 ## 5. 在 Claude Code 中接入与撤回
 
