@@ -29,7 +29,7 @@
 
 - [原 Excalidraw](../../docs/collaboration/local-jobs/A-STRONG-METHOD-EXCALIDRAW-20261117.md)／[原 Click](../../docs/collaboration/local-jobs/A-STRONG-METHOD-CLICK-20261117.md)：保留记录，不重派。
 - [Sortable 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md)：待实际隔离、真 GPU 截图/看图和环境冻结。
-- [uv 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-UV-20261122.md)：离线发行版已复现，固定源码构建与本机隔离待核；不重派 Click。
+- [uv 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-UV-20261122.md)：发行版和固定源码构建均已在云端复现，仍待方向会话本机构建与隔离；不重派 Click。
 
 ## 原题、已知污染与结果去向
 

@@ -12,7 +12,7 @@ result_branch: relay/a-strong-method-uv-20261122
 用 [uv #23293](https://github.com/astral-sh/uv/issues/23293) 替补已污染的 CLI 题 Click，不复跑旧题。固定 uv 0.12.22／`70fe1196a546e49148a73b1c592b2f74c33af80e`。方向会话本机预检，双方用同一 GPT-6.1 sol／Codex CLI／xhigh；现行先跑、三段短任务后跑。沿用[原协议](../../../experiments/strong-short-task-20261117/README.md)的隔离、两小时上限、首交盲评和分账；这是 CLI 题，用真实子进程输出，不需要 GPU。
 
 ## 先预检，不先跑模型
-用固定源代码及锁文件实际构建 uv，确认 runner 的 Rust 工具链及准备好的依赖能在两臂同一隔离下使用；标签指定 Rust 1.99.0。设置耗时单列。原版 CLI 二进制的复现不能替代该源码构建。
+用固定源代码及锁文件实际构建 uv，确认 runner 的 Rust 工具链及准备好的依赖能在两臂同一隔离下使用；标签指定 Rust 1.99.0。设置耗时单列。云端已试通：准备时 `cargo +1.99.0 fetch --locked --target <目标>`，在配好相同依赖的环境中 `cargo +1.99.0 build --frozen --target <目标> -p uv --bin uv`。`--frozen` 只限制 Cargo，不代替 runner 的进程隔离。
 在同一 runner、Python 3.13 下生成[本地索引](../../../experiments/strong-short-task-20261117/inputs/uv-resolver/make-index.py)，记录生成器打印的文件 URL。用**刚构建的**二进制运行：
 ```text
 uv pip install --offline --no-config --no-cache --no-python-downloads --python <Python3.13> --target <新临时目录> --default-index <打印的文件URL> --dry-run "fixturepkg<=0.1.0"
@@ -25,4 +25,4 @@ uv pip install --offline --no-config --no-cache --no-python-downloads --python <
 - 保存首交补丁、相关检查和实际 CLI 前后输出；非作者先盲判行为、回归和维护性，再看用时和成本。计量按原协议，实际费用不可得记未知。只向指定回传分支写 `experiments/strong-short-task-20261117/results/uv/` 与本卡结果，公开扫描后交 review_ready；不发上游。
 
 ## 当前结果
-blocked。云端用发行版 uv 0.12.22、Python 3.13.5、离线合成索引和 dry-run 复现并独立复验；0.13.9 也复现。取消撤回标记只报 Python 不兼容；将撤回版本改为兼容后仍正确报告撤回，精确固定可选且警告；不兼容时精确固定仍失败；有兼容未撤回版本则选中。未做固定源码构建、方向会话本机隔离或输入冻结，未启动模型，没有质量、时间或成本结论。
+blocked。云端用 Python 3.13.5 与离线索引，在发行版 0.12.22／0.13.9 和固定源码构建的 0.12.22 上复现。固定源码在 Linux x86_64、Rust 1.99.0 下通过锁定依赖预取与冻结构建；原索引退出 1、两项只报撤回，仅去掉两处撤回标记后仍退出 1、全部版本只报 Python 不兼容。另用发行版核了真正兼容的撤回版本、精确固定及成功选择的对照。云端通过不代替方向会话实际 runner 的源码构建、隔离验证或环境冻结；未启动模型，无质量、时间或成本结论。
