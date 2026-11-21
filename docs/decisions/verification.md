@@ -34,26 +34,28 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **回归与修复在同一个提交里时，把候选回归放到旧实现上再跑一次。** 只跑旧提交自带的测试，可能根本没有覆盖这次错误。先在两个独立检出核版本；用同一输入与断言，确认旧版因目标行为失败、新版通过。若新测试依赖新 API 或新夹具，改用两版都支持的真实入口复现，避免把导入或启动失败算成检出原问题。
 
-**需要 Git 索引的检查，优先用 detached worktree，不只解压源码。** 在获准的仓库根目录运行以下 Bash 示例；这是本仓公开扫描误报修复的两个固定版本，换项目时替换提交和测试入口。两个目标目录须尚不存在，命令会写入当前仓库的 worktree 管理信息。
+**先选最小但仍真实的检出形态。** 依赖 Git 索引或提交历史才用真实 Git 夹具或独立 worktree；这个公开扫描误报回归走非 Git 路径，只需两版扫描器和同一份测试。在本仓用 Bash＋Python 3.11+ 运行；浅检出只需取到下列两个固定提交，不必补全历史。
 
 ```bash
 (
 set -eu
-before=06c5a774f2a45e401e09d9157e9eb9b604b3eedc
-after=5f8b0b10e9e3fbf173253e2179afcab5cd06b193
-git worktree add --detach ../verify-old "$before"
-git worktree add --detach ../verify-new "$after"
-git -C ../verify-old rev-parse HEAD
-git -C ../verify-new rev-parse HEAD
-git show "$after:tests/test_check_public.py" > ../verify-old/tests/test_check_public.py
-old_exit=0
-(cd ../verify-old && python3 tests/test_check_public.py PublicScanTests.test_clean_and_placeholder_content_passes -v) || old_exit=$?
-(cd ../verify-new && python3 tests/test_check_public.py PublicScanTests.test_clean_and_placeholder_content_passes -v)
-test "$old_exit" -eq 1
+old=06c5a774f2a45e401e09d9157e9eb9b604b3eedc
+new=5f8b0b10e9e3fbf173253e2179afcab5cd06b193
+tmp=$(mktemp -d)
+if git -C "$tmp" rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo '请把 TMPDIR 设到 Git 仓库之外后重跑。' >&2; exit 1
+fi
+for rev in "$old" "$new"; do
+  mkdir -p "$tmp/$rev/"{scripts,tests}
+  git show "$rev:scripts/check_public.py" > "$tmp/$rev/scripts/check_public.py"
+  git show "$new:tests/test_check_public.py" > "$tmp/$rev/tests/test_check_public.py"
+  (cd "$tmp/$rev" && python3 tests/test_check_public.py \
+    PublicScanTests.test_clean_and_placeholder_content_passes -v) || [ "$rev" = "$old" ]
+done
 )
 ```
 
-预期旧版执行 1 项并因把普通任务词误认凭据而失败，新版执行同一项通过；旧版工作树仅更换测试文件。这个对照验证的是该误报回归。若还要验安全覆盖，另给真实 CLI 输入应检出的合成凭据，核命中与脱敏；整仓扫描通过不能替代这些目标样本。
+读两份输出：旧版须实际运行 1 项、因把普通任务词误认凭据而失败；新版须同 1 项通过。脚本允许旧版非零，以便继续跑新版；缺文件、测试未执行、旧版也通过都不是修复证据。若要验安全覆盖，另给真实 CLI 输入应检出的合成凭据，核命中与脱敏。
 
 **夹具要走哪条枚举路径，先核清楚。** 本仓扫描器在 Git 内只取索引文件：临时目录若位于另一仓库的未跟踪子目录，即使含文件也可能扫描 0 项。要验非 Git 回退路径，先用 `git -C <夹具目录> rev-parse --show-toplevel` 确认它不属于任何仓库，再运行原命令；要验 Git 路径，就核 `git ls-files` 中确有本次夹具。检查文件数／测试数和目标反例，0 项不是通过证据。临时目录的路径和编码也可能触发被测规则，按实际输出区分夹具问题与实现问题。
 
@@ -67,7 +69,7 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 命中只说明选中的文件含该内容；无命中时先核目标文件确在清单中，再作结论。上述入口只读提交内容，不包括未提交修改。依据：[Git grep 的树对象搜索](https://git-scm.com/docs/git-grep)、[Git 路径模式与 glob](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec)，2026-11-16 结合真实跨版本核查实跑。
 
-**依据**：[Git worktree](https://git-scm.com/docs/git-worktree)、[Git 索引枚举](https://git-scm.com/docs/git-ls-files)；[本仓误报修复与回归](https://github.com/dbvv1/a1dbv/commit/5f8b0b10e9e3fbf173253e2179afcab5cd06b193)。2026-10-30 在 POSIX 实跑上述同一回归，旧版因目标问题失败、新版通过，并复现未跟踪子目录的 0 项问题；修订页的本机新读者验收仍待补。
+**依据**：[Git worktree](https://git-scm.com/docs/git-worktree)、[Git 索引枚举](https://git-scm.com/docs/git-ls-files)；[本仓误报修复与回归](https://github.com/dbvv1/a1dbv/commit/5f8b0b10e9e3fbf173253e2179afcab5cd06b193)。2026-10-30 在 POSIX 实跑旧败新过，并复现未跟踪子目录的 0 项问题；2026-11-21 用两份非 Git 源码副本复跑该回归。修订页的本机新读者验收仍待补。
 
 ### 交互 bug：别只验完成后的画面
 
