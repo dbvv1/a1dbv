@@ -84,7 +84,7 @@ python3 experiments/replay_oil_ui_css.py /path/to/oil-ui-checkout
 
 ## 留 Spec：下一次修改还需要这份契约
 
-**把规格留给会被继续使用的行为与取舍，计划留给这次怎么做。** 已有工单、ADR、API 契约或测试足够，就更新原位置；需要跨角色共享、长期审计或维护规格资产时，再试完整 SDD。🧪 已有 OpenSpec 的存量项目适合先做一个增量变更；Spec Kit 的 existing-project 入口也不要求先逆向重写全系统。
+**把规格留给会被继续使用的行为与取舍，计划留给这次怎么做。** 已有工单、ADR、API 契约或测试足够，就更新原位置；需要跨角色共享、长期审计或维护规格资产时，再试完整 SDD。🧪 已有 OpenSpec 的存量项目适合先做一个增量变更，[归档后核当前规格和消费者](../07-workflows.md#openspec让下一位接手当前约定而不只是旧计划)；Spec Kit 的 existing-project 入口也不要求先逆向重写全系统。
 
 短规格先保留这些内容，删掉不适用项：
 

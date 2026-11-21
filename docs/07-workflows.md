@@ -210,7 +210,7 @@ Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agen
 | 工具 | 风格 | 评级 |
 |---|---|---|
 | [GitHub Spec Kit](https://github.com/github/spec-kit) | 功能流程含 Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge；另有 existing-project 指南与 bug／想法独立入口 | 🧪 按未决约束与维护需要试用 |
-| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 轻量增量 change（`/opsx:propose` → `apply` → `archive`），支持 30+ 工具，已有项目按 delta 改当前规格 | 🧪 |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 用 delta 更新当前规格；Agent 的 `/opsx:archive` 与原生 `openspec archive` 是不同入口，见下节 | 🧪 |
 | [Kiro](https://kiro.dev) | 原生需求／设计／任务与显式修订；[Quick Spec](https://kiro.dev/docs/specs/quick-spec/) 可无审批门生成三件套，见[采用边界](research/2026-10-12-community-source-records.md#kiro规格修订能力与采用边界) | 🧪 按审阅与维护需要试用 |
 | [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 模拟敏捷团队的多个角色，产出物很多；小改也可直接 build，v7 仍为预览 | 👀 |
 
@@ -228,16 +228,13 @@ Worktree 和并行会话只隔离写入，不自动提供独立证据；主 Agen
 
 ### OpenSpec：让下一位接手当前约定，而不只是旧计划
 
-**🧪 连续二改时，试用“当前规格＋本次差量”，让下一位不用重拼历史计划。** 本仓用 OpenSpec 1.14.3 连做两次 JSON 导出改动：第二次只写 pretty 新场景、漏掉旧顺序／空数组场景时，CLI 验证和归档都拒绝；补回旧场景后，归档生成包含三者的当前规格。
+**🧪 下一位先读当前规格，再读本次差量；归档成功不等于规格已同步。** 已有工作项和测试足够表达契约时沿用原位置。使用 OpenSpec 时按这条路接收：
 
-- 接手先读当前 spec，再取 `instructions apply` 看剩余任务；`status.isComplete` 只表示计划齐备。
-- MODIFIED 要带上仍有效的旧场景，合入时一起核对实现、测试与当前规格 diff。
-- 不把“归档成功”当验收：`--yes` 可越过未完任务，`--skip-specs` 会保留旧规格。
-- 场景遗漏检查属于本次确定性 CLI 路径；`/opsx:archive` Skill 不自动继承这一保证，保留场景标题也不能检出内容被改错。
+1. **归档前确认实际 delta。** 用 `openspec status --change <change> --json` 找 artifact 和输出，`openspec instructions apply --change <change>` 看剩余任务；`status.isComplete` 只说明规划材料就绪。核实现和测试；`MODIFIED` 保留仍有效的旧场景，也要读内容，不能只比标题。
+2. **Skill 查不到明明存在的 delta，就在副本验证原生 CLI。** 读当前规格和真实 delta，再跑 `openspec validate <change>`、`openspec archive <change>`，保留交互检查。不为迎合生成 Skill 改 artifact ID，不用 `--skip-specs` 留下旧规格；`--yes` 可跳过未完成任务确认。
+3. **归档后拿文件和实际消费者作证。** 核新旧要求都在当前规格、归档原件完整、`openspec list --json` 不再列该 change，另验受影响的实现入口。
 
-跨角色团队可复用提案、设计及发布材料；协作者主要依靠工作项系统，或无人复用这些规格，就沿用原有落点。团队采用与退出均有原文，未测净效率收益。
-
-**依据**：[经验：CLI 实试；[完整复现与采用／退出对照](research/2026-10-22-frontier-trials.md#openspec规格接力与协作落点)，2026-10-23]；[社区／经验] 跨角色团队复用与退出，见上述对照。
+1.16.0 的公开夹具有自定义 `delta-specs`、标准 `specs/` 路径及单个 `ADDED`。相同输入下旧生成 Skill 安全停住；原生 CLI 增加一条，旧规格、五份归档文件均保留，规格验证 1/1、active 空。2026-11-21 又用正式 npm 版 1.16.0 复跑原生路线（隔离一次性夹具用了 `--yes`），结果相同；不代表复杂 `MODIFIED` 或新版生成 Skill。详见[实跑命令与文件验收](../experiments/openspec-apply-warning/README.md#可复用的窄接收步骤)、[旧场景遗漏反例与团队采用边界](research/2026-10-22-frontier-trials.md#openspec规格接力与协作落点)及[官方两条入口](https://github.com/Fission-AI/OpenSpec/blob/main/docs/workflows.md#workflow-at-a-glance)。
 
 ### 从规格到实际消费者：原生 Agent 完成一次扩展及二改
 
