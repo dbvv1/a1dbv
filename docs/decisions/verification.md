@@ -28,6 +28,10 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
 
+**先区分“没执行”和“报告没收录”。** Playwright 的 `onlyFailures: true` 过滤报告，不筛选运行。核必跑名单或用例数时，同一次运行保留完整 JSON／JUnit，把失败专用报告另留给排障。例如配置两个 JSON reporter，分别用 `{ outputFile: "full.json" }` 和 `{ outputFile: "failures.json", onlyFailures: true }`，不用再跑一遍。
+
+若显式配了 `onlyFailures: false` 却仍只有失败项，先核 CI 步骤是否设了 `PLAYWRIGHT_JSON_ONLY_FAILURES` 或 `PLAYWRIGHT_JUNIT_ONLY_FAILURES`：1.65.1 实测相应变量设为 `1` 时，完整报告也被过滤。Linux／Node 24.22.3 上复跑 Playwright 1.65.1：同一全绿运行，完整 JSON 和 JUnit 各有 2 项，失败专用报告均为 0；另一次首跑失败、重试通过的用例仍进入精简报告。[官方 reporter 文档](https://playwright.dev/docs/test-reporters#report-only-failures)、[使用者公开对照](https://github.com/qa-gary-parker/poc-playwright-reporter-size)；核实 2026-11-22，仅核报告，未启动浏览器。
+
 **重命名或删除共享文件时，确认整树引用检查真的启动。** 检查器扫描整树，也可能先被变更文件规则跳过。用项目现有整树入口核未改的引用方，不为此重跑无关检查。[Apache Magpie 的 CI](https://github.com/apache/magpie/blob/94f36f38e3752755d76a70bcf3207b729e508b36/.github/workflows/pre-commit.yml#L260-L325)把全仓 Lychee 独立于 PR 差量的 prek，PR 和 main 都有独立执行步骤。用该项目真实入链、目标文件和离线配置做局部复跑：基线通过；仅改目标文件名时，`prek run lychee --from-ref <基线> --to-ref HEAD` 显示 Skip／退出 0，`prek run lychee --all-files` 则失败；CI 原 Lychee 命令也报告断链。2026-11-21 用 prek 0.3.5、固定 Lychee 0.24.2，未跑托管 CI。
 
 ## 已有补丁：同一条回归，要真正跑到旧、新两份实现

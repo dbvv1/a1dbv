@@ -106,11 +106,11 @@ python3 experiments/replay_oil_ui_css.py /path/to/oil-ui-checkout
 
 ### Spec Kit 的真实反例：解析链已变，Skill 仍旧
 
-本仓的 preset 撤层实测把上面的“沿真实入口验收”落到了 **agent 真正读取的 `SKILL.md`**：基线的 remove 和 resolver 都正常返回，Claude／Codex 文件却仍含已撤层指令；已有修复候选在同输入下恢复 core＋剩余层，并让无 base 的孤儿在再次生成后保持缺席。Gemini 非 Skill 输出在基线与候选的对应三个阶段逐字相同，且都正确撤层，问题不应泛化为所有集成。
+**撤掉 preset 后，从实际安装目录核两件事：`SKILL.md` 里不再残留已撤规则，自己的 `references/` 等附带文件仍在。** 历史 Claude／Codex 三层 preset 对照中，resolver 和命令成功并未让已撤规则离开文件；Gemini 的非 Skill 输出没有同样问题。需保留的手改不要赌生成器会合并，把它和生成正文分开，再核读回的内容。
 
-**手改是否保留，取决于 source marker。** 去掉 `metadata.source` 的文件完整保留，旧文字也留下；只改正文而保留 marker，重组仍会覆盖它，受管孤儿目录连附带文件一起删除。既有项目接收这类配置变化时，可据此区分“应重组的产物”和“应保全的自有内容”，而不是把命令退出 0 当完成。
+**不要沿用“撤层会删整个 Skill 目录”的旧结论。** 对 Copilot scaffold 分别实跑 `preset remove` 和 `integration switch`：v1.3.2 两个命令都返回 0，却删除了用户参考文件；v1.3.3 和 v1.4.3 删除生成的 `SKILL.md`，逐字保留参考文件，无附带文件时仍清理空目录。切回 Copilot 时，新版生成的 Skill 和参考文件都在。涉及叠加规则重组时仍须核实际规则，保留附带文件不能证明重组已修。
 
-**依据**：[实际 CLI 对照、测试失败与适用边界](../../experiments/speckit-preset-recomposition/README.md)、[上游开放修复 #5013](https://github.com/github/spec-kit/pull/5013)，核实 2026-11-02。只补原验收路线的真实反例；框架选择和本页评级不变。
+**依据**：[历史多层重组 CLI 对照](../../experiments/speckit-preset-recomposition/README.md)（2026-11-02）；[官方清理修复 #5233](https://github.com/github/spec-kit/pull/5233)及 [v1.3.3 发行记录](https://github.com/github/spec-kit/releases/tag/v1.3.3)（2026-11-22，Linux／Python 3.12.14，合成项目；未测试 extension remove、Windows 或新版多层重组）。
 
 ## 何时不适用：看补上的能力，不看流程是否齐全
 

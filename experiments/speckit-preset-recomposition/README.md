@@ -1,8 +1,10 @@
 # Spec Kit：撤掉 preset 后，核对真正加载的 Skill
 
-**🧪 已有 Spec Kit 项目叠加 preset 时，撤层后的验收对象是实际 `SKILL.md`，不是 `preset remove` 的成功提示或 resolver 列表。** 最新固定主干的 CLI 虽退出 0，Claude／Codex 仍留下已撤层的指令；接入已有 #5013 原补丁后，本轮相同输入正确重组。
-**保全手改看 ownership，而不是“文件被人改过”。** 去掉 `metadata.source` 的文件被完整保留，里面的旧指令也保留；仍带 preset source 的正文修改会被重写，无 base 的受管技能整个目录会删除。
+**🧪 已有 Spec Kit 项目叠加 preset 时，撤层后的验收对象是实际 `SKILL.md`，不是 `preset remove` 的成功提示或 resolver 列表。** 2026-11-02 固定主干的 CLI 虽退出 0，Claude／Codex 仍留下已撤层的指令；接入已有 #5013 原补丁后，本轮相同输入正确重组。
+**在当时的候选中，是否保留手改由 source marker 决定。** 去掉 `metadata.source` 的文件连旧指令一并保留；仍带 marker 的生成正文会被重写，无 base 的受管技能整个目录被删除。
 这是一项配置维护任务的实际接收，帮助判断撤层是否完成；Spec Kit 与其他 SDD 框架的整体开发效率未作比较。
+
+后续变化：官方 v1.3.3 已修复常规 preset 清理时删除自有附带文件的问题；[发行版实际对照与适用范围](../../docs/decisions/planning-and-tests.md#spec-kit-的真实反例解析链已变skill-仍旧)。上述整目录移除是历史候选结果，不是建议。
 
 ## 实际走过的任务
 
@@ -26,8 +28,8 @@
 ## 这次结果怎样进入验收
 
 - **解析链、实际文件、所有曾安装的 agent 目录一起核。** 本例的成功提示和 resolver 都不足以抓到陈旧 Skill；候选还要通过再次生成，避免缓存把已撤内容带回来。
-- **把手改与受管资产分开看。** source marker 是本次代码使用的所有权依据。去 marker 的负控证明它被保留，不构成给现有项目批量去 marker 的建议；受管孤儿的附带文件也随目录删除。
-- **读 warning，再判具体产物。** 测试中出现预期的 no-base／skip composition warning；现有 remove 路径还可能捕获 reconciliation 异常后继续返回，故本轮结论来自文件回读。
+- **把手改与受管资产分开看。** source marker 是历史对照代码使用的所有权依据。去 marker 的负控证明它被保留，不构成给现有项目批量去 marker 的建议；当时的候选连受管孤儿的附带文件一起删除。
+- **读 warning，再判具体产物。** 测试中出现预期的 no-base／skip composition warning；当时的 remove 路径还可能捕获 reconciliation 异常后继续返回，故本轮结论来自文件回读。
 
 同一回归文件在基线为 **70 过／14 失败**，候选 **84 过**；14 是失败用例数，不是 14 个独立用户故障。Ruff 0.15.0 对 `src tests` 通过。候选完整套件为 **13668 过／10 失败／436 跳过**：4 项目录联网诊断、3 项 bundle 引用断言、3 项 cleanup 路径换行断言。把相同 10 项单独放回原主干和候选，两边均 10 失败；这是失败项对照，未重跑原主干完整套件，整体仍未全绿。
 
