@@ -32,6 +32,8 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 若显式配了 `onlyFailures: false` 却仍只有失败项，先核 CI 步骤是否设了 `PLAYWRIGHT_JSON_ONLY_FAILURES` 或 `PLAYWRIGHT_JUNIT_ONLY_FAILURES`：1.65.1 实测相应变量设为 `1` 时，完整报告也被过滤。Linux／Node 24.22.3 上复跑 Playwright 1.65.1：同一全绿运行，完整 JSON 和 JUnit 各有 2 项，失败专用报告均为 0；另一次首跑失败、重试通过的用例仍进入精简报告。[官方 reporter 文档](https://playwright.dev/docs/test-reporters#report-only-failures)、[使用者公开对照](https://github.com/qa-gary-parker/poc-playwright-reporter-size)；核实 2026-11-22，仅核报告，未启动浏览器。
 
+**分片 CI 先核输入齐不齐，再读合并报告。** 按同次 CI 的矩阵逐片核对产物（环境、分片编号）和原测试 job 的结果；缺片仍可合并排障，不作完整验收。Playwright 1.65.1 实跑：只交 1/2 仍合并退出 0；交两份同一个 1/2 的 blob，总数也能报 2，却只列出 A、不含 B。核实 2026-11-22：[官方漏片回归](https://github.com/microsoft/playwright/blob/v1.65.1/tests/playwright-test/reporter-blob.spec.ts#L360-L412)、[cBioPortal 保留分片退出并另查漏片的 CI 改动](https://github.com/cBioPortal/cbioportal-frontend/pull/5559)（其缺片检查按数量，不证明逐片配对）。
+
 **重命名或删除共享文件时，确认整树引用检查真的启动。** 检查器扫描整树，也可能先被变更文件规则跳过。用项目现有整树入口核未改的引用方，不为此重跑无关检查。[Apache Magpie 的 CI](https://github.com/apache/magpie/blob/94f36f38e3752755d76a70bcf3207b729e508b36/.github/workflows/pre-commit.yml#L260-L325)把全仓 Lychee 独立于 PR 差量的 prek，PR 和 main 都有独立执行步骤。用该项目真实入链、目标文件和离线配置做局部复跑：基线通过；仅改目标文件名时，`prek run lychee --from-ref <基线> --to-ref HEAD` 显示 Skip／退出 0，`prek run lychee --all-files` 则失败；CI 原 Lychee 命令也报告断链。2026-11-21 用 prek 0.3.5、固定 Lychee 0.24.2，未跑托管 CI。
 
 ## 已有补丁：同一条回归，要真正跑到旧、新两份实现

@@ -16,6 +16,14 @@
 
 随后只在 linked worktree 重跑同 scope 的 `plugin install`，返回 ok，记录与缓存仍为 `1.0.0 / ONE`。两种 scope 的结果见 [results.json](results.json)。没有测试卸载再装、手改缓存或手改登记文件，不给出这些恢复建议。
 
+<a id="21330复验"></a>
+
+## 2.1.330 复验：组件清单与旧登记不一致（2026-11-22）
+
+另用官方 2.1.330 Linux x86_64 CLI、独立 HOME 与本地合成 marketplace，将 Skill 标记 ONE 升至 TWO。分别用全 `local`、全 `project` 同 scope 在主 checkout、linked worktree 和独立仓库顺次 `plugin update`。两组均只有 linked worktree 的精确登记、缓存 manifest 和 Skill 文件仍是 1.0.0／ONE；它的更新报 1.1.0 `up_to_date`，同一目录的新 `plugin details` 也已列 1.1.0／TWO。另在 local 与混合组每次更新后立即查清单：只更新主 checkout 时，linked 和不相关的独立仓库已经显示新版组件，精确登记及缓存仍为旧版；独立仓库稍后仍能明确执行一次更新。因此组件清单不证明目标目录的安装，也不证明会话加载。
+
+另组主 checkout 用已跟踪的 `project` 设置、linked worktree 用 `local` 安装，两个目录的记录和缓存都确实升到新版。这组不是推荐切换 scope 或修复现有项目；不验证会话实际加载，也没改动真实项目或账号。现实症状见[用户归并问题 #99631](https://github.com/anthropics/claude-code/issues/99631)，以上为不同合成环境中的组件与记录对照。
+
 ## 核对自己的目标目录（只读）
 
 已经遇到同一症状时，先在**实际使用插件的 worktree 根目录**核下面三项，不再反复 install：当前路径和 scope 的安装记录版本、缓存 manifest 版本，以及一个本次升级确实改变的文件的 SHA-256。使用运行 Claude 时的配置目录；默认是 `$HOME/.claude`，设置过 `CLAUDE_CONFIG_DIR` 就用其值。命令只读取明确选定的插件，不修改登记或执行插件代码。

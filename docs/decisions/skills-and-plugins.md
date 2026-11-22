@@ -192,6 +192,8 @@ Codex 官方扩展从 CLI `/plugins` 或桌面 Plugins → OpenAI 查详情，�
 
 **依次确认发现、正文加载、任务结果。** 名称只说明发现；本轮成功返回的正文或客户端明确加载记录才确认加载，证据不可见就记“加载未确认”；最后按原任务产物和测试接收。失败保留客户端／版本、技能名、来源／作用域与原始错误：缺 `description` 修元数据；Claude 的 `Shell command failed for pattern "..."` 表示该次正文未进入上下文，先查命令输出。写入失败先核副作用，权限拒绝先停该动作；修对应原因后再试，不先重装整包。
 
+**Claude Code 的 linked worktree 更新报最新，分开核安装和使用。** 先核目标路径与 scope 对应的[登记和缓存中的变更文件](../../experiments/claude-plugin-worktree-update/README.md#核对自己的目标目录只读)，再在目标会话验原任务。不要靠 `plugin update` 或 `plugin details` 单独判定：2.1.330 只更新主 checkout，连未更新的独立仓库也能列出新版组件，登记和缓存仍旧。[实跑对照](../../experiments/claude-plugin-worktree-update/README.md#21330复验)核实 2026-11-22，未跑模型。
+
 **依据**：[Claude 调用与生命周期](https://code.claude.com/docs/en/skills#where-you-write-the-skills-name)、[动态命令失败](https://code.claude.com/docs/en/skills#when-an-injected-command-fails)、[OpenAI 客户端与发现](https://learn.chatgpt.com/docs/build-skills)、[插件范围](https://learn.chatgpt.com/docs/plugins)、[Codex 发现接口](https://learn.chatgpt.com/docs/app-server#skills)；2026-10-28 核实。Codex CLI 0.164.0 隔离探针仅验发现、元数据／文件缺失和刷新恢复；各 GUI／CLI 完整任务调用待验。Claude IDE [修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L83)与[用户对照](https://github.com/anthropics/claude-code/issues/102799)原核实 2026-10-27，未实跑。
 
 Skill 提供做法，MCP 提供能力，插件打包分发。更多宿主差异看 [05](../05-skills-and-plugins.md)，浏览器、数据和运行能力看 [04](../04-mcp.md)。
