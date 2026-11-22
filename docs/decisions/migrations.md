@@ -111,7 +111,11 @@ bash artifacts/A-MIGRATION-CATTRS-DECIMAL-READER-20261114/replay_posix.sh
 2. **先确认原生环境和源码完整，再按实际交付形式检查。** checkout 失败或包导入异常时，先核缺失文件、路径与实际解释器，不把环境故障当迁移红灯。局部消费者可以继续定位，但缺文件的源码副本不能作为整仓升级依据；Windows 使用原生解释器和短工作路径，不用 WSL 结果替代。类型检查之外运行构建后的入口；发布 wheel／库时从独立环境安装产物，不拿源码目录的成功代替发行包。审查迁移器改动的检查选项；换测试 runner 时单列环境、原断言与覆盖率门槛的差异，替代环境通过只补充对应证据，不代替原 CI。数据迁移须重开并核业务行，事务未报错或外键检查为空都不足够。
 3. **出现破坏先修，不降低原目标。** 规则漏改、消费者失败或主干行为丢失时停止扩量；缺依赖按项目方式准备，缺 UI／旧缓存验收就保留候选。已经写入新状态时先核恢复点与新增数据，反向应用依赖补丁不能恢复数据库。
 
-来源：[Angular 官方 Karma→Vitest 迁移指南](https://angular.dev/guide/testing/migrating-to-vitest)区分默认 Node DOM、真实浏览器与需另迁的 reporter／覆盖率配置；核实 2026-11-10。
+<a id="test-runner-named-config"></a>
+
+**换测试 runner 时，验 CI 实际用的命名配置，不只跑默认命令。** 例如 Angular 的 `ng test --configuration ci`：从 `angular.json` 的 `test.configurations.ci` 读出 `buildTarget`，到对应构建配置核迁移前继承的 `styles`／`assets`、显式 `aot` 与覆盖项，再跑原 CI 命令。默认目标正确，不能替代命名目标通过。
+
+2026-11-22 用官方 `SchematicTestRunner` 在同一上游夹具上执行三版迁移：`@schematics/angular@22.3.0` 默认目标保留样式和 `aot: true`，但仅覆盖 `watch` 的 `ci` 丢了样式、AOT 变成 `false`；[候选前一提交](https://github.com/angular/angular-cli/commit/79620cf808406607d4aeb7b05ae561796eac4df7)恢复了样式仍没恢复 AOT；[候选提交](https://github.com/angular/angular-cli/commit/5846b1857126c3b49d61cb7e2038e99247d51fb0)两项都保留。仅验生成的配置和两个断言，未跑浏览器或整套 CI；[#34405](https://github.com/angular/angular-cli/pull/34405)核实当时未合并。[Angular 官方指南](https://angular.dev/guide/testing/migrating-to-vitest)对 Node DOM、浏览器及 reporter／覆盖率配置的区分原核实 2026-11-10。
 
 **核源码齐不齐，先对固定提交的文件清单，再查磁盘；不用为此补齐全部历史。** 用 `git ls-tree -r --full-tree --name-only <固定提交>` 列路径，逐项确认本轮需要的文件实际在磁盘上；要验证完整源码，就核全表。普通跟踪文件核内容时，在可信仓库根用 `git hash-object --path=path/to/file -- path/to/file` 按当前生效属性算 Git blob，再和 `git rev-parse '<固定提交>:path/to/file'` 比。不一致先核 `git check-attr -a -- path/to/file` 和过滤配置；既不把 CRLF 的原始字节差异当改动，也不为对上哈希改规则。链接、子模块与产物按各自用法另外验，不能靠文本哈希确认可用。
 
