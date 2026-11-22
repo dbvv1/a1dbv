@@ -10,7 +10,7 @@
 | **1 · 修了几轮仍说不清根因** | ✅ **原生运行态证据**：让 Agent 串起同一输入的落盘值、局部变量与最终输出，淘汰假设后再修，并留下修前失败的回归。 | [jrnl 真实修复](../experiments/jrnl-dayone-runtime-diagnosis.md)（10-26）：定位读回转换，修正一小时偏移，22 项定向通过；全套仍有 4 项基线失败。现有日志／trace 能定位时，沿用它们。 |
 | **2 · 复杂 UI 二改后，构建绿但交互不对** | ✅ **已有 Storybook 的目标 story play**：复用真实组件，把正常、提交中、失败恢复做成可执行状态，让 Agent 据失败修实现。 | [Maka 组件续改](23-browser-verification.md#先让真实组件接住续改再验完整应用)（10-25）：修复两处问题，82 项受影响测试、4 个 Chrome play 通过；假服务，真实后端／Electron 未验，MCP 未试用。现有测试足够时不另搭 Storybook。 |
 | **3 · 已用 TanStack，要做可分享筛选／排序** | 🧪 **随依赖加载窄 Skill**：读安装包的 `search-params`，让 URL 保存已应用条件，验详情返回、清空与前进／后退；从[可运行示例](../experiments/tanstack-url-state/README.md)开始。 | Intent 0.5.6 已实际加载（10-23～24）；官方示例上的功能通过 8 项测试、构建和真实 Chrome。Skill 内版本标记仍须核源码；其他技术栈沿用自己的库文档。 |
-| **4 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)（10-23）：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
+| **4 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。[复制委派提示](03-context-engineering.md#29-重复改法让-agent-交规则不逐处自由改写)。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)（10-23）：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
 | **5 · Agent 总把库的新旧 API 混用** | 🧪 **Context7 精确版本查询**：`resolve-library-id` 选实际存在的版本 ID → `query-docs` → 核同 tag 原文；[已试入口](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)可照用。 | 两次匿名查询（10-23）分别取回 Pydantic v1 的 `dict()`、v2 的 `model_dump()`，源链接匹配版本；只验检索，生成代码未试。只查一次或所需版本未索引，直接读官方对应版文档。 |
 
 **为什么本周继续选这五项：** 按能否直接接住眼前任务选，不按发布时间换榜。11-16 对照收件箱已接收的三个新候选：[Code Mode](collaboration/inbox.md#2026-11-15code-mode-先试批量读任务不替换无人值守入口)尚未试用且不支持无人值守入口；[Modern Web Guidance](collaboration/inbox.md#2026-11-15前端领域知识按需取不让扫描器替代浏览器验收)已试检索与源码扫描，但尚未证明能改善页面，不能替代 TanStack 的框架状态配方；[ArgusAgent](collaboration/inbox.md#2026-11-15argus-的无人值守数据先核分母再决定是否换框架)尚未试用，研究指标也不证明全日历持续运行。三者暂不替换上表路线。已有真实采用的 mutmut 仍适合“测试绿但怀疑断言漏检”这一支路，见下方候选表；不要求普通修复先加变异工具。此前候选的对照与来源范围见[11-15 校准](research/2026-10-15-exploration-evidence.md#2026-11-15top-5保留按任务选不按新鲜度换)。
@@ -57,29 +57,15 @@
 | **网页验收：Playwright CLI＋Skill** | 用短命令观察网页、操作元素并检查结果 | 已有Playwright先复用项目入口，现有浏览器已够用就不另装 | 实践者由MCP转CLI与调用后仍漏验收支持按目标选用 | 🧪 [预装1.62.0探针与截图](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)已核，浏览器流程未验 |
 | **组件资料：Storybook MCP** | 组件故事负责反馈；MCP 只补资料缺口 | 已有 story play 按 Top 5 直接用，不先加 MCP | [GitButler 的按需接入与实际版本](collaboration/local-jobs/A-STORYBOOK-ADOPTION-001.md) | 👀 MCP 未试，docs toolset 受框架与 manifest 限制 |
 
-**想让Agent真正验网页？** 已有项目依赖时，先用 `npx --no-install playwright --version` 确认本地版本，再查 `npx playwright cli --help`，不必先全局安装；CLI提供动作，Skill提供用法，能直接用CLI时也不强求先装Skill。
+**照做入口**
 
-给Agent一条可见结果明确的任务，例如“新增两项待办→完成一项→切到未完成列表只剩另一项→刷新后结果保留”，让它交回每步观察和最终页面截图。若现有原生浏览器已能完成这条流程，沿用它；需要留可维护回归时，再把这次发现固化成测试，而非只保留一串操作命令。详见 [23网页验收](23-browser-verification.md)。
-
-本仓PATH没有CLI，但预装Playwright里已有入口；版本与帮助已运行，浏览器随后因环境socket权限失败，未做到上面的待办流程。别为“找不到命令”先重装，也别把启动探针当成页面验收。部分实试与真实终端截图详见[本仓记录](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)。
-
-**两项独立修改想同时推进？** 在确认的基线检出中记录 `BASE_SHA=$(git rev-parse HEAD)`，分别用 `git worktree add -b task-a ../task-a "$BASE_SHA"` 和 task-b 的对应命令建树，再在各目录启动现有Agent；交回提交后到集成树验两项共同结果。共享设计尚未确定时先收敛，已有客户端worktree入口可直接沿用。实试与最小操作详见[本节记录](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)。
+- **网页验收**：项目已装 Playwright，就用 `npx --no-install playwright --version` 和 `npx --no-install playwright cli --help` 核本地入口，再走[完整用户路径](23-browser-verification.md#4-一次完整验证的顺序)。[本仓探针](research/2026-10-22-frontier-trials.md#playwright-cli已有入口先复用)只核版本和帮助，未跑通浏览器。
+- **两项可独立的修改**：从同一确认过的 SHA 各建一棵树（如 `git worktree add -b task-a ../task-a <基线SHA>`）；已有客户端自动建树就不再套一层。交回后在[集成树验共同结果](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)。
+- **找代码或根因**：不了解仓库先用 [DeepWiki 找文件，再回固定源码](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)；缺跨仓调用例再用 [Grep 找例子，读全上下文](research/2026-10-22-frontier-trials.md#grep公开代码查例子先核完整调用)。终端过长才试 [RTK](03-context-engineering.md#27-终端输出先辨过滤恢复与重新执行)，区分取回旧记录与重跑命令。
 
 ![任务分流图：目标与验收不清先澄清，清楚后实现、回归并实际操作，再按交接或语义定位缺口选计划或Serena，无缺口则保持原路线](img/2026-10-23-workflow-choice.svg)
 
-图：条件分流，不是安装顺序；新增Skill／MCP的模型收益未测（可复现图源详见[图源](img/2026-10-23-workflow-choice.dot)）。
-
-**还不知道该读哪个模块？** [DeepWiki只读导览实试](research/2026-10-22-frontier-trials.md#deepwiki先找模块再回固定源码)能先指向相关文件，再回固定源码核语义；它不替代精确版本API查询，暂不计入上表广用项。
-
-**想借现成调用方式，而不是再读一份概述？** 本仓搜索不足时，可在已有MCP入口中试 Grep 公开代码搜索：给 `searchGitHub` 代码模式与语言过滤，再回源看完整上下文。本次查 `BackgroundTask(r.aclose)` 同时命中流式与非流式响应，不能复制第一条就算方案选好了。
-
-给Agent的任务应是“找真实调用点，并解释为什么适用于本项目”；已知库契约直接查对应版文档，已知仓库直接读源码，缺跨仓例子才加这一步。Grep与DeepWiki均先作为用途候选，不据单次调用增加上表广用计数。实际用法与原文核查详见[该记录](research/2026-10-22-frontier-trials.md#grep公开代码查例子先核完整调用)。
-
-**终端噪声很大，是否加RTK？** 先保项目命令，确有重复输出再定向试；当前源码显示，pytest封装会先缩短上游报告，`recall`与`bypass`分别是取回记录和重新执行，不能混用。详见[03的三种动作](03-context-engineering.md#27-终端输出先辨过滤恢复与重新执行)。本仓已试历史失败输出回放，摘要漏根因、full recall成功取回；不据缩短字节声称模型收益。
-
-**几十处相同改法，不想让 Agent 逐处自由发挥？** 可评估 ast-grep 的“例子→规则测试→只读清单→修改”路线，复用一条可审阅规则；已有 IDE 重构够用就沿用。[03 的最小委派](03-context-engineering.md#29-重复改法让-agent-交规则不逐处自由改写)给出正反例与接收方式。本仓已复跑维护者的迁移规则并修正漏跑负例，详见[可重放差量](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)；未做整应用迁移或模型收益比较。
-
-本节复用既有[工作流比较](24-community-workflows.md)与[上下文选择](03-context-engineering.md#25-跨文件符号检索何时补-serena)，前四项只是把读者入口前移；Context7另补真实查询，不计新的模型收益。
+图：条件分流，不是安装顺序；新增 Skill／MCP 的模型收益未测（[图源](img/2026-10-23-workflow-choice.dot)）。
 
 **依据**：[社区／研究] 代表机制的采用证据与边界（详见[总表](research/2026-10-22-frontier-trials.md#代表机制的采用证据与边界)）；[社区：单例] [Krupa 同模型小题](https://bartlomiejkrupa.dev/articles/does-superpowers-beat-no-plugin/)；[一手：官方合成题] [Next 官方 040 任务](https://github.com/vercel/next.js/tree/8b583887cee277dd7036bcfdfeafbd1d6e37fc59/evals/evals/agent-040-instant)；[社区] [Luca 保留分流](https://www.lucavallin.com/blog/how-i-actually-use-claude-code)、[V2EX 去留](https://v2ex.com/t/1227194)、[Faruk 实际重构](https://blog.faruk.dev.br/articles/agents/matt-pocock-skills-harness-product-crud/)、[Serena 中文短试](https://www.v2ex.com/t/1249379)；[一手：回执] [Context7 生成文档修复](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)；[社区] [事故后采用](https://blog.michaelschilling.com/blog/many-agents-one-clone/)、[集成后收缩并发](https://utsabpant.com/blog/running-coding-agents-in-parallel)、[实践者由MCP转CLI](https://www.reddit.com/r/claude/comments/1v9aa4z/for_claude_code_what_do_you_prefer_mcp_tools/)、[调用后仍漏验收](https://linux.do/t/topic/2560865)；[一手] [Worktrunk 复制慢反馈](https://github.com/max-sixty/worktrunk/issues/3384)、[大树复制修复](https://github.com/max-sixty/worktrunk/pull/1864)、[Polylogue 采用](https://github.com/Sinity/polylogue/issues/1059)、[gh-stack 旧版缺口](https://github.com/github/gh-stack/discussions/473)、[gh-stack 0.2.0](https://github.com/github/gh-stack/releases/tag/v0.2.0)、[Playwright 官方入口](https://playwright.dev/agent-cli/installation)、[Playwright Skill 说明](https://playwright.dev/agent-cli/skills)、[Grep 公开代码搜索](https://vercel.com/blog/grep-a-million-github-repositories-via-mcp)；[本仓工具实试／源码／经验] Playwright 1.62.0 探针、RTK 历史失败输出回放、ast-grep 规则复跑、任务分流；核实 2026-10-24。
 

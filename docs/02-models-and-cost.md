@@ -287,9 +287,9 @@ API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅�
 | Max：$100 | Pro 的 5 倍 | 5 倍 |
 | Ultra：$200 | **已验证账户无此限制**；未验证仍有临时限制 | 10 倍 |
 
-Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` 条即已验证；结账时的手机号验证不等于此项验证，后者由平台自动完成。无 5 小时限制仍有周额度与 Fable 的独立周限制；Max／Ultra 的 Fable 最多使用周额度的一半。按任务查看实际剩余额度，不换算成固定工作天数。
+Ultra 是否已验证，看 **Settings → Usage**：没有 `Current session` 条即已验证；结账时的手机号验证不等于此项验证，后者由平台自动完成。无 5 小时限制仍有周额度。按任务查看实际剩余额度，不换算成固定工作天数。
 
-**Fable 5.2 的发布优惠有截止时间。** 5.2／5.1／5 共用 Fable 周限，Max／Ultra 最多占正常周额度的 50%，不是额外赠送 50%。Pro／Team standard 仅在 11-09 至 **2026-11-16 23:59 PT** 临时纳入同样的 50% 周额度；额度用完或窗口结束后，已开启 usage credits 的继续用量按 credits 计费。符合资格的 reset 恢复已用额度，不提高正常周上限。依据：[官方 Fable 计划条件](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)、[本次限时优惠](https://support.claude.com/en/articles/17506494-claude-fable-5-2-launch-offers)；核实 2026-11-12（UTC），未读取账号资格或领取优惠。
+**Fable：Pro／Team 标准席按用量付费，不再按发布优惠估算。** 5.2／5.1／5 共用 Fable 周限；Max／Ultra 与 Team 高级席可在常规周额度内用到 50%，不是额外额度。Pro／Team 标准席的限时纳入已于 2026-11-16 23:59 PT 结束，当前按已开启的 usage credits 计费。依据：[套餐规则](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)、[已结束的优惠](https://support.claude.com/en/articles/17506494-claude-fable-5-2-launch-offers)；核实 2026-11-22，未读取账户。
 
 **API 赠额是另一笔额度**：当前 Max 每月 $100、Ultra $200、Team 共享最多 $500；不能充值交互 Code 的订阅额度。价格卡的“比 Max 多 $100”是在比较当前档位，不能据此推出同一套餐的赠额翻倍；领取、运行入口和超额计费见 [18 成本治理](18-team-adoption.md#5-成本治理)。
 
