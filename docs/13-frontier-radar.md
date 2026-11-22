@@ -3,19 +3,19 @@
 <a id="本周-top-5"></a>
 ## 本周 Top 5：挑一个真实任务就开做
 
-**本周（2026-11-16～11-22）先试下面五项：修 bug 取运行态证据，改 UI 跑真实组件，写库功能读随包 Skill，批量迁移交规则，查 API 锁版本。** 按任务覆盖面、可直接复用程度与已有实试排序；选与你手头任务相符的一项，成熟做法也可上榜。
+**本周（2026-11-23～11-29）优先看两种假绿：分片合并报告不证明用例跑齐，Git 的静默试合并也不一定报冲突。** 下面按手头任务选一项，不要把五项都加进流程。
 
 | 排名／你正在做什么 | 本周先试的做法 | 已试到哪一步／何时换路 |
 |---|---|---|
-| **1 · 修了几轮仍说不清根因** | ✅ **原生运行态证据**：让 Agent 串起同一输入的落盘值、局部变量与最终输出，淘汰假设后再修，并留下修前失败的回归。 | [jrnl 真实修复](../experiments/jrnl-dayone-runtime-diagnosis.md)（10-26）：定位读回转换，修正一小时偏移，22 项定向通过；全套仍有 4 项基线失败。现有日志／trace 能定位时，沿用它们。 |
-| **2 · 复杂 UI 二改后，构建绿但交互不对** | ✅ **已有 Storybook 的目标 story play**：复用真实组件，把正常、提交中、失败恢复做成可执行状态，让 Agent 据失败修实现。 | [Maka 组件续改](23-browser-verification.md#先让真实组件接住续改再验完整应用)（10-25）：修复两处问题，82 项受影响测试、4 个 Chrome play 通过；假服务，真实后端／Electron 未验，MCP 未试用。现有测试足够时不另搭 Storybook。 |
-| **3 · 已用 TanStack，要做可分享筛选／排序** | 🧪 **随依赖加载窄 Skill**：读安装包的 `search-params`，让 URL 保存已应用条件，验详情返回、清空与前进／后退；从[可运行示例](../experiments/tanstack-url-state/README.md)开始。 | Intent 0.5.6 已实际加载（10-23～24）；官方示例上的功能通过 8 项测试、构建和真实 Chrome。Skill 内版本标记仍须核源码；其他技术栈沿用自己的库文档。 |
-| **4 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。[复制委派提示](03-context-engineering.md#29-重复改法让-agent-交规则不逐处自由改写)。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)（10-23）：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
-| **5 · Agent 总把库的新旧 API 混用** | 🧪 **Context7 精确版本查询**：`resolve-library-id` 选实际存在的版本 ID → `query-docs` → 核同 tag 原文；[已试入口](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)可照用。 | 两次匿名查询（10-23）分别取回 Pydantic v1 的 `dict()`、v2 的 `model_dump()`，源链接匹配版本；只验检索，生成代码未试。只查一次或所需版本未索引，直接读官方对应版文档。 |
+| **1 · CI 显示通过，但测试是分片跑的** | 🧪 **让 Agent 对照同一次 CI 的预期矩阵、实际分片和原测试 job 结果**。缺片的合并报告只用于排障，不作验收。 | [Playwright 合并实跑](decisions/verification.md#第一步把目标和保留项填进这段任务)：少了第 2 片仍退出 0，两份 1/2 也能凑够数。单 job 不加分片核对，直接确认必跑用例。 |
+| **2 · Agent 接手久未跟进的上游 PR** | 🧪 **固定当前上游和候选 SHA，在临时克隆用非静默 `git merge-tree`**。0 只过合并层；1 核冲突路径，再跑实际回归。 | [Memos #6502](decisions/upstream-contributions.md#实现到投稿让-agent-产出可审材料)：Git 2.56.1 静默命令退出 0，非静默命令列出的 48 个冲突路径与实际合并一致。 |
+| **3 · 修了几轮仍说不清根因** | ✅ **原生运行态证据**：让 Agent 串起同一输入的落盘值、局部变量与最终输出，淘汰假设后再修，并留下修前失败的回归。 | [jrnl 真实修复](../experiments/jrnl-dayone-runtime-diagnosis.md)（10-26）：定位读回转换，修正一小时偏移，22 项定向通过；全套仍有 4 项基线失败。现有日志／trace 能定位时，沿用它们。 |
+| **4 · 复杂 UI 二改后，构建绿但交互不对** | ✅ **已有 Storybook 的目标 story play**：复用真实组件，把正常、提交中、失败恢复做成可执行状态，让 Agent 据失败修实现。 | [Maka 组件续改](23-browser-verification.md#先让真实组件接住续改再验完整应用)（10-25）：修复两处问题，82 项受影响测试、4 个 Chrome play 通过；假服务，真实后端／Electron 未验，MCP 未试用。现有测试足够时不另搭 Storybook。 |
+| **5 · 同一 API 改法要重复几十处** | 🧪 **ast-grep 的“例子→规则→只读清单→改写”**：先借维护者 codemod，让 Agent 交正反例及命中范围，再批量修改、跑原项目检查。[复制委派提示](03-context-engineering.md#29-重复改法让-agent-交规则不逐处自由改写)。 | [0.51.0 复跑 Pinia Colada 规则](research/2026-10-22-frontier-trials.md#ast-grep先验规则再批量定位)（10-23）：发现负例漏跑，修正规则后 27 例通过；整应用迁移未试用。涉及符号身份或 `this` 绑定时改用语义重构／手改。 |
 
-**为什么本周继续选这五项：** 按能否直接接住眼前任务选，不按发布时间换榜。11-16 对照收件箱已接收的三个新候选：[Code Mode](collaboration/inbox.md#2026-11-15code-mode-先试批量读任务不替换无人值守入口)尚未试用且不支持无人值守入口；[Modern Web Guidance](collaboration/inbox.md#2026-11-15前端领域知识按需取不让扫描器替代浏览器验收)已试检索与源码扫描，但尚未证明能改善页面，不能替代 TanStack 的框架状态配方；[ArgusAgent](collaboration/inbox.md#2026-11-15argus-的无人值守数据先核分母再决定是否换框架)尚未试用，研究指标也不证明全日历持续运行。三者暂不替换上表路线。已有真实采用的 mutmut 仍适合“测试绿但怀疑断言漏检”这一支路，见下方候选表；不要求普通修复先加变异工具。此前候选的对照与来源范围见[11-15 校准](research/2026-10-15-exploration-evidence.md#2026-11-15top-5保留按任务选不按新鲜度换)。
+**为什么换两项：** 缺片与冲突都可能被 Agent 当成通过，且都有固定版本的正反例可复核；先于仅面向一套框架的 [TanStack 可分享筛选示例](../experiments/tanstack-url-state/README.md)和只验过检索的 [Context7 精确版本查询](research/2026-10-22-frontier-trials.md#context7精确版本查询实试)。两条旧路线仍可按需用。Stripe 的 Skill＋MCP 对照还没运行生成代码，先留在[领域能力选型](decisions/skills-and-plugins.md#领域配方先读安装包不为一项知识装整套流程)，不拿厂商评分替代真实验收。
 
-**依据**：[一手：源码／实际配置] [GitButler 按需 Skill 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)、[TanStack 随包 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)、[Pinia Colada 固定迁移规则](https://github.com/posva/pinia-colada/blob/e79a039e1c236747e8551a6eec0524613e76d01e/codemods/rules/migration-0-21-to-1-0.yaml)；[社区：真实问题与回执] [jrnl 原问题](https://github.com/jrnl-org/jrnl/issues/1422)、[TanStack 状态保留讨论](https://www.reddit.com/r/reactjs/comments/1to7tcj/tanstack_router_and_query/)、[LINUX DO 批量改码反馈](https://linux.do/t/topic/3004044)、[Context7 修复回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)。选择周为 2026-11-16～11-22，11-16 仅按已接收记录比较三个新候选，未新增外部核查或试用；11-15 对照已接收候选，并定向回核 Storybook、TanStack、ast-grep 与 Context7 官方入口、固定代码及 Context7 用户原帖／修复评论，范围见 11-15 校准。原五项来源定向回核为 2026-10-26，表内仍复用 2026-10-23～26 的试用，没有重跑或刷新实测日期。
+**依据**：Playwright 与 Memos 原运行和一手来源见表内答案（11-22），其余三项沿用 10-23～26 实试；本周只重选，不重跑。上一轮名单和来源见[固定版](https://github.com/dbvv1/a1dbv/blob/511327ac3ffbd2727de8641f6771abe66476158c/docs/13-frontier-radar.md#L4-L18)。
 
 ## 工具入口与代表做法
 
@@ -48,7 +48,7 @@
 | **按需流程：Superpowers** | 按任务选择直做、计划或完整流程 | 从跨模块未决设计开始，清楚小改不启整套 | Luca 保留分流与 V2EX 去留并存 | 🧪 按项目试用，本仓未安装运行 |
 | **窄Skill：Matt Pocock** | 只借grill-with-docs澄清会改变实现的决定 | 从架构问题开始，决定已齐就进入实现 | Faruk 实际重构未走完整ticket链 | 🧪 按需试用，本仓未运行 |
 | **语义MCP：Serena** | 用符号身份查声明与调用位置 | 从同名符号定位开始，原生搜索或LSP已够就不用 | Luca 使用与中文短试无明显差异并存 | 🧪 [2.1.0符号编辑实试](../experiments/serena-symbol-edit.md)，不替代版本核对 |
-| **版本文档 MCP：Context7** | 匹配已索引的版本，不用来替代官方文档 | 直接用 Top 5 的精确查询入口 | [生成文档刷新回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)：普通 Refresh 与从主干重建曾是不同动作 | 🧪 已验两版检索，未验生成代码 |
+| **版本文档 MCP：Context7** | 匹配已索引的版本，不用来替代官方文档 | 先选实际存在的版本 ID，再查官方同 tag；[已试入口](research/2026-10-22-frontier-trials.md#context7精确版本查询实试) | [生成文档刷新回执](https://github.com/upstash/context7/issues/3309#issuecomment-6012188572)：普通 Refresh 与从主干重建曾是不同动作 | 🧪 已验两版检索，未验生成代码 |
 | **规格接力：OpenSpec** | 二改漏带旧场景时，CLI 阻止整块规格被覆盖；归档后留下当前约定 | 跨角色或连续二改可试；明确小改沿用任务与测试 | 两次改动实试及采用／退出详见[OpenSpec 记录](research/2026-10-22-frontier-trials.md#openspec规格接力与协作落点)：`--skip-specs` 会留下旧规格，归档不等于实现完成 | 🧪 [已试1.14.3 CLI](07-workflows.md#openspec让下一位接手当前约定而不只是旧计划)，未测Agent／团队收益 |
 | **并行写入：Git worktree** | 每个独立写入任务保留自己的目录、分支和未提交现场 | 先用原生入口或Git，跨树管理成为瓶颈再评估管理器 | 事故后采用与集成后收缩并发支持条件使用 | ✅ 借用机制，[隔离／合入／脏树保护与截图](research/2026-10-22-frontier-trials.md#git-worktree不装编排器也能隔离写入)已验 |
 | **环境准备：Worktrunk** | 同步复制所选依赖副本，完成后才启动测试／Agent | 多棵树反复准备环境时试；已有原生入口／脚本够用就不换 | 使用者复制慢反馈提醒不能承诺零成本；大树复制失败已有修复 | 🧪 [0.81.0双树依赖与立即测试](../experiments/worktrunk-ready.md)已试并独立重放，未测模型／性能收益 |
