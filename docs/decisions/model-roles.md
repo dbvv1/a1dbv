@@ -93,6 +93,10 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 
 **换版对比先分开记模型工作、测试耗时和整单重试。** Zhuojun Li 用同一 Codex CLI 0.169.0-alpha.11.1、两版从 `medium` 起步，重放同一 Python 仓库的五个真实工单。6.2／6.1 首次都过 3/5、最终都过 5/5，平均每单 28.8／28.1 分钟；按 token 回算 $5.44／$4.35。去掉一单重复跑全套测试的工单，费用方向反转（$3.44／$3.97）。这轮四个任务共用同一台 Mac，有受负载影响的定时测试失败，6.1 也有一次重试升到 `xhigh`。基线和候选用相同的并发条件，遇到共享资源互相干扰就改成交错运行；一处重试改变结论，就保留该单并单列原因，不把总差额全算给模型。依据：[作者的工单实测与逐单金额](https://dev.to/lizhuojunx86/gpt-62-sol-beat-gpt-61-sol-on-the-leaderboard-on-5-of-my-real-work-orders-it-tied-and-cost-25-52bp)，2026-11-22 核读；代码和原执行日志未随文公开。
 
+<a id="effort-tool-time"></a>
+
+**升档后变慢，先把工具计时的重叠区间合并，别把整段差额算给测试。** 复算 VulcanBench 同一道 qlite 题的公开轨迹：GPT‑6.2 Sol 在同版 Codex CLI 0.166.0 从 `low` 到 `max`，总耗时 136.9→1082.4 秒；将工具调用起止区间取并集，只有 1.30→11.11 秒。换档时分别保留这两列；这条轨迹不足以归因给慢测试，也不能把未覆盖时段全算成模型推理。[低档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/low/legacy-qlite-store-parity.jsonl) · [最高档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/max/legacy-qlite-store-parity.jsonl) · [计时实现](https://github.com/morganlinton/VulcanBench/blob/0e9b30fb4961de85438669b83d789941035d1fae/harness/agent/cli_agents.py#L2641-L2673)。2026-11-22 复算，一题各一次；时间来自收到 CLI 事件的时点，轨迹隐藏命令与输出，未复跑模型。
+
 **换审查配置时，逐项对照新增与丢失的发现，再算完整流程成本。** CodeRabbit 冻结输入回放 13 个真实 PR，保持按角色的 `low/medium/high` 阶梯，只切换 Sonnet 5.5 thinking：按常规可执行评论计，开启抓到 6 项、关闭抓到 5 项；开启补获两项，却把关闭能正常报告的一项只报到 diff 外。每次 $0.47／$0.41 是 Claude 调用按价表回算的费用，不含摘要、验证小模型与人工处理；这不是单独升 effort 的效果。另与 Sonnet 5 对照的 44 PR 组尚未完成质量裁判，评论减少不代表质量改善。
 
 **依据**：[一手／评审工具团队回放] [CodeRabbit 配置、漏项与成本](https://www.coderabbit.ai/blog/sonnet-5-5-model-review)，2026-09-28 发布、2026-10-28 核读；本仓未复跑。
