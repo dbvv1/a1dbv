@@ -51,6 +51,8 @@
 
 上述做法中的准入不是形式要求：Goose 的 [#11322](https://github.com/aaif-goose/goose/pull/11322) 曾因缺 `Ready` issue 关闭，作者补充后重开并合并；[Windows 安装器讨论](https://github.com/aaif-goose/goose/issues/11987#issuecomment-6029897376)还明确要求后续维护承诺。这些是维护者实际接收决定，不是“多跑一次测试就会放行”。来源核读 2026-10-30。
 
+**任务含发包时，把“PR 合入”“临时仓演练”“正式仓可取”分开交付。** 没有生产凭据时，用临时签名和文件仓验实际产物，再让独立消费者只从该仓解析目标坐标；正式发布另核公开仓的精确版本或获准的发布回执。不要用 issue 自动关闭替代。例：GPT-6.2 Sol 参与的 [ui-kotlin PR #282](https://github.com/link-foundation/ui/pull/282) 已合入并关闭关联 issue；[固定 CI](https://github.com/link-foundation/ui/blob/ea2482a3ee5675ce5f6d0a38fb78c7bf054309d4/.github/workflows/kotlin-quality.yml#L256-L284) 用临时签名校验构件，并从临时仓构建桌面消费者，[该 job 成功](https://github.com/link-foundation/ui/actions/runs/44886109541/job/136791680020)。2026-11-22 只读核 Maven Central：目标 [ui-kotlin 0.1.0 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/ui-kotlin/0.1.0/ui-kotlin-0.1.0.pom) 仍为 404，同命名空间的 [links-notation 0.31.8 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/links-notation/0.31.8/links-notation-0.31.8.pom) 为 200。可以接收演练，不能据此报目标已发布。
+
 ## 何时不走这条路线
 
 **项目明确不接这类贡献、已有同等修复，或没人能理解和承担后续时，不再向评审队列增加生成代码。** 先交自己的可用产品结果，或按项目允许的方式补充问题证据。`403` 应结合响应判断工具权限，结果未知先回读；明确拒绝不换账号或通道绕过。项目允许投稿不等于工具已有写权限。
