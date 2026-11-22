@@ -65,6 +65,10 @@
 
 **会话意外退出后，先核关键结果有没有落盘，不凭通知或恢复成功重派。** 将不可丢的子任务结果写到项目已有且获准的交付位置，通知只带位置与版本；恢复后先找产物，再核旧写者。用 Linux 上官方 Claude Code 2.1.329 和本地模拟提供方复跑[公开四组对照](https://github.com/anthropics/claude-code/issues/111391)：普通后台子代理的 `SendMessage` 与自动完成通知各跑两组。接收进程在消息仅入队时被强制终止，同一会话恢复成功但两条消息均未重放；终止前已进入主会话输入并写入历史的两条均保留。2026-11-21 复跑；未验正常退出、远程会话或 Teams。
 
+**Claude Code 子代理列表只有计时，不等于停了。** 先打开原子代理的详情，再判断是否该派替换任务。[使用者对照](https://github.com/anthropics/claude-code/issues/96231#issuecomment-7054371849)中，macOS 的 2.1.330 在已启用 retry watchdog、模拟服务只对子代理返回额度 429 时，详情显示等待重试的倒计时，父列表仍只有计时；2.1.301 的详情也只显示转圈。这个对照只验证了状态显示，不保证实际恢复。
+
+**把 `claude -p` 的输出重定向到文件时，接收本轮新文件，不只看退出码。** 保留 stderr，按任务契约核输出可读、完整，内容确实对应本轮；空文件、旧文件或截断输出不算交付。2026-11-22 用官方 Linux 二进制和同一回环合成响应复跑：2.1.329 与 2.1.330 写普通文件都退出 0 并留下完整文本；stdout 改到 `/dev/full`（模拟写入返回 ENOSPC，不填真实磁盘）后，两版仍各收到一次有效响应，但 2.1.329 静默退出 0，2.1.330 报错退出 1。依据：[2.1.330 发布说明](https://github.com/anthropics/claude-code/releases/tag/v2.1.330#whats-changed)，满 NFS 是上游注明的例外，本次未测 NFS。
+
 **命令转后台后，按原 ID 收子进程退出码，不重跑。** OpenCode 2.3.1 的前台等待超时后，工具可以已是 `completed`，原命令却仍是 `running`。保留 shell ID，等同一 ID 的终态并核命令自己的退出码；外层 CLI 退出 0 不算命令成功。用官方 2.3.1 CLI 和本地模拟提供方，实跑两次良性命令：各自只启动一次、原 PID 不变，按原 ID 各收到一条终态，shell 分别退出 0 和 7，外层 CLI 两次均退出 0。依据：[2.3.1 发布](https://opencode.ai/changelog/v2.3.1)、[上游同进程与最终结果用例](https://github.com/anomalyco/opencode/blob/v2.3.1/packages/core/test/tool-shell.test.ts#L1442-L1545)；2026-11-21 Linux，未验断线或重启。
 
 **Codex CLI 的 `/side` 用来短暂岔开，不当作恢复入口。** 回主线前，把需要保留的决定和产物位置写进原任务记录。0.167.0 的侧聊是临时的；0.171.0 默认开启 TUI workspace，但只有兼容的本机全屏与已保存历史才能持久化，条件不符仍可能是临时侧聊。若靠侧聊接续，先确认重启后同一侧聊能打开并接受新输入，不只看到回放。见[旧版回放案例](https://github.com/openai/codex/issues/62649)、[0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0)与[存储选择](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app_server_session.rs#L1372-L1394)；核读源码，未实跑侧聊重启。
