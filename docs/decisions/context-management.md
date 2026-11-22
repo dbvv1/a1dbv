@@ -82,7 +82,7 @@
 
 分开记录不等于只读权限。Cursor 侧聊带父背景，不是干净会话，也不支持 Cloud Agents；云端沿用可用主会话或独立调查入口。Codex 侧聊不能嵌套或在 review 模式启动。
 
-依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)、[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。 [Codex 侧聊](https://learn.chatgpt.com/docs/developer-commands#start-a-side-chat-with-side)及 [0.171.0 的保存／临时分支](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app/side.rs#L793-L803)，2026-11-22 核对，未运行 TUI。
+依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)、[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。 [Codex 侧聊](https://learn.chatgpt.com/docs/developer-commands#start-a-side-chat-with-side)及 [0.171.0 的保存／临时分支](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app/side.rs#L847-L856)，2026-11-22 核对，未运行 TUI。
 
 <a id="agents-chat-history"></a>
 
@@ -135,11 +135,11 @@ async for event in result.stream_events():
 
 **保留原顺序回传工具调用和结果；改规则就追加，不把旧消息改成“好像一开始就这样”。** 长期规则放在首条 `developer` 消息，新变化追加一条；只影响本轮的规则用 GPT-6.2 的顶层 `instructions`，API 会放到 `input` 后。旧工具结果有更正时，保留原结果并在后面说明更正。若必须去掉错误或不应保留的内容，就交付干净历史和已核实状态，不能以保住旧推理为由保留它。
 
-**分开看推理连续性和缓存。** 回改某个旧工具结果或在前面插入消息，可能使其后的 reasoning item 被移除。排障可从同一轮公开或合成历史开两个后续请求：一个追加更正，一个只改原工具结果，其他条件相同。读 Responses 的 `input_transformations`，把 `prefix_mismatch` 对应的 `id` 在前轮 `output` 中找出来；另记缓存 token 与任务结果。缓存命中不能证明推理没丢。跨模型家族或降级也可能移除旧推理，交明确进度与剩余验收，不假定新模型接得上隐含思路。
+**先确认有推理项，再测更正方式。** 在同一轮公开或合成历史的 `output` 中找到要追踪的 `type: reasoning` 项并记下它的 `id`；没有就换一段历史，两组都没报告移除也不能证明保住了推理。开两个后续请求，一个追加更正，一个只改原工具结果，其他条件相同。在 `input_transformations` 中核对该项是否因 `prefix_mismatch` 被移除；缓存 token 和任务验收单独记。跨模型家族或降级也可能移除旧推理，交明确进度与剩余验收。
 
 官方压缩有例外：用 `/responses/compact` 时按说明省略 `instructions`，下次按原顺序回传返回的窗口；历史含换档或输出格式更新时，先[按压缩入口保留和接回配置](../02-models-and-cost.md#同模型换推理档保留缓存前缀)。不要把自制摘要插进旧工具链，再假设后面的推理还可沿用。
 
-依据：[OpenAI 前缀与诊断](https://developers.openai.com/api/docs/guides/keep-prefix-unchanged#auditing-your-integration-for-prefix-changes) · [推理项移除条件](https://developers.openai.com/api/docs/guides/reasoning#reasoning-item-removal-across-requests)，2026-11-21 核读。仅适用于自建 Responses；未跑两组 API 请求，不据此解释 Codex 客户端个案。
+依据：[OpenAI 前缀与诊断](https://developers.openai.com/api/docs/guides/keep-prefix-unchanged#auditing-your-integration-for-prefix-changes) · [推理项移除条件](https://developers.openai.com/api/docs/guides/reasoning#reasoning-item-removal-across-requests)，2026-11-21 核读。[GPT-6.2 Sol 外部配对实测](https://kingy.ai/blog/gpt-6-2-sol-prompt-history-coding-test/#how-we-tested-the-two-workflows)，2026-11-22 核读：预试的三轮计划都没产出推理项；改后正式跑 15 对，回改移除 15 次、追加 0 次，两组补丁全部通过。三道小题、不调用工具，不据此比较补丁质量或解释 Codex 客户端。
 
 ---
 
