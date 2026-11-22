@@ -165,6 +165,8 @@ NODE
 
 **依据**：[TanStack 作者 Skill](https://github.com/TanStack/router/blob/6b9fe6d29552270836c511bc9b343d73541f4424/packages/router-core/skills/router-core/search-params/SKILL.md)，2026-10-28 重核固定源码。本仓 10-23～24 手动加载 core 1.171.39 的配方，在上述示例通过测试、构建与真实 Chrome 操作；Skill 元数据仍标 1.171.15，兼容性按当前源码和测试接收。本次入口独立复核覆盖合成提升、嵌套、符号链接布局和缺失分支；真实 pnpm 安装未独立复验。自动触发与收益对照未测。
 
+**官方示例仍让 Agent 漏掉必做项，再单独对照厂商提供的领域能力。** [Stripe 自评](https://stripe.dev/blog/stripe-integration-evals-methodology#detailed-results)用 69 个集成场景、每组重复两次；同题固定首条消息、模型和客户端，两组都可搜网页。Codex GPT-6.1 Sol 加上 Stripe 的 Skill＋MCP 后，所有必做项均通过的比例从 39.0% 升至 50.7%，但每次评估从 6.1 增至 6.5 分钟、$0.51 增至 $0.61，即使网页搜索几乎消失。它只评对话和生成文件，未运行生成的集成，超时不计入评分，也不能分辨 Skill 和 MCP 各自的作用。自己采纳前，先列必须通过的业务行为，用同题两组跑项目的真实流程，把超时、耗时和总成本都记下来；别用少搜网页代替验收。
+
 ## 符号编辑与完整流程：只为实际增量留下它们
 
 **Serena 只在宿主缺所需符号操作时试。** 按[实试入口](../../experiments/serena-symbol-edit.md#研究记录固定环境与执行细节)配置项目与语言，先读 `initial_instructions`；2.1.1.dev0 新配置默认 REPL，独立符号工具需 `--agent-interface tools`。读当前正文再替换、审 diff、跑测试；同方法并发先协调，旧正文可能覆盖新修改。原核实 2026-10-24～27。
