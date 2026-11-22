@@ -29,7 +29,7 @@
 
 **同帧多次rAF回调不是多帧，也不是时间倒退。** 全局包装`requestAnimationFrame`会同时观察游戏与测试器的回调；同一渲染时刻可以共享时间戳。保留所有原始回调，把相同时间戳的CPU耗时合计成帧CPU，另报每回调分布、回调数、独立帧数及独立帧间隔；不得删除零间隔样本来伪造流畅，倒序、缺值、负值仍拒绝。测试器的就绪等待用定时轮询，减少自我污染，但未记录回调身份时不能认定额外回调来自谁。CPU耗时与rAF间隔均不是GPU计时。
 
-验证可用`node --import tsx --test tests/client/browser-smoke/full-match.test.ts`（MOBA仓根，Node22.23.2）；覆盖同帧双回调、全部同时间戳、倒序和非法值。源码与CPU验证：[观察器修复](https://github.com/dbvv1/MOBA-Like/commit/b8a377078e15c0dd2fb7c367b0bf24adbee09468)，2026-11-12。旧证据离线重算只能验证统计口径，不能补齐未执行的整局、交互或对照性能。
+在 [MOBA-Like 固定检出 `c903a4e`](https://github.com/dbvv1/MOBA-Like/tree/c903a4e738b9224a3e5f677894cd1d3fece7eb63) 的根目录先运行 `npm ci`，再运行 `npm test -- tests/client/browser-smoke/full-match.test.ts`。这是 Vitest 单测，不启动浏览器；覆盖同帧双回调、全部同时间戳、倒序和非法值等情形（Node 24.22.3 实跑 9/9）。[原观察器修复](https://github.com/dbvv1/MOBA-Like/commit/b8a377078e15c0dd2fb7c367b0bf24adbee09468)核实于 2026-11-12。旧证据离线重算只能验证统计口径，不能补齐未执行的整局、交互或对照性能。
 
 **✅ 复用现有测试／调试入口；发现观测缺口才加一个窄接口。** 项目没有 MCP 不意味着不能测试，也不因此要求安装。下表只列会改变选择的差别；具体接入见 [Unity](unity/01-toolchain.md)／[Unreal](unreal/01-toolchain.md)。
 
