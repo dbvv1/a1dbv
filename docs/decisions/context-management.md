@@ -77,11 +77,12 @@
 |---|---|
 | 解释 Claude 已读代码或刚才的决定 | `/btw 为什么保留旧接口？` 只用已有上下文，无工具；本地回答浮层按 `f` 可转为带工具的后台子代理 |
 | Cursor 中另查做法并连续追问 | 本地 Agent `/side 只调查替代方案，不修改文件，给出依据与适用条件`；`/btw` 是别名，在主线用 `@` 引入侧聊后明确采用的结论 |
+| Codex CLI 中途追问、主线继续 | `/side <问题>`（`/btw` 同入口）；侧聊记录独立、默认临时，关键结论回主线落盘 |
 | 撤回要求、改方向或制止错误修改 | 直接纠正执行中的主会话，必要时停止；侧问不是修改主任务的入口 |
 
-Cursor 侧聊有父背景，不是摆脱旧假设的干净会话，也不是只读权限隔离；目前不支持 Cloud Agents。云端沿用可用主会话或独立调查入口。
+分开记录不等于只读权限。Cursor 侧聊带父背景，不是干净会话，也不支持 Cloud Agents；云端沿用可用主会话或独立调查入口。Codex 侧聊不能嵌套或在 review 模式启动。
 
-依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)、[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。
+依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)、[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。 [Codex 侧聊](https://learn.chatgpt.com/docs/developer-commands#start-a-side-chat-with-side)及 [0.171.0 的保存／临时分支](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app/side.rs#L793-L803)，2026-11-22 核对，未运行 TUI。
 
 <a id="agents-chat-history"></a>
 

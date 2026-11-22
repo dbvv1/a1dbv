@@ -59,7 +59,7 @@ OpenAI 的 Eric Provencher（9-11）对 Astra 同样把全仓预读改为按任�
 | 工具 | 文件 | 会改变选择的加载条件 |
 |---|---|---|
 | Claude Code | `CLAUDE.md`、`AGENTS.md`、`.claude/rules/*.md` | 原生 AGENTS 入口从 v2.1.277 起提供，部分 provider／禁遥测会话到 v2.1.281 才支持。默认检查当前目录及祖先：有 `CLAUDE.md`、`.claude/CLAUDE.md` 或 `CLAUDE.local.md` 就不走 AGENTS 回退；用户级 `~/.claude/CLAUDE.md` 不触发这个抑制。子目录按需发现，不能假定所有指令已在开场加载 |
-| Codex | `AGENTS.md`、`AGENTS.override.md` | 每次运行启动时建立指令链；全局先选首个非空 override／AGENTS，项目从根到当前目录逐层选择 override、AGENTS、备用文件名，每层最多一份；项目文档默认总预算 32 KiB。单包任务可用 `--cd` 在目标包启动并带入根到 cwd 链；根会话跨兄弟包仍缺自动发现。不能把 Claude 的 `@` 导入或子目录按需发现直接移植过来。codex-cli 0.154.0 fixture 只核对上下文组装（根启动根 1／包 0，包目录启动根 1／包 1），不证明模型遵守 |
+| Codex | `AGENTS.md`、`AGENTS.override.md` | 单包任务用 `--cd` 在目标包启动，加载到该目录的指令链；根会话不会为兄弟包动态发现。覆盖优先级、空项目 override 与共享预算见[现行 Codex 排障](decisions/instruction-files.md#第二步核对加载入口与当前上下文)。0.154.0 夹具只核启动组装：根启动根 1／包 0，包内启动根 1／包 1 |
 | Gemini CLI | `GEMINI.md`（可配置文件名） | 未重核，按目标客户端文档确认 |
 | OpenCode V2 | `AGENTS.md`；v2.3.1 起回退 `CLAUDE.md` | 同目录优先 AGENTS，[回退和两种关闭方式已实跑](decisions/instruction-files.md#opencode-claude-fallback)。读文件或列目录还可按需发现 workspace 内嵌套指令，近处优先、去重；压缩／回退后可重新发现。嵌套动态刷新仍仅核文档 |
 | Cursor / Copilot 等 | 各自规则格式或 AGENTS 入口 | 文件同名不证明发现、合并和刷新规则相同，未重核 |
@@ -424,11 +424,7 @@ PR #4565 核实时未合并；作者真实模型失败报告针对旧 commit，�
 
 ## Codex 续接：压缩后保留目标，不等于目标继续支配行动
 
-**✅ 保存当前目标、用户最新变更、实际产物、已知失败及下一动作，并在恢复时检查文件与执行事实。** 官方压缩提示要求记录进度、决定、约束、剩余动作，但它是期望行为，不是无损保证。近期使用报告同时存在“压缩后回旧任务”和“仍准确记得未完成范围却结束”两类现象，不能合并为遗忘。另有长会话延迟报告在高缓存命中与零 reasoning token 下仍慢，也不能靠上下文压缩次数判断问题已经解决。详见[固定来源与审查](research/2026-10-10-codex-continuity.md)。
-
-当记录已经完整，仍只总结而不行动，应检查续接/停止行为，不继续盲目扩大记忆文档。🧪 只有出现具体跨会话检索问题时才考虑额外记忆服务。
-
-**依据**：[一手／社区] Codex 连续性报告与审查记录；[研究] 采用判断；核实 2026-10-24。
+先按[现行检查点](decisions/context-management.md#跨压缩或新会话检查点保留下一步用得上的内容)核压缩后的首个实际动作。**能准确复述目标却只总结或停止，查续接／停止，不继续加记忆。** 高缓存命中、零 reasoning token 仍可能慢，要另查延迟。只有出现具体跨会话检索缺口才考虑外部记忆。见[固定来源与审查](research/2026-10-10-codex-continuity.md)，核实 2026-10-24。
 
 ## 来源
 
