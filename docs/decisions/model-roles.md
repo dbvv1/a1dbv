@@ -89,6 +89,8 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 
 **依据**：[Corti 6.1 一轮](https://corti.ai/blog/corti-s1-model-race)、[6.2 一轮](https://corti.ai/blog/corti-s1-gpt-6-2-model-race)；[VulcanBench 6.2 五档及 6.1 历史组](https://vulcanbench.com/benchmarks/swe-v4-gpt62-sol-v331.html)、[6.1 原结果](https://vulcanbench.com/benchmarks/swe-v4-gpt61-sol-v318.html)及[6.1 固定复现范围](https://github.com/morganlinton/VulcanBenchCOM/blob/e4c7e6f6d345d72d8299db37cff1165f8d33007a/assets/data/swe-v4-gpt61-sol-v318/REPRODUCING.md)。2026-11-20 核读，未复跑模型；VulcanBench 可重算公开指标，补丁和隐藏答案未公开。
 
+**换版对比先分开记模型工作、测试耗时和整单重试。** Zhuojun Li 用同一 Codex CLI 0.169.0-alpha.11.1、两版从 `medium` 起步，重放同一 Python 仓库的五个真实工单。6.2／6.1 首次都过 3/5、最终都过 5/5，平均每单 28.8／28.1 分钟；按 token 回算 $5.44／$4.35。去掉一单重复跑全套测试的工单，费用方向反转（$3.44／$3.97）。这轮四个任务共用同一台 Mac，有受负载影响的定时测试失败，6.1 也有一次重试升到 `xhigh`。基线和候选用相同的并发条件，遇到共享资源互相干扰就改成交错运行；一处重试改变结论，就保留该单并单列原因，不把总差额全算给模型。依据：[作者的工单实测与逐单金额](https://dev.to/lizhuojunx86/gpt-62-sol-beat-gpt-61-sol-on-the-leaderboard-on-5-of-my-real-work-orders-it-tied-and-cost-25-52bp)，2026-11-22 核读；代码和原执行日志未随文公开。
+
 **换审查配置时，逐项对照新增与丢失的发现，再算完整流程成本。** CodeRabbit 冻结输入回放 13 个真实 PR，保持按角色的 `low/medium/high` 阶梯，只切换 Sonnet 5.5 thinking：按常规可执行评论计，开启抓到 6 项、关闭抓到 5 项；开启补获两项，却把关闭能正常报告的一项只报到 diff 外。每次 $0.47／$0.41 是 Claude 调用按价表回算的费用，不含摘要、验证小模型与人工处理；这不是单独升 effort 的效果。另与 Sonnet 5 对照的 44 PR 组尚未完成质量裁判，评论减少不代表质量改善。
 
 **依据**：[一手／评审工具团队回放] [CodeRabbit 配置、漏项与成本](https://www.coderabbit.ai/blog/sonnet-5-5-model-review)，2026-09-28 发布、2026-10-28 核读；本仓未复跑。
