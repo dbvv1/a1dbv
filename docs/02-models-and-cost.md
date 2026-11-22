@@ -189,7 +189,7 @@ Agent 保留目标行为及已有回归，解释新增测试对应哪类缺陷�
 
 ### 表中未展开的计费维度
 
-- **自建 GPT-6.2 API**：`gpt-6.2-sol` 和 `gpt-6.2-astra` 已独立上线。升级多轮工具循环不要只换 ID；按[迁移指南](https://developers.openai.com/api/docs/guides/latest-model)保留工具调用、结果与 reasoning items 的顺序，回放原任务并[核推理项有没有被丢弃](decisions/context-management.md#responses-reasoning-continuity)。[Sol API 价表](https://developers.openai.com/api/docs/models/gpt-6.2-sol)中的 Fast 为同上下文 Standard 的 2 倍；Ultrafast 为 3 倍至 2027-02-28（PT），此后 6 倍。API 计费不套用下方订阅消耗倍率。 有欧盟驻留要求时，先看[速度档与地区怎么配](18-team-adoption.md#3-准入与数据政策)，不要直接沿用 6.1 Sol 的 Ultrafast 配置。
+- **自建 GPT-6.2 API**：`gpt-6.2-sol` 和 `gpt-6.2-astra` 已独立上线。升级多轮工具循环不要只换 ID；按[迁移指南](https://developers.openai.com/api/docs/guides/latest-model)保留工具调用、结果与 reasoning items 的顺序，回放原任务并[核推理项有没有被丢弃](decisions/context-management.md#responses-reasoning-continuity)。[Sol](https://developers.openai.com/api/docs/models/gpt-6.2-sol#pricing) 和 [Astra](https://developers.openai.com/api/docs/models/gpt-6.2-astra#pricing) 的单次 API 输入超过 272K 时，**整次请求**的输入／缓存单价 ×2、输出 ×1.5，并非只对超出部分加价。例如 Sol Standard 的 300K 未缓存输入＋10K 输出，按普通输入费率且不含额外费用计 $1.35，不是短档的 $0.70。再按同上下文 Standard 计速度：Fast ×2；Ultrafast 至 2027-02-28（PT）×3、之后 ×6。2026-11-22 核读 API 价表；不套用下方订阅消耗倍率。有欧盟驻留要求时，先看[速度档与地区怎么配](18-team-adoption.md#3-准入与数据政策)，不要直接沿用 6.1 Sol 的 Ultrafast 配置。
 - **Fable 5.2**：标准 5 分钟／1 小时缓存写入分别为 $10／$16，读取 $0.20／百万 token；Fast 输入／输出为 $16／$80，不等于提高 effort。Anthropic 路线的交互 Code 要在 5.2 上明确启用 `/fast`，旧 `fastMode: true` 不能当作已启用凭据；Google Agent Platform 的 Fast 需 v2.1.322+，按其独立入口配置。按实际供应商价表核账，不把“最多 2.5 倍输出速度”当整项任务提速。依据：[官方模型价表](https://platform.claude.com/docs/en/models/fable-5-2/overview)、[Fast 入口与价格](https://code.claude.com/docs/en/fast-mode)；核实 2026-11-12（UTC），未启用或调用。
 - **Terra**：Standard 的 30m／12h 缓存写入分别为 $1.25／$2.50；总输入 >272K 时，整次请求的输入／缓存费率乘 2，输出乘 1.5。Fast 为 Standard 的 2 倍，Batch／Flex 为一半；不能把 Sol 的 Ultrafast 可用性套给 Terra。
 - **长上下文与速度**：`gpt-6-sol` / `gpt-6.1-sol` 的 Standard 基础档 **30m** 缓存写入均为 $2.50/百万 token。总输入 >272K 时，整次请求的输入/缓存费率为基础档 2 倍，输出为 1.5 倍。API Fast 为适用 Standard 费率的 2 倍；`gpt-6.1-sol` Ultrafast 为 6 倍；Batch/Flex 为一半。不要把 6.1 的缓存价或 Ultrafast 可用性套给 6 Sol。精确模型页见本节末。
@@ -262,7 +262,7 @@ OpenCode 维护者用约 9.2k token 的固定指令与五个工具做对照：AP
 | 限制 | 按产品和计划区分；当前 Codex/Work Pro 无 5 小时限制，Plus 等有时间窗口额度，周限制也可能适用 | 速率限制及适用的账户/项目开销控制 |
 | 适合 | 个人交互开发 | CI、批处理、团队计费、自建工具 |
 
-**Codex / Work 的三种计量口径**（Fast 分型号与 6.2 Ultrafast 于 2026-11-19 补核，其余沿用本节原日期）：
+**Codex / Work：速度看生成，消耗看计费入口。** 下表只写额度／credits，不是生成提速表。
 
 | 速度（相对同一模型 Standard） | 订阅内额度消耗 | 另购 credits / Enterprise 按量 credits |
 |---|---|---|
@@ -271,9 +271,11 @@ OpenCode 维护者用约 9.2k token 的固定指令与五个工具做对照：AP
 | GPT-6 Astra / GPT-6.1 Sol Ultrafast | 8 倍 | 6 倍 |
 | GPT-6.2 Astra / Sol Ultrafast（以资格为准） | 6 倍 | 3 倍至 2027-02-28（PT），此后 6 倍 |
 
-Fast 分型号倍率依据：[官方 Speed multipliers](https://learn.chatgpt.com/docs/pricing#speed-multipliers)（2026-11-19 核读）。
+**6.2 的 Ultrafast 最多是 4.5 倍生成速度，不是任务快 4.5 倍。** 官方对 Astra Fast 给约 1.5 倍生成速度，未在同页给 Sol Fast 独立倍率。先用 Standard 观察生成与工具各占多久：例如 20 分钟里只有 5 分钟在生成，即使生成达到 4.5 倍、其他阶段不变，整单仍需约 16 分钟。若等待主要在构建、测试或返工，先改这些环节。
 
-Pro $200 明确包含 **Codex 的 GPT-6.2 Sol Ultrafast**，不含 6.2 Astra Ultrafast。额度倍率是相对同模型 Standard 的总倍率，不叠乘 Fast 的倍率；生成速度也不等于任务总耗时，等待工具、构建或测试时先看瓶颈。[套餐额度与资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex) · [另购 credits 费率](https://help.openai.com/en/articles/11481834-chatgpt-rate-card-business-enterpriseedu-credit-based-pricing)
+Pro $200 包含 **Codex 的 GPT-6.2 Sol Ultrafast**，不含 6.2 Astra Ultrafast。表内倍率均直接相对同模型 Standard，Fast 与 Ultrafast 不相乘；6.2 的 3 倍优惠只适用于表列合资格的额外用量，不把订阅内的 6 倍变成 3 倍。
+
+依据：[生成速度](https://learn.chatgpt.com/docs/agent-configuration/speed)、[消耗倍率](https://learn.chatgpt.com/docs/pricing#speed-multipliers)、[套餐资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)，2026-11-22 核读；时间是算例，未做提速实测。
 
 API-key 计费另按 API 价表；不要由美元或 credit 单价估算订阅内可做任务数。Codex credits 无独立缓存写入收费，API 的缓存写入规则不能移植到 credits。Work 与 Codex 共享用量，任务上下文、推理、工具和缓存都会影响消耗；这里没有读取任何用户账户额度。
 
