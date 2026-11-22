@@ -45,6 +45,10 @@
 
 **先对齐接口、数据含义和失败行为，再并行写。** 文件不同不代表决定独立；worktree 也不隔离端口、数据库、依赖或服务。所需未跟踪资料和环境要各自准备。Python editable 开发尤其要用测试的同一解释器核实际模块来源，避免在新树测到主检出；[命令、wheel 与 namespace 边界](../08-multi-agent.md#11-python-worktree确认测试实际导入哪份代码)按需读。
 
+**后续任务真被依赖卡住时，先交能开工的最小产物，不等整个子任务完成。** 例如先交固定接口、样例数据和一个已过的最小测试，带上版本、已有检查和仍会变的部分；消费方核完就开工，替换时通知对方，主线仍按同一最终验收规则收口。只在已有职责和写域内试，按首个可用产物、消费方开工、最终通过三个时点看等待是否减少，费用记整个任务。
+
+依据：[DeLM v3 作者对照](https://arxiv.org/html/2606.10662v3#S3.SS5)在 10 项选定长任务固定两代理实现，撤掉提前交付后，相对单代理的提速从 Astra 的 1.54 倍和 Opus 的 2.02 倍降为 0.98 倍和 0.93 倍；[Astra 整题费用](https://arxiv.org/html/2606.10662v3#S3.SS1)则从单代理 $9.01 升至两代理 $13.65。论文按模型运行时间统计且每个代理各交完整解；仅借先交可用依赖的做法，不能预计项目的实际验收时间或成本，2026-11-22 核原文，未在本仓采用。
+
 **启用 worktree 后，先核它从哪一个提交开始。** 有指定基线时，首次回执用 `git rev-parse HEAD` 核起点；任务只要求包含某个上游提交时，用 `git merge-base --is-ancestor <必需SHA> HEAD`。若祖先检查返回 1，先用 `git rev-parse --is-shallow-repository` 确认是否浅克隆：即使两个 SHA 都能读到，必要父链未取全也只能记未证实，先在已有足够历史的审查检出核同一对 SHA。确认实际基线不符后，再保留现有改动、停相关写入并另建隔离树；不一律改用最新 main。不要根据错误树里没找到文件就改实现。
 
 依据：[Hermes 使用者遇到旧锚点](https://github.com/NousResearch/hermes-agent/issues/146056)与[固定版的创建代码](https://github.com/NousResearch/hermes-agent/blob/aeb5a071069dbd85d85f2c8d44337f16df29d475/hermes_cli/kanban_db_workspace.py#L689-L704)。2026-11-21 在真实源码中调用创建函数：旧锚点创建成功但落后两提交，不包含指定的 [回归提交](https://github.com/NousResearch/hermes-agent/commit/26264afd174206eb3b2c5be3f4ea976a554c7a18)；按已获取的基线 SHA 另建时，祖先检查通过且找到该测试。验证的是起点与测试文件，不是测试运行或守护进程的接续。 另用本仓相隔两提交实跑 [Git 浅历史](https://git-scm.com/docs/shallow)边界：只取两端时关系检查退出 1，补齐中间历史后同一对 SHA 退出 0，实际 HEAD 未变。

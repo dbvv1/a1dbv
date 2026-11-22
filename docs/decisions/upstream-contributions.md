@@ -32,11 +32,11 @@
 
 ## 从主流 AI coding 项目借用什么
 
-**先读贡献入口，再分配 Agent 工作，不为所有项目套同一个审批流程。** OpenAI Codex 接受问题复现、根因和设计讨论，但不接受外部代码贡献；Goose 的外部 PR 要对应看板 `Ready` issue，允许 AI 辅助代码，而 issue 须贡献者自己写。这两条会直接改变“让 Agent 去修”之前应做的事。
+**先读贡献入口，再分配 Agent 工作，不为所有项目套同一个审批流程。** OpenAI Codex 接受问题复现、根因和设计讨论，但不接受外部代码贡献；Goose 的普通外部 PR 要对应看板 `Ready` issue，允许 AI 辅助代码，而 issue 须贡献者自己写。这两条会直接改变“让 Agent 去修”之前应做的事。
 
 **项目允许小修直投，就把时间花在可审查的补丁上。** Serena 允许小修直接提 PR，要求认真审查或实际测试 AI 辅助贡献，并有覆盖整个仓库的 CLA。不要额外等一次通用预审批，也不要把“CLA 尚未签”误写成“GitHub 无法创建 PR”；协议是本人决定，技术准备可以独立完成。
 
-**披露参与方式，贡献者承担解释和后续责任。** 披露工具做了什么、自己怎样检查；若目标项目有专门格式，按它填写。不能让 Agent 代替本人完成项目明确要求的人类写作、签署或责任声明。项目没要求某个统一标签，也不应照搬另一项目的标签。
+**按目标项目规则披露，贡献者仍亲自审查并负责后续。** 要求披露时按指定格式写工具做了什么、自己怎样检查；[Goose 的现行规则](https://github.com/aaif-goose/goose/blob/main/CONTRIBUTING.md#quick-responsible-ai-tips)不要求说明用了 AI，但要求本人审查最终代码。项目保留给本人的写作、签署和声明仍本人完成。2026-11-22 重核 Goose 规则。
 
 来源：项目维护者的固定贡献规则：[Codex](https://github.com/openai/codex/blob/67f0994b532b8740f14b5b738af7b7b2a915b1d6/docs/contributing.md)（核实 2026-10-31）；[Goose](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/CONTRIBUTING.md)及 [AGENTS 的探索例外](https://github.com/aaif-goose/goose/blob/6ec4e9a2abc0fdb13f8af2676ceaf848a1df716f/AGENTS.md#contribution-workflow)、[Serena](https://github.com/oraios/serena/blob/ede329aaf0c824bea75455a2926f01420d7aa620/CONTRIBUTING.md)（核实 2026-10-30）。这些来源支持操作选择，投稿前仍读目标项目最新规则。
 
