@@ -594,6 +594,29 @@ class AbsorptionBatchTests(unittest.TestCase):
       with self.subTest(stream=stream), self.assertRaises(batch.Stop):
         self.inspect(stream)
 
+  def test_zero_exit_with_zero_byte_stdout_is_excluded_then_retried(self):
+    def empty_first(*args):
+      self.fake_execute(*args)
+      if len(self.calls) == 1:
+        args[4].write_bytes(b'')
+      return 0, None
+
+    result, destination = self.invoke(empty_first)
+    self.assertEqual(result['status'], 'smoke_completed_not_graded')
+    self.assertEqual(len(self.calls), 5)
+    summary = batch.read_json(destination / 'summary.private.json')
+    bad, retry = [batch.read_json(destination / item['name'])
+                  for item in summary['receipts'][:2]]
+    self.assertEqual((bad['unit_index'], bad['attempt_number']), (0, 1))
+    self.assertEqual((bad['exit_code'], bad['status'], bad['reason']),
+                     (0, 'failed', 'invalid_stream'))
+    self.assertFalse(bad['formal_denominator'])
+    self.assertNotIn('answer', bad)
+    self.assertEqual((destination / (bad['attempt_id'] + '.raw.jsonl')).stat().st_size, 0)
+    self.assertEqual((retry['unit_index'], retry['attempt_number']), (0, 2))
+    self.assertEqual((retry['status'], retry['answer']), ('valid_smoke', '合成回答'))
+    self.assertNotEqual(bad['attempt_id'], retry['attempt_id'])
+
   def test_four_calls_are_fresh_and_no_environment_inheritance(self):
     result, destination = self.invoke()
     self.assertEqual(result['status'], 'smoke_completed_not_graded')
