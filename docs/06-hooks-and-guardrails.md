@@ -156,13 +156,13 @@ PreToolUse 的结构化决定：
 | dontAsk | 拒绝原本需要询问的调用；免审批／预批准动作仍可执行 | 预先收紧规则的 CI／脚本 |
 | bypassPermissions | 跳过多数审批，仍有例外 | **仅隔离容器／虚拟机等环境** |
 
-**先按实际审批方向选模式，再核配置。** 权限规则与模式说明共同决定实际行为。`plan` 在 auto 可用且 `useAutoModeDuringPlan` 开启（默认）时可运行分类器批准的命令；交互终端若提供 bypass 切换，还存在更宽的规划权限例外。要求真正只读时另设执行边界，不能只看模式名。
+**Plan 的放行取决于入口，不是 OS 隔离。** 交互终端已提供 bypass 切换时，Plan 本身不再拦编辑或审核 shell；`-p`、SDK 和 VS Code 聊天面板不适用此例外。其余入口中，auto 可用且 `useAutoModeDuringPlan` 开启（默认）时由分类器审核 shell；否则，内置只读集合以外的命令需要批准。显式权限规则和关键路径删除仍另行处理。
 
 - **auto 的入口边界**：v2.1.283+ 的内建 auto 默认指**交互终端与 VS Code**，仍受入口、配置和可用性影响；不要推到所有客户端／非交互任务。
 - **规则求值**：权限规则可在 `.claude/settings.json` 等设置层配置，按 deny → ask → allow 求值；`Agent(model:opus)` 这类参数规则用于 deny／ask，不是任意参数 allow。具体设置先查官方当前文档。
 - **⚠️ v2.1.246 提醒**：`Bash(git * main)` 这类**通配符写在子命令前面**的 allow 规则，会把插在子命令前的选项也匹配进去，存在被绕过的风险。
 
-**依据**：[一手] [权限规则](https://code.claude.com/docs/en/permissions#permission-modes)、[模式说明](https://code.claude.com/docs/en/permission-modes)、[按输入参数匹配](https://code.claude.com/docs/en/permissions#match-by-input-parameter)；核实 2026-10-15（UTC+8）。
+**依据**：[一手] [权限规则](https://code.claude.com/docs/en/permissions#permission-modes)、[模式说明](https://code.claude.com/docs/en/permission-modes)（Plan 段 2026-11-22 重核官方文档）、[按输入参数匹配](https://code.claude.com/docs/en/permissions#match-by-input-parameter)；核实 2026-10-15（UTC+8）。
 
 ## 4. Auto mode：实测数据
 
