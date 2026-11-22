@@ -49,6 +49,10 @@
 3. **按目标模板写可核的说明。** 一个 PR 说明问题、关键取舍、实际运行的命令／版本／结果及影响使用的风险；长日志按需链接。自己应能解释整个 diff，验证方法见[验证页](verification.md)。已有测试若版本与行为未变可复用；受变动影响的路径要补跑。项目要求完整检查时，定向通过和未选测试不能替代；环境无法执行就列出缺项，保持待验证，不把旧通过记录移作新版证据。
 4. **获准后投稿，并持续处理实际反馈。** 先查同题 PR，避免重复；读维护者意见再决定修正或解释，不让 Agent 自动接受每条评论。准入问题靠对应准入步骤解决，代码问题靠修复和测试解决；接收 PR、合并和后续维护是不同结果。
 
+**旧 PR 久未跟进，先在临时克隆试合并当前上游 SHA 与候选 SHA，不动原工作树。** 用 `git merge-tree --write-tree --name-only --no-messages <上游SHA> <候选SHA>`：0 表示这次 Git 试合并无冲突，不代表行为通过；1 表示冲突，首行是树对象，其后核路径，路径为空也不报通过；其他退出码先留原错误。要看诊断时去掉 `--no-messages`。该命令可写合成 Git 对象，不会改原检出或索引。
+
+[Memos #6502](https://github.com/usememos/memos/pull/6502) 在旧基线 `0bfa31e8` 上试合并退出 0；换到[固定上游 `f4c95eff`](https://github.com/usememos/memos/commit/f4c95effd686395cb4f6f3230a816ad5a1b40475) 与[同一候选 `00d21706`](https://github.com/dbvv1/memos/commit/00d217067504e2b912bfd418199eef69d23a3c6a) 后，Git 2.56.1 的 `--quiet` 仍退出 0；非静默命令退出 1，列出的 48 个冲突路径与临时树实际合并完全一致。此案不用静默状态代替冲突清单。2026-11-22 云端实跑，参照 [Git 手册](https://git-scm.com/docs/git-merge-tree#_exit_status)；未更新该 PR，也未续跑产品 QA。
+
 上述做法中的准入不是形式要求：Goose 的 [#11322](https://github.com/aaif-goose/goose/pull/11322) 曾因缺 `Ready` issue 关闭，作者补充后重开并合并；[Windows 安装器讨论](https://github.com/aaif-goose/goose/issues/11987#issuecomment-6029897376)还明确要求后续维护承诺。这些是维护者实际接收决定，不是“多跑一次测试就会放行”。来源核读 2026-10-30。
 
 **任务含发包时，把“PR 合入”“临时仓演练”“正式仓可取”分开交付。** 没有生产凭据时，用临时签名和文件仓验实际产物，再让独立消费者只从该仓解析目标坐标；正式发布另核公开仓的精确版本或获准的发布回执。不要用 issue 自动关闭替代。例：GPT-6.2 Sol 参与的 [ui-kotlin PR #282](https://github.com/link-foundation/ui/pull/282) 已合入并关闭关联 issue；[固定 CI](https://github.com/link-foundation/ui/blob/ea2482a3ee5675ce5f6d0a38fb78c7bf054309d4/.github/workflows/kotlin-quality.yml#L256-L284) 用临时签名校验构件，并从临时仓构建桌面消费者，[该 job 成功](https://github.com/link-foundation/ui/actions/runs/44886109541/job/136791680020)。2026-11-22 只读核 Maven Central：目标 [ui-kotlin 0.1.0 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/ui-kotlin/0.1.0/ui-kotlin-0.1.0.pom) 仍为 404，同命名空间的 [links-notation 0.31.8 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/links-notation/0.31.8/links-notation-0.31.8.pom) 为 200。可以接收演练，不能据此报目标已发布。
