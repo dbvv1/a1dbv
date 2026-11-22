@@ -27,7 +27,7 @@
 | 投稿资格随作者或邀请变化 | 从可信上游同一提交读规则和凭证名单，核实际投稿账号、邀请与名额 | 区分可以投稿与免分流；不采用候选分支里的规则或名单 |
 | 不接外部代码贡献 | 按项目允许的入口贡献诊断、复现或设计反馈 | 材料补充了缺失证据，而不是另一份被禁止的代码投稿 |
 | 要求本人写、签 CLA／DCO 或完成准入 | Agent 只整理允许的事实材料，本人完成专属步骤 | 规则要求的本人行动确已完成；不把 AI 草稿换署名当成本人写作 |
-| 已有同题修复或提案 | 对比行为覆盖，收起重复部分或协调剩余差量 | 说清还缺什么；提案不等于已修复，main 已修也不等于 release 已发 |
+| 已有同题修复或提案 | 用原失败输入验上游实现；任务面向发布版时，装实际发行物再复验 | 通过就收起重复补丁；仍失败才协调剩余差量。区分提案、合入和发布 |
 | 工具发出失败或结果未知 | 先查远端是否已生效；明确拒绝只停该动作 | 分清“没发出”“已创建”“维护者拒收”，不重复投稿或绕权限 |
 
 ## 从主流 AI coding 项目借用什么
@@ -54,6 +54,10 @@
 [Memos #6502](https://github.com/usememos/memos/pull/6502) 在旧基线 `0bfa31e8` 上试合并退出 0；换到[固定上游 `f4c95eff`](https://github.com/usememos/memos/commit/f4c95effd686395cb4f6f3230a816ad5a1b40475) 与[同一候选 `00d21706`](https://github.com/dbvv1/memos/commit/00d217067504e2b912bfd418199eef69d23a3c6a) 后，Git 2.56.1 的 `--quiet` 仍退出 0；非静默命令退出 1，列出的 48 个冲突路径与临时树实际合并完全一致。此案不用静默状态代替冲突清单。2026-11-22 云端实跑，参照 [Git 手册](https://git-scm.com/docs/git-merge-tree#_exit_status)；未更新该 PR，也未续跑产品 QA。
 
 上述做法中的准入不是形式要求：Goose 的 [#11322](https://github.com/aaif-goose/goose/pull/11322) 曾因缺 `Ready` issue 关闭，作者补充后重开并合并；[Windows 安装器讨论](https://github.com/aaif-goose/goose/issues/11987#issuecomment-6029897376)还明确要求后续维护承诺。这些是维护者实际接收决定，不是“多跑一次测试就会放行”。来源核读 2026-10-30。
+
+<a id="upstream-fixed-same-behavior"></a>
+
+**上游换了实现，用原失败行为决定是否还需要自己的补丁。** [Codex #41078](https://github.com/openai/codex/issues/41078#issuecomment-5628426271) 的报告者只提交复现和参考分支；[维护者采用不同实现](https://github.com/openai/codex/pull/44400)后，报告者复验主干并收起参考，后来[用正式 Python SDK 0.169.0 验收并关闭](https://github.com/openai/codex/issues/41078#issuecomment-6924918922)。2026-11-22 用独立环境安装该 PyPI 发行包，运行[同版本订阅回归](https://github.com/openai/codex/blob/rust-v0.169.0/sdk/python/tests/test_turn_subscriptions.py)：22/22 通过，覆盖完成通知早于启动响应；只验 SDK 协议的模拟输入，未跑真实服务器或模型。
 
 **任务含发包时，把“PR 合入”“临时仓演练”“正式仓可取”分开交付。** 没有生产凭据时，用临时签名和文件仓验实际产物，再让独立消费者只从该仓解析目标坐标；正式发布另核公开仓的精确版本或获准的发布回执。不要用 issue 自动关闭替代。例：GPT-6.2 Sol 参与的 [ui-kotlin PR #282](https://github.com/link-foundation/ui/pull/282) 已合入并关闭关联 issue；[固定 CI](https://github.com/link-foundation/ui/blob/ea2482a3ee5675ce5f6d0a38fb78c7bf054309d4/.github/workflows/kotlin-quality.yml#L256-L284) 用临时签名校验构件，并从临时仓构建桌面消费者，[该 job 成功](https://github.com/link-foundation/ui/actions/runs/44886109541/job/136791680020)。2026-11-22 只读核 Maven Central：目标 [ui-kotlin 0.1.0 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/ui-kotlin/0.1.0/ui-kotlin-0.1.0.pom) 仍为 404，同命名空间的 [links-notation 0.31.8 POM](https://repo.maven.apache.org/maven2/io/github/link-foundation/kotlin/links-notation/0.31.8/links-notation-0.31.8.pom) 为 200。可以接收演练，不能据此报目标已发布。
 
