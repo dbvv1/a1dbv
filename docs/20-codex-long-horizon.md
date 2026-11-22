@@ -130,7 +130,9 @@ codex exec resume --remote "$APP_SERVER_ADDR" --json "$THREAD_UUID" \
 
 [0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0) · [固定实现](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/exec/src/remote.rs) · [上游接续测试](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/cli/tests/queue.rs#L419-L473)。2026-11-20 以正式 Linux 二进制在隔离云端用回环合成服务核到同 UUID 的 resume 与新 turn、结果和完成事件；活动线程、断线、非 UUID 与指定客户端模型四种反例均非零退出。未跑真实 app-server 持久化、模型任务、跨机或关机恢复。
 
-**压缩失败后，不把已出现的部分摘要当作恢复依据。** 先核对运行版本，通过正常续接／恢复检查原消息与工具结果；已有结果可核实时，不因压缩失败重跑副作用操作。官方修复将摘要记录延后到响应成功完成，见[失败压缩的提交边界](research/2026-10-12-long-task-evidence.md#失败压缩的提交边界)。局限是响应完成、历史替换与落盘成功仍是不同边界，且所核最新稳定／预发布 tag 尚未包含该修复。
+**不要把代理树挂起当成 CLI 续接。** 0.171.0 底层可以保留具名子代理的未完成轮次 ID 和有序退出时落盘的结果；重新加载子代理不会启动模型。已用该二进制生成含实验项的 app-server 请求清单，未见挂起或恢复代理树的入口。已有线程仍按上面的空闲续接走；在途工具、未落盘输出和待审批动作要单独核对。依据：[合入说明](https://github.com/openai/codex/pull/61198)、[固定实现](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/core/src/thread_manager/shutdown.rs#L139-L217)，2026-11-22 核对接口，未运行代理树恢复。
+
+**压缩失败后，先恢复原消息与工具结果，不重跑已有效的动作。** 已发布的 0.171.0 包含[修复](https://github.com/openai/codex/compare/400f2356d60c4663d46817a40b4d09c5c86f35ad...rust-v0.171.0)：本地非 PostTurn 压缩在响应完成前只缓冲输出。若界面曾出现部分摘要，不用它当恢复依据；响应完成也不证明已落盘。依据：[固定实现](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/core/src/compact.rs#L904-L940)、[原断流及重启用例](research/2026-10-12-long-task-evidence.md#失败压缩的提交边界)，2026-11-22 核对版本，未复跑断流。
 
 ### 交接时重新核对活资源与约束
 
