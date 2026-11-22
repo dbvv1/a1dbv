@@ -307,6 +307,14 @@ PostHog 在同名重命名与引用查询的五题对照后，实际撤回了新
 | 腾出当前上下文 | `/compact`；只想看聊天摘要则用 `/recap`，后者不是释放上下文的入口 |
 | 独立任务或独立评审 | 开新聊天，给必要目标和证据；不继承无关讨论 |
 
+<a id="codex-remote-keep-or-transfer-host"></a>
+
+**只想从另一台电脑指导原任务，选 Remote Control；要换执行主机才选 Hand off。** 已开放功能的桌面 App 在 Settings → Connections → Control other devices 加入原主机，再打开原线程；代码、工具和命令仍在原环境。聊天底部的 Hand off 则移交聊天与 Git 状态，目标须保存同仓库、同项目子目录，会创建或复用目标 worktree；正在生成会先被中断。不要用切换主机来查看一个仍在运行的任务。
+
+**远程显示已连接却打不开旧线程，先在原主机核这一个线程的最新轮次和产物。** 一份 iOS 1.2026.314／Linux Codex 0.171.0 报告里，新线程可用、旧消息缓存可见，但旧线程连接超时；原主机 CLI 仍能读取旧历史。不要把能开新线程、看到旧消息当作原线程已恢复，也别只凭它们重跑旧工作。
+
+依据：[从另一设备继续](https://learn.chatgpt.com/docs/remote-connections#pick-up-work-from-another-device)、[跨主机移交](https://learn.chatgpt.com/docs/remote-connections#hand-off-a-chat-between-hosts)、[iOS 用户报告](https://github.com/openai/codex/issues/62789)，2026-11-22 核读；未实测跨机连接，个案根因未确认。
+
 **接续前核目标、文件与活进程，不只核聊天 ID。** fork 不是文件快照；新聊天也不保证新运行环境，共享 daemon 沿用启动时环境。先对账未知的部署／发布结果，再续接；不要用清上下文修后台配置，详见[有效配置证据](../research/2026-10-10-codex-continuity.md#有效配置与续接动作2026-10-20)。
 
 **只改了默认 provider，要续原聊天就保留原 provider 的定义，不必把全局默认改回。** 正式 0.168.0 的 app-server 已按线程保存的 provider ID 恢复；0.167.1 仍按旧检查。两个 provider 同名或同 URL，也不等于同一个 ID。桌面 App 看实际内置或连接的 app-server，不能拿系统 CLI 版本代替。

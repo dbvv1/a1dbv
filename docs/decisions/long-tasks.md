@@ -69,7 +69,7 @@
 
 **Codex CLI 的 `/side` 用来短暂岔开，不当作恢复入口。** 回主线前，把需要保留的决定和产物位置写进原任务记录。0.167.0 的侧聊是临时的；0.171.0 默认开启 TUI workspace，但只有兼容的本机全屏与已保存历史才能持久化，条件不符仍可能是临时侧聊。若靠侧聊接续，先确认重启后同一侧聊能打开并接受新输入，不只看到回放。见[旧版回放案例](https://github.com/openai/codex/issues/62649)、[0.171.0 发布](https://github.com/openai/codex/releases/tag/rust-v0.171.0)与[存储选择](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app_server_session.rs#L1372-L1394)；核读源码，未实跑侧聊重启。
 
-已有获准的 Codex app-server 和空闲原任务时，可用[原 UUID 非交互续接](../20-codex-long-horizon.md#codex-remote-resume-idle-thread)核一个剩余验收；不把这个入口当成关机恢复或自动唤醒。
+从另一台设备继续指导时，先区分[留在原主机与转移执行主机](../01-agents/codex.md#codex-remote-keep-or-transfer-host)。已有获准的 Codex app-server 和空闲原任务时，可用[原 UUID 非交互续接](../20-codex-long-horizon.md#codex-remote-resume-idle-thread)核一个剩余验收；不把这个入口当成关机恢复或自动唤醒。
 
 <a id="旧写者状态未知时接收固定成果与接管旧树分开"></a>
 
