@@ -186,9 +186,11 @@ git ls-files --others --exclude-standard
 
 **`/code-review ultra` 不可用时可能退回本地评审；需要云端能力时，核对实际运行位置。** 脚本用 `claude ultrareview` 等待结果，不能用会提前退出的 `claude -p '/code-review ultra'` 代替。前者退出码 `0` 只表示完成，**有发现也返回 0**；`--json` 返回原始 `bugs.json`，不是托管 check 的严重度统计。
 
-🧪 Ultrareview 当前通常每次 5–25 美元 usage credits；Pro／Max 用户每账号有一次性 3 次免费额度，并非周期刷新。CI 超时后云任务可能仍在跑，重试会新建并再次计费。先核查旧任务再重试；子命令由用户直接执行时视为接受计费／条款，缺少 merge base 还可能扩大到整仓，接 CI 前须明确预算和范围，不直接照搬命令。
+**先确认云端会审哪份代码。** 审 GitHub.com 上已发布的 PR，选 PR 模式并核对远端 head；Anthropic 云端克隆 PR，不上传本机工作树。要审本机已跟踪文件里的未提交改动，才在获准上传的前提下用分支模式，从目标仓库启动并核对 base 与待审改动。未跟踪文件不在包里；必须审这些文件、或材料不能上传时，走本地评审。确认框中的 diff 范围不等于上传范围，完整包可能含其他分支历史；不要靠 `.gitignore` 隐藏已经跟踪的内容。
 
-**依据**：[一手：2026-10-14 UTC 官方契约] [Ultrareview 非交互运行与计费](https://code.claude.com/docs/en/ultrareview#run-ultrareview-non-interactively)、[Ultrareview 比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)；[研究：成本选择] 预算与范围；核实 2026-10-24。
+🧪 Pro／Max／Ultra 每账号一次性 3 次免费；云会话一启动即计一次，中止或失败不返还。之后通常每次 5–25 美元 usage credits，另计而非订阅内用量。CI 超时先查原云任务，重试会新开并再次计费；子命令由用户直接执行时视为接受计费／条款。缺 merge base 可能扩大到整仓，接 CI 前明确范围和预算。
+
+**依据**：[分支与 PR 模式](https://code.claude.com/docs/en/ultrareview#review-a-pull-request)、[工作树上传规则](https://code.claude.com/docs/en/claude-code-on-the-web#send-local-repositories-without-github)、[计费](https://code.claude.com/docs/en/ultrareview#pricing-and-free-runs)，2026-11-22 核读，未运行云评审。[非交互接口](https://code.claude.com/docs/en/ultrareview#run-ultrareview-non-interactively)与[本地／云端比较](https://code.claude.com/docs/en/ultrareview#how-ultrareview-compares-to-code-review)，原核实 2026-10-24。
 
 ### 托管多 Agent 评审的实际数据：Claude Code Review
 
