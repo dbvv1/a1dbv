@@ -16,7 +16,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 上述参数只覆盖本次启动。Codex CLI 需 0.166.0+；用 `/model` 核实际型号与 effort；`--model` 不重置已保存的速度，按下方步骤确认 Standard。6.2 不可用时保留已验证配置。Sonnet 5.5 需 Claude Code v2.1.284+，Haiku 5.5 需 v2.1.293+。第三方提供方沿用已获准入口；无法确认实际模型或档位就记未知，不按客户端名称推断。[6.2 CLI 与账号资格](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex)（2026-11-19 核读）
 
-**用第三方客户端切到 6.2 Sol 时，先在预定的运行入口做一次原有工具任务，并确认可用推理档。** 例如 OpenClaw 2026.11.6 的两份实际报告：已有聊天可回复，但 system-agent 单独拒绝 Codex 路由；原生入口只覆写 `contextTokens` 后，Gateway 的 `models.list` 只列 `off/ultra`，同样设置在 6.1 Sol 上未降档。这两种情况先查客户端版本与路由／配置，不计为模型退化。依据：[管理路由原报](https://github.com/openclaw/openclaw/issues/203019)、[档位原报与检查命令](https://github.com/openclaw/openclaw/issues/203150)、[后续目录变更](https://github.com/openclaw/openclaw/pull/200766)。2026-11-22 核对原报与 2026.11.6 发行包的静态模型声明，未复跑带认证的 Gateway。
+第三方客户端另做一次[真实工具入口检查](#第三方入口排障聊天可用但工具任务失败)。
 
 **按原标准接收，再决定是否沿用配置。** 看实际 diff 是否完成目标并保留约束，运行相关检查；修 bug 要重放触发路径。检查缺依赖且当前不允许安装时，列明未跑项，保留验收缺口；不能据此判为模型能力不足，`taskDone` 或审查标签也不能替代实际结果。比较漏项、纠正轮次和等待，把主 Agent、子 Agent、重试、检查与返工的投入一起算。
 
@@ -102,6 +102,12 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 **便宜实现＋强审查也可能不省。** Reddit 用户 msw3age 自报两项任务均由 Opus 5.5 规划、两模型用 `high`；Sonnet 实现后交 Opus 审查并退修或代修，都比 Opus 单独完成更慢、更贵，但代修组合额外抓到一个 bug。具体费用与代码未公开，适合提醒比较返工和新增发现，不据此改为全员强模型。
 
 **依据**：[社区原帖] [V2EX：模型分工（#2）](https://www.v2ex.com/t/1247018)、[V2EX：低档仍慢的反馈](https://www.v2ex.com/t/1248411)（2026-10-26 核读、2026-10-28 重核）；[Reddit：混合模型返工反例与作者补充](https://www.reddit.com/r/ClaudeCode/comments/1wsqfzk/comment/pcnxwy4/)（2026-10-28 核读，用户自报，未复跑）。
+
+## 第三方入口排障：聊天可用但工具任务失败
+
+用同一个入口分别试普通回复和一项已知可用的工具任务，再核实际模型与可用推理档。连第一项工具任务都没发给模型，先查客户端版本、路由与配置，不把这次失败计入模型质量比较。
+
+OpenClaw 2026.11.6 的两份实际报告：已有聊天可回复，但 system-agent 单独拒绝 Codex 路由；原生入口只覆写 `contextTokens` 后，Gateway 的 `models.list` 只列 `off/ultra`，同样设置在 6.1 Sol 上未降档。依据：[管理路由原报](https://github.com/openclaw/openclaw/issues/203019)、[档位原报与检查命令](https://github.com/openclaw/openclaw/issues/203150)、[后续目录变更](https://github.com/openclaw/openclaw/pull/200766)。2026-11-22 核对原报与 2026.11.6 发行包的静态模型声明，未复跑带认证的 Gateway。
 
 ## 何时不适用
 
