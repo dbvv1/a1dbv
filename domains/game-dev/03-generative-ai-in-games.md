@@ -122,12 +122,14 @@ flowchart TD
 按 [Redrock README](https://github.com/StarKnightt/redrock/blob/028846ab4adf44358ce389f7f3a48738fc574f0b/README.md)，在获准的本地研究环境里，用独立副本固定版本和赛道：
 
 ```bash
+git clone https://github.com/StarKnightt/redrock.git redrock
+cd redrock
 git checkout --detach 028846ab4adf44358ce389f7f3a48738fc574f0b
-npm install
+npm ci
 npm run serve
 ```
 
-打开 `http://localhost:8123/#seed=22`，取 1280×720 对照图时记录实际渲染器及画质档。参照图只留本地，不进入公开质量记录。本轮只核作者文档，未启动、试玩或截图。
+打开 `http://localhost:8123/#seed=22`，取 1280×720 对照图时记录实际渲染器及画质档。参照图只留本地，不进入公开质量记录。已从空目录实跑：检出该提交、按锁文件装依赖，服务在 8123 返回游戏首页 HTML；未在浏览器运行、试玩或截图。[本端实测：仅检出、安装与 HTTP]
 
 **一次提示不等于一次回答，也不等于低成本。** Saltline 镜像转述作者称 Fable 5.2 单提示、无人反馈、约 8 小时、2.7M 输出／445M 输入 token（大量缓存）、约 550 美元 API 口径；本轮作者 X 原帖返回 403，未核完整提示、Agent 工具调用、自测日志、人改和账单，因此这些只保留为转述，不用于估算自己的工期。镜像说明还提到移除宿主 frame-runtime 并加页面头，不是原运行环境的逐字交付。
 
