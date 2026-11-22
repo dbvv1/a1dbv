@@ -137,6 +137,10 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 2026-11-22 Linux 实跑同一 SQL：SQLite 3.50.4 和 3.54.1 都退出 0、各错 6/8 行；构建 [SQLite 修复提交](https://github.com/sqlite/sqlite/commit/88c7cc0a27b338b17b011edf16a21b3e97f66899)（源码标识 `2f794cf18a…`）后 8/8 行匹配。此次验了参考输出，未运行 Turso 或 SpiceScript。
 
+<a id="incremental-fresh-buildinfo"></a>
+
+**增量类型检查疑似漏报，不必先删共享缓存。** 对使用 `tsc -p` 的目标，以同一编译器、源码和配置比对原检查，再用新状态路径复跑（如 Bash 下先 `fresh=$(mktemp -d)`，再 `tsc -p . --tsBuildInfoFile "$fresh/check.tsbuildinfo"`）。不关规则。只有新状态报错时，先确定是增量状态差异，再处理诊断，不把原绿灯当验收。按 [TypeScript #65616](https://github.com/microsoft/TypeScript/issues/65616) 的公开复现，两版沿用状态都退出 0；换独立状态后 5.9.3 报 TS6133／退出 2，7.0.2 报 TS6196／退出 1。2026-11-22 Linux／Node 24.22.3 实跑，原缓存与三份输入的哈希不变；只验该 `tsc -p` 夹具，不直接套到 `tsc -b`。[官方状态文件选项](https://www.typescriptlang.org/tsconfig/tsBuildInfoFile.html)。
+
 ### 自动清理导入／导出：报告归零后再跑原消费者
 
 **已经在用自动修复时，先保留运行行为和公开接口，再清 lint；修复命令与复扫都成功，仍须运行原来的调用方。** `unused import`／`unused export` 是分析结论，不代表相同名字的局部绑定、别名或公共 API 都能删除。公开包的外部调用方可能不在当前分析图里，先确认允许收窄的范围；普通内部清理沿用现有测试，不另加一套门禁。
