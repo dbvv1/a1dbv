@@ -97,25 +97,15 @@
 - **还有已授权的实施或验收：** 继续原目标；子任务结束不等于任务完成。
 - **已满足全部验收：** 按授权交付。发布另回读实际目标与内容，CI 按该提交的真实运行报告；未查到运行记未确认，不用发布成功替代消费者验收。
 
-**本页早期版本已用于新读者的真实接续，并进入本仓测试入口。** 前一项盘符修复交回后，主线补齐模板副本、双解析器与 POSIX 门禁；随后把实际暴露的 Windows 测试启动缺口交给新读者，附本页固定全文。读者声明首次阅读、未读旧回执，接收端非读者复跑原生 Windows 的 Python 后端：原 108 个启动错误与 8 个跳过变为 42 项通过。主线又实际接回共享夹具，补可判别的 Bash 优先级回归；独审发现相对 Bash 路径随工作目录变化失效，修复后继续验收，而非在“已返回”处收口。
+**以下旧版做过一次真实接回或连续交付，不代表当前页已经复测，也不证明自动唤醒或长期无人值守。**
 
-本次采用的是本页 `b05cb560` 版本；产品专属的 Bash 路径与包装脚本留在测试夹具，不加入通用路线。新读者首次阅读依据其记录与接收端复核，不是对其不可见上下文的独立证明；Windows 输出为同机双人复跑记录，云端另核 POSIX，不冒充原生 Windows 重跑。见[本机记录与接回证据](../../reader-tests/A-LONG-ROUTE-BASH-READER-20261113-u1.md)。最终云端修订又经[原生 Windows 补验](../../reader-tests/A-LONG-ROUTE-BASH-READER-20261113-windows-final.md)：四份受检文件哈希相同，Python 后端 42 项通过、相对 Bash 跨目录启动通过；缺 jq 的一项跳过仍保留。这支持一次既有接收入口上的实施、接回、继续修正与采用，离开后长期稳定性仍待验证；没有人为中断或新增调度。前一项[盘符任务](../../reader-tests/A-LONG-ROUTE-DRIVE-READER-20261112-u1.md#云端接回与实际采用2026-11-12-utc)只保留其原范围。
+| 旧版与实做 | 接回后验证了什么 |
+|---|---|
+| `b05cb560`：[Windows Bash 读者与云端接回](../../reader-tests/A-LONG-ROUTE-BASH-READER-20261113-u1.md)、[本机最终补验](../../reader-tests/A-LONG-ROUTE-BASH-READER-20261113-windows-final.md) | 原 108 个启动错误、8 项跳过；接回后修正相对 Bash 路径，最终同机四文件哈希与 `4564ed0c` 一致、Python 42 项和跨目录启动通过，缺 jq 的 1 项仍跳过。云端 POSIX 另验，不算 Windows 结果。[前置盘符任务](../../reader-tests/A-LONG-ROUTE-DRIVE-READER-20261112-u1.md#云端接回与实际采用2026-11-12-utc)范围不变。 |
+| `fff2ea93`：[BMAD 组合补丁与消费者](../../experiments/bmad-migration-receipt/README.md#当前组合候选迁移后还要接着工作)，2026-11-11 | 按旧说明执行的两次 `memlog.py append` 都退出 0，却写回共享目录。主线补了从 `find.story_file` 定位各故事目录的指引，独立核读回；所测是合成迁移输入。 |
+| `8b76f7db`：[离线门禁读者与接收](../../reader-tests/A-LONG-ROUTE-OFFLINE-READER-20261106-u1.md)，2026-11-06 | [03:33:12 UTC 回传](https://github.com/dbvv1/a1dbv/commit/f7ba71fca8d8461f889bca6cf685f8e2e17a38b5)，负责人 03:43 经既有定时检查启动接收，约十分钟（运行观察，非 Git 推断）。真实 npm 包的 Shell 阶段 10→8，自写脚本仍在；本机未跑完整 POSIX，云端定向 21/21、完整 20 阶段 551 例。[已采用](https://github.com/dbvv1/a1dbv/commit/39032d410abda40deeb8b162e9b01e28af54b9d0)，[当时托管运行查询](https://api.github.com/repos/dbvv1/a1dbv/actions/runs?head_sha=39032d410abda40deeb8b162e9b01e28af54b9d0&per_page=100)为 0。 |
 
-**此前版本已用于一项迁移修复的连续交付。** 新上下文读者先完整读取本页，再核现有写者、固定成果与上游现状，在新树接收 BMAD 两项既有修复需求；独立子代理先核契约，读者接回后继续实现与完整项目检查。非作者再从真实迁移、tickets 与 memlog 入口接收，发现首版仍会把下一轮日志写回共享目录；主线没有收口，而是补齐后续地址说明并复验到各故事的日志读回。
-
-最终[组合补丁与可用入口](../../experiments/bmad-migration-receipt/README.md#当前组合候选迁移后还要接着工作)把这次采用留在实际产物中。这支持“交回结果后核消费者、继续剩余工作”，不是长期无人值守或主机关机后的接续证明；本轮没有人为制造中断或新建调度。本次采用对应 `fff2ea93` 的页面全文，核心步骤未改；2026-11-11 实做与独立接收，合成迁移输入和产品边界见补丁页。
-
-**旧版页面的一次本机任务接回已有采用证据。** 本仓离线门禁误收 `node_modules` 内第三方 Shell 脚本的修复，先由负责人核同题任务、已有结果与写域，将两个代码文件留给本机独占实施。读者回执记载已取得固定答案页全文、未读旧任务或读者轨迹，页面字节数与哈希经非读者核对；随后完成实施、先失败后通过的回归和真实 npm 包消费者。本机 Windows 的既有进程组测试错误、POSIX 完整检查未运行均如实保留。
-
-2026-11-06 03:33:12 UTC [结果回传](https://github.com/dbvv1/a1dbv/commit/f7ba71fca8d8461f889bca6cf685f8e2e17a38b5)后，负责人在既有的 03:43 定时检查中发现它，并实际启动独立 POSIX 接收验收，期间没有用户催续，接续延迟约十分钟。云端核真实包阶段从 10 项变为 8 项且自写脚本保留，定向 21/21 与完整 20 阶段、551 例通过；修复已在 [39032d41](https://github.com/dbvv1/a1dbv/commit/39032d410abda40deeb8b162e9b01e28af54b9d0) 进入 main。
-
-这次证据对应旧版页面和 `check_offline` 的窄修复，只证明已配置宿主上的一次接回与补丁采用。读者回执受检页面是 `8b76f7db` 的 102 行版本，不是当前改写后的页面；它不用于验收当前页面的核心推荐。接回依赖既有定时检查，不是结果主动推送唤醒；长期可靠性、任意宿主恢复和本机旧进程退出仍未验证。
-
-**本次采用依据**：[原读者记录与独立接收](../../reader-tests/A-LONG-ROUTE-OFFLINE-READER-20261106-u1.md)、上述回传与采用提交，以及负责人对派发前分工和 03:43 接收启动的本轮运行观察；核实 2026-11-06。提交证明产物和落地，定时检查与无人催续来自运行观察，不能仅凭 Git 时间戳推断。本次复核时，[39032d41 的工作流查询](https://api.github.com/repos/dbvv1/a1dbv/actions/runs?head_sha=39032d410abda40deeb8b162e9b01e28af54b9d0&per_page=100)返回 0 个运行；原工作流仅手动触发，这与已通过的本地 POSIX 检查分开。
-
-本仓 Memos 需求在独立审查中发现 raw Markdown 消费者遗漏并修复，部分匿名路径已验，剩余产品 QA 已取消；Sphinx 在首轮负结果后保留调查、纠正前提并继续 CLI 构建与输出比较。Foremerge 新读者只做通接回已返回结果，不覆盖完整实施或自动续接。这些范围保留，不升级为整条路线通过。
-
-**采用依据**：[Memos 实施与剩余范围](../../experiments/memos-reading-adoption.md)、[Sphinx 同任务接续](../collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)，工程原核实 2026-10-25，Memos 取消状态核实 2026-10-31；[已发布的两文件交付](https://github.com/dbvv1/a1dbv/commit/c735c8ed27334f2d4cc9218fece214fa8f83c41b)，2026-11-01 核读远端，hosted CI 未确认；[Foremerge 原任务](../collaboration/local-jobs/A-LONG-ROUTE-FOREMERGE-READER-20261101.md)与[原读者卡点](../../reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md)，核实 2026-11-01。更强恢复机制的比较见 [20 §3–4](../20-codex-long-horizon.md#3-完成条件来自验收原文不能由总结重新定义)。
+其他只保留各自验收范围：[Memos](../../experiments/memos-reading-adoption.md)补了 raw Markdown 消费者，匿名路径部分验收、剩余产品 QA 取消（2026-10-25／31）；[Sphinx](../collaboration/local-jobs/A-PERFORMANCE-ROUTE-001.md)负结果后纠正前提并继续 CLI 构建对比；[Foremerge 原任务](../collaboration/local-jobs/A-LONG-ROUTE-FOREMERGE-READER-20261101.md)的[读者](../../reader-tests/A-LONG-ROUTE-FOREMERGE-READER-20261101-u1.md)只验已返回结果的接收（2026-11-01），[两个文件已发布](https://github.com/dbvv1/a1dbv/commit/c735c8ed27334f2d4cc9218fece214fa8f83c41b)，托管 CI 未确认。更强恢复机制见 [20 §3–4](../20-codex-long-horizon.md#3-完成条件来自验收原文不能由总结重新定义)。
 
 <a id="什么情况不值得继续拆"></a>
 
