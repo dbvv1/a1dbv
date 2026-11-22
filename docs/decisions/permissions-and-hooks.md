@@ -116,6 +116,12 @@ network_access = false
 
 **依据**：[Claude 输出契约](https://code.claude.com/docs/en/hooks#json-output)、[Claude PreToolUse 决策](https://code.claude.com/docs/en/hooks#pretooluse-decision-control)、[Codex PreToolUse 契约](https://learn.chatgpt.com/docs/hooks#pretooluse)（核实 2026-10-28）；[真实撤换 agent-flow #10](https://github.com/josix/agent-flow/pull/10)与[固定修改](https://github.com/josix/agent-flow/commit/7f8b23ee0a1b2c248a4ab91ae1fd5dc27d9715c6)（原核实 2026-10-27）。维护者因整轮停顿改成单次拒绝，并移除执行后的重复路径拦截；未复跑客户端。
 
+<a id="codex-plugin-hook-trust"></a>
+
+**Codex 插件更新或重建缓存后，先确认关键 Hook 仍实际运行。** 普通配置 Hook 的定义哈希不替你核对引用脚本；0.171.0 中需人工信任的插件 Hook 还会校验已安装的插件内容。一个 macOS 用户报告：插件版本与脚本没变，但重建 Git 缓存后 Hook 报 `Failed`，没有执行。遇到这种情况，用 `/hooks` 核来源，再用无副作用的样例触发同一事件，查预期产物；确认前不把该 Hook 算作通过，保留独立的项目检查或原生权限，不跳过信任审查。
+
+**依据**：[官方插件 Hook 文档](https://learn.chatgpt.com/docs/hooks#plugin-bundled-hooks)、0.171.0 [信任判定](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/hooks/src/engine/plugin_trust.rs#L28-L60)与[内容指纹](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/hooks/src/engine/plugin_fingerprint.rs#L32-L70)、[用户原报 #63133](https://github.com/openai/codex/issues/63133)。核实 2026-11-22，缓存案例未独立复跑。
+
 **PostHog 把确定性检查留给仓库工具，Claude Hook 只做环境引导。** 它的实际 `AGENTS.md` 按 linters＋CI → lint-staged／husky → Skills → 指令的顺序选择自动化，因延迟和脆弱性不添加逐工具 Hook。下面摘取其 `SessionStart` 中的一项：
 
 ```json

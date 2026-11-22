@@ -178,7 +178,7 @@ anymd 不配置允许目录时，不会额外收窄操作系统允许的文件�
 
 **外来仓库转脚本前，先限制配置来源。** 普通 `claude -p` 不显示工作区信任或逐服务器批准提示，未信任目录中的项目 Hook 与 `.mcp.json` 仍会运行／连接。先用 `--setting-sources user` 排除项目 settings 与 `.mcp.json`；不需要自动发现能力时，再用 `--bare`，仅显式加入审过的输入与工具。`--bare` 单独使用仍会应用项目 `env` 与部分认证 helper，不能替代整个进程的隔离。用官方权限矩阵核对启动前行为，具体边界与认证前提见[研究记录](research/2026-10-12-development-conditions.md#交互试点转脚本bare-不是等价加速)。
 
-**Codex 需单独核对。** `codex exec` 的只读任务需选只读权限：使用旧沙箱配置时可显式选择 `--sandbox read-only`；已有文件排除 profile 时，不再叠加这个旧开关（见下段）。同时核对有效权限与配置、指令、技能来源；项目信任不能替代 sandbox，跳过项目配置也不等于排除所有项目技能。审查 Hook 时还要检查它引用的脚本：当前固定实现记录的是 Hook 定义哈希，不是脚本内容哈希。具体状态、覆盖条件与[源码范围](research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)另列；未运行发布客户端，不将 Claude 的启动行为外推到 Codex。
+**Codex 需单独核对。** `codex exec` 的只读任务需选只读权限：使用旧沙箱配置时可显式选择 `--sandbox read-only`；已有文件排除 profile 时，不再叠加这个旧开关（见下段）。同时核对有效权限与配置、指令、技能来源；项目信任不能替代 sandbox，跳过项目配置也不等于排除所有项目技能。审查 Hook 时连同所引用的脚本一起看，并区分[普通配置与插件 Hook 的信任范围](decisions/permissions-and-hooks.md#codex-plugin-hook-trust)。不将 Claude 的启动行为外推到 Codex。
 
 ### Codex 文件排除的采用条件
 

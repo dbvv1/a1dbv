@@ -153,7 +153,7 @@
 
 ✅ **只读任务核有效权限，再查配置、AGENTS、Skills 和 Hook 来源。** 旧配置可用 `codex exec --sandbox read-only`；已有文件排除 profile 时不要叠加旧开关，按 [10 的生效条件](../10-security.md#codex-文件排除的采用条件)选。Git 仓库存在或项目配置未加载都不能替代检查。
 
-**Hook 连同引用脚本一起审查。** 官方要求非托管 Hook 经定义信任后才运行；[固定源码](../research/2026-10-12-development-conditions.md#codex-脚本入口信任状态不等于有效权限)显示定义哈希不覆盖脚本，并区分未设 trust 与显式 untrusted。这是 2026-10-14 main 的实现证据，未验证发行客户端。
+**Hook 连同引用脚本一起审查。** 先区分[普通配置与插件 Hook 的信任范围](../decisions/permissions-and-hooks.md#codex-plugin-hook-trust)，再核实际事件是否有预期结果。
 
 ### 源码里能看到的模块
 
