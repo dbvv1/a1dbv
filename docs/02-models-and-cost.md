@@ -376,21 +376,13 @@ MiMo、DeepSeek、MiniMax、百炼仍是可另行比较的候选；其当前套�
 
 ## 6. 基准测试：怎么看才不被误导
 
-**看榜单先核更新时间、数据集版本与预算，不用历史分数推当前排名。** 下表是 2026-10-05 的记录（未复核），仅供定位原来源，不作为当前排名或跨模型成本比较。
+**先核榜单更新时间、题集版本、执行框架（harness）和预算；历史分数不代表当前排名。**
 
-| 榜单 | 当前情况 |
-|---|---|
-| SWE-bench Verified | 最高 79.2%（2025-12）；**最新条目停在 2026-02**，之后的模型（Opus 5.x、Fable、GPT-6）都没有上榜。Multilingual（bash-only，2026-02）：Gemini 3 Flash 72.7%、Claude 4.6 Opus 72.0%、GLM 5 69.7%、MiniMax M2.5 68.3%（成本只有其他模型的约七分之一） |
-| Scale SWE-bench Pro | 公开集：Muse Spark 1.1 61.5%、GPT-5.4 xHigh 59.1%、Claude Opus 4.6 51.9%；**私有商业代码集**最高 51.5%。使用 copyleft 许可的代码来降低数据污染 |
-| Terminal-Bench | 已更新到 **4.0** 版（Stanford / Laude Institute） |
+1. **先对齐分母和限制。** 分开看厂商自报与榜单结果；核每题尝试次数、通过定义、工具权限、轮数与费用上限。口径不同不直接排名。
+2. **不拿公开集与私有集的最高分相减。** 任务、模型和预算可能都不同；私有也不自动更贴近你的项目。
+3. **选型用自己的代表任务。** 先校准判定是否覆盖真实要求、是否把参考实现细节误当必需条件，再用同题比较质量、整项耗时与费用。见 [09：给自己的 AI 配置做评估](09-review-and-quality.md#3-给自己的-ai-配置做评估)。
 
-**怎么看**：
-1. 先核榜单更新时间、数据集版本和评测来源；厂商自报与官方榜单分开，不能由上面的历史快照推断当前排名。
-2. 分数是**模型 + harness + 预算**的组合结果：Scale 的灰色条目就是限制了成本和轮数的结果。
-3. 公开集与私有集的任务、模型和预算不同，不能用各自最高分相减推导固定差距，也不能只因私有就认定更贴近本项目。
-4. **选型优先用本项目的代表任务，并先校准判定。** 换模型或配置时重跑，核检查是否覆盖真实需求、有没有把参考实现细节当必需条件；私有不自动等于可靠。Stet 的公开维护样本正显示这种错位（方法见[09](09-review-and-quality.md#3-给自己的-ai-配置做评估)）。
-
-**依据**：[一手：历史记录] [SWE-bench](https://www.swebench.com)、[Scale SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public)、[Terminal-Bench](https://www.tbench.ai)（2026-10-05 记录，未复核）；[研究] 适用范围与判定校准；核实 2026-10-05。
+榜单入口：[SWE-bench](https://www.swebench.com)、[Scale SWE-bench Pro](https://scale.com/leaderboard/swe_bench_pro_public)、[Terminal-Bench](https://www.tbench.ai)。
 
 <a id="terra-effort-evidence"></a>
 
