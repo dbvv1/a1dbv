@@ -1,11 +1,8 @@
 # Review instructions
 
-<!--
-给 AI 评审者（Claude Code Review 等）的仓库级评审规则。
-- 只写会改变评审行为的规则；项目背景留在 CLAUDE.md / AGENTS.md。
-- 写得越长，关键规则越被稀释。填完 TODO 后删掉这段注释。
-- 依据：docs/09-review-and-quality.md「用 REVIEW.md 调教评审」。
--->
+**复制前先选入口。** [Claude 托管 GitHub 评审](https://code.claude.com/docs/en/code-review#who-controls-a-review)从 PR 基线或仓库默认分支读取 `REVIEW.md`；只在被审 PR 里新增或修改它，本轮不会采用该版本。[终端内置 `/code-review`](https://code.claude.com/docs/en/code-review-local#what-the-review-reads-and-edits)读 `CLAUDE.md`，不自动读本文件；只做终端评审时，把必要规则放进 `CLAUDE.md`，不另维护一份。
+
+<!-- 只保留改变评审行为的规则；项目背景留在 CLAUDE.md / AGENTS.md。复制后删掉这段使用说明。 -->
 
 ## What Important means here
 
