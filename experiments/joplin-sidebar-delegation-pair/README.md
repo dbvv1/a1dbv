@@ -12,7 +12,9 @@
 
 组织者使用 [Joplin Desktop #13679](https://github.com/laurent22/joplin/issues/13679)、修复前提交 [`02c1c755`](https://github.com/laurent22/joplin/commit/02c1c75587a0e7b2a56353d58d821f5d7add77ac)；上游[修复记录](https://github.com/laurent22/joplin/commit/50a26b63c84b4854afd9a11a264328910b6aee37)不交任何执行者或盲评者。独立 Git 对象库、基线之上的引用和远端均不可见；各起空会话、空 profile，不共享另一臂资料或隐藏验收、不外查答案。固定同台桌面、同一 Codex 构建、可核对的同一模型和 effort、Standard、同等主 Agent 工具与权限。确认乙组子 Agent 用的也是同一模型和档位，且真实只读，否则不跑。两组串行，开跑前随机定顺序。
 
-按[固定提交的构建说明](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/readme/dev/BUILD.md)，固定 Node 24.10.0、Yarn 4.9.2、依赖、窗口尺寸及笔记本树；`yarn install --immutable` 后启动实际 Electron 应用。Windows 按上游说明用普通命令提示符而非 WSL。组织者可另备桌面包 `integration-tests/sidebar-scroll.spec.ts`，运行 `yarn workspace @joplin/app-desktop test-ui sidebar-scroll.spec.ts --workers=1 --retries=0`；夹具至少三屏，下部目标远离滚动边界。必须先连续两次重现原问题并验邻接能力；未重现、桌面不可用、依赖漂移就停止。评分必须操作实际应用，不以 mock 替代。只把下段交执行者。
+**先验只读约束。** [Codex 原生子 Agent 继承父回合的沙箱和审批](https://learn.chatgpt.com/docs/agent-configuration/subagents#approvals-and-sandbox-controls)；`explorer`、角色提示以及最终没有 diff 都不能证明只读。用同配置的非计分临时副本确认诊断者读得到源码、写入测试文件被拒、没有能代写的工具，并核实际模型与 effort。原生子 Agent 若继承写权限且无独立只读约束，原方案不启动。方向会话若决定另比两个独立只读 CLI 会话，须在发题前重标乙组并记录隔离方式，启动与交接照计；不在计分中途替换。
+
+按[固定提交的构建说明](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/readme/dev/BUILD.md)，固定 Node 24.10.0、Yarn 4.9.2、依赖、窗口尺寸及笔记本树（在仓库根目录核对 `node --version` 和 `yarn --version`）；`yarn install --immutable` 后启动实际 Electron 应用。Windows 按上游说明用普通命令提示符而非 WSL。组织者可另备桌面包 `integration-tests/sidebar-scroll.spec.ts`，运行 `yarn workspace @joplin/app-desktop test-ui sidebar-scroll.spec.ts --workers=1 --retries=0`；夹具至少三屏，下部目标远离滚动边界。必须先连续两次重现原问题并验邻接能力；未重现、桌面不可用、依赖漂移就停止。评分必须操作实际应用，不以 mock 替代。只把下段交执行者。
 
 > 桌面笔记本列表：选中靠顶部的笔记本，滚到下方，点击下方目录的展开或折叠按钮，再往下滚。目前列表会跳回顶部。修复它；保留当前选择和正常的方向键选中、滚动及焦点，不要从编辑器抢走焦点。交局部补丁、可重跑回归和实际检查结果。
 
@@ -22,6 +24,6 @@
 
 1. 展开与折叠各测一次：渲染稳定后不跳回选中的顶部，选择身份不变，后续向下滚动有效。小幅合理布局位移不算跳顶。
 2. 用方向键跨过视口边缘：选中项实际更换，新项目可见，连续方向键仍有效。
-3. 编辑器有焦点时，触发不改变选择的列表更新（取已在基线验证的动作），下一次输入仍进原编辑器；既有相邻测试也要通过。
+3. 编辑器有焦点时，触发不改变选择的列表更新（取已在基线验证的动作），下一次输入仍进原编辑器；既有[侧栏方向键与展开折叠测试](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/integration-tests/sidebar.spec.ts)也要通过。
 
 三项与可重跑回归均过才算达标。每组从发题到验收最多 60 分钟，记录首次／最终是否过、首交／验收墙钟、人工纠正次数与分钟、主子 Agent 及失败重试的输入／缓存／输出和实扣（拿不到写未知，API 回算另列）。同条件最多发一次只描述失败行为的反馈，连等待、协调和返工一起计时；超时或补丁失败是结果，模型漂移、答案泄漏或运行环境失效才判配对无效。单题结果先限定到这类任务，不改默认。
