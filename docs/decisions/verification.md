@@ -86,6 +86,12 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 按案例的一条命令可重复取得原版失败原因、修后结果和两份构建回执；再按交付需要补真实浏览器。11-20 复跑的是编译组件、实际 handler 与独立 SSR；未复跑全应用浏览器，已有 Chrome 回执只覆盖此前修后正常路径。
 
+<a id="browser-check-before-release"></a>
+
+**缺陷发生在松手前，就分开实测按下和松开。** 用真实输入打开菜单，在菜单外按下并保持，先看选项是否误高亮；松开后另验关闭且没触发选项。再用真正选择该项和键盘操作做对照。只检查最终菜单关闭，会漏掉中间一帧。
+
+[React Aria 使用者报告](https://github.com/adobe/react-spectrum/issues/10767)在真实应用升级后遇到该问题。2026-11-23 Linux／Chrome 实跑[官方 Menu 示例](https://react-aria.adobe.com/Menu)：鼠标打开时 `Open` 未聚焦；不滑过菜单而在旁边空白处按住，`Open` 变紫且出现 `data-focused`，松开后菜单消失、没有动作提示。实际点 `Open` 会弹提示；键盘 ↓ 打开仍聚焦首项，Esc 后焦点回按钮。[上游候选](https://github.com/adobe/react-spectrum/pull/10769)也分开验持按和松开；此处复现的是官网当时行为，未核其包版本或运行候选补丁。
+
 **登录、定位和等待是前置，不是缺陷断言。** 例如先用等待确认进了已登录页面，再由旧、新两版共同执行「弃掉的草稿没有回来」这一条产品断言。回执分开写：应用没启动、没走到产品断言、产品断言失败；报告中保留失败步骤。同一场景两版都交回后，只有**同一条目标断言**在旧版因该缺陷失败、新版通过，才算证明。
 
 [T3 Code 团队的场景运行器](https://github.com/pingdotgg/t3code/pull/36054)把应用和场景故障分别写进结果；[实际草稿修复](https://github.com/pingdotgg/t3code/pull/36732)的团队验收用真实浏览器控制压缩完成时点，Web 结论不外推到桌面和移动端。用合成报告实跑 [固定分类函数](https://github.com/pingdotgg/t3code/blob/60f70d98cdeb2c692db649b9ade3adf74dd62bf9/scripts/prove-scenario.ts#L68-L193)（2026-11-20）：缺报告与控件未找到不会算成复现，但把登录失败误标成普通断言时仍会被判为修复成立。已验分类器，未复跑 T3 浏览器。

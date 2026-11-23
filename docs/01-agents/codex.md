@@ -54,7 +54,9 @@
 
 **依赖旧上下文时，单独核记忆承接。** Work 使用账户／workspace 的 ChatGPT memory，不使用本地 Codex 记忆库或其控制。启用记忆后，新聊天仍可能引用既往工作；切换入口或新建聊天不构成无记忆对照。
 
-**依赖本地 Hook 时，还要核编排位置。** 企业 Work 文档明确：云编排不支持 command hooks 及来自本地配置／插件的 Hook，即使工具在本机执行；本地-only Work／Codex 则继续使用原支持的 Hook。必要质量门未承接，就保留原入口或先验证受支持替代，不以“能读本机”代替检查。个人套餐可用性另核，见[适用范围与社区反例](../research/2026-10-10-codex-continuity.md#p81桌面work与codex按视图和执行契约选择)。
+<a id="codex-local-hook-orchestration"></a>
+
+**必要质量门依赖本地 Hook 时，编排与执行都留在本机。** Work Cloud／dot 将工具交给本机执行，并不会运行本地 command／prompt／agent Hook 或本地配置、插件的 Hook。符合托管策略并启用远程 Hook 的工作区，云编排只支持 Global MCP Hook，且不支持 `SessionEnd`；迁移前在实际宿主验证必要检查确实触发、错误时按预期处理。依据：[官方云编排 Hook 契约](https://learn.chatgpt.com/docs/hooks#hooks-with-cloud-orchestration)、[适用范围与社区反例](../research/2026-10-10-codex-continuity.md#p81桌面work与codex按视图和执行契约选择)，2026-11-23 核读，未运行云端托管 Hook。
 
 **套餐不只影响额度。** Pricing 为 Free／Go 列桌面 Luna Standard（受 rollout 限制），Plus 列 web／CLI／IDE／iOS 及云端集成；GitLab beta 另明确支持所有 ChatGPT plans，不能把价格表当集成排除清单。
 
@@ -340,7 +342,7 @@ PostHog 在同名重命名与引用查询的五题对照后，实际撤回了新
 
 **持续改仓库时，发布与验收绑定同一版本。** 调查可并行，整合发布由一人串行完成；主干前进就重新整合、验证并回读远端，详见 [20 的受检树](../20-codex-long-horizon.md#6-工作树隔离不是权限隔离)及[发布恢复](../20-codex-long-horizon.md#git-发布只传差异失败从已核实的断点继续)。这是本仓单例经验，不证明 dot 可无限持续运行。
 
-**依赖本地 Hook 时，先保留 local-only 工作流。** dot 可由云端协调、在已连接电脑执行，但当前官方不支持云协调任务使用本地 command／prompt／agent Hook 或本地配置／插件目录 Hook；企业远程 MCP Hook 另有资格。详见[协调与 Hook 契约](../research/2026-10-12-development-conditions.md#云端协调与本地执行同机不等于同一hook契约)。文档不能证明某次连接已可用。
+本机承担工具调用时，仍按[编排位置核本地 Hook](#codex-local-hook-orchestration)。
 
 **查询先用已有能力，同一交付物先尝试受支持的原任务接续。** 连接器已返回充分原文就不再套 shell；需要测试、本地改动、专属应用或宿主要求时保留执行委派。读取失败先查路线，独立评审用新上下文。详见[效率选择与反例](../research/2026-10-12-development-conditions.md#dot-效率选择少一层包装不等于少一项验收)，未测得统一的耗时或费用收益。
 
