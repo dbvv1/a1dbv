@@ -309,6 +309,8 @@ PostHog 在同名重命名与引用查询的五题对照后，实际撤回了新
 | 腾出当前上下文 | `/compact`；只想看聊天摘要则用 `/recap`，后者不是释放上下文的入口 |
 | 独立任务或独立评审 | 开新聊天，给必要目标和证据；不继承无关讨论 |
 
+**桌面多文件夹项目：主仓分了 worktree，不等于附加仓库也隔离。** 内置 worktree、PR 操作和 `AGENTS.md`／skills／配置的自动发现以主目录为准，附加目录仍挂载。两会话并行写入前，逐个目录用 `git -C <目录> rev-parse --show-toplevel` 和 `git -C <目录> rev-parse HEAD` 核实际根路径与基线；同一附加仓库要并写，就分开检出并显式读各自的仓库规则。能在侧栏看见目录不等于能写，权限按当前会话核。[官方本地项目规则](https://learn.chatgpt.com/docs/projects?surface=app#use-local-projects-for-folders-and-codebases)（2026-11-23 核读，未实测 Windows）。
+
 <a id="codex-remote-keep-or-transfer-host"></a>
 
 **只想从另一台电脑指导原任务，选 Remote Control；要换执行主机才选 Hand off。** 已开放功能的桌面 App 在 Settings → Connections → Control other devices 加入原主机，再打开原线程；代码、工具和命令仍在原环境。聊天底部的 Hand off 则移交聊天与 Git 状态，目标须保存同仓库、同项目子目录，会创建或复用目标 worktree；正在生成会先被中断。不要用切换主机来查看一个仍在运行的任务。
