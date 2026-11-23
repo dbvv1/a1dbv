@@ -12,7 +12,7 @@
 | 选 Claude Code、Codex 还是 Cursor | [01 Agent 选择](docs/01-agents/README.md) | 🟡 |
 | 模型、推理档与强弱分工怎么选、多贵 | [按任务分工](docs/decisions/model-roles.md) · [计费明细](docs/02-models-and-cost.md) | 🟡 |
 | CLAUDE.md／AGENTS.md 怎么写 | [共享规则、加载首验与真实团队样例](docs/decisions/instruction-files.md) | 🟡 |
-| 怎样让 Agent 自己验证，包括前端与 UI | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | 🟡 真实用户路径／读回／窄屏已有实试；新版起手待读者复测 |
+| 怎样让 Agent 自己验证，包括前端与 UI | [按目标行为选检查、修复与接收](docs/decisions/verification.md) | 🟡 新版新增 CLI 路线已由读者实做；UI 路线待按新版复测 |
 | 上下文怎么管、会话越聊越笨怎么办 | [按症状压缩、重开与恢复检查点](docs/decisions/context-management.md) | 🟡 |
 | 该装哪些 Skill 与插件 | [按能力缺口选一项，附配置与起步](docs/decisions/skills-and-plugins.md) | 🟡 |
 | 该接哪些 MCP | [04 MCP](docs/04-mcp.md) | ✅ 既有授权接入查 CI |

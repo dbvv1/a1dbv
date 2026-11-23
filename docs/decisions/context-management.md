@@ -80,9 +80,11 @@
 | Codex CLI 中途追问、主线继续 | `/side <问题>`（`/btw` 同入口）；侧聊记录独立、默认临时，关键结论回主线落盘 |
 | 撤回要求、改方向或制止错误修改 | 直接纠正执行中的主会话，必要时停止；侧问不是修改主任务的入口 |
 
+**Claude 的侧问不写入主会话，但后续侧问仍会看到最近 20 组侧问。** 如果旧假设来自侧问，在终端用 `/btw` 打开浮层，按 `x` 清空侧问记录后再问；主会话内容仍在，VS Code 面板也不沿用这组终端快捷键。
+
 分开记录不等于只读权限。Cursor 侧聊带父背景，不是干净会话，也不支持 Cloud Agents；云端沿用可用主会话或独立调查入口。Codex 侧聊不能嵌套或在 review 模式启动。
 
-依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)、[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。 [Codex 侧聊](https://learn.chatgpt.com/docs/developer-commands#start-a-side-chat-with-side)及 [0.171.0 的保存／临时分支](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app/side.rs#L847-L856)，2026-11-22 核对，未运行 TUI。
+依据：[Claude 侧问](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)，2026-11-23 核读官方历史范围与终端按键，未运行模型；[Cursor 侧聊](https://cursor.com/help/ai-features/side-chats)、[原生入口](https://cursor.com/changelog/side-chat)，核读 2026-11-09。 [Codex 侧聊](https://learn.chatgpt.com/docs/developer-commands#start-a-side-chat-with-side)及 [0.171.0 的保存／临时分支](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/tui/src/app/side.rs#L847-L856)，2026-11-22 核对，未运行 TUI。
 
 <a id="agents-chat-history"></a>
 
