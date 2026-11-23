@@ -29,6 +29,8 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
 
+**修复上轮的收集或导入错误后，按原日志中的文件路径显式补跑。** 例如 `python -m pytest -v <上轮收集报错的文件>`；`--lf` 绿了或失败缓存清空，都不能证明这些测试执行过。[pytest 上游回归](https://github.com/pytest-dev/pytest/pull/15398)的两文件夹具在 Linux／Python 3.12.14／pytest 9.2.0 实跑：先得 1 失败＋1 收集错误，两者恢复后 `--lf` 退出 0、只跑 1 项，失败缓存清空；显式跑漏掉的文件有 2 项通过。同版只应用候选的缓存改动再对照，`--lf` 才跑全 3 项。2026-11-23 核验；候选未合并，不是已发布修复。
+
 **先区分“没执行”和“报告没收录”。** Playwright 的 `onlyFailures: true` 过滤报告，不筛选运行。核必跑名单或用例数时，同一次运行保留完整 JSON／JUnit，把失败专用报告另留给排障。例如配置两个 JSON reporter，分别用 `{ outputFile: "full.json" }` 和 `{ outputFile: "failures.json", onlyFailures: true }`，不用再跑一遍。
 
 若显式配了 `onlyFailures: false` 却仍只有失败项，先核 CI 步骤是否设了 `PLAYWRIGHT_JSON_ONLY_FAILURES` 或 `PLAYWRIGHT_JUNIT_ONLY_FAILURES`：1.65.1 实测相应变量设为 `1` 时，完整报告也被过滤。Linux／Node 24.22.3 上复跑 Playwright 1.65.1：同一全绿运行，完整 JSON 和 JUnit 各有 2 项，失败专用报告均为 0；另一次首跑失败、重试通过的用例仍进入精简报告。[官方 reporter 文档](https://playwright.dev/docs/test-reporters#report-only-failures)、[使用者公开对照](https://github.com/qa-gary-parker/poc-playwright-reporter-size)；核实 2026-11-22，仅核报告，未启动浏览器。
