@@ -10,14 +10,7 @@
 
 **按角色选推理档：实现和协调沿用上述起点，跨文件找遗漏的代码质量审查 🧪 直接试同模型 `high`。** 同一长任务中途只换推理投入时，走[保缓存的换档入口](#同模型换推理档保留缓存前缀)，不要把它与换模型混为一谈。近期独立生产比较支持这一区分：审查升档带来更多后续采用，而协调器升档未带来有意义的发现增量。保留能改善目标覆盖的那一档，核查与等待抵消收益就撤回。下文给出同题依据与边界。
 
-**首次启动只影响本次调用，不改持久设置**：
-
-```bash
-codex --model gpt-6.2-sol
-claude --model claude-sonnet-5-5 --effort medium
-```
-
-`--model` 只覆盖模型，不重置已保存的 Fast／Ultrafast；开始前按[速度核对步骤](decisions/model-roles.md#确认速度后再开始任务)确认 Standard。上面的 Sonnet 5.5 命令要求 Claude Code v2.1.284+。Codex 入口说明见本节依据；Claude 的起步方式详见 [Claude 起步](01-agents/claude-code.md#7-推荐起步先原生扩展按需选择)。 **〔当前入口〕**
+要比较新配置，直接用[模型选路页的单次启动命令和版本检查](decisions/model-roles.md#第一步只改这一次任务)，确认实际型号、effort 和速度，不改持久模型配置。
 
 **何时撤回：先辨缺口，再看整项投入。**
 
@@ -30,7 +23,7 @@ claude --model claude-sonnet-5-5 --effort medium
 
 **Agent 做实现、调查与检查，人核对目标和检查覆盖。** 它可能漏读约束、漏测边界或自报完成；更强模型与更高 effort 也不替代实际验收。风险与把关详见 [09](09-review-and-quality.md)。 **〔跨代保留〕**
 
-**依据**：[研究：采用判断] 默认与角色分档（2026-10-21 核对，未实测）；[一手：独立团队复盘] 审查与协调分档比较（2026-10-22）；[一手：配置入口] [Codex 单次覆盖](https://learn.chatgpt.com/docs/config-file/config-advanced#one-off-overrides-from-the-cli)（2026-10-20，未执行）；[一手：客户端版本] [Claude 型号与最低版本](https://code.claude.com/docs/en/model-config#model-aliases)（2026-11-03 复核，未运行验证）；[研究] 撤回条件与风险把关；原核实 2026-10-22。
+**依据**：[研究：采用判断] 默认与角色分档（2026-10-21 核对，未实测）；[一手：独立团队复盘] 审查与协调分档比较（2026-10-22）；[研究] 撤回条件与风险把关；原核实 2026-10-22。
 
 ## 当前最高水平：为质量缺口分配投入，而不是统一加档
 
@@ -101,7 +94,9 @@ claude --model claude-fable-5-2 --effort medium
 
 ### Kimi K3.1 Pro：先作监督修复候选，不替换默认
 
-**🧪 已有合规 Kimi/API 入口、愿意接收并人工复核补丁时，可把 K3.1 Pro 加入下一次真实修复的候选。** 10-23 官方发布与独立 AA 模型页已有编码信号：AA 列 Terminal-Bench4.0 约 67.2%、FrontierCode 约 47.1%。本仓未核该次完整 harness／预算／轨迹，不据跨榜分数换掉默认；权重仍是承诺 11-04 前发布，不是已经可下载的自部署路线。
+**🧪 已有合规 Kimi/API 入口、愿意接收并人工复核补丁时，可把 K3.1 Pro 加入下一次真实修复的候选。** 10-23 官方发布与独立 AA 模型页已有编码信号：AA 列 Terminal-Bench4.0 约 67.2%、FrontierCode 约 47.1%。本仓未核该次完整 harness／预算／轨迹，不据跨榜分数换掉默认。
+
+**自托管是另一条路线。** Moonshot 已公开权重，官方文件页显示仓库约 1.56 TB；先核实际推理环境和 [Kimi K3.1-Pro License](https://huggingface.co/moonshotai/Kimi-K3.1-Pro/blob/main/LICENSE)，不能用 API 上的表现或费用代替自托管实测。
 
 **采用时把“补丁有效”和“完成交接”分开。**
 
@@ -115,7 +110,7 @@ claude --model claude-fable-5-2 --effort medium
 - **试用边界**：Simon 原帖的 SVG 试用可供观察输出，但不能替代仓库编码接收；其中 `medium` 也不作为本页参数依据。
 - **本仓动作**：未付费或调用。有现成入口者先在一个真实任务检查有效补丁、完成交接、人工接管与全任务费用；缺入口者不为跟新模型立即购买。
 
-**依据**：[一手] [Kimi 10-23 官方发布](https://www.kimi.ai/blog/kimi-k3-1-pro)、[官方 quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart)；[一手：独立评测] [AA 模型页](https://artificialanalysis.ai/models/kimi-k3-1-pro)；[社区：单例] [Kingy 10-23 原始小试](https://kingy.ai/blog/kimi-k3-1-pro-five-model-coding-research-test/)、[公开审计包](https://kingy.ai/wp-content/uploads/2026/10/kingy-kimi-k31-five-model-audit-20261023.zip)、[Simon 原帖](https://simonwillison.net/2026/Oct/23/kimi-k31-pro/)；[研究] 候选条件；核实 2026-10-24。
+**依据**：[一手] [Kimi 10-23 官方发布](https://www.kimi.ai/blog/kimi-k3-1-pro)、[官方 quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart)；[一手：独立评测] [AA 模型页](https://artificialanalysis.ai/models/kimi-k3-1-pro)；[社区：单例] [Kingy 10-23 原始小试](https://kingy.ai/blog/kimi-k3-1-pro-five-model-coding-research-test/)、[公开审计包](https://kingy.ai/wp-content/uploads/2026/10/kingy-kimi-k31-five-model-audit-20261023.zip)、[Simon 原帖](https://simonwillison.net/2026/Oct/23/kimi-k31-pro/)；[研究] 候选条件；核实 2026-10-24。 [一手：权重发布] [Moonshot 官方文件页](https://huggingface.co/moonshotai/Kimi-K3.1-Pro/tree/main)及同仓许可证，2026-11-23 核读；未下载权重或部署。
 
 ### 其他接口迁移与资格
 
