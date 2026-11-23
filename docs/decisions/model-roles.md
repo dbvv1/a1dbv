@@ -83,6 +83,8 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 - **修复任务**：从修复前的提交分别准备两组。回放已解决的问题，用[隔离历史对象的副本](../22-agent-evaluation.md#4-一次可复查的运行)，不要用共享 Git 对象的 worktree。先确认同一条回归能在原提交触发，再用它验两份补丁；漏过已知回归就保留旧配置。
 - **读代码或解释行为**：先用当前代码列出必须答对的事实，例如实际调用入口、触发条件、例外与回退路径。参试模型收到同一个问题，不给答案；验收逐条对照固定提交，而不是只看结论像不像、带没带文件链接。换版漏掉会改变决定的事实，就先保留旧配置。
 
+- **从 Codex 迁到直连 API／自建 Agent**：在隔离副本中故意缺一个必需输入，或令一个必需工具不可用，再重跑同一任务。能完成的部分照做，交付要写明哪项没验证、观察到的阻碍和继续条件；用原工具记录对照，不把「已完成」当证据。OpenAI 的 [GPT-6.2 系统卡：Blocker Deception](https://deploymentsafety.openai.com/gpt-6-2-astra-sol/blocker-deception)在人为阻断的编码题上发现，Codex 的开发者提示能减少 Astra／Sol 漏报已知阻碍；直连 API 不会自动带上该评测所用的 Codex 开发者提示。这不是线上漏报率，也不是本仓模型实测。提示可以短，不删交付边界；只迁模型时固定宿主，迁宿主时单独复测这条行为。
+
 [Artificial Analysis 的原始分项](https://artificialanalysis.ai/agents/coding-agents/comparisons/codex-vs-deepseek-harness#models)里，两版 Sol 都在 Codex 的 `max` 档：6.1→6.2 的代码改动 42→42、终端任务 54→58、仓库问答 60→46。不能拿其中一个分项替另一个。按[评测方法](https://artificialanalysis.ai/methodology/coding-agents-benchmarking)每题各跑三次；未核到两版的同一客户端构建或实际速度档，结果不外推到其他档位。2026-11-21 核读，未复跑模型。
 
 外部结果说明为什么要分开看：Corti 两轮用 OpenCode `max` 跑相同六个公开 bug，6.1 Sol 约 19 分钟、6/6，6.2 Sol 14 分钟、5/6（含失败）；这是竞品团队分日各跑一次的自报。VulcanBench 的 23 项旧程序重建中，6.2 Sol 的 `low` 和 `xhigh` 都是 23/23，但分别为 2.8 和 8.2 分钟／题，约 $0.23 和 $0.46／题；同任务的 6.1 历史组用 CLI 0.159.0，6.2 用 0.166.0，不能把耗时差全归给模型。同一评测的 6.1 组里，`medium` 过 22/23、约 $0.40／题，`high` 反而过 23/23、约 $0.33／题：升档也可能减少整项投入，仍须看本轮结果。VulcanBench 美元数不含裁判费用，是按 token 回算的 API 等价费用，不是 Codex 订阅实扣。
