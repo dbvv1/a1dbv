@@ -105,19 +105,19 @@ WP0–WP13 的页面现由[模块与制作链地图](../../domains/game-dev/READ
 
 ## 7. 下发本机模型的游戏任务
 
-**画面与手感默认交本机强执行者自主完成**（11-17 用户决定，依据[小场景 demo 试验](demo-trial-20261117.md)）。首选 GPT-6.1 sol（本机 Codex CLI），Kimi K3.1 Pro 次之；执行者在本机真 GPU 下自己截图看图，连续长回合改到满意。任务说明只写三段：要什么（玩家体验、画面目标、范围）、几点事实（入口、截图工具、红线）、交付（可玩入口、技法与代码位置、终图），不写死实现步骤。先做一个小空间或单一场景的 demo，再扩到完整一局。dot 写成 local-jobs 卡并标 `executor: strong`，本机由方向会话启动，直到接收端支持；dot 负责选目标、判结果，并把执行者的技法提炼进知识页。下面的规格化卡片只用于机械任务。
+**画面与手感默认交本机强执行者自主完成**（11-17 用户决定，依据[小场景 demo 试验](demo-trial-20261117.md)）。首选 GPT-6.1 sol（本机 Codex CLI），Kimi K3.1 Pro 次之；执行者在本机真 GPU 下自己截图看图，连续长回合改到满意。任务说明只写三段：要什么（玩家体验、画面目标、范围）、几点事实（入口、截图工具、红线）、交付（可玩入口、技法与代码位置、终图），不写死实现步骤。先做一个小空间或单一场景的 demo，再扩到完整一局。11-24 起由本机方向会话选目标、启动、判结果并发布；dot-B 把执行者的技法提炼进知识页，不再写本机任务卡。下表留作方向会话下发机械任务的参照。
 
-**做法已经写成 Skill 或规格、结果能被检查的单元下发本机模型；选差距、定目标、判定“确实更好”和发布留在 dot。** 任务文件按 [local-jobs](local-jobs/README.md) 的四件事写并标 `kind`；接收端的模型较弱，规格要把数字、文件和接口写死。案例仓库的任务不用自动接收。云端能做的留在云端。需要 WebGL2 的出图与 smoke 下发本机（11-04 用户决定）：dot 云端 shell 禁 Unix socket，Chromium 打开页面前退出；云端原生浏览器无 WebGL2、不能固定 viewport。本机无头 Chromium 不开窗口。两档：现有脚本的 SwiftShader 三参数只占 CPU，可直接用；`--enable-gpu --use-angle=d3d11` 走真实 GPU，要先给脚本加这一档。同一组前后对比用同一档并记 renderer；同一时间只排一张出图卡，上一张交回再排下一张。
+**做法已经写成 Skill 或规格、结果能被检查的单元下发本机模型；选差距、定目标、判定“确实更好”和发布留在方向会话。** 任务文件按 [local-jobs](local-jobs/README.md) 的四件事写并标 `kind`；接收端的模型较弱，规格要把数字、文件和接口写死。案例仓库的任务不用自动接收。云端能做的留在云端。需要 WebGL2 的出图与 smoke 下发本机（11-04 用户决定）：dot 云端 shell 禁 Unix socket，Chromium 打开页面前退出；云端原生浏览器无 WebGL2、不能固定 viewport。本机无头 Chromium 不开窗口。两档：现有脚本的 SwiftShader 三参数只占 CPU，可直接用；`--enable-gpu --use-angle=d3d11` 走真实 GPU，要先给脚本加这一档。同一组前后对比用同一档并记 renderer；同一时间只排一张出图卡，上一张交回再排下一张。
 
 | 任务 | `kind` | 按什么做 | 规格必须写清 | 怎样算做成 |
 |---|---|---|---|---|
 | 固定机位出图与 smoke | `build` | [capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md) | 案例仓库与固定 SHA、入口 URL 参数、机位表、1280×720／DPR 1、渲染档、输出目录 | 每个机位 PNG 与记录的 renderer、Chromium 版本；smoke 无未捕获错误；不改源码 |
 | 案例拍摄模式与截图脚本 | `build` | [capture.md](../../domains/game-dev/templates/.claude/skills/game-quality-pass/references/capture.md) | 案例仓库、机位表（位置、朝向、视场角、分辨率）、只改哪些文件；没有固定步长模拟层的案例（如 Star-Rush）写明改成虚拟时钟 | 每个机位连拍两次画面一致；正常游玩不受影响；测试覆盖参数缺失与非法机位 |
 | 网关 3D 生成小样 | `build` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 | 文字提示、模型（`tripo-p1`／`hunyuan-3.1`）、目标三角面、输出目录；调用和后处理只用本机的 `gen3d`（生成，每批计费调用默认上限 8，中断用 `--resume` 续取）与 `glbprep`（减面、缩贴图），不直接访问网关；图生 3D 暂不支持 | 每件有 `glbprep` 产出的 GLB、`gen3d` 的 manifest、来源与许可说明和同机位阵容图 |
-| 目标效果图候选 | `build` | [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) §2 | 输入截图、品类、美术方向一句话；写死模型、量化与工作流文件（dot 先自己跑通一次再下发） | 每个机位 2–3 张构图未变的候选，dot 选定 |
-| 内容来源候选 | `explore` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 与[制作链页](../../domains/game-dev/assets/) | 内容清单中的条目、风格说明与标准件截图、许可要求 | 每条候选有来源链接、许可原文链接和预览图；dot 按标准件选定 |
+| 目标效果图候选 | `build` | [game-quality-pass](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md) §2 | 输入截图、品类、美术方向一句话；写死模型、量化与工作流文件（先自己跑通一次再下发） | 每个机位 2–3 张构图未变的候选，方向会话选定 |
+| 内容来源候选 | `explore` | [game-content-production](../../domains/game-dev/templates/.claude/skills/game-content-production/SKILL.md) §3 与[制作链页](../../domains/game-dev/assets/) | 内容清单中的条目、风格说明与标准件截图、许可要求 | 每条候选有来源链接、许可原文链接和预览图；方向会话按标准件选定 |
 | 内容取得与归一 | `build` | 同上 §3–4 | 选定的来源、目标格式（glTF＋KTX2）、面数与 LOD、输出目录；需要登录的网页来源（如 Mixamo）和付费工具不下发 | 许可说明随资源；归一脚本可重跑；阵容图和同机位截图可见 |
-| 模块参考实现对照 | `explore` | [game-module-from-case](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md) §2 | 机制、两三个固定 SHA 的仓库、要回答的问题 | 每条结论有源码行链接；dot 据此定接口 |
+| 模块参考实现对照 | `explore` | [game-module-from-case](../../domains/game-dev/templates/.claude/skills/game-module-from-case/SKILL.md) §2 | 机制、两三个固定 SHA 的仓库、要回答的问题 | 每条结论有源码行链接；方向会话据此定接口 |
 | 模块编码单元 | `build` | 已定接口 | 接口签名、所属模拟层文件、必须通过的测试 | 测试与无画面模拟通过，不改接口外文件 |
-| AI 做游戏实例的候选收集 | `explore` | [ai-made-games-scout](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) §1 | 关心的差距、来源范围、数量 | 每个作品有可玩链接或完整录像、作者原文链接和截图；试玩、评水平和可借做法由 dot 做 |
+| AI 做游戏实例的候选收集 | `explore` | [ai-made-games-scout](../../domains/game-dev/templates/.claude/skills/ai-made-games-scout/SKILL.md) §1 | 关心的差距、来源范围、数量 | 每个作品有可玩链接或完整录像、作者原文链接和截图；试玩、评水平和可借做法由方向会话做 |
 | 模块页照做实测 | `reader-test` | [write-task-guide](../../templates/generic/.claude/skills/write-task-guide/SKILL.md) | 页面全文、真实任务 | 读者只记卡点、不改页面 |

@@ -12,13 +12,13 @@
 
 ## 3. 怎么探索
 
-方法用 [explore-frontier](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)。dot-A 24 小时内处理[收件箱](inbox.md)，漏检补原始渠道；每周对照外部热门讨论／newsletter，漏检、发现时差及来源名册记[探索证据](../research/2026-10-15-exploration-evidence.md)，25 留方法结论。
+方法用 [explore-frontier](../../templates/generic/.claude/skills/explore-frontier/SKILL.md)。dot-A 24 小时内处理[收件箱](inbox.md)，漏检补原始渠道；每周对照外部热门讨论／newsletter，漏检、发现时差及来源名册记[探索证据](../research/2026-10-15-exploration-evidence.md)，25 留方法结论。11-24 起广扫降频，只为本机对照试验选题，不单独产出文档（[A](prompts/dot-a.md)）。
 
 ## 4. 做什么
 
 方向见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)。A 不代管 B。
 
-完成、受阻或收益下降时按[细则§2.1](operations.md#21-跨执行者的发现与交接)同步选题。当前承诺优先，探索不等欠项清零；窄题低收益就收口，地图和收件箱无项则广扫。
+完成、受阻或收益下降时按[细则§2.1](operations.md#21-跨执行者的发现与交接)同步选题。当前承诺优先，探索不等欠项清零；窄题低收益就收口，地图和收件箱无项时按§3降频广扫。
 
 自主开题写入 [TASKS](TASKS.md#项目板)，说明读者／玩家所得；编号取项目板及归档最大值加一，发布前核 main，后到者改撞号。同项目小步合成一次交付。
 
@@ -68,6 +68,6 @@
 
 ## 9. 长期方向与当前承接
 
-A 以本仓脚本／模板、dot 运行及案例编码为试验场，经 TASKS“共同”交 B 采用，不验游戏品质。案例由 B 发布，候选与换默认按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)。
+11-24 起 A、B 为知识岗（用户选择）：本机 demo 与三案例的制作、验收、换默认和发布由本机方向会话交强执行者完成，A、B 吸收结果写成知识，已批准的部署仍由 B 执行。换默认按 [game-quality-pass §4](../../domains/game-dev/templates/.claude/skills/game-quality-pass/SKILL.md#4-同机位对比非作者判定)。
 
 潮汐邮差保留为窄例。
