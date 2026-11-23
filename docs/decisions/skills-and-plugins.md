@@ -27,11 +27,6 @@
 
 **依据**：[一手项目配置] [OpenAI Agents SDK](https://github.com/openai/openai-agents-python/blob/cd26bbbc52847845fde73b9952b51e62e2bcbdc0/AGENTS.md)、[Sentry JavaScript](https://github.com/getsentry/sentry-javascript/blob/c125a5da2e6b7d916a5880f65876cddfee96c56d/agents.toml)；2026-10-28 核实，这两套项目流程未在本仓试用。
 
-<a id="ecc-search-first"></a>
-## ECC search-first：复用提醒，不是整包安装理由
-
-**已有项目方法能先查复用，就不为 search-first 装整套 ECC。** [Inspector 同题事后对照](../../experiments/ecc-search-first/README.md)两路都找到现成解析器，也都因空值契约不兼容而不采用；没发现新增可用候选，未测前瞻效率或模型收益。
-
 <a id="skills-linked-parent"></a>
 ## 共用 Skill：安装成功，还要读到客户端那份
 
@@ -40,6 +35,12 @@
 同一隔离 Linux HOME，1.7.4 双客户端安装退出 0，实际 `use` 退出 1；用 1.9.0 原地重装，保留父子链接，`use` 退出 0，正文逐字节一致。暂不能升级且确认是旧版断链，再对单项用 `--copy`；独立副本要显式更新。见 [v1.9.0 修复](https://github.com/vercel-labs/skills/releases/tag/v1.9.0)与[完整旧版对照及新版复验](../../experiments/skills-linked-parent/README.md)。未跑模型采用。
 
 **Codex 已启用 Skill，不等于看到了它声明的 MCP 依赖。** 保留 `SKILL.md` 的名称、描述与共享正文，把 Codex 的 `dependencies.tools` 放到同一 Skill 目录下的 `agents/openai.yaml`。已有获准的 app-server 时，用项目真实目录调用 `skills/list`（`cwds` 指向该目录，`forceReload: true`），核实际 Skill 的 `dependencies.tools`，别只看 `enabled`。Linux 官方 0.171.0 用同名 Skill 前后对照：两次都启用且无发现错误，依赖从 frontmatter 挪到 YAML 后才出现。依据：[官方文件格式](https://learn.chatgpt.com/docs/build-skills#optional-metadata)、[真实缺依赖反馈](https://github.com/openai/codex/issues/62717)；2026-11-21 复跑，只验声明被宿主读到，未发模型轮次或连接 MCP。
+
+<a id="pnpm-project-skill-distribution"></a>
+
+**已有 pnpm 项目确需把一份 Skill 随依赖交给多个客户端，才试 12.11 起的项目级分发。** 一次性读配方直接从消费包读；全局安装、`dlx`、`deploy` 不生成项目 Skill 链接。先核锁定来源、正文与目标客户端目录，再批准；纯 Skill 包才按[固定版本的试用命令](../../experiments/pnpm-skill-distribution/README.md)操作。同一包同时请求执行构建脚本时，不用包名一次全批。安装命令上的禁用脚本／pnpmfile 选项不会延续到后续 `approve`。
+
+**按批准记录 → 实际链接正文 → 客户端真实任务逐层验收。** 安装退出 0 可能仍待批；批准退出非零也可能已写权限。失败先回读配置和链接，别覆盖手工内容或按链接名前缀猜来源。调整 `skills.dirs` 会改变整个项目的投影范围；按来源撤回也可能同时撤掉构建许可。依据：[pnpm 分发](https://pnpm.io/agent-skills)、[审批](https://pnpm.io/cli/permissions)，2026-11-24 核读；[12.11.0 Linux 固定试验](../../experiments/pnpm-skill-distribution/README.md)实跑 13 条命令，含两类失败及恢复，未验客户端实际加载或模型收益。
 
 <a id="cursor-synced-skill-owner"></a>
 ## Cursor 云端 Skill：同步会搬位置，Automation 是另一入口
@@ -151,6 +152,11 @@ NODE
 **首次在 Claude Code 试 Superpowers：** 在目标仓库启动 `claude`，用官方入口 `/plugin install superpowers@claude-plugins-official` 打开详情，核新增组件后选 **Install for you, in this repo only（local scope）**。project scope 写入供协作者共享的仓库配置，不是个人试用。按安装摘要完成加载，再在普通终端运行 `claude plugin list` 核版本、作用域与启用状态。其他宿主按[官方安装入口](https://github.com/obra/superpowers/blob/v7.0.1/README.md#installation)，勿套用 [Claude 的作用域](https://code.claude.com/docs/en/discover-plugins#choose-an-install-scope)。
 
 **已装 Superpowers，先经 `using-superpowers` 选择适用 Skill：** 清楚的小 bug 不必进入完整设计流程，但仍按适用的调试、测试 Skill 修复并回归；需求未决用 `brainstorming` 设计并取得批准；已有计划且不需逐任务独审，用 `executing-plans` 在当前会话实施，保留整分支审查与测试。需要逐任务接收才选子代理流程；不需访谈时明确退出问答。
+
+<a id="ecc-search-first"></a>
+<a id="ecc-search-first复用提醒不是整包安装理由"></a>
+
+**已有项目方法能先查复用，就不为 search-first 装整套 ECC。** [Inspector 同题事后对照](../../experiments/ecc-search-first/README.md)两路都找到现成解析器，也都因空值契约不兼容而不采用；没有新增可用候选，未测前瞻效率或模型收益。
 
 Luca 9 月 iOS 实践保留 Superpowers、Context7、Serena，也清理闲置扩展；V2EX 使用者既报告小改动被流程拖慢，也认可详细计划便于交给另一模型实施。取其任务分流，不把个人耗时当通用收益；当前版模型效果未试用。
 
