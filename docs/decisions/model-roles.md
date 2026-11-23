@@ -97,9 +97,11 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 
 **升档后变慢，先把工具计时的重叠区间合并，别把整段差额算给测试。** 复算 VulcanBench 同一道 qlite 题的公开轨迹：GPT‑6.2 Sol 在同版 Codex CLI 0.166.0 从 `low` 到 `max`，总耗时 136.9→1082.4 秒；将工具调用起止区间取并集，只有 1.30→11.11 秒。换档时分别保留这两列；这条轨迹不足以归因给慢测试，也不能把未覆盖时段全算成模型推理。[低档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/low/legacy-qlite-store-parity.jsonl) · [最高档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/max/legacy-qlite-store-parity.jsonl) · [计时实现](https://github.com/morganlinton/VulcanBench/blob/0e9b30fb4961de85438669b83d789941035d1fae/harness/agent/cli_agents.py#L2641-L2673)。2026-11-22 复算，一题各一次；时间来自收到 CLI 事件的时点，轨迹隐藏命令与输出，未复跑模型。
 
-**换审查配置时，逐项对照新增与丢失的发现，再算完整流程成本。** CodeRabbit 冻结输入回放 13 个真实 PR，保持按角色的 `low/medium/high` 阶梯，只切换 Sonnet 5.5 thinking：按常规可执行评论计，开启抓到 6 项、关闭抓到 5 项；开启补获两项，却把关闭能正常报告的一项只报到 diff 外。每次 $0.47／$0.41 是 Claude 调用按价表回算的费用，不含摘要、验证小模型与人工处理；这不是单独升 effort 的效果。另与 Sonnet 5 对照的 44 PR 组尚未完成质量裁判，评论减少不代表质量改善。
+**换代码审查模型时，不按评论数选。** 用同一批已复核的真实 PR、同一审查流程，分别记「重要问题新增／漏掉」「新增意见人工复核分钟数」和完整流程成本。先抽查两版差异：评论须说清触发条件、会发生什么及代码依据；两版都没覆盖的已知问题单列。没匹配已知问题的评论仍可能有价值，人工判定后再记误报。新增有效发现能抵过核查负担才换。
 
-**依据**：[一手／评审工具团队回放] [CodeRabbit 配置、漏项与成本](https://www.coderabbit.ai/blog/sonnet-5-5-model-review)，2026-09-28 发布、2026-10-28 核读；本仓未复跑。
+CodeRabbit 的 Sol 6.1 → 6.2 高推理配置在 42 个 PR 上，已知问题命中 58→60／81，常规可执行评论 187→290，匹配已知问题的比例 35.3%→25.9%，回放记录成本 $0.772→$1.146／PR。两版仅各跑一轮，整条管线不只换一个模型，且部分上游调用用零成本录制响应；这不是独立模型效果、真实生产账单或人工核查用时。早先的 Sonnet 5.5 同组回放还发现：总体多抓一项，同时有一项从差异内降为差异外。接受前分别看新增与丢失，不只看净数量。
+
+**依据**：[评审工具团队：Sol 管线回放](https://www.coderabbit.ai/blog/gpt-6-2-sol-and-astra-review)，2026-11-19 发布、11-23 核读；[同团队：Sonnet thinking 回放](https://www.coderabbit.ai/blog/sonnet-5-5-model-review)，2026-09-28 发布、10-28 核读；本仓未运行模型。
 
 真实使用反馈也有分歧：V2EX 的 ezioswj 自述用 Sol 开荒、将路径明确的工作交给 Luna；另一位用户报告 Sol 6.1 `low` 仍慢、额度消耗高。它们适合提醒你检查自己的任务形状，不能据此估算能用几天或承诺某档更省。
 
