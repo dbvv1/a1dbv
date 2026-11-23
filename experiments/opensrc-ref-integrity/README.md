@@ -21,6 +21,37 @@ cargo test --locked --manifest-path packages/opensrc/cli/Cargo.toml --test repo_
 
 第一条测试命令覆盖 10 个 Git 单元测试；第二条运行 `invalid_repo_refs_are_rejected_before_metadata_cache_hits`，通过真实 CLI 检查 7 种非法 ref。
 
+<a id="cargo-resolved-dependency"></a>
+
+### 查 opensrc 实际解析到的 Cargo 依赖
+
+在已准备依赖的 opensrc 根目录，用 Bash、Cargo、jq、realpath 沿消费包的普通直接依赖边查询。换项目时改前三项，并给 metadata 带上与构建相同的 feature 参数：
+
+```bash
+set -o pipefail
+manifest=packages/opensrc/cli/Cargo.toml
+dep=reqwest
+target=x86_64-unknown-linux-gnu
+cargo metadata --format-version 1 --locked --offline \
+  --manifest-path "$manifest" --filter-platform "$target" |
+  jq -e --arg manifest "$(realpath "$manifest")" --arg dep "$dep" '
+    . as $m
+    | $m.packages[] | select(.manifest_path == $manifest)
+    | .id as $consumer
+    | $m.resolve.nodes[] | select(.id == $consumer)
+    | .deps[] | select(.name == $dep)
+    | select(any(.dep_kinds[]; .kind == null))
+    | .pkg as $id
+    | $m.packages[] | select(.id == $id)
+    | {name, version, source, manifest_path,
+       lib_src: [.targets[] | select(.kind | index("lib")) | .src_path]}
+  '
+```
+
+读取返回的 `manifest_path`、`lib_src`，沿调用进入实际模块。缺包先补齐锁定依赖；无结果先查消费包与依赖类别。本仓 opensrc 0.7.3 修复中定位到 reqwest 0.12.28，发现 blocking 与异步客户端的同名 `timeout` 签名不同。API 接收仍跑消费包当前 target／feature 的检查；metadata 可能合并其他工作区成员的 feature。
+
+**依据**：[Cargo metadata](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)、[feature 合并反馈](https://github.com/rust-lang/cargo/issues/7754)。原核实 2026-10-26，验证范围为离线定位与源码阅读。这条命令用于定位，不是 ref 补丁的验收步骤，也不要求先打补丁。
+
 ## 实测与适用范围
 
 - 真实 parser 接本地 Git 夹具：不存在的 ref 不再回退默认分支，完整 SHA 取到指定旧提交；正常分支、tag 与合法 `+main` 保持可用。

@@ -69,32 +69,7 @@ OpenSpec 1.16.0 → 2.1.1 的真实临时迁移保留 6 个共享 Skill，移除
 
 **✅ 查实际行为，从调用方追到已解析包、项目补丁和具体模块；查版本用法，再看官方文档或 Context7。** Zed 的 `reqwest` 实际是重命名 fork，Vite 也有依赖 alias／patch，同名版本不能替代实现定位。
 
-在已准备依赖的 opensrc 根目录，用 Bash、Cargo、jq、realpath 沿消费包的普通直接依赖边查询。换项目时改前三项，并给 metadata 带上与构建相同的 feature 参数：
-
-```bash
-set -o pipefail
-manifest=packages/opensrc/cli/Cargo.toml
-dep=reqwest
-target=x86_64-unknown-linux-gnu
-cargo metadata --format-version 1 --locked --offline \
-  --manifest-path "$manifest" --filter-platform "$target" |
-  jq -e --arg manifest "$(realpath "$manifest")" --arg dep "$dep" '
-    . as $m
-    | $m.packages[] | select(.manifest_path == $manifest)
-    | .id as $consumer
-    | $m.resolve.nodes[] | select(.id == $consumer)
-    | .deps[] | select(.name == $dep)
-    | select(any(.dep_kinds[]; .kind == null))
-    | .pkg as $id
-    | $m.packages[] | select(.id == $id)
-    | {name, version, source, manifest_path,
-       lib_src: [.targets[] | select(.kind | index("lib")) | .src_path]}
-  '
-```
-
-读取返回的 `manifest_path`、`lib_src`，沿调用进入实际模块。缺包先补齐锁定依赖；无结果先查消费包与依赖类别。本仓 opensrc 0.7.3 修复中定位到 reqwest 0.12.28，发现 blocking 与异步客户端的同名 `timeout` 签名不同。API 接收仍跑消费包当前 target／feature 的检查；metadata 可能合并其他工作区成员的 feature。
-
-**依据**：[Cargo metadata](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)、[Zed fork](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)、[Vite alias／patch](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/pnpm-workspace.yaml#L13-L22)、[feature 合并反馈](https://github.com/rust-lang/cargo/issues/7754)；[本仓 opensrc 入口](../../experiments/opensrc-ref-integrity/README.md)。原核实 2026-10-26，验证范围为离线定位与源码阅读。
+手上已有可构建项目时，沿消费者的实际依赖边核包名、版本、来源和补丁；要判断行为，再读实现并跑当前 target／feature 的消费者检查。[Cargo／jq 离线定位命令与 opensrc 实例](../../experiments/opensrc-ref-integrity/README.md#cargo-resolved-dependency)区分了同名的 blocking／异步 `timeout`。其他生态用项目自己的解析入口。依据：[Zed fork](https://github.com/zed-industries/zed/blob/57c7b10ece671185a8863515667ee5248c6f0d53/Cargo.toml#L864-L872)、[Vite alias／patch](https://github.com/vitejs/vite/blob/e954a9cda0b5254be495a937333a0be1b8503d8f/pnpm-workspace.yaml#L13-L22)。
 
 ## 版本 API：用官方 Context7 插件，明确选版本
 
