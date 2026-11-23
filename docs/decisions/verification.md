@@ -92,6 +92,8 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 [React Aria 使用者报告](https://github.com/adobe/react-spectrum/issues/10767)在真实应用升级后遇到该问题。2026-11-23 Linux／Chrome 实跑[官方 Menu 示例](https://react-aria.adobe.com/Menu)：鼠标打开时 `Open` 未聚焦；不滑过菜单而在旁边空白处按住，`Open` 变紫且出现 `data-focused`，松开后菜单消失、没有动作提示。实际点 `Open` 会弹提示；键盘 ↓ 打开仍聚焦首项，Esc 后焦点回按钮。[上游候选](https://github.com/adobe/react-spectrum/pull/10769)也分开验持按和松开；此处复现的是官网当时行为，未核其包版本或运行候选补丁。
 
+**动态预览保留旧产物时，先确认本次输入确实渲染成功，再验内容。** 在 [Mermaid 使用者的原始状态图](https://github.com/mermaid-js/mermaid/issues/8869)上，独立验证者用 [Live Editor](https://mermaid.live/edit) v12.3.0 固定 ELK 布局，只交替切换 `depthFirst` 和 `default`：两次 `depthFirst` 都报 `NEdge`，失败后旧图仍留在画布上；两次 `default` 均正常成图并保留自循环、双向转换。预览非空或节点文字正确都不够；观察本次渲染的成功标记、错误与关键内容。2026-11-23 Chrome 实跑配置对照，未验 Angular 嵌入、其他浏览器或版本升级。
+
 **登录、定位和等待是前置，不是缺陷断言。** 例如先用等待确认进了已登录页面，再由旧、新两版共同执行「弃掉的草稿没有回来」这一条产品断言。回执分开写：应用没启动、没走到产品断言、产品断言失败；报告中保留失败步骤。同一场景两版都交回后，只有**同一条目标断言**在旧版因该缺陷失败、新版通过，才算证明。
 
 [T3 Code 团队的场景运行器](https://github.com/pingdotgg/t3code/pull/36054)把应用和场景故障分别写进结果；[实际草稿修复](https://github.com/pingdotgg/t3code/pull/36732)的团队验收用真实浏览器控制压缩完成时点，Web 结论不外推到桌面和移动端。用合成报告实跑 [固定分类函数](https://github.com/pingdotgg/t3code/blob/60f70d98cdeb2c692db649b9ade3adf74dd62bf9/scripts/prove-scenario.ts#L68-L193)（2026-11-20）：缺报告与控件未找到不会算成复现，但把登录失败误标成普通断言时仍会被判为修复成立。已验分类器，未复跑 T3 浏览器。
@@ -103,7 +105,7 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 | 代码／公共接口行为 | 相关测试、类型／构建与直接调用方；保留能检出原问题的回归 | 所测行为 |
 | 机器消费的配置／生成文本 | 用实际下游版本读回生成结果，核关键字段与行为含义 | 所测格式与消费契约；远端流程另验 |
 | 组件状态 | 已有 story／组件测试触发正常、进行中、失败恢复，等交互断言完成 | 真实组件交互；假服务注明模拟 |
-| 页面用户任务 | 当前构建从原入口输入、点击、导航；核业务结果及 console／请求失败，时序问题查 trace | 实际走过的路径 |
+| 页面用户任务 | 当前构建从原入口输入、点击、导航；确认结果对应本次输入，核业务结果及 console／请求失败，时序问题查 trace | 实际走过的路径 |
 | 布局／裁切／主题 | 查看目标视口与关键状态截图，必要时核 computed style、焦点和键盘可达性 | 所见外观与操作；完整无障碍另验 |
 | 保存 | 本地保存按契约重开；服务端保存从测试后端独立读回本次记录，核缓存与响应来源 | 所验持久化或集成 |
 
