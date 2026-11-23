@@ -61,7 +61,7 @@ Kim Olsen 的 10-23 报价 Agent 试验恰好说明归因问题：单循环每�
 | Anthropic 多 Agent 研究系统（2025-06） | Opus 4 主 Agent 加 Sonnet 4 子 Agent，在内部研究评测上比单 Agent 的 Opus 4 **高 90.2%**；BrowseComp 上 95% 的表现差异由三个因素解释，**仅 token 用量就占 80%**；Agent 的 token 消耗约是聊天的 4 倍，多 Agent 约 **15 倍**。早期失败：简单问题也开 50 个子 Agent、子 Agent 之间重复劳动、互相发太多消息 |
 | Cognition，2025-06 原文与 2026-04 修订 | 对并行写入的冲突警告仍保留；已采用单一写入者配合其他 Agent 提供分析。评审不预载编码会话，由 diff 重查依据；咨询则需要当前任务上下文。不能把旧文的完整轨迹共享当统一规则；未公开同任务对照产物，见[核查范围](research/2026-10-12-experiment-records.md#cognition上下文按角色选择) |
 | Claude Code Agent Teams 文档 | 建议起步 3–5 个队员，每人 5–6 个任务；“3 个专注的队员常常胜过 5 个分散的”；token 成本随队员数**线性增长**；新手先从**研究和评审**开始，不要一上来就并行写代码 |
-| 本仓库实测（E2） | 同一个只读调查任务，直接做与拆给 2 个子 Agent 的成本和结果对比，见 [19 实测记录](19-experiments.md#5-e2子-agent-的成本) |
+| 本仓早期实测（E2） | 同一道单文件定位反复跑，不是跨任务结论。直接做与拆给 2 个子 Agent 都找全；该题直接做更快、更便宜。见 [19 实测记录](19-experiments.md#5-e2子-agent-的成本) |
 
 **依据**：[一手] Anthropic [C 编译器项目](https://www.anthropic.com/engineering/building-c-compiler)、[多 Agent 研究系统](https://www.anthropic.com/engineering/multi-agent-research-system)、Claude Code Agent Teams 文档、Opus 5.5 指南；[研究：正文复核] [AI Agent PR 合并冲突论文 v2](https://arxiv.org/html/2607.04697v2)、[CodeCRDT 论文 v1](https://arxiv.org/html/2510.18893v1)、[Co-Coder 论文 v1](https://arxiv.org/html/2606.00953v1)、[Coding agent teams 论文 v1](https://arxiv.org/html/2610.17471v1)；[社区：原文] [Systima 历史报告](https://systima.ai/blog/claude-code-vs-opencode-token-overhead)；[社区] HN 与 Lobsters 实践者；[一手：厂商实践报告] Cognition [2026-04 修订](https://cognition.com/blog/multi-agents-working)；[经验：实测] E2；核实 2026-10-18。
 
