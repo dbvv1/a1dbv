@@ -80,38 +80,25 @@ GPT-6.2 Astra 和 Sol 都先核客户端实际选定的 effort；用 CLI `/model
 - **换成 6.2 后，自建 Responses 的缓存读突然下降**：先用相同内容对照 [`instructions` 与头部 `developer` 消息](../02-models-and-cost.md#gpt-62-responses-cache-compare)；现成 OpenCode 先核版本，别先改模型或缩短任务。
 - **质量已达标，只是等得太久**：再比较提速选项；模型、effort、速度模式分开选择。
 
-**从 6.1 Sol 换到 6.2 Sol，先重跑一项已验收的同类任务。** 固定客户端、提示、推理档、速度档和原始提交，只换模型；评完质量再比较从启动到验收的时间和实际用量；两版都达标再考虑升档。
+## 换模型：先用自己的任务比
 
-- **修复任务**：从修复前的提交分别准备两组。回放已解决的问题，用[隔离历史对象的副本](../22-agent-evaluation.md#4-一次可复查的运行)，不要用共享 Git 对象的 worktree。先确认同一条回归能在原提交触发，再用它验两份补丁；漏过已知回归就保留旧配置。
-- **读代码或解释行为**：先用当前代码列出必须答对的事实，例如实际调用入口、触发条件、例外与回退路径。参试模型收到同一个问题，不给答案；验收逐条对照固定提交，而不是只看结论像不像、带没带文件链接。换版漏掉会改变决定的事实，就先保留旧配置。
+**从 6.1 Sol 换到 6.2 Sol，先重跑一个与你想改善的工作同类、已经验收的任务。** 固定客户端版本、起始提交、提示、推理档、速度档和可用工具；同题只换模型。两次争用同一个本机资源时交错跑。先判交付过不过，再比从启动到验收的时间和实际用量；成本回算与实际扣费分开记，拿不到实扣就写未知。
 
-- **从 Codex 迁到直连 API／自建 Agent**：在隔离副本中故意缺一个必需输入，或令一个必需工具不可用，再重跑同一任务。能完成的部分照做，交付要写明哪项没验证、观察到的阻碍和继续条件；用原工具记录对照，不把「已完成」当证据。OpenAI 的 [GPT-6.2 系统卡：Blocker Deception](https://deploymentsafety.openai.com/gpt-6-2-astra-sol/blocker-deception)在人为阻断的编码题上发现，Codex 的开发者提示能减少 Astra／Sol 漏报已知阻碍；直连 API 不会自动带上该评测所用的 Codex 开发者提示。这不是线上漏报率，也不是本仓模型实测。提示可以短，不删交付边界；只迁模型时固定宿主，迁宿主时单独复测这条行为。
+| 想改善什么 | 固定的验收 | 什么情况不换 |
+|---|---|---|
+| 修复或实现 | 修复前先触发同一条回归，再用它验两份补丁。已解决的问题用[隔离 Git 历史的副本](../22-agent-evaluation.md#4-一次可复查的运行)，不用共享对象的 worktree | 旧版能通过的关键回归，新版没过 |
+| 读代码或解释行为 | 先从固定代码写下必答事实：真实调用入口、触发条件、例外与回退；只给两边同一问题，不给答案 | 新版漏掉会改变决定的事实 |
+| 审查代码 | 同一批已复核的真实 PR，逐项记重要问题新增／漏掉、人工复核分钟和完整成本；核对意见的触发条件、后果与代码依据 | 新增有效发现抵不过漏检或核查负担，不拿评论总量抵消 |
 
-[Artificial Analysis 的原始分项](https://artificialanalysis.ai/agents/coding-agents/comparisons/codex-vs-deepseek-harness#models)里，两版 Sol 都在 Codex 的 `max` 档：6.1→6.2 的代码改动 42→42、终端任务 54→58、仓库问答 60→46。不能拿其中一个分项替另一个。按[评测方法](https://artificialanalysis.ai/methodology/coding-agents-benchmarking)每题各跑三次；未核到两版的同一客户端构建或实际速度档，结果不外推到其他档位。2026-11-21 核读，未复跑模型。
-
-外部结果说明为什么要分开看：Corti 两轮用 OpenCode `max` 跑相同六个公开 bug，6.1 Sol 约 19 分钟、6/6，6.2 Sol 14 分钟、5/6（含失败）；这是竞品团队分日各跑一次的自报。VulcanBench 的 23 项旧程序重建中，6.2 Sol 的 `low` 和 `xhigh` 都是 23/23，但分别为 2.8 和 8.2 分钟／题，约 $0.23 和 $0.46／题；同任务的 6.1 历史组用 CLI 0.159.0，6.2 用 0.166.0，不能把耗时差全归给模型。同一评测的 6.1 组里，`medium` 过 22/23、约 $0.40／题，`high` 反而过 23/23、约 $0.33／题：升档也可能减少整项投入，仍须看本轮结果。VulcanBench 美元数不含裁判费用，是按 token 回算的 API 等价费用，不是 Codex 订阅实扣。
-
-**依据**：[Corti 6.1 一轮](https://corti.ai/blog/corti-s1-model-race)、[6.2 一轮](https://corti.ai/blog/corti-s1-gpt-6-2-model-race)；[VulcanBench 6.2 五档及 6.1 历史组](https://vulcanbench.com/benchmarks/swe-v4-gpt62-sol-v331.html)、[6.1 原结果](https://vulcanbench.com/benchmarks/swe-v4-gpt61-sol-v318.html)及[6.1 固定复现范围](https://github.com/morganlinton/VulcanBenchCOM/blob/e4c7e6f6d345d72d8299db37cff1165f8d33007a/assets/data/swe-v4-gpt61-sol-v318/REPRODUCING.md)。2026-11-20 核读，未复跑模型；VulcanBench 可重算公开指标，补丁和隐藏答案未公开。
-
-**看真实使用排行时，先找与你要改善的结果同义的分项。** [Arena Coding Index](https://arena.ai/leaderboard/agent/code) 的 11-18 快照中，Max 档的 6.2 Astra 综合第 3、旧 Astra 第 8；切到用户确认完成分项，两者却分别第 7、第 4（1286、1312）。[指标定义](https://arena.ai/resources/agent-arena-signals#capability-signals)只计主动点「是／否」的任务，未反馈不进分母；用户说完成也不是独立的行为验收。若要改善实际交付，回放本项目同类任务，分别记原检查是否通过、用户纠正了几次和是否交齐，再决定换版，不拿综合排名抵掉漏交付。2026-11-22 核公开快照与[随机分配、加权方法](https://arena.ai/blog/introducing-the-agent-arena-index#methodological-updates)；未获两版同题原始记录，排名不证明差异显著。
-
-**换版对比先分开记模型工作、测试耗时和整单重试。** Zhuojun Li 用同一 Codex CLI 0.169.0-alpha.11.1、两版从 `medium` 起步，重放同一 Python 仓库的五个真实工单。6.2／6.1 首次都过 3/5、最终都过 5/5，平均每单 28.8／28.1 分钟；按 token 回算 $5.44／$4.35。去掉一单重复跑全套测试的工单，费用方向反转（$3.44／$3.97）。这轮四个任务共用同一台 Mac，有受负载影响的定时测试失败，6.1 也有一次重试升到 `xhigh`。基线和候选用相同的并发条件，遇到共享资源互相干扰就改成交错运行；一处重试改变结论，就保留该单并单列原因，不把总差额全算给模型。依据：[作者的工单实测与逐单金额](https://dev.to/lizhuojunx86/gpt-62-sol-beat-gpt-61-sol-on-the-leaderboard-on-5-of-my-real-work-orders-it-tied-and-cost-25-52bp)，2026-11-22 核读；代码和原执行日志未随文公开。
+**每个配置记一行**：`模型 / effort / 速度档 | 首次验收 | 最终验收 | 总耗时 | 重试及原因 | 费用或用量（来源）`。失败和重试留在总账。6.1／6.2 的一次五工单真实回放中，首次都过 3/5；是否计入一单重复跑全套测试，费用比较方向相反。代码审查也一样：一次 42 PR 的管线回放里可执行评论从 187 增到 290，已知问题命中只从 58 增到 60。它们提醒你记重试与人工负担，不给你的仓库定默认。
 
 <a id="effort-tool-time"></a>
 
-**升档后变慢，先把工具计时的重叠区间合并，别把整段差额算给测试。** 复算 VulcanBench 同一道 qlite 题的公开轨迹：GPT‑6.2 Sol 在同版 Codex CLI 0.166.0 从 `low` 到 `max`，总耗时 136.9→1082.4 秒；将工具调用起止区间取并集，只有 1.30→11.11 秒。换档时分别保留这两列；这条轨迹不足以归因给慢测试，也不能把未覆盖时段全算成模型推理。[低档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/low/legacy-qlite-store-parity.jsonl) · [最高档轨迹](https://github.com/morganlinton/vulcanbench-gpt62-sol-traces/blob/bf835f0bc3a744f4994c9ac8a7943402a54bdf60/traces/max/legacy-qlite-store-parity.jsonl) · [计时实现](https://github.com/morganlinton/VulcanBench/blob/0e9b30fb4961de85438669b83d789941035d1fae/harness/agent/cli_agents.py#L2641-L2673)。2026-11-22 复算，一题各一次；时间来自收到 CLI 事件的时点，轨迹隐藏命令与输出，未复跑模型。
+**只升 effort 时，别把整段变慢算给测试。** 比较总耗时与工具起止区间的并集；并发工具的重叠时间只算一次，剩余时间也不直接标成模型推理。具体反例和原始材料见[换版证据](../research/gpt-62-switch-evidence.md#工具区间复算)。
 
-**换代码审查模型时，不按评论数选。** 用同一批已复核的真实 PR、同一审查流程，分别记「重要问题新增／漏掉」「新增意见人工复核分钟数」和完整流程成本。先抽查两版差异：评论须说清触发条件、会发生什么及代码依据；两版都没覆盖的已知问题单列。没匹配已知问题的评论仍可能有价值，人工判定后再记误报。新增有效发现能抵过核查负担才换。
+**从 Codex 迁到直连 API／自建 Agent 时，另外验阻塞能否如实报告。** 在隔离副本中故意缺一个必需输入，或令一个必需工具不可用，再重跑同一任务。能完成的部分照做，交付要写明哪项没验证、观察到的阻碍和继续条件；用原工具记录对照，不把「已完成」当证据。OpenAI 的 [GPT-6.2 系统卡：Blocker Deception](https://deploymentsafety.openai.com/gpt-6-2-astra-sol/blocker-deception)在人为阻断的编码题上发现，Codex 的开发者提示能减少 Astra／Sol 漏报已知阻碍；直连 API 不会自动带上该评测所用的 Codex 开发者提示。这不是线上漏报率，也不是本仓模型实测。提示可以短，不删交付边界；只迁模型时固定宿主，迁宿主时单独复测这条行为。
 
-CodeRabbit 的 Sol 6.1 → 6.2 高推理配置在 42 个 PR 上，已知问题命中 58→60／81，常规可执行评论 187→290，匹配已知问题的比例 35.3%→25.9%，回放记录成本 $0.772→$1.146／PR。两版仅各跑一轮，整条管线不只换一个模型，且部分上游调用用零成本录制响应；这不是独立模型效果、真实生产账单或人工核查用时。早先的 Sonnet 5.5 同组回放还发现：总体多抓一项，同时有一项从差异内降为差异外。接受前分别看新增与丢失，不只看净数量。
-
-**依据**：[评审工具团队：Sol 管线回放](https://www.coderabbit.ai/blog/gpt-6-2-sol-and-astra-review)，2026-11-19 发布、11-23 核读；[同团队：Sonnet thinking 回放](https://www.coderabbit.ai/blog/sonnet-5-5-model-review)，2026-09-28 发布、10-28 核读；本仓未运行模型。
-
-真实使用反馈也有分歧：V2EX 的 ezioswj 自述用 Sol 开荒、将路径明确的工作交给 Luna；另一位用户报告 Sol 6.1 `low` 仍慢、额度消耗高。它们适合提醒你检查自己的任务形状，不能据此估算能用几天或承诺某档更省。
-
-**便宜实现＋强审查也可能不省。** Reddit 用户 msw3age 自报两项任务均由 Opus 5.5 规划、两模型用 `high`；Sonnet 实现后交 Opus 审查并退修或代修，都比 Opus 单独完成更慢、更贵，但代修组合额外抓到一个 bug。具体费用与代码未公开，适合提醒比较返工和新增发现，不据此改为全员强模型。
-
-**依据**：[社区原帖] [V2EX：模型分工（#2）](https://www.v2ex.com/t/1247018)、[V2EX：低档仍慢的反馈](https://www.v2ex.com/t/1248411)（2026-10-26 核读、2026-10-28 重核）；[Reddit：混合模型返工反例与作者补充](https://www.reddit.com/r/ClaudeCode/comments/1wsqfzk/comment/pcnxwy4/)（2026-10-28 核读，用户自报，未复跑）。
+**依据**：[同题实测、公开评测和审查回放](../research/gpt-62-switch-evidence.md)。具体任务选对应分项；不按排行榜名次替换已经达标的配置。
 
 ## 第三方入口排障：聊天可用但工具任务失败
 
