@@ -25,7 +25,7 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **没有 UI 改动就删去 UI 段，实际运行 CLI、库或 API；涉及原生输入法、系统弹窗和设备行为时回目标环境验。** 临时验收复用现有入口，长期防回归才接入测试套件；不为短修复先造框架。源码或相关配置在检查后又改了，就重验受影响路径。
 
-**CLI 的失败路径也要验输出契约，不只验非零退出。** 本仓链接检查器原先遇到畸形 URL 或编码 NUL 路径时 exit 1，却只给 traceback、没有 JSON；修后仍 exit 1，返回带文件／行号的错误并继续收集后续链接问题。原实现上的新增回归失败，修后 [14 项检查器测试](../../tests/test_check_repo.py)与直接消费者的 [4 项模板复制测试](../../tests/test_template_portability.py)通过（2026-11-04，云端 POSIX）；UTF-8／GBK／ASCII 重定向输出均核过，未测原生 Windows。这只是诊断稳定性，不把本地链接检查升级成外链可达性或内容真实性验证。
+**CLI 的失败路径也要验输出契约，不只验非零退出。** 增加开关时，用实际交付的宿主各跑一次生效路径和应维持原样的路径；`--help` 里看得到，不代表真的生效。见[两项新增 CLI 能力实做](#new-cli-feature-checks)。本仓链接检查器原先遇到畸形 URL 或编码 NUL 路径时 exit 1，却只给 traceback、没有 JSON；修后仍 exit 1，返回带文件／行号的错误并继续收集后续链接问题。原实现上的新增回归失败，修后 [14 项检查器测试](../../tests/test_check_repo.py)与直接消费者的 [4 项模板复制测试](../../tests/test_template_portability.py)通过（2026-11-04，云端 POSIX）；UTF-8／GBK／ASCII 重定向输出均核过，未测原生 Windows。这只是诊断稳定性，不把本地链接检查升级成外链可达性或内容真实性验证。
 
 **筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
 
@@ -167,6 +167,13 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 **摘要完整，不等于测试已经执行。** pytest-receptor 1.2.2 及固定 main 的实测中，收集期的 SyntaxError／ImportError 没有执行测试，compact 终端和完整、哈希有效的 JSONL 却都计为 `executed=1, failed=1`；已有一项被收集时，还会显示貌似合理的 `1 of 1 executed`。pytest 仍返回 exit 2、保留 collect 阶段，不是假绿。核交付数量时沿用原生输出与实际运行阶段，不把“已收集”写成“已执行”；[实测字段与原复现入口](../research/2026-11-01-pytest-receptor-counts.md)（2026-11-01；Linux／Python 3.12.14／pytest 9.1.1，未测模型收益）。
 
 ## 依据与实试
+
+<a id="new-cli-feature-checks"></a>
+
+**新增 CLI 能力实做（2026-11-23，Linux）**：
+
+- **Node.js 新增超时开关**：[原改动](https://github.com/nodejs/node/pull/66138)、[固定发行版及其检查](https://github.com/nodejs/node/blob/v26.11.0/test/parallel/test-process-timeout.js)。用官方 v26.11.0 的 `node --process-timeout=1s -e '<脚本>'`：即时输出仍退出 0；待定时器、同步忙循环在输出就绪标记后均退出 124，标准错误分别指出仍活跃的定时器、当前执行栈。v26.10.0 拒绝新参数，不算旧缺陷。Electron [同类宿主的集成改动](https://github.com/electron/electron/commit/6bcbfc55a2755da1148a4fe28a20e3094d6b4280)曾出现参数已接受、看门狗却未启动；只核了 Electron 上游记录，未实跑其宿主。
+- **Ruff 新增 TC010 修复动作**：非作者照本页用 [官方夹具](https://github.com/astral-sh/ruff/blob/0.17.6/crates/ruff_linter/resources/test/fixtures/flake8_type_checking/TC010_2.py#L16)的运行时类型表达式，给同一输入加了一条应保持不变的合法声明。用 `ruff check --isolated --no-cache --preview --target-version py312 --select TC010 --fix` 指向独立副本：0.17.6 恰修一处，合法声明原字节不变；Python 3.12.14 加载结果并核两项类型约束。0.17.5、以及不带 `--preview` 的 0.17.6 都只报诊断，不改文件。非读者重跑三组结果一致；[官方发布说明](https://github.com/astral-sh/ruff/releases/tag/0.17.6)列为预览。这两项证明新增 CLI 路线可照做，不替代 UI 实做、完整上游测试或在读者项目中采用。
 
 - [项目方法与实际入口](../07-workflows.md#2-标准节奏探索--计划--实现--提交-)、[Willison 的实际运行实践](https://simonwillison.net/guides/agentic-engineering-patterns/agentic-manual-testing/)；沿用 2026-10-25 选择，原文重核 10-26。任务片段是机制整理，未做提示词收益对照。
 - [Playwright 用户可见行为](https://playwright.dev/docs/best-practices)、[Storybook 交互测试](https://storybook.js.org/docs/writing-tests/interaction-testing)、[healer](https://playwright.dev/docs/test-agents#-healer)与[Trace Viewer](https://playwright.dev/docs/trace-viewer)，核实 2026-10-26。[GitButler 按需 UI 修订](https://github.com/gitbutlerapp/gitbutler/commit/d44d5f6382a9c8719c0873ab3d9250c2c2661adf)说明可先查当前组件再开 story；仅源码与作者反馈已核，未运行该项目。
