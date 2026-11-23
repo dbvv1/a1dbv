@@ -16,7 +16,7 @@
 
 - 用户选择收窄，见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)：本机 demo 与三案的制作、换默认和发布归本机方向会话；11-17 已批准的三案部署仍由 dot-B 执行并回填（MOBA `fa3076f`、Star `1796e9f`、FPS `445b93b`）。
 - **B 首项**：把[本机 demo 记录](demo-trial-20261117.md)写成配方（目标措辞、自看实图、真实输入测试、手感规格与合成玩家、CC0／CC-BY＋bpy 改造）；demo 源码精选公开后据实现补参数。完成：建议、依据和反例入页，方向会话下一轮任务说明引用。
-- **A 首项**：在 `experiments/` 写两份可本机跑的对照提案（假设、甲乙做法、公开任务、判法），此处留指针。
+- **A 首项**：[GPT-6.2 Sol 窄修复：中档与高档](../../experiments/platformdirs-effort-pair/README.md) · [Joplin 桌面回归：单 Agent 与两路只读诊断](../../experiments/joplin-sidebar-delegation-pair/README.md)。均为未运行提案，由方向会话预检、启动与验收。
 
 - **共同采用欠项**：下次帧同步／存档实用共享指令、模型或依赖页之一；自然UI变更由新读者照浏览器页实操，不以截图／DOM替代。沿上方原文入口，结果写提交后删。
 
