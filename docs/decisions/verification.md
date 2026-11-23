@@ -113,6 +113,8 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 **先保用户失败的时刻。** “加载中输入丢了”从可输入但数据未返回时开始；“关闭后不能重开”要走关闭→重开。用角色、可访问名称或稳定 test ID 定位，等待业务状态；内部函数仅辅助诊断，用户路径仍用实际输入。已有 Storybook 就复用目标 story，静态构建不算交互通过；跨页、真实后端和桌面宿主继续回应用。详细顺序见 [23](../23-browser-verification.md#4-一次完整验证的顺序)。
 
+**验「刷新后保留筛选」，分开看选择和实际数据。** 选两值 → 切到缺一值的数据（仍选中，但没有对应行）→ 切回（等表格稳定，对应行恢复）。再走一轮明确清除，确认回来也不会复活旧选择。这个顺序在 [AG Grid 36.3 的官方示例](https://www.ag-grid.com/examples/filter-set-data-updates/preserve-previous-values/typescript/)实跑：2008 选 Algeria 和 Argentina，2004 只剩 Argentina 的行，Algeria 仍选中；切回 2008 两国的行回来，重复并清除 Algeria 后只回来 Argentina。2026-11-23 云端 Chrome 实跑。该行为是[可选功能](https://www.ag-grid.com/javascript-data-grid/filter-set-data-updates/#preserving-previous-values)，不开不算旧版缺陷。
+
 **要验「用户还没操作就不应触发」，把这条断言单独放在无 trace 的新浏览器上下文。** 保持默认浏览器策略，在现有测试中对此文件用 `test.use({ trace: 'off' })`；首次断言前不点击、不用 `page.evaluate()` 读取激活状态。先从应用自己的事件或结果读回「未触发」，再另跑真实点击后的正例；需要 trace 时另跑排查，不替代首次断言。Playwright 1.65.1 的 [Chromium 使用者公开复现](https://github.com/microsoft/playwright/issues/44119)中，唯一改开关是含 snapshots 的 tracing：未点击却从「未激活」变成「已激活」；[固定版本求值代码](https://github.com/microsoft/playwright/blob/v1.65.1/packages/playwright-core/src/server/chromium/crExecutionContext.ts#L59-L71)解释了为何普通求值也会改变观察对象。2026-11-22 核公开对照与源码，未独立复跑浏览器。
 
 **确认实际构建，再分一次验收与持续回归。** VS Code 验未合入修改须选含改动的 `--dev` 检出，准备匹配 Electron／开发构建；默认已安装 Insiders（缺失才 Stable）不是该修改的证据。Next.js 仅改测试也以前置构建最新为条件，源码改动或切分支使产物过时就先重建。借的是入口核对方法，不照搬其他项目命令。
