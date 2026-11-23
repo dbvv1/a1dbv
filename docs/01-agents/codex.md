@@ -56,7 +56,7 @@
 
 <a id="codex-local-hook-orchestration"></a>
 
-**必要质量门依赖本地 Hook 时，编排与执行都留在本机。** Work Cloud／dot 将工具交给本机执行，并不会运行本地 command／prompt／agent Hook 或本地配置、插件的 Hook。符合托管策略并启用远程 Hook 的工作区，云编排只支持 Global MCP Hook，且不支持 `SessionEnd`；迁移前在实际宿主验证必要检查确实触发、错误时按预期处理。依据：[官方云编排 Hook 契约](https://learn.chatgpt.com/docs/hooks#hooks-with-cloud-orchestration)、[适用范围与社区反例](../research/2026-10-10-codex-continuity.md#p81桌面work与codex按视图和执行契约选择)，2026-11-23 核读，未运行云端托管 Hook。
+**必要质量门依赖本地 Hook 时，编排与执行都留在本机。** Work Cloud／dot 将工具交给本机执行，并不会运行本地 command／prompt／agent Hook 或本地配置、插件的 Hook。符合托管策略并启用远程 Hook 的工作区，云编排只支持 Global MCP Hook，且不支持 `SessionEnd`。云端 `PreToolUse` 可以显式拒绝，但报错、超时或响应格式无效时，工具仍可能运行。迁移前在实际宿主验证检查确实触发；检查故障时也必须阻止的操作，不要只靠 Hook，要核验[原生权限](../decisions/permissions-and-hooks.md#codex先用工作区写入按需申请越界)或独立强制控制。依据：[官方云编排 Hook 契约](https://learn.chatgpt.com/docs/hooks#hooks-with-cloud-orchestration)、[适用范围与社区反例](../research/2026-10-10-codex-continuity.md#p81桌面work与codex按视图和执行契约选择)，2026-11-23 核读，未运行云端托管 Hook。
 
 **套餐不只影响额度。** Pricing 为 Free／Go 列桌面 Luna Standard（受 rollout 限制），Plus 列 web／CLI／IDE／iOS 及云端集成；GitLab beta 另明确支持所有 ChatGPT plans，不能把价格表当集成排除清单。
 
