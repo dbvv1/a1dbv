@@ -27,15 +27,15 @@ UI：从[原 URL／入口及前置状态]实际输入、点击或键盘操作，
 
 **CLI 的失败路径也要验输出契约，不只验非零退出。** 增加开关时，用实际交付的宿主各跑一次生效路径和应维持原样的路径；`--help` 里看得到，不代表真的生效。见[两项新增 CLI 能力实做](#new-cli-feature-checks)。本仓链接检查器原先遇到畸形 URL 或编码 NUL 路径时 exit 1，却只给 traceback、没有 JSON；修后仍 exit 1，返回带文件／行号的错误并继续收集后续链接问题。原实现上的新增回归失败，修后 [14 项检查器测试](../../tests/test_check_repo.py)与直接消费者的 [4 项模板复制测试](../../tests/test_template_portability.py)通过（2026-11-04，云端 POSIX）；UTF-8／GBK／ASCII 重定向输出均核过，未测原生 Windows。这只是诊断稳定性，不把本地链接检查升级成外链可达性或内容真实性验证。
 
-**筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
+**测试报告是绿的，先核哪些必跑项真的执行。** 从改动列出必须覆盖的文件、用例或分片；依次核实际运行、报告过滤、分片来源。总数和退出码都不能替代身份对账。
 
-**修复上轮的收集或导入错误后，按原日志中的文件路径显式补跑。** 例如 `python -m pytest -v <上轮收集报错的文件>`；`--lf` 绿了或失败缓存清空，都不能证明这些测试执行过。[pytest 上游回归](https://github.com/pytest-dev/pytest/pull/15398)的两文件夹具在 Linux／Python 3.12.14／pytest 9.2.0 实跑：先得 1 失败＋1 收集错误，两者恢复后 `--lf` 退出 0、只跑 1 项，失败缓存清空；显式跑漏掉的文件有 2 项通过。同版只应用候选的缓存改动再对照，`--lf` 才跑全 3 项。2026-11-23 核验；候选未合并，不是已发布修复。
+| 这个结果容易误读 | 先怎么核 |
+|---|---|
+| 按改动筛选、按失败缓存重跑 | 对照原日志和必跑名单；特别是修完收集／导入错误，显式补跑原报错文件，不只看 `pytest --lf` |
+| 报告只有失败项，或报告总数看着正常 | 核原生收集／执行阶段；Playwright 同一次运行留全量报告，另留精简报告。全量仍被过滤时查 CI 中的 `PLAYWRIGHT_JSON_ONLY_FAILURES`／`PLAYWRIGHT_JUNIT_ONLY_FAILURES` |
+| 分片报告成功合并 | 对照同一次 CI 的环境与分片编号，逐片核唯一产物和原测试 job；有缺片或重复片就只作排障 |
 
-**先区分“没执行”和“报告没收录”。** Playwright 的 `onlyFailures: true` 过滤报告，不筛选运行。核必跑名单或用例数时，同一次运行保留完整 JSON／JUnit，把失败专用报告另留给排障。例如配置两个 JSON reporter，分别用 `{ outputFile: "full.json" }` 和 `{ outputFile: "failures.json", onlyFailures: true }`，不用再跑一遍。
-
-若显式配了 `onlyFailures: false` 却仍只有失败项，先核 CI 步骤是否设了 `PLAYWRIGHT_JSON_ONLY_FAILURES` 或 `PLAYWRIGHT_JUNIT_ONLY_FAILURES`：1.65.1 实测相应变量设为 `1` 时，完整报告也被过滤。Linux／Node 24.22.3 上复跑 Playwright 1.65.1：同一全绿运行，完整 JSON 和 JUnit 各有 2 项，失败专用报告均为 0；另一次首跑失败、重试通过的用例仍进入精简报告。[官方 reporter 文档](https://playwright.dev/docs/test-reporters#report-only-failures)、[使用者公开对照](https://github.com/qa-gary-parker/poc-playwright-reporter-size)；核实 2026-11-22，仅核报告，未启动浏览器。
-
-**分片 CI 先核输入齐不齐，再读合并报告。** 按同次 CI 的矩阵逐片核对产物（环境、分片编号）和原测试 job 的结果；缺片仍可合并排障，不作完整验收。Playwright 1.65.1 实跑：只交 1/2 仍合并退出 0；交两份同一个 1/2 的 blob，总数也能报 2，却只列出 A、不含 B。核实 2026-11-22：[官方漏片回归](https://github.com/microsoft/playwright/blob/v1.65.1/tests/playwright-test/reporter-blob.spec.ts#L360-L412)、[cBioPortal 保留分片退出并另查漏片的 CI 改动](https://github.com/cBioPortal/cbioportal-frontend/pull/5559)（其缺片检查按数量，不证明逐片配对）。
+[实测反例与适用版本](#test-run-inclusion-evidence)包含 Vitest、pytest 和 Playwright，不代表所有版本同样表现。
 
 **重命名或删除共享文件时，确认整树引用检查真的启动。** 检查器扫描整树，也可能先被变更文件规则跳过。用项目现有整树入口核未改的引用方，不为此重跑无关检查。[Apache Magpie 的 CI](https://github.com/apache/magpie/blob/94f36f38e3752755d76a70bcf3207b729e508b36/.github/workflows/pre-commit.yml#L260-L325)把全仓 Lychee 独立于 PR 差量的 prek，PR 和 main 都有独立执行步骤。用该项目真实入链、目标文件和离线配置做局部复跑：基线通过；仅改目标文件名时，`prek run lychee --from-ref <基线> --to-ref HEAD` 显示 Skip／退出 0，`prek run lychee --all-files` 则失败；CI 原 Lychee 命令也报告断链。2026-11-21 用 prek 0.3.5、固定 Lychee 0.24.2，未跑托管 CI。
 
@@ -105,6 +105,7 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 | 承诺 | 实际检查 | 接收范围 |
 |---|---|---|
 | 代码／公共接口行为 | 相关测试、类型／构建与直接调用方；保留能检出原问题的回归 | 所测行为 |
+| API 参数／请求头／序列化 | 回放匹配未检查改动字段时，保留录制响应，从发送层捕获并断言本次请求，再用旧实现确认断言确会失败。[Pydantic AI 三臂对照](../../experiments/pydantic-request-capture/README.md#三臂真实测试) | 本次请求构造；历史录制请求或离线响应不证明远端行为 |
 | 机器消费的配置／生成文本 | 用实际下游版本读回生成结果，核关键字段与行为含义 | 所测格式与消费契约；远端流程另验 |
 | 组件状态 | 已有 story／组件测试触发正常、进行中、失败恢复，等交互断言完成 | 真实组件交互；假服务注明模拟 |
 | 页面用户任务 | 当前构建从原入口输入、点击、导航；确认结果对应本次输入，核业务结果及 console／请求失败，时序问题查 trace | 实际走过的路径 |
@@ -178,9 +179,23 @@ git grep -n -e '待查内容' "$tree" -- ':(top,glob)path/to/scope/*.py'
 
 报告写清：**最终提交／工作树差量；实际被测构建；命令、数量和结果；走过的路径与报告／截图；失败、跳过、未运行及恢复条件。** 构建、组件、真实后端、部署分别报告；部署成功盖不过同版本尚未解释的失败。现有浏览器入口有具体能力缺口时，再试 CLI、MCP 或诊断工具，保留原验收路径。
 
-**摘要完整，不等于测试已经执行。** pytest-receptor 1.2.2 及固定 main 的实测中，收集期的 SyntaxError／ImportError 没有执行测试，compact 终端和完整、哈希有效的 JSONL 却都计为 `executed=1, failed=1`；已有一项被收集时，还会显示貌似合理的 `1 of 1 executed`。pytest 仍返回 exit 2、保留 collect 阶段，不是假绿。核交付数量时沿用原生输出与实际运行阶段，不把“已收集”写成“已执行”；[实测字段与原复现入口](../research/2026-11-01-pytest-receptor-counts.md)（2026-11-01；Linux／Python 3.12.14／pytest 9.1.1，未测模型收益）。
-
 ## 依据与实试
+
+<a id="test-run-inclusion-evidence"></a>
+
+### 测试名单、收集阶段和报告的反例
+
+**筛选后有测试通过，也要核必跑用例有没有执行。** 对改动范围筛选、名字匹配或分片，先列必须跑的文件或用例，再对照实际运行回执。缺项就按文件或用例补跑。例：[Vitest 用户公开夹具](https://github.com/vitest-dev/vitest/issues/11917#issuecomment-6965855322)在 5.1.0 上全量 7 项通过，其中 6 项依赖同一文本。运行 `vitest related data/value.txt --run` 仍退出 0，却只执行了 2 项 Node 测试，漏掉 happy-dom 和 jsdom 的 4 个直接 `?raw`／eager glob 用例。显式指定这 4 个文件均执行并通过，JSON 回执的用例名与状态可核。2026-11-21 在 Linux / Node 24.22.3 复跑；不是所有版本或依赖类型的结论。
+
+**修复上轮的收集或导入错误后，按原日志中的文件路径显式补跑。** 例如 `python -m pytest -v <上轮收集报错的文件>`；`--lf` 绿了或失败缓存清空，都不能证明这些测试执行过。[pytest 上游回归](https://github.com/pytest-dev/pytest/pull/15398)的两文件夹具在 Linux／Python 3.12.14／pytest 9.2.0 实跑：先得 1 失败＋1 收集错误，两者恢复后 `--lf` 退出 0、只跑 1 项，失败缓存清空；显式跑漏掉的文件有 2 项通过。同版只应用候选的缓存改动再对照，`--lf` 才跑全 3 项。2026-11-23 核验；候选未合并，不是已发布修复。
+
+**先区分“没执行”和“报告没收录”。** Playwright 的 `onlyFailures: true` 过滤报告，不筛选运行。核必跑名单或用例数时，同一次运行保留完整 JSON／JUnit，把失败专用报告另留给排障。例如配置两个 JSON reporter，分别用 `{ outputFile: "full.json" }` 和 `{ outputFile: "failures.json", onlyFailures: true }`，不用再跑一遍。
+
+若显式配了 `onlyFailures: false` 却仍只有失败项，先核 CI 步骤是否设了 `PLAYWRIGHT_JSON_ONLY_FAILURES` 或 `PLAYWRIGHT_JUNIT_ONLY_FAILURES`：1.65.1 实测相应变量设为 `1` 时，完整报告也被过滤。Linux／Node 24.22.3 上复跑 Playwright 1.65.1：同一全绿运行，完整 JSON 和 JUnit 各有 2 项，失败专用报告均为 0；另一次首跑失败、重试通过的用例仍进入精简报告。[官方 reporter 文档](https://playwright.dev/docs/test-reporters#report-only-failures)、[使用者公开对照](https://github.com/qa-gary-parker/poc-playwright-reporter-size)；核实 2026-11-22，仅核报告，未启动浏览器。
+
+**分片 CI 先核输入齐不齐，再读合并报告。** 按同次 CI 的矩阵逐片核对产物（环境、分片编号）和原测试 job 的结果；缺片仍可合并排障，不作完整验收。Playwright 1.65.1 实跑：只交 1/2 仍合并退出 0；交两份同一个 1/2 的 blob，总数也能报 2，却只列出 A、不含 B。核实 2026-11-22：[官方漏片回归](https://github.com/microsoft/playwright/blob/v1.65.1/tests/playwright-test/reporter-blob.spec.ts#L360-L412)、[cBioPortal 保留分片退出并另查漏片的 CI 改动](https://github.com/cBioPortal/cbioportal-frontend/pull/5559)（其缺片检查按数量，不证明逐片配对）。
+
+**摘要完整，不等于测试已经执行。** pytest-receptor 1.2.2 及固定 main 的实测中，收集期的 SyntaxError／ImportError 没有执行测试，compact 终端和完整、哈希有效的 JSONL 却都计为 `executed=1, failed=1`；已有一项被收集时，还会显示貌似合理的 `1 of 1 executed`。pytest 仍返回 exit 2、保留 collect 阶段，不是假绿。核交付数量时沿用原生输出与实际运行阶段，不把“已收集”写成“已执行”；[实测字段与原复现入口](../research/2026-11-01-pytest-receptor-counts.md)（2026-11-01；Linux／Python 3.12.14／pytest 9.1.1，未测模型收益）。
 
 <a id="new-cli-feature-checks"></a>
 
