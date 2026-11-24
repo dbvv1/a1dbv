@@ -1,0 +1,114 @@
+diff --git a/Sortable.js b/Sortable.js
+index 0c1555b..2c8c2b8 100644
+--- a/Sortable.js
++++ b/Sortable.js
+@@ -2097,7 +2097,7 @@
+         options = this.options;
+       for (; i < n; i++) {
+         el = children[i];
+-        if (closest(el, options.draggable, this.el, false)) {
++        if (el !== ghostEl && closest(el, options.draggable, this.el, false)) {
+           order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
+         }
+       }
+diff --git a/src/Sortable.js b/src/Sortable.js
+index 4776180..a49f419 100644
+--- a/src/Sortable.js
++++ b/src/Sortable.js
+@@ -1600,7 +1600,7 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
+ 
+ 		for (; i < n; i++) {
+ 			el = children[i];
+-			if (closest(el, options.draggable, this.el, false)) {
++			if (el !== ghostEl && closest(el, options.draggable, this.el, false)) {
+ 				order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
+ 			}
+ 		}
+diff --git a/tests/Sortable.test.js b/tests/Sortable.test.js
+index 59ce11f..c192280 100644
+--- a/tests/Sortable.test.js
++++ b/tests/Sortable.test.js
+@@ -384,3 +384,83 @@ test('Do not insert into empty list if outside emptyInsertThreshold', async brow
+ 		})
+ 		.expect(dragStartPosition.innerText).eql(dragEl.innerText);
+ });
++
++
++fixture `Serialization`
++	.page `./single-list.html`;
++
++[
++	{ name: 'fallback in list', forceFallback: true, fallbackOnBody: false, dataIdAttr: 'data-id' },
++	{ name: 'fallback on body', forceFallback: true, fallbackOnBody: true, dataIdAttr: 'data-id' },
++	{ name: 'native dragging', forceFallback: false, fallbackOnBody: false, dataIdAttr: 'data-id' },
++	{ name: 'custom attribute with repeated IDs', forceFallback: true, fallbackOnBody: false, dataIdAttr: 'data-key' }
++].forEach(serializationOptions => {
++	test(`toArray follows the real items during ${serializationOptions.name}`, async browser => {
++		await browser.eval(() => {
++			const root = document.getElementById('list1');
++			Sortable.get(root).destroy();
++			root.innerHTML = '<div data-id="alpha" data-key="shared">Alpha</div>' +
++				'<div data-id="bravo" data-key="bravo">Bravo</div>' +
++				'<div data-id="charlie" data-key="shared">Charlie</div>';
++			const originals = Array.from(root.children);
++			// A real item may share the configured fallback class.
++			originals[1].className = 'drag-preview';
++			window.serializationEvents = [];
++			const sortable = new Sortable(root, {
++				forceFallback: serializationOptions.forceFallback,
++				fallbackOnBody: serializationOptions.fallbackOnBody,
++				dataIdAttr: serializationOptions.dataIdAttr,
++				fallbackClass: 'drag-preview',
++				animation: 0,
++				onChoose: record,
++				onClone: record,
++				onStart: record,
++				onChange: record,
++				onUnchoose: record,
++				onUpdate: record,
++				onSort: record,
++				onEnd: record
++			});
++
++			function record(evt) {
++				window.serializationEvents.push({
++					event: evt.type,
++					array: sortable.toArray(),
++					order: Array.from(root.children).filter(el => originals.indexOf(el) !== -1)
++						.map(el => el.getAttribute(serializationOptions.dataIdAttr)),
++					originalIds: originals.map(el => el.getAttribute('data-id')),
++					ghostDataId: Sortable.ghost && Sortable.ghost.getAttribute('data-id'),
++					oldIndex: evt.oldIndex,
++					newIndex: evt.newIndex
++				});
++			}
++		}, { dependencies: { serializationOptions } });
++
++		await browser.dragToElement(list1.child(0), list1.child(2));
++
++		const events = await browser.eval(() => window.serializationEvents);
++		const initial = serializationOptions.dataIdAttr === 'data-id'
++			? ['alpha', 'bravo', 'charlie'] : ['shared', 'bravo', 'shared'];
++		const final = [initial[1], initial[2], initial[0]];
++
++		await browser.expect(events.filter(evt => evt.event !== 'change').map(evt => evt.event))
++			.eql(['choose', 'clone', 'start', 'unchoose', 'update', 'sort', 'end']);
++		for (const evt of events) {
++			await browser
++				.expect(evt.array).eql(evt.order, evt.event)
++				.expect(evt.originalIds).eql(['alpha', 'bravo', 'charlie'], evt.event);
++		}
++		const start = events.filter(evt => evt.event === 'start')[0];
++		const end = events.filter(evt => evt.event === 'end')[0];
++		await browser
++			.expect(start.array).eql(initial)
++			.expect(end.array).eql(final)
++			.expect(end.oldIndex).eql(0)
++			.expect(end.newIndex).eql(2)
++			.expect(browser.eval(() => Sortable.get(document.getElementById('list1')).toArray())).eql(final)
++			.expect(browser.eval(() => Sortable.ghost === null && Sortable.clone === null)).ok();
++		if (serializationOptions.forceFallback) {
++			await browser.expect(start.ghostDataId).eql('alpha');
++		}
++	});
++});

@@ -1,0 +1,372 @@
+{
+ "browser": "156.0.8078.4",
+ "headless": true,
+ "gpu": {
+  "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "vendor": "Google Inc. (NVIDIA)"
+ },
+ "url": "http://127.0.0.1:8765/preflight.html",
+ "errors": [],
+ "runs": [
+  {
+   "run": 1,
+   "before": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie"
+    ],
+    "ghost": false
+   },
+   "duringDrag": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "beforeRelease": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "afterEnd": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "sort",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "end",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": false
+   }
+  },
+  {
+   "run": 2,
+   "before": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie"
+    ],
+    "ghost": false
+   },
+   "duringDrag": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "beforeRelease": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "afterEnd": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "sort",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "end",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": false
+   }
+  },
+  {
+   "run": 3,
+   "before": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie"
+    ],
+    "ghost": false
+   },
+   "duringDrag": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "alpha",
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "beforeRelease": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha",
+     "alpha"
+    ],
+    "ghost": true
+   },
+   "afterEnd": {
+    "events": [
+     {
+      "event": "initial",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie"
+      ]
+     },
+     {
+      "event": "start",
+      "array": [
+       "alpha",
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "sort",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     },
+     {
+      "event": "end",
+      "array": [
+       "bravo",
+       "charlie",
+       "alpha"
+      ]
+     }
+    ],
+    "domOrder": [
+     "bravo",
+     "charlie",
+     "alpha"
+    ],
+    "ghost": false
+   }
+  }
+ ]
+}

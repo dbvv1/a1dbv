@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-SORTABLE-20261118 · fallback 数组成对试验
 id: A-STRONG-METHOD-SORTABLE-20261118
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -33,4 +33,4 @@ GPT-6.1 sol / Codex CLI / xhigh，短任务→现行，每臂至交付或两小�
 验证与公开扫描后快进推 result_branch，回写 review_ready；dot-A 接收，不自动合 main。不向上游发布、不部署、不改账号/凭据。
 
 ## 当前结果
-blocked：实际可读隔离未证实，GPU/图像查看通路未核，RUN-ENV 实值未冻结。仅 bug 预检已 accepted；没有启动任何模型。
+review_ready（11-24 方向会话）：11-24 用户决定对照试验接受审计式隔离，方向会话本机完成真 GPU 预检与 RUN-ENV 冻结后按短任务→现行启动两臂。两臂源码修复逐字相同，真 GPU 三轮＋check_core 通过、TestCafe 0 失败、新测试能检出原缺陷；墙钟 14 分 36 秒对 14 分 01 秒，token 相近；盲评判短任务臂略优（测试更精炼），现行臂根因说明更完整。方向会话预检留下的 TestCafe Chrome 孤儿使两臂项目测试命令超时，记为环境偏离。见[结果](../../../experiments/strong-short-task-20261117/results/sortable/README.md)。

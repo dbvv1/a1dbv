@@ -1,0 +1,10 @@
+RUN-ENV.txt（运行事实，两组相同）
+- 系统：Windows 11；Codex CLI 0.166.0 默认 shell（PowerShell 7）。显卡 NVIDIA RTX 5070。
+- 目标仓库：SortableJS/Sortable 1.15.6，固定提交 63ecb31937d19fcb30aa924e82ee8a769ef34492，已浅克隆到当前目录（core.autocrlf=false，文件与上游逐字节一致）。根目录另有 preflight.html（SHA-256 0640d39018716a39a3856aa96c5188b569ce135c1694c7429d383b2ddea7c39d），页面直接加载根目录 Sortable.js（基线 SHA-256 ef647f5de9f6229193bcf1c024e706b24aa1a73fb3876a1fc7b780f16d4200f7）。
+- 依赖：Node 22.23.2、npm 10.9.8；已执行 npm ci --ignore-scripts（package-lock.json SHA-256 67196be83f0839157b46e13e37cb914dd284fd6f9dc318abcf82f78199cd2eb0）。Python 3.13.5，命令名 python。
+- 构建（改 src 后必须重建，页面只读根目录 Sortable.js）：node -e "require('child_process').execFileSync(process.execPath,['node_modules/rollup/dist/bin/rollup','-c','scripts/umd-build.js'],{env:{...process.env,NODE_ENV:'umd'},stdio:'inherit'})"。未改源码时重建产物与基线逐字节一致；不设 NODE_ENV=umd 也能构建成功，但产物不同。
+- 页面服务：在当前目录运行 python -m http.server 8765 --bind 127.0.0.1，打开 http://127.0.0.1:8765/preflight.html。
+- 真实浏览器与看图：Playwright 1.64.1 已装在 <tools>（Chromium 156 已缓存）。用硬件 GPU 启动：chromium.launch({ args: ['--enable-gpu','--ignore-gpu-blocklist','--use-angle=d3d11'] })，实测 renderer 为 ANGLE (NVIDIA RTX 5070, Direct3D11)。可在该目录写脚本操作页面、截图，并用图像查看工具查看截图。
+- 项目测试：node scripts/test.js（TestCafe 1.20.1，chrome:headless，测 tests/Sortable.test.js）；未改动时输出 FAILED COUNT 0。
+- 本机预检（未改动，硬件 GPU）：每轮重载页面，在 Alpha 中心按下，右下各移 4 px，读 start；分 10 步移到 Charlie 下方 15 px，释放，读 sort/end；三轮结果相同：start=[alpha,bravo,charlie,alpha]，sort=[bravo,charlie,alpha]，end=[bravo,charlie,alpha]，页面无报错。
+- 可联网；不向上游提交、评论或发 PR。

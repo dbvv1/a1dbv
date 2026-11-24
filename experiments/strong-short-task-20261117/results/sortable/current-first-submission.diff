@@ -1,0 +1,120 @@
+diff --git a/Sortable.js b/Sortable.js
+index 0c1555b..2c8c2b8 100644
+--- a/Sortable.js
++++ b/Sortable.js
+@@ -2097,7 +2097,7 @@
+         options = this.options;
+       for (; i < n; i++) {
+         el = children[i];
+-        if (closest(el, options.draggable, this.el, false)) {
++        if (el !== ghostEl && closest(el, options.draggable, this.el, false)) {
+           order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
+         }
+       }
+diff --git a/src/Sortable.js b/src/Sortable.js
+index 4776180..a49f419 100644
+--- a/src/Sortable.js
++++ b/src/Sortable.js
+@@ -1600,7 +1600,7 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
+ 
+ 		for (; i < n; i++) {
+ 			el = children[i];
+-			if (closest(el, options.draggable, this.el, false)) {
++			if (el !== ghostEl && closest(el, options.draggable, this.el, false)) {
+ 				order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
+ 			}
+ 		}
+diff --git a/tests/Sortable.test.js b/tests/Sortable.test.js
+index 59ce11f..a153eb2 100644
+--- a/tests/Sortable.test.js
++++ b/tests/Sortable.test.js
+@@ -127,6 +127,89 @@ test('Inverted swap threshold', async browser => {
+ });
+ 
+ 
++fixture `Serialization`
++	.page `./single-list.html`;
++
++[
++	{ name: 'fallback', forceFallback: true, fallbackOnBody: false, dataIdAttr: 'data-id' },
++	{ name: 'fallback on body', forceFallback: true, fallbackOnBody: true, dataIdAttr: 'data-id' },
++	{ name: 'fallback with custom IDs', forceFallback: true, fallbackOnBody: false, dataIdAttr: 'data-key' },
++	{ name: 'native', forceFallback: false, fallbackOnBody: false, dataIdAttr: 'data-id' }
++].forEach(({ name, forceFallback, fallbackOnBody, dataIdAttr }) => {
++	test(`Serialize original items during ${name} sorting`, async browser => {
++		const initial = ['alpha', 'bravo', 'charlie', 'delta', 'echo'];
++		const sorted = ['bravo', 'charlie', 'alpha', 'delta', 'echo'];
++
++		await browser.eval(() => {
++			const list = document.getElementById('list1');
++			Sortable.get(list).destroy();
++			const originals = Array.from(list.children);
++			const ids = ['alpha', 'bravo', 'charlie', 'delta', 'echo'];
++			originals.forEach((item, i) => item.setAttribute(dataIdAttr, ids[i]));
++			// A real item may share the preview's class; only the preview is temporary.
++			originals[1].classList.add('drag-preview');
++			window.arrayEvents = [];
++			const options = { forceFallback, fallbackOnBody, dataIdAttr, fallbackClass: 'drag-preview' };
++			['choose', 'clone', 'start', 'change', 'unchoose', 'update', 'sort', 'end'].forEach(name => {
++				options['on' + name.charAt(0).toUpperCase() + name.slice(1)] = function(evt) {
++					window.arrayEvents.push({
++						event: name,
++						array: this.toArray(),
++						dom: Array.from(list.children).filter(item => originals.indexOf(item) !== -1)
++							.map(item => item.getAttribute(dataIdAttr)),
++						oldIndex: evt.oldIndex,
++						newIndex: evt.newIndex,
++						ghostInList: list.contains(Sortable.ghost),
++						ghostId: Sortable.ghost && Sortable.ghost.getAttribute(dataIdAttr)
++					});
++				};
++			});
++			new Sortable(list, options);
++		}, { dependencies: { forceFallback, fallbackOnBody, dataIdAttr } });
++
++		await browser.dragToElement(list1.child(0), list1.child(2));
++
++		const events = await browser.eval(() => window.arrayEvents);
++		await browser
++			.expect(events.filter(row => row.event !== 'change').map(row => row.event))
++			.eql(['choose', 'clone', 'start', 'unchoose', 'update', 'sort', 'end'])
++			.expect(events.filter(row => ['start', 'sort', 'end'].indexOf(row.event) !== -1)
++				.map(row => ({ event: row.event, array: row.array })))
++			.eql([
++				{ event: 'start', array: initial },
++				{ event: 'sort', array: sorted },
++				{ event: 'end', array: sorted }
++			]);
++
++		for (const row of events) {
++			await browser.expect(row.array).eql(row.dom, row.event);
++		}
++
++		const start = events.find(row => row.event === 'start');
++		await browser
++			.expect(start.ghostInList).eql(forceFallback && !fallbackOnBody)
++			.expect(start.ghostId).eql(forceFallback ? 'alpha' : null)
++			.expect(events.filter(row => row.event === 'sort' || row.event === 'end')
++				.map(row => [row.oldIndex, row.newIndex])).eql([[0, 2], [0, 2]])
++			.expect(await browser.eval(() => Sortable.get(document.getElementById('list1')).nativeDraggable))
++			.eql(!forceFallback)
++			.expect(await browser.eval(() => Array.from(document.getElementById('list1').children)
++				.map(item => item.getAttribute(Sortable.get(document.getElementById('list1')).option('dataIdAttr')))))
++			.eql(sorted);
++	});
++});
++
++test('Preserve repeated IDs on original items', async browser => {
++	const order = await browser.eval(() => {
++		const list = document.getElementById('list1');
++		Array.from(list.children).forEach(item => item.setAttribute('data-id', 'same-id'));
++		return Sortable.get(list).toArray();
++	});
++
++	await browser.expect(order).eql(['same-id', 'same-id', 'same-id', 'same-id', 'same-id']);
++});
++
++
+ fixture `Grouping`
+ 	.page `./dual-list.html`;
+ 
