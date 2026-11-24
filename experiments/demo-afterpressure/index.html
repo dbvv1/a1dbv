@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>余压 / AFTERPRESSURE</title>
+  <link rel="stylesheet" href="./src/hud.css">
+  <link rel="icon" href="data:,">
+  <script type="importmap">
+    {"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <main id="view" aria-label="余压，第一人称射击游戏"></main>
+  <section id="hud" hidden aria-label="游戏状态">
+    <div class="objective">
+      <div class="phase"><span id="phaseIndex">01</span><span id="phaseZone">检修栈桥</span></div>
+      <strong id="objective"></strong><span id="objectiveDetail"></span>
+      <div id="pips" aria-label="巡检机状态" hidden><i></i><i></i><i></i></div>
+    </div>
+    <div id="telemetry" hidden>
+      <span id="telemetryLabel">旁路压力</span>
+      <div class="reading"><strong id="telemetryValue">0.0</strong><span id="telemetryUnit">MPa</span></div>
+      <div class="meter"><i id="telemetryFill"></i></div>
+    </div>
+    <div id="marker" hidden><i></i><span id="markerDetail"></span></div>
+    <div id="reticle" aria-hidden="true"><i></i><b></b></div>
+    <div id="damageDirection" aria-hidden="true" hidden><i></i></div>
+    <div id="prompt" hidden>
+      <kbd id="useKey">E</kbd><span id="promptText"></span>
+      <div id="holdTrack" hidden><i id="holdFill"></i></div>
+    </div>
+    <div id="radio" aria-live="polite" hidden><span id="radioFrom">调度</span><p id="radioText"></p></div>
+    <div class="vitals"><span>护甲</span><strong id="health">100</strong><div class="meter"><i id="healthFill"></i></div></div>
+    <div class="ammo"><span id="weaponStatus">AP–07</span><div><strong id="mag">12</strong><small id="reserve">/ 48</small></div>
+      <div class="meter" id="reloadTrack" hidden><i id="reloadFill"></i></div>
+    </div>
+    <div id="damage" aria-hidden="true"></div>
+  </section>
+  <div id="chapter" aria-hidden="true"><span id="chapterLabel"></span><strong id="chapterTitle"></strong></div>
+  <section id="cinema" hidden aria-label="关卡演出">
+    <div class="cinema-top"><span id="cinemaPlace"></span><span id="cinemaSkip">空格 · 跳过</span></div>
+    <div class="cinema-bottom"><p id="cinemaText" aria-live="polite"></p></div>
+  </section>
+  <div id="cutFade" aria-hidden="true"></div>
+  <section id="menu" data-mode="loading" aria-labelledby="title">
+    <div class="menu-content">
+      <div class="station"><span></span>北岬水电站 / 07 号泄洪闸</div>
+      <div class="menu-kicker" id="english">AFTERPRESSURE</div>
+      <h1 id="title">余压</h1>
+      <p id="description">主闸液压失联。穿过涡轮大厅，接通旁路，恢复泄洪。</p>
+      <div id="loading" aria-live="polite">
+        <div><span id="loadingStage">正在连接北岬水电站</span><span id="loadingPercent">0%</span></div>
+        <progress id="loadingProgress" value="0" max="100" aria-label="载入进度"></progress>
+      </div>
+      <dl id="results" hidden></dl>
+      <div class="menu-actions" id="menuActions" hidden>
+        <button id="start" type="button" disabled>正在加载闸站</button>
+        <button id="restart" type="button" class="secondary" hidden>从头开始</button>
+      </div>
+      <div class="controls" id="quickControls" hidden><span><kbd>WASD</kbd> 移动</span><span><kbd>左键</kbd> 射击</span><span><kbd>右键</kbd> 瞄准</span><span><kbd>R</kbd> 换弹</span><span><kbd>E</kbd> 操作</span></div>
+      <details id="settings" hidden>
+        <summary>设置与按键</summary>
+        <div class="settings-body">
+          <label for="sensitivity">鼠标灵敏度 <output id="sensLabel" for="sensitivity"></output></label>
+          <input type="range" id="sensitivity" min="35" max="180" value="100" step="5">
+          <label for="volume">音量 <output id="volumeLabel" for="volume"></output></label>
+          <input type="range" id="volume" min="0" max="100" value="72" step="1">
+          <label class="check"><input type="checkbox" id="motion"> 减少镜头运动</label>
+          <div class="extended"><span><kbd>Shift</kbd> 奔跑</span><span><kbd>C</kbd> 蹲伏</span><span><kbd>空格</kbd> 射击 / 跳过开场</span><span><kbd>方向键</kbd> 转向</span><span><kbd>H</kbd> 隐藏 HUD</span><span><kbd>Esc</kbd> 暂停</span></div>
+        </div>
+      </details>
+    </div>
+  </section>
+  <script type="module" src="./src/main.mjs"></script>
+</body>
+</html>

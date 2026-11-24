@@ -1,0 +1,19 @@
+{
+  "name": "race2-62",
+  "version": "1.0.0",
+  "description": "Aftertide coastal time trial",
+  "scripts": {
+    "test": "node tools/check-play.mjs",
+    "check:keyboard": "node tools/check-keyboard.mjs",
+    "start": "node tools/serve.mjs --open",
+    "telemetry": "node tools/telemetry.mjs",
+    "capture": "node tools/capture.mjs"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}

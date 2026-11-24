@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111a21">
+  <title>雪线回波 · PALE SIGNAL</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head>
+<body data-mode="loading">
+  <main id="viewport" aria-label="雪线回波游戏画面"></main>
+  <div id="grain" aria-hidden="true"></div>
+  <div id="shade" aria-hidden="true"></div>
+  <div id="edge" aria-hidden="true"></div>
+  <div id="blackout" aria-hidden="true"></div>
+  <div id="letterbox" aria-hidden="true"></div>
+
+  <section id="boot" class="screen" aria-label="加载状态">
+    <div class="boot-box"><span class="station-mark" aria-hidden="true"></span><span id="boot-label" role="status">正在读取地形与设备</span><div id="boot-progress" aria-hidden="true"><i></i></div><small id="boot-note"></small></div>
+  </section>
+  <section id="title-screen" class="screen" aria-label="主菜单">
+    <header class="title-header">
+      <div class="agency"><span class="station-mark" aria-hidden="true"></span><div><b>BOREAL</b><small>高山救援网</small></div></div>
+      <span class="title-location"><i></i> 46° 01′ N &nbsp; / &nbsp; 4,182 M</span>
+    </header>
+    <div class="title-body">
+      <span class="mission-kicker"><span></span> 第 07 号中继站</span>
+      <h1><span>PALE</span><span>SIGNAL<span class="title-dot">.</span></span></h1>
+      <h2>雪线回波</h2>
+      <p>暴风雪切断了山上的通信。<br>最后一份救援坐标，还在 07 号站里。</p>
+      <div class="title-actions">
+        <button id="start" class="primary"><span>开始任务</span><span class="go-icon" aria-hidden="true"></span></button>
+        <button id="open-settings" class="secondary"><span>设置与操作</span></button>
+      </div>
+    </div>
+    <footer class="title-footer"><span>BOREAL RESCUE NETWORK</span><span>雪线以上 · 日出前</span></footer>
+  </section>
+
+  <section id="hud" class="screen" aria-label="任务信息">
+    <div class="top-left">
+      <div class="objective-heading"><span class="objective-icon"></span><span id="act"></span></div>
+      <strong id="objective"></strong>
+      <span id="objective-sub"></span>
+    </div>
+    <div id="compass" aria-hidden="true"><div id="compass-tape"></div><i></i><span id="bearing">000</span></div>
+    <div class="top-right"><span class="radio-icon"></span><span>BOREAL / 07</span></div>
+    <div id="marker" aria-hidden="true"><i></i><span id="distance"></span></div>
+    <div id="reticle" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+    <div id="hit" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div id="incoming" aria-hidden="true"><i></i></div>
+    <div id="interaction" hidden><kbd>E</kbd><span></span></div>
+    <div id="radio" aria-live="polite"><span class="wave-mark" aria-hidden="true"></span><div><b></b><p></p></div></div>
+    <div id="hint"></div>
+    <div id="stage-toast"><span></span><strong></strong></div>
+    <div id="transmit" hidden><div><span>中继站 · 正在上传</span><b>0%</b></div><div class="transmit-track"><i></i></div></div>
+    <div id="vitals">
+      <span class="hud-kicker"><i></i> 防寒服</span>
+      <div class="health-read"><b id="health">100</b><div id="health-segments"><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+    <div id="ammo">
+      <span class="hud-kicker">K-07 <i></i> 脉冲卡宾枪</span>
+      <div class="ammo-read"><b id="loaded">24</b><span class="ammo-slash"></span><span id="reserve">168</span></div>
+      <span id="ammo-note"></span>
+    </div>
+  </section>
+
+  <section id="end-screen" class="screen overlay" aria-label="任务结束">
+    <div class="end-inner">
+      <div id="end-kicker" class="mission-kicker"><span></span> 任务报告</div>
+      <h2 id="end-title">信号已送达</h2>
+      <p id="end-copy"></p>
+      <div id="stats" aria-label="本次成绩"></div>
+      <div class="end-actions"><button id="retry" class="primary"><span>重新游玩</span><span class="go-icon" aria-hidden="true"></span></button><button id="to-title" class="secondary">返回主菜单</button></div>
+    </div>
+  </section>
+
+  <section id="pause-screen" class="screen overlay" aria-label="游戏已暂停">
+    <div class="pause-inner">
+      <div class="mission-kicker"><span></span> PALE SIGNAL</div>
+      <h2>任务暂停</h2>
+      <div class="pause-actions">
+        <button id="resume" class="primary"><span>继续任务</span><span class="go-icon" aria-hidden="true"></span></button>
+        <button id="pause-settings" class="secondary">设置与操作</button>
+        <button id="pause-restart" class="secondary">重试当前段</button>
+        <button id="pause-title" class="secondary">返回主菜单</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="settings" class="screen overlay" aria-label="设置与操作" aria-modal="true" role="dialog" hidden>
+    <div class="settings-inner">
+      <div class="mission-kicker"><span></span> PALE SIGNAL</div>
+      <h2>设置与操作</h2>
+      <div class="settings-row"><label for="volume">音量</label><input id="volume" type="range" min="0" max="100" value="75"><output for="volume"></output></div>
+      <div class="settings-row"><label for="sensitivity">鼠标灵敏度</label><input id="sensitivity" type="range" min="25" max="175" value="100"><output for="sensitivity"></output></div>
+      <div class="settings-row"><label for="voices">本机中文电台语音</label><input id="voices" type="checkbox"><output for="voices"></output></div>
+      <div class="settings-row"><label for="motion">减弱镜头晃动与闪光</label><input id="motion" type="checkbox"></div>
+      <dl class="controls-list">
+        <div><dt>移动</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dd></div>
+        <div><dt>奔跑 / 跳跃</dt><dd><kbd>Shift</kbd><kbd>Space</kbd></dd></div>
+        <div><dt>射击 / 瞄准</dt><dd><kbd>左键</kbd><kbd>右键</kbd></dd></div>
+        <div><dt>装弹 / 交互</dt><dd><kbd>R</kbd><kbd>E</kbd></dd></div>
+        <div><dt>暂停</dt><dd><kbd>Esc</kbd></dd></div>
+      </dl>
+      <button id="close-settings" class="primary"><span>返回</span><span class="go-icon" aria-hidden="true"></span></button>
+    </div>
+  </section>
+  <script>
+    if (location.protocol === 'file:') {
+      document.querySelector('#boot-label').textContent = '请通过本地服务器打开雪线回波';
+      document.querySelector('#boot-note').textContent = '在游戏目录运行 node serve.cjs，再打开 http://127.0.0.1:8270/。';
+    }
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
+
+

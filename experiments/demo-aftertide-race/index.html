@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101a1d">
+<title>余潮 · Aftertide</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head>
+<body data-phase="loading">
+<main id="drive" aria-label="余潮驾驶体验"></main>
+<div id="hud">
+  <div class="wash"></div>
+  <header class="top">
+    <div class="signature">
+      <svg viewBox="0 0 42 42" aria-hidden="true"><path d="M5 31 21 7l16 24M10 24h22M12 35h18"/></svg>
+      <div><span class="over">AFTERTIDE</span><span class="place">余潮 <i></i> 海岬公路</span></div>
+    </div>
+    <div class="race-clock">
+      <span id="clock-label" class="over">单圈计时</span>
+      <strong id="clock">00:00.000</strong>
+      <div class="sectors" aria-label="计时进度"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="best"><span class="over">最佳纪录</span><strong id="best">—</strong></div>
+  </header>
+  <aside class="course">
+    <div class="course-head"><span id="section">海岬公路</span><span id="distance">1.01 KM</span></div>
+    <svg id="map" viewBox="0 0 136 142" aria-label="赛道地图">
+      <path id="map-shadow"/><path id="map-course"/><path id="map-start"/><circle id="map-car" r="3.8"/>
+    </svg>
+    <div class="course-foot"><i></i> <span>单圈</span></div>
+  </aside>
+  <section class="start-card">
+    <p class="over"><i></i> COVE ROAD / 1.01 KM</p><h1>余潮</h1>
+    <div class="english-title">AFTERTIDE</div>
+    <p class="route-detail">沿海下降，穿过发卡弯，再爬回山脊。</p>
+    <button id="start">开始驾驶 <kbd>W</kbd></button>
+  </section>
+  <section id="result" class="result" hidden>
+    <p id="record" class="over">单圈完成</p><h2 id="finish-time">00:00.000</h2>
+    <button id="restart">再跑一圈 <kbd>R</kbd></button>
+  </section>
+  <div class="dash">
+    <div class="rpm"><div id="rpm-bar"></div></div>
+    <div class="speed-row"><span id="gear">1</span><div class="speed"><span id="speed">000</span><small>KM/H</small></div></div>
+    <div class="meter-row"><span>油门</span><i class="meter"><i id="gas"></i></i><span>刹车</span><i class="meter red"><i id="brake"></i></i></div>
+  </div>
+  <nav class="keys" aria-label="驾驶操作">
+    <span><kbd>W</kbd><kbd>S</kbd> 油门 / 刹车</span><span><kbd>A</kbd><kbd>D</kbd> 转向</span><span><kbd>SPACE</kbd> 手刹</span>
+    <button id="btn-restart" aria-label="重开"><kbd>R</kbd> 重开</button><button id="btn-camera" aria-label="切换镜头"><kbd>V</kbd> 镜头</button>
+    <button id="btn-photo" aria-label="拍照模式"><kbd>P</kbd> 摄影</button><button id="btn-audio" aria-label="静音" aria-pressed="false"><kbd>M</kbd> 声音</button>
+    <button id="btn-help" aria-label="键位帮助"><kbd>?</kbd></button>
+  </nav>
+  <section id="photo-guide" hidden><kbd>P</kbd> 返回驾驶 <b>·</b> 拖动旋转 <b>·</b> 滚轮缩放 <b>·</b> <kbd>H</kbd> 隐藏界面</section>
+  <section id="help" hidden>
+    <h2>驾驶操作</h2>
+    <p><kbd>W</kbd> 加速 <kbd>S</kbd> 刹车，停稳后继续按可倒车</p>
+    <p><kbd>A</kbd><kbd>D</kbd> 转向 <kbd>SPACE</kbd> 后轮手刹</p>
+    <p><kbd>V</kbd> 切换追尾距离 <kbd>P</kbd> 摄影 <kbd>H</kbd> 隐藏界面</p>
+    <p><kbd>R</kbd> 重开 <kbd>T</kbd> 实时遥测 <kbd>M</kbd> 静音</p>
+    <p><label><input id="driving-assist" type="checkbox" checked> 驾驶辅助（稳定和反打）</label></p>
+    <button id="close-help">返回 <kbd>ESC</kbd></button>
+  </section>
+  <pre id="telemetry" hidden></pre>
+  <div id="load"><i></i><span id="load-message">正在准备海岸公路</span></div>
+</div>
+<script type="module" src="./src/main.mjs"></script>
+</body>
+</html>
