@@ -1,6 +1,12 @@
 # CLAUDE.md／AGENTS.md 怎么写
 
-**🟡 多工具项目先在真实任务里试用共享的 `AGENTS.md`：写清真实命令、任务入口、不可猜的契约和完成标准。** 确认当前环境的 Claude Code 已直接加载后，只保留这一份；需要 Claude 专属规则或兼容旧会话时，在同目录 `CLAUDE.md` 导入。只用 Claude、现有 `CLAUDE.md` 已经好用的项目，继续维护原文件。
+**🟡 多工具项目先共用一份 `AGENTS.md`。** 写真实任务入口、不能猜的契约与完成标准。迁移前在工作目录新开会话，分别确认客户端加载和真实改动符合约定。
+
+| 当前项目 | 先怎么做 |
+|---|---|
+| 只用 Codex，或 Claude 已确认直接加载同一份且无专属规则 | 正文留在根 `AGENTS.md`；只有局部行为确实不同才加目录说明 |
+| Codex 与 Claude 共用，但尚未确认 Claude 的原生加载、团队版本混用，或有 Claude 专属规则 | 共享正文只写一份；同目录 `CLAUDE.md` 用独立一段 `@AGENTS.md` 导入，专属规则放其后 |
+| 只用 Claude，现有 `CLAUDE.md` 用得好 | 原地维护，不为统一文件名搬家 |
 
 ## 第一步：把四件事填进现有文件
 
@@ -28,25 +34,15 @@
 
 ## 要不要同时放两种文件
 
-| 项目情况 | 最简单的选择 |
-|---|---|
-| Codex 为主，或多个工具共享规则 | 共同正文放根 `AGENTS.md`；子模块确有不同约定时再加局部文件 |
-| 只用 Claude Code，已有 `CLAUDE.md` | 原地维护，不为统一文件名搬家 |
-| 已有 `AGENTS.md`，Claude 没直接加载，或还要 Claude 专属规则 | 同目录 `CLAUDE.md` 写下方导入，专属规则放其后 |
-
 `CLAUDE.md` 的最小文件内容是：
 
 ```markdown
 @AGENTS.md
 ```
 
-**新建最小文件时只放这一行，不带代码围栏或行内反引号；已有 `CLAUDE.md` 则把导入作为顶层单独一段，和标签或其他正文隔一空行；保留仍有效的原有规则，不用示例覆盖整份文件。** 自然语言“请阅读 AGENTS.md”要靠模型再去打开文件；`@AGENTS.md` 才是 Claude 的导入语法。公共正文只维护一份；同文件的显式导入会去重。清理旧方案时，移除已由原生加载替代的 `SessionStart` 打印 Hook 和手工复制的正文，保留有用的导入。
+已有 `CLAUDE.md` 时，把这一行放在顶层独立成段，与标签和其他正文隔一空行，保留专属规则。“请阅读 AGENTS.md”只是让 Agent 自己找文件，不是导入。确认不用旧入口也能加载同一正文后，才删手工副本或旧 `SessionStart` 打印 Hook。
 
-**外层文件已经加载，也要核共享正文。** 用正式 Linux 2.1.329 实跑本仓 wrapper：把 `@AGENTS.md` 紧接在单独一行的 `<role>` 标记下，首次请求虽含外层正文和字面 `@` 行，却没有共享文件；只加一空行就恢复。对照使用本地模拟端点、不用模型；这是该排版的导入检查，不是所有相邻导入行都失效。依据：[实际使用者的相同故障](https://github.com/anthropics/claude-code/issues/110857)；2026-11-21 Linux 复跑。
-
-当前 Claude Code 的原生 AGENTS 入口要求 v2.1.277+ 且内置能力可用；Bedrock、Vertex、Foundry、LLM 网关或关闭遥测的会话须用 v2.1.281+。插件被停用、从 v2.1.276 或更早升级后的首个会话，也可能只读 CLAUDE 文件。默认情况下，工作目录或祖先目录里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md` 会让它改读 CLAUDE 文件；团队有混合版本或这些文件时，保留显式导入最省事。
-
-已有合法配置把 **Project instructions** 设为 `claude-md-and-agents-md` 时，两种文件也可同时加载并去重；该设置只从用户、`--settings` 或 managed 层读取，写进项目／本地设置会被忽略。不要把个人设置当作团队克隆仓库后就具备的条件。
+去重与兼容选项取决于客户端；需要撤掉兼容导入时，先按[第二步](#第二步核对加载入口与当前上下文)核团队支持的实际环境。
 
 ## 局部产品需求与共享规则冲突时
 
@@ -95,8 +91,9 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir "<外部仓库�
 
 **交互式客户端按下列入口核对；API、SDK 或子代理若不提供这些入口，就不要硬套斜杠命令。** 有宿主提供的加载回执时核对文件来源；没有则把启动加载标为待验，继续核当前可见内容与真实任务结果。手动读文件不能补出启动证据，也不必为补证另开未授权客户端。[一次非交互读者实做](https://github.com/dbvv1/jrnl/blob/8d9895233ae9c8f1e6c878eb5461c0be13b0d0fd/reader-tests/A-INSTRUCTION-FILES-READER-20261103-u1.md#第二步加载入口与当前上下文按当前接口能做到的程度)遇到了这个入口差异；其文档产物已沿原卡完成定点修订，启动加载仍待独立回执，不计为共享方案通过（2026-11-03）。
 
-- **Claude 原生 AGENTS**：先用 `claude --version` 与 `/config` 确认上述版本条件及 **Project instructions** 入口；该项不可见或设为 `claude-md`／`managed-only` 时，不按原生 AGENTS 已加载处理。v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 不列原生 AGENTS，改问当前项目规则并对照文件。
-- **Claude 显式导入**：用 [`/context all`](https://code.claude.com/docs/en/memory#set-up-a-project-claudemd) 展开 **Memory files**（全屏模式的裸 `/context` 折叠列表），确认外层 `CLAUDE.md` 在列，并核对其中的 `@AGENTS.md` 指向同目录共享文件；共享内容是否可见，再用下方提问核对。
+- **Claude 原生 AGENTS**：用 `claude --version` 和 `/config` 核版本及 **Project instructions**。要求 v2.1.277+ 且内置能力可用；Bedrock、Vertex、Foundry、LLM 网关或关闭遥测需 v2.1.281+。从 v2.1.276 或更早升级的首个会话、插件停用、设置不可见或设成 `claude-md`／`managed-only`，都不能按原生已加载处理。v2.1.280+ 用 `/memory` 查看 `AGENTS.md` 路径；v2.1.277–279 不列原生 AGENTS，用下方复述核可见内容。
+- **已有 Claude 文件**：工作目录或祖先目录里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md` 默认会让它改读 CLAUDE 文件。若必须同时加载并去重，`claude-md-and-agents-md` 只从用户、`--settings` 或 managed 层生效，不把项目级配置当成团队保证。
+- **Claude 显式导入**：用 [`/context all`](https://code.claude.com/docs/en/memory#set-up-a-project-claudemd) 展开 **Memory files**（全屏版的裸 `/context` 折叠列表），对照外层 `CLAUDE.md` 与指向共享正文的 `@AGENTS.md`，再核实际可见内容。Linux 2.1.329 假端点实跑：`@AGENTS.md` 紧跟独占一行的 `<role>` 时，请求里只有外层正文和字面 `@` 行；加一个空行恢复。这个对照只证明该排版的加载，未调用模型。依据：[使用者同类故障](https://github.com/anthropics/claude-code/issues/110857)，2026-11-21 复跑。
 - **Codex**：上方启动命令已把无工具核对放进第一轮提示，直接对照返回的项目规则；不要先让它泛泛总结，再补“不读文件”的限制。它从项目根到当前目录每层最多取一份，优先 `AGENTS.override.md`、再取 `AGENTS.md`／配置的备用文件名，默认合计上限 32 KiB。缺规则时先核实际项目根和启动目录。项目内即使是空的 `AGENTS.override.md` 也会遮住同目录 `AGENTS.md`，与全局空覆盖会回退不同；不需要覆盖就移走它。若先加载的根文件用完预算，先删减根规则；把同样内容拆到各层不会增加 32 KiB 额度。依据：[0.171.0 加载优先级与字节预算](https://github.com/openai/codex/blob/rust-v0.171.0/codex-rs/core/src/agents_md.rs#L132-L266)（2026-11-22 源码核对，发布版复跑未到达加载）。
 
 核对时选共享文件里已有的一条项目特有契约和一条检查命令，不另加暗号。已在目标目录新开交互会话、尚未给首轮任务的读者，可直接发下面这段；用了上方 Codex 启动命令就无需再发：
