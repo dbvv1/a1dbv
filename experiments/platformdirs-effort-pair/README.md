@@ -6,11 +6,18 @@
 
 | 甲 | 乙 | 两组固定 |
 |---|---|---|
-| GPT-6.2 Sol，`medium` | 同一 GPT-6.2 Sol，`high` | 同机器、Codex CLI 构建、Standard、Python、依赖、权限、工具、起始提交及提示，各 45 分钟。 |
+| GPT-6.2 Sol，`medium` | 同一 GPT-6.2 Sol，`high` | 同机器、Codex CLI 构建、Standard、tox、打包与测试解释器、依赖、权限、工具、起始提交及提示，各 45 分钟。 |
 
 ## 公开任务与启动条件
 
-组织者用 [platformdirs #677](https://github.com/tox-dev/platformdirs/pull/677) 的修复前提交 [`17c6932e`](https://github.com/tox-dev/platformdirs/tree/17c6932e884d4e7836b37eac1637a649f15a779b)，不把 PR 链接或后续历史交给执行者。用 Linux、Python 3.13、[固定提交的 tox 配置](https://github.com/tox-dev/platformdirs/blob/17c6932e884d4e7836b37eac1637a649f15a779b/tox.toml)，以同版本依赖分别准备环境，跑 `tox -e 3.13 -- -q`；测试直接实例化 Unix 与 MacOS 类，不算原生 macOS 验证。先确认原套件和独立对照正常、基线可触发重复；确认 CLI 两档均可选。缺任一项就不启动。
+组织者用 [platformdirs #677](https://github.com/tox-dev/platformdirs/pull/677) 的修复前提交 [`17c6932e`](https://github.com/tox-dev/platformdirs/tree/17c6932e884d4e7836b37eac1637a649f15a779b)，不把 PR 链接或后续历史交给执行者。在 Linux 用同一版本的 tox（上游要求 ≥4.64.7）和依赖。[固定 tox 配置](https://github.com/tox-dev/platformdirs/blob/17c6932e884d4e7836b37eac1637a649f15a779b/tox.toml#L16-L63)用 Python 3.15 在 `.pkg` 构建 wheel，Python 3.13 在 `3.13` 跑 pytest；`-e 3.13` 不会更改打包解释器。先在原版验两者的实际版本，缺解释器或环境被跳过就不启动：
+
+```sh
+tox run -e 3.13 --skip-missing-interpreters=false --notest
+tox exec -e 3.13 --skip-missing-interpreters=false -- python -m pytest -q tests
+```
+
+第一条只准备环境并打包；第二条跑原 pytest 套件、核实际执行数和结果，不跑依赖 `origin/main` 的差异覆盖检查。退出 0 或仅看到收集列表都不能替代 pytest 结果。不要给 `tox run` 追加 `-- -q`：在 tox 4.67.6 对固定配置的静态展开中，参数同时进入命令列表的两个位置，后一个位置加载失败（只解析配置，未构建或跑测试）。测试直接实例化 Unix 与 MacOS 类，不算原生 macOS 验证。再核独立对照正常、原版可触发重复、CLI 两档均可选，缺一项不启动。依据：[一手] [tox CLI](https://tox.wiki/en/stable/reference/cli.html#tox-exec)与固定配置，2026-11-24。
 
 两组分别用不共享 Git 对象的固定检出，无远端、参考补丁、另组结果或组织者验收文件；给相同项目指令、依赖、工具和真实测试反馈，不许外查答案。新进程、空会话，串行随机顺序。只把下段交执行者。
 
