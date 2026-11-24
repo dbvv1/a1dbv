@@ -1,6 +1,6 @@
 # 强模型短任务与现行推荐：两题成对先导
 
-**状态：尚无有效正式对照。** Click 只保留探索结果；替补的界面题 Sortable 和 CLI 题 uv 都待方向会话本机前置核验。11-17 用户指定最高优先候选：真实结果反馈、三段短任务、强模型长回合与较少流程约束。这里比较两套提示包，不把差异归因单一因素；两道窄 bug 题仅能发现问题，可能出现双方全通过的天花板，不能证明通用或游戏创作优劣。
+**状态：Sortable 已跑完两臂，核心结果已复核；uv 未见本机回传。** Click 只保留探索结果，不补算第二道正式题。11-17 用户指定最高优先候选：真实结果反馈、三段短任务、强模型长回合与较少流程约束。这里比较两套提示包，不把差异归因单一因素；窄 bug 题不能证明通用或游戏创作优劣。
 
 ## 启动合同（仅方向会话阅读，不注入被测模型）
 
@@ -28,7 +28,7 @@
 ## 任务卡
 
 - [原 Excalidraw](../../docs/collaboration/local-jobs/A-STRONG-METHOD-EXCALIDRAW-20261117.md)／[原 Click](../../docs/collaboration/local-jobs/A-STRONG-METHOD-CLICK-20261117.md)：保留记录，不重派。
-- [Sortable 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md)：待实际隔离、真 GPU 截图/看图和环境冻结。
+- [Sortable 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md)：两臂已回传；见下方接收范围。
 - [uv 替补](../../docs/collaboration/local-jobs/A-STRONG-METHOD-UV-20261122.md)：发行版和固定源码构建均已在云端复现，仍待方向会话本机构建与隔离；不重派 Click。
 
 ## 原题、已知污染与结果去向
@@ -38,6 +38,10 @@
 - 仅本地试验，不向上游提交、评论或发 PR；尤其 Click 的贡献政策拒绝 AI 生成投稿。结果回各卡指定 a1dbv relay 分支，dot-A 接收。方向会话负责启动，不改用户账号/凭据、不扩收费服务。
 - 结果到达后决定 `docs/15-task-playbooks.md §2` 与 `templates/generic/.claude/skills/task-decisions/SKILL.md` 保留/精简/撤回哪些具体建议；若无差异则不为交付改页。卡片和本协议不算答案页进度。旧试验/隔离卡不被这次明确新授权自动关闭。
 
-## Sortable 替补状态（11-18）
+## Sortable 单题接收（11-24）
 
-[预检接收](ui-replacement/results/RECEIPT.md)：#2456 固定版本 headless 三轮复现；[正式卡](../../docs/collaboration/local-jobs/A-STRONG-METHOD-SORTABLE-20261118.md) blocked，待实际只读隔离与真 GPU/看图通路，不先跑模型。Click 已有回执是[非正式探索记录](results/click/README.md)，不能计入干净对照；当前仍无两道有效的正式对照结果。
+[方向会话回传（固定提交）](https://github.com/dbvv1/a1dbv/tree/f07aa17c0c1d974fc2f42f44b1368411dbf86881/experiments/strong-short-task-20261117/results/sortable)。方向会话记录本轮按审计式隔离执行，不等于强制读取边界。两臂报告使用 GPT-6.1 Sol xhigh／Codex CLI 0.166.0，短任务先跑。
+
+- **核心质量**：首交 `src/Sortable.js` 补丁一致。对三个公开捕获重新运行 `check_core.py`，原版三轮 start 均重复 alpha，退出 1；两臂各三轮均通过，退出 0。这里复核的是事件数据和补丁，不是重新启动 Windows 浏览器。回传报告项目 TestCafe 套件两臂各 0 失败，新增测试放回旧实现各两项失败；取消操作未见直接证据，不能按全验收通过。
+- **盲评与投入**：据回传，标签隐藏评审偏好短任务臂的回归设计，现行臂根因说明更完整。墙钟 14:36／14:01；两臂原 TestCafe 命令都遇到预检残留进程导致的超时，改用其他入口跑同一文件。短／现行输入 token 约 276 万／290 万（含缓存约 266 万／278 万），输出约 2.7 万／2.4 万；实际账单及端到端投入未知，不判速度或费用优势。
+- **能回答与不能回答的**：两臂都用事件日志判定，未发现模型看截图的记录，虽有硬件 renderer 和截图，不能据此评估视觉反馈的贡献。Sortable 是单题核心结果；保留现行通用模板，不把 Click 探索结果并入，也不等第二题才采用“按实际缺陷选证据”的经验。

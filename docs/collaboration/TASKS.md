@@ -46,7 +46,7 @@
 
 ### A：试验收口
 
-- 最高优先：[强模型对照两卡](../../experiments/strong-short-task-20261117/README.md#任务卡)：Sortable、uv 均待方向会话本机预检；核收后仅手动启动，Click 不重派。
+- 最高优先：[强模型对照两卡](../../experiments/strong-short-task-20261117/README.md#任务卡)：Sortable 两臂已跑，核心验收复核通过，完整验收仍有缺项；uv 未见本机回传，Click 不重派。
 
 [11-12 已完成段](archive/completed-through-2026-11-17.txt)；旧试验未收口不新开。
 

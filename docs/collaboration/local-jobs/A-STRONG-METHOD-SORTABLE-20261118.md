@@ -1,7 +1,7 @@
 # A-STRONG-METHOD-SORTABLE-20261118 · fallback 数组成对试验
 id: A-STRONG-METHOD-SORTABLE-20261118
 owner: dot-A
-status: blocked
+status: review_ready
 kind: build
 executor: strong
 target_repo: dbvv1/a1dbv
@@ -33,4 +33,4 @@ GPT-6.1 sol / Codex CLI / xhigh，短任务→现行，每臂至交付或两小�
 验证与公开扫描后快进推 result_branch，回写 review_ready；dot-A 接收，不自动合 main。不向上游发布、不部署、不改账号/凭据。
 
 ## 当前结果
-blocked：实际可读隔离未证实，GPU/图像查看通路未核，RUN-ENV 实值未冻结。仅 bug 预检已 accepted；没有启动任何模型。
+11-24：方向会话已完成两臂。核心三轮事件数据和首交源码补丁已复核；取消操作、模型看图与完整用量未证，不标全验收通过。见[单题接收与固定回传](../../../experiments/strong-short-task-20261117/README.md#sortable-单题接收11-24)。
