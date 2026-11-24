@@ -53,6 +53,8 @@
 
 [Memos #6502](https://github.com/usememos/memos/pull/6502) 在旧基线 `0bfa31e8` 上试合并退出 0；换到[固定上游 `f4c95eff`](https://github.com/usememos/memos/commit/f4c95effd686395cb4f6f3230a816ad5a1b40475) 与[同一候选 `00d21706`](https://github.com/dbvv1/memos/commit/00d217067504e2b912bfd418199eef69d23a3c6a) 后，Git 2.56.1 的 `--quiet` 仍退出 0；非静默命令退出 1，列出的 48 个冲突路径与临时树实际合并完全一致。此案不用静默状态代替冲突清单。2026-11-22 云端实跑，参照 [Git 手册](https://git-scm.com/docs/git-merge-tree#_exit_status)；未更新该 PR，也未续跑产品 QA。
 
+**批量试合并不要沿用单对退出码。** 一次只检查一对时用上方命令；需要 `--stdin` 才按每对读取 NUL 分隔的状态字段（`0` 冲突、`1` 干净），进程退出 0 只代表批处理完成。Git 2.56.1 本仓临时夹具一对冲突、一对干净，交换顺序后仍均退出 0，各对状态始终跟着对应输入；单对的简单内容冲突则两种命令都退出 1，不把 Memos 的 `--quiet` 表现外推到所有冲突。依据：[Git 批量输出与退出码](https://git-scm.com/docs/git-merge-tree#OUTPUT)，2026-11-24 Linux 实跑合成仓。
+
 上述做法中的准入不是形式要求：Goose 的 [#11322](https://github.com/aaif-goose/goose/pull/11322) 曾因缺 `Ready` issue 关闭，作者补充后重开并合并；[Windows 安装器讨论](https://github.com/aaif-goose/goose/issues/11987#issuecomment-6029897376)还明确要求后续维护承诺。这些是维护者实际接收决定，不是“多跑一次测试就会放行”。来源核读 2026-10-30。
 
 <a id="upstream-fixed-same-behavior"></a>
