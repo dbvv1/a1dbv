@@ -76,6 +76,10 @@
 
 **同一组原始数据用同一个 p95 算法。** 发布前后都从原始数据用最近秩（升序第 `ceil(0.95 × n)` 项）重算，同时报最长间隔与超过 50 ms 的次数。反例：180 个间隔里 171 个为 16.7 ms、9 个为 60 ms，[Star-Rush 面板](https://github.com/dbvv1/Star-Rush-Reborn/blob/a91b422375793c9ac62cd4fe842b56b2eba92fea/race-features.js#L105-L110)用零起点的 `floor(0.95 × n)` 索引，得 60 ms；[整局脚本](https://github.com/dbvv1/Star-Rush-Reborn/blob/a91b422375793c9ac62cd4fe842b56b2eba92fea/tests/smoke-full-race.mjs#L125-L131)用最近秩，得 16.7 ms。两者最长均为 60 ms，超过 50 ms 的都是 9 次；只看 p95 会把计算差异误读为性能改善（源码与合成复算，2026-11-22）。
 
+**定位短卡顿，看它是否随单项改动出现在同一路标。** 整局仍报实际 p95；定位时关录制，用同一构建和路线按「旧件→只开新件→旧件」复跑。记录每个帧间隔两端的路标和阶段，过场与跨段间隔另记；在匹配的游玩段里，用同一个阈值（例如旧版稳定间隔的 1.5 倍，稳定 60 Hz 约为 25 ms），报慢间隔数／总间隔数、最长连续慢段的时长和起点。整局 p95 会受各段停留比例影响，不能单凭它给某个地形归因；浏览器帧间隔也不是 GPU 耗时。
+
+反例：同为 92 个 16.7 ms 和 8 个 33.3 ms 间隔，慢间隔分散或连续时，p95 都是 33.3 ms、超过 50 ms 的都为零；最长连续慢段却是 33.3 ms 对 266.4 ms。[《雪线回波》整关记录](../../docs/collaboration/demo-trial-20261117.md#第六批11-24换生产手段用-blender-重做枪手和雪山)有 p95 回退但原因未查；上面的连续段数字来自合成复算，不是它的实机结果。
+
 **测自动画质，首局对首局，重开对重开。** 比较两个策略时，两边都新开页面、不沿用历史恢复，保持开跑前停留和倒计时一致。专测重开时，保留上一局的档位和结算停留时长，再对齐起跑档、同一赛段以及画质控制器实际采到的间隔；玩家看到的帧间隔另算。别以为只截取开跑后的数据，就清掉了菜单对控制器的影响。实际档位和缓冲尺寸分别记录：两个档同尺寸时，不能凭尺寸认档。
 
 反例：Star-Rush 的[候选控制器](https://github.com/dbvv1/Star-Rush-Reborn/blob/1bfd8fd803de232ca66043b8009d8bef7ee34fec/auto-quality.mjs#L16-L65)由[渲染器持有](https://github.com/dbvv1/Star-Rush-Reborn/blob/1bfd8fd803de232ca66043b8009d8bef7ee34fec/render-three.js#L19-L35)，[重开重置比赛](https://github.com/dbvv1/Star-Rush-Reborn/blob/1bfd8fd803de232ca66043b8009d8bef7ee34fec/race.js#L137-L140)，但[结算和倒计时仍绘制](https://github.com/dbvv1/Star-Rush-Reborn/blob/1bfd8fd803de232ca66043b8009d8bef7ee34fec/race.js#L215-L217)。用同一个低档初态，在合成序列中分别停留约 0、6、15 秒，再喂同样的倒计时帧，起跑档变成低、中、高；随后施加同样的 50 ms 帧间隔，到低档分别需 0、4.8、9.35 秒。仅改变赛前历史就能制造降档延迟差异；这些是控制器复算，不是实机帧耗（2026-11-22）。
