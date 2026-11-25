@@ -270,6 +270,8 @@ Rokoko Vision 3.0 已转离线录制后上传，不含手指；旧双机位／�
 
 **步频标定只用实际支撑区间，不拿整圈脚骨摆幅当步幅。** 同一原地跑源的 root motion 为零，脚骨沿源 Z 的范围约 0.68 m、趾骨约 0.99 m，包含抬脚回摆。真实 Game 的约 4.5 m/s 乘源周期约 0.833 s，只得到约 3.75 m 的恒速外推距离。上述复跑命令同时输出真实鞋底的源／消费者比对，但保留 `contactIdentified=false`、`strideCalibrated=false`。先确定身体、动作和地面的适配，再比较支撑段足底后移与角色平移；没有这层证据就保留源速度，不把调倍速当接地修复。
 
+**验脚滑，用支撑期的世界空间鞋底，不用脚踝高度。** 动画与 IK 求值后，在同一只鞋选固定脚跟和前掌顶点，记录支撑期相对接触面的切向位移和法向间隙；转身时也看同机位录像。Three r170 使用附着蒙皮、又在渲染外取样时，按正常渲染顺序从场景根调用 `updateMatrixWorld(true)`，再用 `getVertexPosition(i, v).applyMatrix4(mesh.matrixWorld)`。先做两个对照：角色根移动 12 cm、骨骼反向补偿 12 cm，应读 0；去掉补偿，应读 12 cm。反例：同一已补偿夹具只调用 `updateWorldMatrix(true, true)`，逆绑定矩阵未刷新，仍误报 12 cm。依据：[附着蒙皮覆盖方法](https://github.com/mrdoob/three.js/blob/r170/src/objects/SkinnedMesh.js#L203-L253) · [渲染前更新](https://github.com/mrdoob/three.js/blob/r170/src/renderers/WebGLRenderer.js#L1144-L1152)。[本端实测] 2026-11-25，Three 0.170.0 单骨夹具，未测现行作品的实机足底。
+
 **接线先找实际调用路径。** 当前 KayKit 适配器仅由测试／工具调用；产品原 `characters-v1` 加载器明确拒绝 `SkinnedMesh`，不能把同一组 CPU 快照结果写成角色已进入 View。下一步须先选定身体与装备，再将脚底原点、世界坐标和源动画分开：游戏位置放独立父挂载，不覆盖 mixer 控制的源根。继续添加没有产品调用者的包装，不能补齐这一层。
 
 [^rifle-run-source]: [FPS 同一消费者与快照用法](https://github.com/dbvv1/FPS-Like/blob/aeb48708f4a30511d50f6b0efd61a35565f90fe2/docs/native-ranged-candidate.md)，2026-11-11；真实 GLB、5 个朝向共 60 个单 tick Game 位移区间、201 姿态骨点／真实鞋底采样、测试／构建与非作者复核通过。Game 检查为原 1v1 CPU 模拟，仍是可选消费者，未注册 View；未改运行时动作、资产或模拟，不提高动作覆盖或品质分。
