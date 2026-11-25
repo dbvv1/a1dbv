@@ -193,7 +193,8 @@ claude --model claude-fable-5-2 --effort medium
 
 - **缓存收益看实际复用**：长且稳定的前缀在有效期内反复命中时，可降低重复输入成本；折扣按模型价表，不统一按十分之一。Claude 缓存指南的 5 分钟／1 小时写入分别按普通输入价的 1.25／2 倍收费；未复用的写入、缓存重建以及输出、工具与返工仍计入整项任务成本。先查实际命中与总费用，不为保缓存拒绝必要的模型调整。
 - **失效排查按厂商与配置**：Claude 缓存指南说明，更改顶层 `output_config.effort` 会使消息缓存失效，对工具/系统缓存的影响依模型而异；显式写出原默认值不算变化，支持逐消息 effort 的模型也有保留前缀的路径。模型切换、前缀改动和 TTL 是排查因素，不能一概断言每次修改都会清空全部缓存。当前 Claude Code 成本文档将缓存统计放在 `/usage` 的 Session 区；它覆盖主会话，不能当作全部子 Agent 的合计。
-- **子 Agent 缓存与轮询隐性开销**：Claude Code 子 Agent 默认仅保留 **5 分钟** Prompt 缓存（主会话为 1 小时）；等待超过 5 分钟再唤醒会整段重算缓存写入（[35 次双项目实测](https://reddit.com/r/ClaudeCode/comments/1xuqnnc/i_tested_anthropics_one_agent_with_skills_beats_a)中多代理组贵 62%、慢 2 倍，设 `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL=1h` 后团队反馈子代理重写率从 ~8% 降至 <2%）。另有 [HN 实测](https://news.ycombinator.com/item?id=50284255)报告后台 `agent_summary` 每 ~30 秒摘要轮询占周消费 **16.4%**（均为 `[社区反馈]`，未在本仓独立压测）。
+- **先分开记子任务、摘要调用和订阅扣额。** [社区] 一个后台任务密集的团队统计一周，`agent_summary` 占按 API 价估算成本的 16.4%，占请求数的 19.7%。[原始统计](https://news.ycombinator.com/item?id=50284256)。[一手] [Anthropic 工程师](https://news.ycombinator.com/item?id=50284699)说明约 30 秒一次只发生在忙碌的后台 Agent；其当周遥测样本按 API 价估算总体约 2%、终端约 6%。这些都不是订阅周额度或实际账单。
+- **确是等待导致缓存反复写入，再单独试 TTL。** [社区] 两项目 35 次对照的作者没有试 1 小时 TTL；同帖另一位用户报告缓存重写指标约 8% 降到低于 2%，不代表总成本降幅。[原帖与讨论](https://www.reddit.com/r/ClaudeCode/comments/1xuqnnc/i_tested_anthropics_one_agent_with_skills_beats_a/)。[一手] [官方设置](https://code.claude.com/docs/en/env-vars)从 2.1.242 起支持 `5m` 或 `1h`，后者 API 缓存写入单价更高。未在本仓验证净收益；对照时固定任务和模型，比总耗时与实际用量，拿不到实扣就记未知。
 - **Harness 开销看完整任务**：[Systima 历史实验](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)与[本仓旧实验](19-experiments.md#3-e1固定开销)记录的是含缓存的原始输入量，不能当普通输入账单、订阅消耗或当前客户端成本排名；本仓原逐次数据还存在缺失。先定位实际负担，再比较质量、返工与含缓存总成本，配置范围和当前诊断见 [S1c](research/2026-10-10-audit.md#s1c--2026-10-15-套餐与本地模型选型边界)。
 
 **依据**（2026-10-15～10-27 核官方价表，未实测）：
