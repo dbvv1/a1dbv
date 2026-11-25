@@ -234,9 +234,9 @@ Agent 可复用其中的固定 Git 取源与 hash 检查；导入候选只处理
 
 **预算先看账户额度与续费。** Personal 的公开试用为 14 天／1,000 credits，FAQ 写期后转 **US$10/月**；不外推到其他套餐。批量变体按各 generation job 累加，月度余额不结转；CLI／MCP 免费不代表生成免费。不要用示例 credits 保证每件合格资产的美元成本。
 
-Unity 的 Sprite 原型定位影响质量选型，不是独立法律禁商用条款；beta 生产资格仍取决于具体点击条款及供应商／模型。**关键局限：公开文档没有证明原生替换可完整保持 GUID／fileID 等身份，本轮也未测零手修质量、引用保持率或工时收益。** 许可反证、动态复核及 G2 开测前置见本节末来源。
+Unity 的 Sprite 原型定位影响质量选型，而非独立法律禁商用条款（beta 生产资格以具体条款为准）；公开文档尚未证明原生替换可完整保留 GUID／fileID 身份，也未实测零手修工时收益。
 
-**本节来源与范围**：Unity 官方安装、能力、[入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai)／[计量](https://docs.unity.com/en-us/ai/credits/credits-about)文档（一手）；生成器补核、能力边界及 G2 开测前置见 [WP9 §8](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)、[§8.1](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#81-何时值得加入原生流程)、[WP12 G2](../../docs/research/2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)。原生生成器与条件入口于 2026-10-14 UTC 补核；实际验证范围为公开文档与 WP9 补核，未运行生成实验。
+**本节来源与范围**：Unity 官方安装、能力、[入门](https://unity.com/blog/unity-ai-how-to-get-started)／[FAQ](https://unity.com/features/ai)／[计量](https://docs.unity.com/en-us/ai/credits/credits-about)文档（一手）；生成器补核、能力边界及 G2 开测前置见 [WP9 §8](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#8-unity-原生生成器补核原型集成不等于发行管线)、[§8.1](../../docs/research/2026-10-14-game-wp9-engine-handoff.md#81-何时值得加入原生流程)、[WP12 G2](../../docs/research/2026-10-14-game-wp12-indie-roadmap.md#g2-开测前置原生生成器与外部导入)（2026-10-14 UTC 补核，未运行生成实验）。
 
 <a id="当前最高水平先查影响再加索引"></a>
 

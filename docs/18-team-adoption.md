@@ -277,7 +277,7 @@ TeamRetro 五人团队自报的反例很具体：仓库基线 lint 未清干净�
 
 **导出器修复不等于旧备份已修复。** 确认导出覆盖关联文件后，保留现有备份，从完好来源生成独立新产物并核记录与文件对应；升级接收端或重压旧目录不能补回覆盖内容。允许重建派生件时可保留原件重建，但不等于恢复原字节。Paperless 维护链的修复于2026-10-17核实已进入 v3.3.2，可用该稳定版重新导出；仍无原用户修订后恢复回执。
 
-**依据**：[社区：单例] [CBM 原用户复测](research/2026-10-13-immich-handover.md#补充证据原用户恢复原触发条件后升级成功)、[Immich 恢复重试](research/2026-10-13-immich-handover.md#补充证据恢复成功但应用连接了另一数据库)、[Immich旧失败照片回执](research/2026-10-13-immich-handover.md#补充证据新对象通过不等于原失败对象已恢复)、[两种恢复目标的回执](research/2026-10-13-immich-handover.md#补充证据接替恢复与并存试用的身份取舍)；[一手] [Home Assistant 两条恢复路径](research/2026-10-13-immich-handover.md#补充证据恢复入口失败先保住所需恢复范围)、[Railway 恢复凭据修订](research/2026-10-13-immich-handover.md#恢复副本的归档写权限)、[PocketBase 接收者升级](research/2026-10-13-immich-handover.md#补充证据结构快照不能代替已有数据的升级交接)、[Gitea 恢复顺序与原生入口](research/2026-10-13-immich-handover.md#补充证据派生入口重建依赖恢复后的对象清单)、[Nextcloud AIO 原用户重试](research/2026-10-13-immich-handover.md#补充证据修复逻辑前的持久失败守卫)、[rclone 维护链](research/2026-10-13-immich-handover.md#补充证据双向同步中断后恢复还是重建基线)、[Paperless 维护链](research/2026-10-13-immich-handover.md#补充证据修复导出器不等于修复已存备份)、[v3.3.2](https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.3.2)；[研究] 各恢复边界与未测项；核实 2026-10-22（Paperless 修复 2026-10-17）。
+**依据**（2026-10-22，Paperless 2026-10-17；具体恢复边界见 [Immich 交接证据](research/2026-10-13-immich-handover.md)）：CBM / Home Assistant / Railway / PocketBase / Gitea / Nextcloud AIO / rclone / [Paperless v3.3.2](https://github.com/paperless-ngx/paperless-ngx/releases/tag/v3.3.2)。
 
 ### PR 准入与协作约定
 

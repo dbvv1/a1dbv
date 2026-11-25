@@ -63,11 +63,9 @@
 
 **例：同名的 `retry` 不一定是同一个函数。** Graphicle 0.1.4 在本仓两文件反例中，把 `shadow()` 内部局部 `retry` 连到外层导入函数；默认和 precise 都有这条错边。替换模块绑定 `app.retry` 后，`direct()` 报错而 `shadow()` 正常返回，说明应核作用域后再定影响范围。读者应交回这条区分依据，而非一张“看起来连通”的图。[已保存的反例与真实输出](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对)，未复测。
 
-定位完成后，已有明确修改授权就接[调试](#2-调试)或[新功能](#3-新功能)路径；仅要求解释时止于走读，不自行改代码。术语混乱才补带例子的词表，走读也不自动变成常驻指令，见[03指令研究](03-context-engineering.md#22-指令文件到底有没有用研究证据)。
+定位完成后，已有授权再接[调试](#2-调试)或[新功能](#3-新功能)；仅要求解释时止于走读，词表按需整理（见 [03 §2.2](03-context-engineering.md#22-指令文件到底有没有用研究证据)）。
 
-**验证范围**：DeepWiki模块定位、Context7两版查询、Grep上下文对照及Graphicle反例分别已有局部实试；这条组合接手路线尚未做模型端到端对照，不声称更快或修改更准。
-
-**依据**：[经验；2026-10-23] 本仓工具实试（DeepWiki 模块定位、Context7 两版查询、Grep 上下文对照、Graphicle 反例）；[研究／经验] 组合接手路线尚未做模型端到端对照；反例未复测；核实 2026-10-23。
+**依据**：[2026-10-23 工具局部实试](research/2026-10-22-frontier-trials.md#graphicle导航有用影响图需要核对)（DeepWiki / Context7 / Graphicle；未做组合接手端到端模型对照）。
 
 ### 1.1 完整示范：修复公开项目的 CSS 资源打包
 
@@ -78,9 +76,7 @@
 3. **用反例收窄补丁。** 先加失败行为回归，再补实现；“先删续行、再解码”会误处理成对反斜杠，最终用单遍解码，并验证非法裸 URL 续行仍被拒绝。
 4. **运行真实入口接收。** `python3 experiments/replay_oil_ui_css.py /path/to/oil-ui-checkout` 新建隔离副本，完成红→绿、58 个非浏览器测试与实际 CLI 产物检查，保留单 HTML、输入和结果；Graphicle 不是重放依赖。
 
-[补丁、回归、操作命令与返工记录](research/2026-10-23-real-coding-demo.md)可直接复用。58 项是53项原测试加5项新增，另3项浏览器和1项Windows明确未运行；未另接模型、未提交上游，未测代码图相对 `rg` 的效率优势。修复限本地资源／import，拆开 `data:` scheme 的特殊 data URL 仍未修。
-
-**依据**：[本仓实测／研究，2026-10-23] 见本节补丁与返工记录；核实 2026-10-23。
+[补丁、命令与返工记录](research/2026-10-23-real-coding-demo.md)可直接复用（58 项通过：原 53 + 新增 5；3 项浏览器、1 项 Windows 及 `data:` scheme 未覆盖）。
 
 ### 1.2 接收已有补丁：修文件保存，不重写同题方案
 
@@ -91,9 +87,7 @@
 3. **实际操作结果文件。** 真正子进程完成 set／get／list／unset，UTF-8内容正确、旧权限保留、缺键返回失败；另在进程内注入同步、替换和清理错误，核旧文件及原异常。
 4. **把未解决的边界留清楚。** 清理失败会留下临时文件并警告，不能承诺无残留；补丁没有目录同步，测试不证明断电耐久，也不代表上游已经接受。
 
-准备 POSIX、Python 3.12+、Git、网络及已有 pytest／Click／IPython 后，运行 `python3 experiments/replay_dotenv_acceptance.py --python .venv/bin/python`。入口不安装依赖，在新临时目录核固定源码并保留产物；[完整操作、原作者补丁与接收测试](research/2026-10-23-existing-patch-acceptance.md)可复用。它验证源码CLI而非包安装，未比较模型、Skill或代码图收益。
-
-**依据**：[一手／本仓实试，2026-10-23] python-dotenv #713／#717 与本节复验；[本仓实试／范围] 仅验证源码 CLI 而非包安装，未比较模型、Skill 或代码图收益；核实 2026-10-23。
+准备 POSIX、Python 3.12+、Git 与 pytest 后运行 `python3 experiments/replay_dotenv_acceptance.py --python .venv/bin/python`；[完整说明](research/2026-10-23-existing-patch-acceptance.md)可复用（仅源码 CLI，无包安装或上游提交；python-dotenv #713/#717，2026-10-23）。
 
 ### 1.3 关联表升级：整批回滚，也要保住子记录
 
@@ -127,13 +121,11 @@
 
 **测试全绿但用户仍失败，就补测用户失败的那一步。** 先核同一输入、状态和实际运行版本，再看现有测试是否真的走过它。日志先取错误附近与对应请求；根因仍有两种解释时，做一个能区分它们的检查。已有定位就直接修，跨提交才出现的回归再用下节的二分定位。
 
-**先让 Agent 拿到能判错的真实反馈，别把反馈工具都写成必跑步骤。** 拖拽中数组多出元素，就在真实拖拽的 start／sort／end 读取数组；只有缺陷由像素、排版或动画决定，才要求查看对应画面。一次 [Sortable 同题对照](../experiments/strong-short-task-20261117/README.md#sortable-单题接收11-24)里，短任务与现行提示用同一强模型交出相同的源码修复，两臂三轮均通过，实际都靠事件日志判定。此单题不证明短提示更快，也没验证自看图的收益。
+**先让 Agent 拿到能判错的真实反馈，不把所有验证工具都写成必跑步骤。** 只有缺陷由视觉排版或动画决定才要求看图；状态/顺序类 bug 直接读真实事件日志更快。一次 [Sortable 同题对照](../experiments/strong-short-task-20261117/README.md#sortable-单题接收11-24)中，三段短任务与现行完整提示对同一强模型产出一致的 `src/Sortable.js` 修复且均靠事件日志判错。
 
-**不能复现时，交回已排除什么、还缺哪项输入，并继续能做的定位。** 缺服务、依赖或权限时，说明具体入口及恢复条件，保留未验项。原测试预期确实与已确认需求冲突时，可以说明依据后修测试；其余保留触发步骤、断言与兼容行为。真实 CLI、API 或浏览器验收按[验证页](decisions/verification.md)执行。
+**不能复现时交回已排除项与缺口；兼容修复按输入机制选范围。** 例见 OCRmyPDF [两种故障分流](research/2026-10-12-development-conditions.md#ocrmypdf兼容修复按输入机制分流)；真实 CLI/API/浏览器验收按[验证页](decisions/verification.md)。
 
-**兼容修复按输入机制选范围，不只按版本高低。** 升级消费者或全局关闭能力前，先分清哪些输入仍需该能力。例见 OCRmyPDF 的[两种故障与取舍](research/2026-10-12-development-conditions.md#ocrmypdf兼容修复按输入机制分流)。修订不保证所有输入或旧文件恢复。
-
-**依据**：[一手：历史补丁；研究] [BAML 双 PR](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划)；[社区／一手；经验] OCRmyPDF 兼容修复按输入机制分流；[经验] 本节调试默认；核实 2026-10-25。
+**依据**（2026-10-25）：[BAML 双 PR](research/2026-10-12-baml-and-review.md#baml实现反馈纠正研究计划) · OCRmyPDF · [Sortable 接收](../experiments/strong-short-task-20261117/README.md#sortable-单题接收11-24)。
 
 ### CI 报红：先找实际失败，再决定让 Agent 重跑什么
 
@@ -165,9 +157,9 @@
 
 本仓以与原锁哈希一致的两个正式 wheel、相同其余依赖，重放原生产字典表达式：0.117.0 在同一字段报 `AttributeError`、退出1；0.118.0 退出0，两个枚举值为1／2。使用 Python 3.13.5，原 CI 是3.13.18；这是依赖 API 的同因核验，不是完整 endpoint 或原74项测试的本地复跑。
 
-后继 run 的30个全量分片通过，原先却是10个选择分片：改动 `pyproject.toml`／`uv.lock` 改变了选测条件。同编号绿 job 不再是原74 items，成功日志也不足以逐项确认原67个 nodeid。先核版本与共同入口，比改断言或不加区分地重跑全库更直接；这不意味着其他项目应统一升级该包。
+后继 30 个全量分片通过而原先仅 10 个选择分片，因依赖锁文件改动改变选测范围；核实际版本与共同入口后再复验原失败 nodeid。
 
-**依据**：[GitHub PR 默认 merge checkout](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)；[Sentry 项目给 Agent 的选测约定](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59)；[原选择日志](https://github.com/getsentry/sentry/actions/runs/43123471057/job/130869635831)、[失败分片](https://github.com/getsentry/sentry/actions/runs/43123471057/job/130869981928)、[补依赖提交](https://github.com/getsentry/sentry/commit/c51fdeb2974fa7cc2497913ee43f25b1f258488d)、[后继选择日志](https://github.com/getsentry/sentry/actions/runs/43125271532/job/130875774687)；[原生产表达式](https://github.com/getsentry/sentry/blob/1628f89f5ed9ef1d4a6b3add2098d694473e9c8f/src/sentry/seer/endpoints/organization_seer_credit_check.py#L1-L24)、[0.117.0](https://github.com/getsentry/sentry-protos/releases/tag/0.117.0)／[0.118.0](https://github.com/getsentry/sentry-protos/releases/tag/0.118.0) 正式发布包的独立重放。不声称模型效率收益；核实2026-11-12。
+**依据**（2026-11-12 核原日志与 wheel 重放）：[PR merge checkout](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request) · [Sentry AGENTS 选测约定](https://github.com/getsentry/sentry/blob/eb0125b95bc8569b340b5025a9aaade909e4a52f/AGENTS.md#L53-L59) · [选择/失败/后继日志](https://github.com/getsentry/sentry/actions/runs/43123471057/job/130869981928) · [生产表达式 `1628f89f`](https://github.com/getsentry/sentry/blob/1628f89f5ed9ef1d4a6b3add2098d694473e9c8f/src/sentry/seer/endpoints/organization_seer_credit_check.py#L1-L24)（`sentry-protos` `0.117.0` vs `0.118.0`）。
 
 ### 跨多次提交的回归：先验判定，再交 Agent 二分定位
 
@@ -438,28 +430,16 @@ Agent容易漏动态引用、间接消费者和故障时才启用的保护；人
 - **优先重跑完整的 `lage buildci --no-cache` 到结束。** 先核目标图覆盖验收范围，再核全部成功、0 skipped，且没有失败、未运行或中断项。该版本的一次性 CLI 在调度前已过滤 `shouldRun=false` 等不适用目标，不能用“不适用任务也算 skipped”放宽这条门槛；watch／未优化图另核其状态语义。任务被调用仍不等于内部全量重算，`tsc -b` 等自有增量须按真正的验收要求另验。
 - **只有缓存独占、可丢弃且确认无远端回填时，才考虑清本地后普通重跑。** `lage cache --clear` 仅清 Lage 本地层；远端 provider 存在时，本地 miss 仍可能远端命中并回填，因此 `Cache Cleared` 不证明本轮新执行。不要删共享缓存或替他人关远端；无法确认来源就保留缓存，采用完整旁路。清理后同一输入下失败再重跑，可复用清理后已成功的任务；这属于整个恢复过程的覆盖，不是一轮全部新执行。
 
-**依据**：[一次性 CLI 入口](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/commands/run/runAction.ts#L107-L112)及[目标图过滤](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/optimizeTargetGraph.ts#L9-L24)、[缓存读写](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/scheduler/src/workers/targetWorker.ts#L61-L112)、[本地清理](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/BackfillCacheProvider.ts#L94-L128)与[远端回填](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/RemoteFallbackCacheProvider.ts#L27-L48)。[FURN 历史记录](https://github.com/microsoft/fluentui-react-native/blob/41768dacc889222444c538ce6031fe668f06043f/agent-improvements-plan.md#L111-L125)自报中断后普通重跑164项命中包含原81项未执行任务，最终无缓存171项通过；无原始日志，不据此认定旧缓存错误。2026-11-04 静态核读固定源码与记录；未运行 Lage／FURN、未清缓存，不泛化到其他 runner 或后续版本。
+**依据**（2026-11-04 核源码与历史记录）：Lage CLI [runAction](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/commands/run/runAction.ts#L107-L112) · [optimizeTargetGraph](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cli/src/optimizeTargetGraph.ts#L9-L24) · [targetWorker](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/scheduler/src/workers/targetWorker.ts#L61-L112) · [BackfillCacheProvider](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/BackfillCacheProvider.ts#L94-L128) · [RemoteFallbackCacheProvider](https://github.com/microsoft/lage/blob/dbbbe63b20790302c1c7022de3011fae7eb4257e/packages/cache/src/providers/RemoteFallbackCacheProvider.ts#L27-L48) · [FURN 记录](https://github.com/microsoft/fluentui-react-native/blob/41768dacc889222444c538ce6031fe668f06043f/agent-improvements-plan.md#L111-L125)。
 
 <a id="vitest-reused-worker-env"></a>
-**🧪 Vitest 升级后单文件过、整套连片失败，先核复用 worker 的入口状态，再让 Agent 改业务。** 已关 `isolate` 的 `forks` 项目，先恢复默认隔离作对照；必须复用时，在每文件 `setupFiles` 顶层恢复项目确认过的环境键，而不是等 `beforeEach` 才改。默认隔离与每文件 setup 在 5.0.5 的 8 文件对照均通过；仅开 `unstubEnvs` 仍漏直接写入的 `process.env`。2 文件／1 worker 在 4.1.11 和 5.0.5 都漏值，因此降级或串行不是通用修法。setup 不重置已缓存模块／客户端；回真实资源生命周期验收，不先删断言或加重试求绿。
+**🧪 Vitest 升级后单文件过、整套连片失败，先核复用 worker 的入口状态，再让 Agent 改业务。** 已关 `isolate` 的 `forks` 项目，先恢复默认隔离作对照；必须复用时，在每文件 `setupFiles` 顶层恢复项目确认过的环境键（仅开 `unstubEnvs` 仍漏直接写入的 `process.env`，[7 组 CLI 脚本与社区 #11423](../experiments/vitest-worker-env/README.md)，2026-10-31）。
 
-**依据**：[社区：真实后端集成测试](https://github.com/vitest-dev/vitest/issues/11423)、官方配置及[本仓七组 CLI 实跑与复用脚本](../experiments/vitest-worker-env/README.md)；同 Node 24.22.1、Vite 8.3.5，纯字符串哨兵／非作者新目录复跑，未验数据库与模型；核实 2026-10-31。
+**🧪 测试仍是瓶颈时**，先比修慢夹具和已有安全并行；Python 项目可在隔离副本试 `pytest --testmon`（[历史重放](../experiments/testmon-feedback.md)：18 项选 11 项抓出旧回归；目标文件明确时直接跑该文件），外部协议与写入路径依生产者校准（[WP10 发育条件](research/2026-10-12-development-conditions.md#新增选测能力先比较改动类型与完整运行成本)）。
 
-**🧪 测试仍是瓶颈时**，先比修慢夹具／重复扫描和已有安全并行；常见改动能缩范围，计入映射维护与漏选补跑成本后再决定是否加选测。[remote-store 暂缓引入的试验](research/2026-10-12-development-conditions.md#新增选测能力先比较改动类型与完整运行成本)的种子试验不代表日常改动，也不授权撤检查、放宽隐私或全并行。
+**🧪 输入组合多、契约可表达且执行便宜时，补小范围属性测试。** 从文档／调用找不变量并在已有环境搜反例（须同步核属性合法域，参见 NumPy/dateutil 反例）。
 
-**可直接试的Python入口**：已有pytest／unittest项目可在隔离副本用 `python -m pytest --testmon` 建全绿映射，再让Agent沿同一入口取得改动反馈。[实际历史重放](../experiments/testmon-feedback.md)中，18项选出11项并抓到同一个旧版回归；恢复后通过。目标文件本来明确且廉价时直接跑该文件，别为本例引入长期映射维护；本仓未改正式检查器，也未测模型提效。
-
-外部格式／协议用目标版本生产者的公开、可脱敏产物校准预期，据独立证据修正旧断言。[RTK 编码修订](research/2026-10-12-development-conditions.md#外部生产者校准错误预期)也有旧预期错误。
-
-**预演须保住下轮边界。** 保持业务数据及下轮接受配置／判进度的状态不变，从已通过的正式基线验“修改→预演→普通执行”，该拒绝的仍拒绝；允许日志和隔离产物。见 rclone 的[修订与入口差异](research/2026-10-12-development-conditions.md#rclone预演不能替下一轮提交控制状态)；CLI 修复不保证 API 传参生效。
-
-新增写入须验业务行与派生版本／审计状态；序列化判等须覆盖可接受类型及业务不同的值。[sqlite-chronicle 修订与固定 SQL 实测](research/2026-10-12-development-conditions.md#写入路径扩展与序列化判等sqlite-chronicle)有旧类型漏报。
-
-**🧪 输入组合多、契约可表达且执行便宜时，补小范围属性测试。** 从文档／调用找不变量，在已有环境搜反例；先核属性和输入域，再固定输入、版本与随机条件。[NumPy 与 dateutil](research/2026-10-12-development-conditions.md#属性测试搜索反例不等于确认或修好缺陷)有跨构建修订与日历误报。
-
-**局限**：旧版无法运行则保留回归缺口；属性可能错误，通过不证明所有精度、分布或业务要求。
-
-**依据**：[社区／一手／研究] [公共边界测试](research/2026-10-12-community-source-records.md#3-matt-pocock控制权与领域语言)与 [JiTTest 目标比较](research/2026-10-12-development-conditions.md#生成测试先选保护未来还是查当前差异)，后者为内部部署自述，未证 Codex／Claude 净收益，保留 CI／人审；[一手：报告；经验，2026-10-16 UTC] remote-store 暂缓引入试验；[本仓工具实试／经验，2026-10-24] pytest --testmon 历史重放；[一手；经验] RTK 编码修订、sqlite-chronicle 写入路径与 NumPy／dateutil 属性测试；[一手／社区；经验] rclone 预演边界；[一手；经验：局部实测与建议，未运行包 CLI]；核实 2026-10-25。
+**依据**（2026-10-25）：[公共边界测试](research/2026-10-12-community-source-records.md#3-matt-pocock控制权与领域语言) · [JiTTest 比较](research/2026-10-12-development-conditions.md#生成测试先选保护未来还是查当前差异) · [development-conditions](research/2026-10-12-development-conditions.md)。
 
 ### 测试全绿后，让 Agent 看见改动行，再核消费者
 

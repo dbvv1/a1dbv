@@ -357,9 +357,9 @@ Claude Code 的 `/rewind` 可选历史区段做摘要；选摘要不等于回滚
 
 **压缩还要保留“谁说的”，不能只检查一句约束有没有留下。** Compaction Laundering v1 的固定实验中，五种把消息拍平成带角色标签文本的输入，在短合成会话里把外部内容记成了用户批准；Codex 的角色类型对照为 15/15 未出现这次洗白。这是组件级摘要结果，不是当前产品安全率。作者的真实 pi v0.79.0 受控配对演示另测到 3/6 完整执行链，不能与摘要比例混用，也未实测 Claude Code。
 
-本仓独立重数了公开判定数据，并核到 pi v1.5.0 固定源码的 `generateSummaryWithUsage()` → `serializeConversation()` 调用链：消息仍以角色标签拼接为摘要输入文本。该静态观察不等于新版产品复现。它为“外部内容不授予权限”补充了压缩环节的证据；沿用[现有恢复检查点](decisions/context-management.md#跨压缩或新会话检查点保留下一步用得上的内容)，不新增操作流程。论文未验证“读过外部内容就重开”或转义补丁的效果，不据此改变默认压缩路线。本次未运行模型或攻击载荷，真实读者接续仍待验。
+本仓重数公开判定数据并核到 `pi v1.5.0` 的 `generateSummaryWithUsage()` → `serializeConversation()` 仍将消息按角色标签拼接；这沿用[现有恢复检查点](decisions/context-management.md#跨压缩或新会话检查点保留下一步用得上的内容)（外部内容不授予权限），未运行模型或载荷实测。
 
-**依据**：[研究：原文] [Compaction Laundering v1](https://arxiv.org/html/2610.29869v1) §6、E10、E15；[公开实验代码与数据] [四回合输入](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/code/live/run_flattening.py)、[判定数据](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/data/live/judged_result.json)、[配对演示记录](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/demo/README.md)；[上游固定源码，未运行] [pi 序列化](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/utils.ts#L120-L155)、[摘要调用](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/compaction.ts#L699-L735)；[经验] 采用判断；核实 2026-11-06。
+**依据**（2026-11-06）：[Compaction Laundering v1](https://arxiv.org/html/2610.29869v1)（[运行代码](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/code/live/run_flattening.py) / [判定数据](https://github.com/pixee/compaction-laundering/blob/9ce87b71301c628dfcd9232b01f1ccbdb0e67b16/data/live/judged_result.json)）· pi `f9a26365` [utils.ts](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/utils.ts#L120-L155) / [compaction.ts](https://github.com/earendil-works/pi/blob/f9a26365568127461c47a07a37dcb42c140a3ac5/packages/coding-agent/src/core/compaction/compaction.ts#L699-L735)。
 
 ### 4.2 有收益，也有反例：不要只记摘要结论
 
@@ -387,9 +387,9 @@ PR #4565 核实时未合并；作者真实模型失败报告针对旧 commit，�
 
 真实验收核对实际模型输入或权威来源重载，不直接把特定注入通道的测试套给所有 harness。复用现有恢复清单，不另加规则登记框架或合成探针。
 
-**把来源信任、授权和记忆召回分开处理。** PMPA 与 SkillJack v2 分别展示了跨会话恶意规则持久化及由污染轨迹产生技能后删除源仍留衍生物的故障方式；这些故障方式支持上述分工。PMPA 使用替代后端模型和模拟工作区；SkillJack 主要统计路由层面的策略违规代理指标，不是实际外部服务被攻破。不可把这些数字外推为默认 Codex/Claude 产品事故率。以上研究限定 harness/模型/合成任务，非本仓复现。
+**把来源信任、授权和记忆召回分开处理。** PMPA 与 SkillJack v2 在限定研究环境中揭示了跨会话规则持久化与派生技能残留故障；真实产物仍按当前环境授权接收。
 
-**依据**：[社区：单例，未复测] [OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544)；[一手] 2026-10-10 UTC 源码复核（未运行当前 SDK）：[固定提交](https://github.com/OpenHands/software-agent-sdk/commit/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9)、[observation 转换](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86)、[condenser](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251)；[社区：历史实测；一手：未合并测试] [PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565)、[固定回归测试](https://github.com/OpenHands/software-agent-sdk/tree/86e067dadd0a2398f6140c9f16220790be38af35/tests/integration/tests)；[研究：原文，限定 harness/模型/合成任务] [PMPA](https://arxiv.org/html/2609.13889v1)、[SkillJack v2](https://arxiv.org/html/2608.03509v2)；[经验] 采用判断；核实 2026-10-24。
+**依据**（2026-10-24）：[OpenHands SDK #4544](https://github.com/OpenHands/software-agent-sdk/issues/4544) · `c4b93299` [observation.py](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/event/llm_convertible/observation.py#L68-L86) / [llm_summarizing_condenser.py](https://github.com/OpenHands/software-agent-sdk/blob/c4b93299cf2b31c8b5d0b2c5a89965ccc5ff24f9/openhands-sdk/openhands/sdk/context/condenser/llm_summarizing_condenser.py#L247-L251) · [PR #4565](https://github.com/OpenHands/software-agent-sdk/pull/4565) · [PMPA](https://arxiv.org/html/2609.13889v1) · [SkillJack v2](https://arxiv.org/html/2608.03509v2)。
 
 ### 4.4 最小生命周期，而不是无限追加
 
