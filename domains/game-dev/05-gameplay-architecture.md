@@ -6,11 +6,7 @@
 
 评级：✅ 采用，🧪 试用，👀 评估，⛔ 暂缓；候选非实测排名。
 
-**✅ 原生组件、可测试规则和局部状态机优先；明确状态所有者、结算点、退出清理再加框架。** HFSM／行为树／GAS／ECS 各解不同问题。
-
-AI 分工和验收均由本页契约与 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md) 推导，不是模型能力实测。本页运行证据来自明确列出的合成／离线检查与观察：MOBA 效用合成检查及已发布 v8 无画面对局、局内成长 8 条合成算术、陀螺固定库、inkjs 合成规则；Recast/Detour Node 的实跑仅限固定版本、同设备离线导航与 Crowd 数值行为；另有 Star-Rush 兼容模式 HUD／主弯键控观察。另有下文 MOBA 有界小兵分离、技能事实到原创动作的 Node 与软件 WebGL 接入；另有 §4 Luban 真实生成器与 TypeScript 消费者的配置二改检查；其余机制未实测，手感／性能／维护收益未知。**各节专项验收均须同时通过§11 通用验收。**
-
-**来源与范围**：本页机制判断与 WP11 研究为[研究]；明确列出的合成／离线检查为[一手／研究]，运行观察为[一手／经验]。
+**✅ 原生组件、可测试规则和局部状态机优先；明确状态所有者、结算点、退出清理再加框架。** HFSM／行为树／GAS／ECS 各解不同问题。AI 分工和验收由本页契约与 [WP11](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md) 推导，各机制按节内标注区分“文档／源码推导”与“CPU／Web 运行实测”，各专项验收均须同时通过§11 通用验收。
 
 ## 30 秒结论：先保状态，再选框架
 
@@ -119,9 +115,7 @@ flowchart LR
 
 **让 Agent 验真实入口，而非只测新建的记录类。** 本例的 `tests/offline-training-v1/match.test.ts` 用实际 Game 跑六回合，验证三回合换边、3:3 平局、重复观察只记一次、观察不改模拟哈希和返回摘要不泄漏可变引用；`tests/offline-training-v1/client-match.test.ts` 执行真实客户端源码，确认第六回合后的按钮回调创建新 Game、比分与记录归零、没有第七回合，也没有偷偷重锁输入。后者替换了 DOM／视图／控制等环境依赖，因此仍需浏览器检查半场提示、结果可读性、暂停与连续点击，不能称已试玩。
 
-**跨模块对照用一条正式命令带。** [FPS 交火时间线](https://github.com/dbvv1/FPS-Like/blob/6157235/docs/verification/feedback-timeline.md)把移动、墙／敌／友命中、换弹中拒绝射击、切枪打断、结算与下一回合串起来：反馈按发射当时的 impact 分类，比赛统计按 hit 指向的队伍计数，不能用结算后的 HP 重判旧命中。结算动画事件的寿命和菜单打开时刻分开验，暂停按钮可能提前打开菜单。四项 CPU 回归已进入 main；30/60/120Hz 仅是取样模型，页面给实际操作对照而非浏览器回放入口，未增视听验收。核实 2026-11-09。
-
-**实现起点与范围**：[已发布源码 `19f718eb`](https://github.com/dbvv1/FPS-Like/tree/19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f/src/candidates/offline-training-v1) 中的 `session/match.ts`、`client.ts`、`sim/game.ts` 与上述两份测试。六回合规则和终局重开已有 CPU 测试，原小节的四项独立重跑记录保留；浏览器证据另看已接收的 [smoke 报告](https://github.com/dbvv1/FPS-Like/blob/1125fc428dcc0f22be976258fb105a0596ef46a3/docs/quality/smoke/B-FPS-OFFLINE-SMOKE-20261028/19f718ebd557-E2mXmf/report.json)：RTX 5070 下核到 9 个机器人／10 名角色、自然首回合结束、下一回合保留记录，以及现有“重新开始”清空整场记录和比分。[网站 v14 旁置入口](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/?gameplay=offline-training-v1&match=complete-v1&squads=offline-v1&environment=courtyard-v1)已交付，原默认入口保留；六回合整场、半场换边、终局再玩与真人视听手感仍未验，地图维持“可用”。[UE GameMode／GameState](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-mode-and-game-state-in-unreal-engine)、[Unity LoadSceneAsync](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html)、[Godot Autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html)为官方机制对照；PaddleBall／Boss Room 固定源码比较沿本节已有研究，不重复引入整套框架。核实 2026-10-28（UTC）。
+**跨模块对照用一条正式命令带。** [FPS 交火时间线](https://github.com/dbvv1/FPS-Like/blob/6157235/docs/verification/feedback-timeline.md) 把移动、命中、拒绝射击、切枪打断与结算串成单条回归：反馈按发射当时 `impact` 分类，统计按当时目标队伍计数（不用结算后 HP 重判）；结算动画寿命与暂停菜单触发分开检查。实现起点与对照参考：FPS [已发布源码 `19f718eb`](https://github.com/dbvv1/FPS-Like/tree/19f718ebd5570ed1fb962b30d4ee607dc1ec9f6f/src/candidates/offline-training-v1) 与 [smoke 报告](https://github.com/dbvv1/FPS-Like/blob/1125fc428dcc0f22be976258fb105a0596ef46a3/docs/quality/smoke/B-FPS-OFFLINE-SMOKE-20261028/19f718ebd557-E2mXmf/report.json)；引擎接口按 [UE GameMode/GameState](https://dev.epicgames.com/documentation/en-us/unreal-engine/game-mode-and-game-state-in-unreal-engine)、[Unity LoadSceneAsync](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html) 与 [Godot Autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html) 各自实现。
 
 
 ### 第二次修改：失败快速重试，胜利保留结果
@@ -447,7 +441,7 @@ MOBA-Like 本地导航候选在同一失败查询重复 10,000 次后，残留�
 
 **回放记录明确输入、固定步长和导航身份，随机选择按局隔离。** 本例 8 单位、900 tick／30 Hz，同机两轮和新 Node 进程轨迹相同；库随机查询却共用 WASM FastRand，另一局交错查询会消耗本局序列。默认让自己的按局 PRNG 生成候选位置，再投影／核通路；不要以“各有一个 NavMeshQuery”推定随机流隔离。跨设备确定性、完整游戏回放和规模性能仍由真实消费者验。
 
-来源与验证：原 Unity／UE、Factorio／Overgrowth、门权限机制沿 [WP11 导航](https://github.com/dbvv1/a1dbv/blob/de8dea906383d9a3ee25acf2fc80646ebf98b9f3/docs/research/wp11-combat.md#s19-1) 的 2026-10-15／20 核实；烘焙链及本仓 Node 实跑见 [制作接入与几何二改](https://github.com/dbvv1/a1dbv/blob/de8dea906383d9a3ee25acf2fc80646ebf98b9f3/docs/research/wp11-combat.md#navigation-production-evidence)，2026-10-26（UTC+8）。MOBA 已采用 Detour 路径与上述有界分离，未采用本节 Crowd 移动链。真实消费者核实 2026-10-26：固定 [v10 分离函数](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/src/sim/minion-spacing.ts)、[实际提交位置](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/src/sim/simulation.ts)、[接触／旧版本反例](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/tests/minion-spacing.test.ts)及 [brief 的真实范围](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/docs/brief.md)。上述软件 WebGL 正常接战由非作者实图复评；Unity／UE 未实跑。
+来源与验证（2026-10-26 核源码与节点验证，细节见 [WP11 导航](https://github.com/dbvv1/a1dbv/blob/de8dea906383d9a3ee25acf2fc80646ebf98b9f3/docs/research/wp11-combat.md#navigation-production-evidence)）：MOBA 实操采用 [v10 分离函数](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/src/sim/minion-spacing.ts) 与 [simulation.ts](https://github.com/dbvv1/MOBA-Like/blob/8972ebf392068c716ee7b12f427a1946d8d1206f/src/sim/simulation.ts)（软件 WebGL 复评通过；Unity／UE 未实跑）。
 
 ## 4. 数据驱动：定义、实例、存档分开
 
@@ -743,13 +737,9 @@ GAS 已提供叠加、到期等配置就用原生策略；`None` 是独立实例
 
 **🧪 短奖励提示分别定义去重、聚合与寿命，不把它做成奖励历史。** MOBA 统一候选的 Gold HUD 沿每个真实逻辑步消费，只展示玩家的正数奖励：同 tick 的增量批合并，重复前缀不重复计数；新 tick 有奖励就替换旧行。`tick+ordinal` 游标依赖源批次单调有序，不能直接用来接乱序网络消息，否则迟到的较小 ordinal 会丢失。界面独立显示收益与胜负公告，不占命令拒绝提示。
 
-**用模拟时间计寿命，就要明确暂停与终局保留。** 该消费者在新奖励到来时设为当前模拟时间后 2 秒，重复批次不续期；隐藏页面暂停、终局不再推进时，未过期提示继续保留。终局基地奖励因此可与胜利公告并存；如果产品要求结算页仍自动淡出，应另选界面时钟，而不是在模拟结束后继续推进玩法。新局换消费者，恢复存档清空历史事件，不补播旧收入。对应回归包含帧内中间步奖励、隐藏暂停、新局清理，以及 v8 双英雄队伍的真实基地团队奖励；浏览器布局、可读性与 v11/v12 终局观感仍待验收，候选尚未合入默认分支或公开站点。
+**用模拟时间计寿命，并保留独立去重游标。** 新奖励设在当前模拟时间后 2 秒、重复批次不续期；隐藏暂停与终局冻结时未过期提示留屏（需淡出则改用界面时钟），新局或读档时清空历史。
 
-实现起点：[逐步接线](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/client.ts)、[奖励消费者](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/ui/gold-receipt.ts)。复验金币提示时，先检出 MOBA-Like 的[固定候选 `068c2af`](https://github.com/dbvv1/MOBA-Like/tree/068c2af0fb19990189226225c17e8457707687a6)，在仓库根目录运行 `npm ci`，再运行 `npm test -- tests/client/gold-client.test.ts tests/client/gold-terminal-rewards.test.ts`。上文已采用版没有这两份测试。候选的测试源码见[客户端 CPU/DOM 回归](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/tests/client/gold-client.test.ts)与[终局／去重回归](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/tests/client/gold-terminal-rewards.test.ts)。核实 2026-11-06；2026-11-21 在固定候选重跑，两文件 6 项通过（CPU／模拟 DOM，非浏览器）。
-
-接入时保留原输入、模拟和资源所有者：技能定义／实例仍在 `src/content`、`src/sim`，逐步消费在 `src/client.ts`，动作阶段在 `asset-pipeline/presentation/motion-state.js`。可运行 `npx vitest run tests/presentation-events.test.ts` 看零前摇、取消、护盾／过量、v8／v9 与重复读取反例，再运行 `npm --prefix asset-pipeline/presentation test` 看真实 GLB／阶段消费；`npm run dev` 体验输入→施法→动作／场景反馈。复用当前仓库入口，不另建一套技能框架或日志平台。
-
-**验证边界：** 固定源码的只读事件与真实 GLB 消费有 Node 检查；[原软件 WebGL 回执](https://github.com/dbvv1/a1dbv/blob/f2c83cb2/docs/collaboration/local-jobs/B-MOBA-CLIENT-SMOKE-001.md)实跑 E 输入、真实挂接 actor 的 `attack.upper` 轨道／权重和旧场景断言。不是所有受伤场景的浏览器覆盖，更不是手感、硬件性能或完整蓄力设计通过。具体源码、反例与旧回放边界见 [WP11 接入证据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#moba-skill-event-consumer)。
+实现起点：[逐步接线 `068c2af`](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/client.ts) · [奖励消费者](https://github.com/dbvv1/MOBA-Like/blob/068c2af0fb19990189226225c17e8457707687a6/src/ui/gold-receipt.ts) · `npm test -- tests/client/gold-client.test.ts tests/client/gold-terminal-rewards.test.ts`（CPU/模拟 DOM 通过，真实浏览器布局待验）。技能动作阶段与消费示例见 `npx vitest run tests/presentation-events.test.ts` 与 [WP11 接入证据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#moba-skill-event-consumer)。
 
 ### 选敌：先保意图，再调辅助
 
@@ -1002,21 +992,9 @@ flowchart TD
 
 以上是待试验的诊断顺序，不是已验证参数。每轮只改一组，并保留同弯、同初态的对照；“更快”与“更容易理解／恢复”分开记录。
 
-**先从玩家入口验左右和轻打，再调抓地。** 在平直路面从同一行驶状态分别短按左、右，按车身起始坐标记带方向的偏航量和横向位移；松手后再看残余侧滑、响应峰值是否滞后以及恢复时间。不能用直接轴输入替代按键路径。旧版独立海岸赛车从浏览器按 D 实测向左偏航 30.8°，这是故障量级，不是通用阈值。修正后，方向会话复跑五项通过；用户复玩反馈“至少是能玩了”。这不证明其余手感问题解决，也不证明 Star-Rush 已改进。依据：[赛车修正与复玩](../../docs/collaboration/demo-trial-20261117.md#赛车类人合成玩家能否替代部分人工试玩)（本端实测，2026-11-18）。
+**先从玩家实际按键验左右与轻打，并对齐键盘→舵量→车身三段时点。** 在平直路面按真实键位短按左、右并测松手回稳与反打（对齐最后一拍左与第一拍右中间的空档回中）；在弯道测试需配不打方向的对照轨迹以剥离道路坐标旋转（参考 [Star `feel-measure.mjs`](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/tests/feel-measure.mjs)）。擦碰回看必须同时用全帧率录像并向车体与前方出口两侧发射线筛遮挡帧（单靠车心射线会漏掉路牌遮挡出口）。相关输入探针与合成玩家规则见 [02 手感回归](02-verification-and-playtesting.md#handling-regression) 与 [Criterion GDC 讲座](https://gdcvault.com/play/1025383/Vehicle-Feel-Masterclass-Balancing-Arcade)。
 
-**把短拨、持键、松键写成数值规格；再把恢复与镜头放回同一个弯验。** 低／高入速分别记响应符号、首次改变、峰值及回稳，不让“能完成一圈”掩盖频繁擦墙。用[真实按键探针与类人合成玩家](02-verification-and-playtesting.md#handling-regression)反复跑同样的弯；在全帧率录像上复核受撞后是否还看得见车身和出口。先分清镜头遮挡与车辆响应，再改对应一层。无故障的整圈录像也不代替真人的舒适度、信心或乐趣判断。可借 [Criterion 的 GDC 车辆手感讲座](https://gdcvault.com/play/1025383/Vehicle-Feel-Masterclass-Balancing-Arcade)：把车在画面中的位置当作转弯反馈，把镜头前视当作路线提示；不要只加大镜头跟随速度或用抖动掩盖路缘不可见。
-
-**测反打，同时记最后一拍左、第一拍右与中间空档。** 先记录设备事件，再对齐物理步实际读到的转向；同速同初态下，分别比较轮角与偏航角速度过零。固定 Star 公路核心从 20 m/s 开始持左 30 tick，插入 0／2／4 个中立 tick 再打右，以最后一个左向步对齐，接下来的 60 tick 轮角和横摆轨迹完全一致，轮角在最后一个左向步之后第 17 tick 过零。若只从第一个右向步的时间戳算，读数却是 133／117／100 ms，因为松开已开始回中。别把起算点移动误当车更快；更长空档等条件另测。依据：[Star 固定版公路转向](https://github.com/dbvv1/Star-Rush-Reborn/blob/a91b422375793c9ac62cd4fe842b56b2eba92fea/road-vehicle-core.js#L44-L52)（本端 120 Hz CPU 实测，2026-11-22；非设备到屏幕延迟）。
-
-**赛车擦碰回看时，分别验车身和下一段可走路面。** 用同一输入与撞点重放，从接触帧看到恢复路线；标记车身、路缘或出口首次被挡及恢复的时刻。自动筛帧可用实际相机位置分别向车与前方可走路面的左右边界发短射线；射线结果只筛回看位置，保留全画面判遮挡。反例：相机在 `(0,2,0)`、车在 `(0,0.8,7)`、出口在 `(2.4,0.1,14)`，放在 `z=5`、横跨 `x=0.65–1.05`、高 `y=0.5–1.5` 的路牌，只挡出口射线。用一条车心射线会漏报；若问题是相机贴墙或近裁面穿模，另验镜头体积，可参考 [Godot 弹簧臂的扫掠形状](https://docs.godotengine.org/en/4.5/tutorials/3d/spring_arm.html#spring-arm-with-a-camera)，不要把两类问题当一个。依据：[《余潮》擦墙录像摘帧](https://github.com/dbvv1/a1dbv/blob/bd17b66313144fe6a85425305b98fec4bb77ed7c/docs/img/2026-11-18-demo-race-synth-wall.jpg)的 1.70 s 处可见路牌挡住车左侧和近路缘；射线数值为独立合成复算，尚未跑该赛道的新镜头探针。[本端实测／一手] 2026-11-25。
-
-**在弯道测首次转向，加一趟不打方向的对照。** 道路局部坐标会跟着弯道转，局部 `yaw` 首次非零不等于车身响应了按键。Star 训练场初速 60 km/h 的无输入对照，第 1 tick 就有局部偏航，1 秒达 +9.44°；同速无输入的平直模型仍为 0°。比较时固定初态和油门／制动，只改变转向，单独记实际轮角，再比较车身在世界坐标下的朝向差（Star 中是道路朝向加局部 `yaw`，跨 ±180° 时取最短角差）。在[固定版本](https://github.com/dbvv1/Star-Rush-Reborn/tree/f4b90161aad5558d3c6d0f50990110fe07c214c0)按[依赖说明](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/docs/feel.md#L30-L37)运行 `mkdir -p outputs && node tests/feel-measure.mjs outputs/yaw-check`，对照 `summary.json` 的 `client-academy-60-coast` 和 `model-60-coast`；实验重跑请用新的输出目录。依据：[道路坐标更新](https://github.com/dbvv1/Star-Rush-Reborn/blob/f4b90161aad5558d3c6d0f50990110fe07c214c0/handling.js#L34-L39)（本端 CPU 实测，2026-11-20；非按键、画面或真人手感验收）。
-
-**车辆参照先拆按键到舵量、舵量到车身。** SuperTuxKart 1.5 的[键盘控制器](https://github.com/supertuxkart/stk-code/blob/1fb491f507216c5d181ccd85f29ff08eca003827/src/karts/controller/player_controller.cpp#L267-L299)按步长推进归一化舵量，入舵与回中用不同时间系数，松手跨零时钳到零。以[实际配置](https://github.com/supertuxkart/stk-code/blob/1fb491f507216c5d181ccd85f29ff08eca003827/data/kart_characteristics.xml#L61-L84)中的 0.17／0.28 s 分段系数与 0.10 s 回中系数为量级，初态零舵、无额外修改时可推得 66.7 ms 短拨约到 0.39 归一化舵量；这不是 0.39°，更不是车身横摆。若舵量及时而车身峰值落在松手后，别盲目加快键盘入舵。[Speed Dreams 2.4.2 的键盘实现](https://github.com/Sparky-OS/speed-dreams-code/blob/664cbcb196cbacbdf96dbc38d9ce2029e47587aa/src/libs/robottools/rthumandriver.cpp#L1133-L1144)分别累积左右舵量，按下和释放用不同速率；有正的车速灵敏度设定时，高速既压低入舵速率，也减慢回中。固定车速与配置、未触及限幅时，单侧归一化舵量的回中／入舵斜率比为 `(1+5s)/(1+2s)`，有效转向灵敏度 `s=0.5` 时是 1.75 倍，不是默认配置或车身横摆倍率。Star 若在高速短拨后仍摆动，先对齐同一入速的松键、舵量归零与横摆回稳三个时点：舵量还没归零，先查输入滤波；舵量已归零而车身仍在摆，再查车辆响应。只借诊断分层，参数不移植。（一手源码与推导，2026-11-18，未实跑这两个游戏。）
-
-**FPS 参考先分输入层与地面运动层。** [ioquake3 固定源码](https://github.com/ioquake/ioq3/blob/52088b9eae247d8e321c8dc1fb49a879652854f9/code/client/cl_input.c#L156-L205)把数码按键按本帧实际按住的比例读入；[地面运动](https://github.com/ioquake/ioq3/blob/52088b9eae247d8e321c8dc1fb49a879652854f9/code/game/bg_pmove.c#L711-L777)先处理摩擦，再沿目标方向加速。在该游戏地面配置中，[默认加速、摩擦系数](https://github.com/ioquake/ioq3/blob/52088b9eae247d8e321c8dc1fb49a879652854f9/code/game/bg_pmove.c#L32-L44)分别为 10 和 6，随时间步计算，不是本项目应照搬的速度值或键盘延迟目标。可借的是分开测短按占帧比、在地面到速及松手停步；键盘左右或斜向检查应经过正常键位，不能只注入满幅移动向量。（一手源码，2026-11-18，未运行 ioquake3。）
-
-**反例用来补场景，不给整款游戏打分。** STK 的视觉转角／碰撞、长窄车与两轮恢复／坡顶起跳问题，相关工作在Evolution，且有报告缺构建号；不能称1.5已复现或已修。版本与测试场景见 [P112反例](../../docs/research/wp10-motion.md#反例改变验收不代表作品普遍失败)，本轮未复测。
+**参考车辆模型拆三层诊断：** SuperTuxKart 1.5 与 Speed Dreams 2.4.2 均分离按键入舵时间系数与车速灵敏度；排障时同步对齐松键、舵量归零与横摆回稳三时点（舵量未归零查输入滤波，已归零仍摆动查车辆悬架/轮胎）；FPS 地面运动则参考 `ioquake3`（[cl_input.c](https://github.com/ioquake/ioq3/blob/52088b9eae247d8e321c8dc1fb49a879652854f9/code/client/cl_input.c#L156-L205) / [bg_pmove.c](https://github.com/ioquake/ioq3/blob/52088b9eae247d8e321c8dc1fb49a879652854f9/code/game/bg_pmove.c#L711-L777)），按占帧比读取键态并经过正常键位检验。以上均为源码机制参照与诊断分层，不直接复制参数（反例背景见 [P112](../../docs/research/wp10-motion.md#反例改变验收不代表作品普遍失败)）。
 
 #### 现成实现：沿底座接规则，不再造车辆框架
 
@@ -1393,7 +1371,7 @@ startRun(config):
 - **撤回条件。** 老路线首次核心工具变晚且无补偿、无效候选明显增加、玩家无法解释新路线、试玩后总是跳过新项；出现任一就先回退到旧时机，再考虑权重调整。
 - **检查。** 旧档继续可用；丙未解锁时开局甲乙二选一，解锁后甲乙丙三选一，甲、乙的资格与首次补强规则不变；丙由 `routeCUnlock`（默认首次通关后触发、旧档不追溯）解锁后的下一次开局固定进入三选一，首次补强在拿到丙核心后的第一次奖励；`dash` 的 `firstClear` 条件在首版配置里已存在，二改变为首次失败后只影响新一局；不新增平衡／留存数字。
 
-**来源与范围**：核实 2026-10-25 UTC。复用局内奖励的资格过滤、单次展示去重与供给底线。Windblown 的前置构筑与扩池／缩池、Rogue Command 的永久数值反向选择沿用 [WP11 解锁取舍](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#局外解锁构筑能力与控制池分开安排)；Shattered Pixel Dungeon 的局内供给反例见 [WP11 奖励证据](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#reward-choice-evidence)；Dead Cells Forge 的历史与 Grim Dawn 的换法成本沿用 [WP12 换法成本](../../docs/research/2026-10-14-game-wp12-indie-roadmap.md#构筑补研选择清楚之后还要付多少换法成本)；固定源码 [Shattered Worlds](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/gameplayRuntime.ts)、[KeeperRL](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/unlocks.cpp) 与 [Survivors Roguelike Kit](https://github.com/Roo-Roo-Roo/survivors-roguelike-kit/blob/3f905381d73a34b516030528b8ef6743868b9e52/Assets/RGame/RoguelikeKit/Scripts/UI/MainMenu/PowerUp/PowerUpAttributeUpgrade.cs) 的调用链与边界见 [WP11 固定开源调用链](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#固定开源调用链从结算到下一局配置)。卡牌规则见 [卡牌构筑](#p111-deckbuilding)，装备的单件状态与损毁供给见 [P106](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#p106-equipment-loss-supply)；本节不重做抽样或物品规则。固定源码只支持职责分离与调用链存在，不支持玩家体验、留存或平衡结论；固定源码已读、运行未做；以下是设计比较与实施蓝图，未实玩、未运行引擎；不写平衡、留存、刷取负担或开发提效数字。
+来源与范围（2026-10-25 核源码，设计推演未实玩；详情见 [WP11 解锁取舍](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#局外解锁构筑能力与控制池分开安排) · [WP11 固定开源调用链](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#固定开源调用链从结算到下一局配置)）：Windblown / Rogue Command / Shattered Pixel Dungeon / [Shattered Worlds](https://github.com/rjroy/shattered-worlds/blob/384227efe8afcb44be0582399f16ffe6d6030934/src/game/runtime/gameplayRuntime.ts) / [KeeperRL](https://github.com/miki151/keeperrl/blob/95d2be4e97db2243210a71918e36a533ad94dcd1/unlocks.cpp)。卡牌与损毁供给规则分见 [P111](#p111-deckbuilding) 与 [P106](../../docs/research/2026-10-14-game-wp11-gameplay-architecture.md#p106-equipment-loss-supply)。
 
 <a id="in-match-growth"></a>
 

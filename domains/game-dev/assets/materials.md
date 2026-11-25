@@ -288,45 +288,19 @@ PY
 
 **按同机位三视图、两名非作者判断，只得到有限的表面改善。** 两名盲评均选新小样，courtyard-gap 收益较小；整合到既有前台时钟版本后复拍 cross-lane，两次的状态／命令与开关 RGBA hash 和先前样本一致。384 项测试、三个六回合种子回放、材质＋默认运动／材质＋ground-v1／材质关闭三组合各两轮普通开始、移动、暂停、恢复、重开通过；最终 33 文件与验收构建 hash 一致。独立检查录制的 21 张软件移动帧未见明显跳变，但连续视频感知未完成，贴墙与死亡镜头未覆盖；不能据静帧判优直接换默认。
 
-**收益还要付成本，二改不能用重复验收代替。** 软件固定状态交错测量的 Game＋View 中位 20.8→21.8 ms（+4.8%）、均值 23.18→26.94 ms（+16.2%），另一批均值 24.41→34.11 ms；这不是正常游玩 FPS 或硬件性能。已核源图与接线后续保持字节一致，尚无可核的接入后美术二改，不能把同步基线或复拍算作第二次修改。当前仅小样完成默认关闭的旁置采用；连续闪烁、硬件表现与完整场景品质仍待验。下面的整层扩展复用原图，不算贴图美术二改，也不能沿用小样盲评判优。
-
-案例依据：[采用提交](https://github.com/dbvv1/FPS-Like/commit/2b7ac87288f9595d3b1346b521a7eb456db108c9)、[源件、提示词与参数](https://github.com/dbvv1/FPS-Like/tree/2b7ac87288f9595d3b1346b521a7eb456db108c9/assets/environment/ai-courtyard-v1)、[品质范围](https://github.com/dbvv1/FPS-Like/blob/2b7ac87288f9595d3b1346b521a7eb456db108c9/docs/quality.md#ai-courtyard-material-sample--2026-10-30)；Site v21 已交付，材质默认 off。核实 2026-10-30；这是网页消费者采用，不提升 Unity／UE 实跑或生成质量普遍评级。
-
-**[案例旁置接线，视觉待验] 整层扩展要覆盖真正显示的消费者，不只给占位网格换皮。** FPS 后继 `67ae83a7` 把同两张图扩至地面＋全部 10 堵墙；启用标准件替换时，实际显示的 `center-dogleg`／`site-cover` GLB 也注册到同一材质族。墙面新增独立的 4 m 采样坐标和区域遮罩，不重写原 atlas UV、顶点色或三角形：原图集墙按灰泥底色和侧面共同限区，GLB 按原顶点调色板与侧面限区，保墙裙、压顶、橙色标识及灯具。侧带顶点数只是绑定覆盖，不等于可见灰泥像素或合格画面。明确语义分区比把所有面一律覆盖更重要；此固定资产的颜色阈值不是跨资产通用分割器。
-
-**实际替换件通过原校验后才注册，退出时恢复原消费者。** GLB 原验证仍禁止外来贴图，不能为接新材质放宽源件检查；验证后的对象由场景所有者绑定候选纹理，卸载时恢复原 shader hook／属性，再释放自有纹理。原网格与替换 GLB 有不同采样契约，但共用同一对纹理；部分注册失败须还原已经修改的对象，超时或销毁后的迟到对象不得复活旧场景。先解决这些真实接线，再谈扩量，避免只改了被隐藏的替身。
-
-固定实现：[区域与采样合同](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-surface.ts)、[族所有者与恢复](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-materials.ts)、[真实 GLB 接线](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/art-standards.ts)。整层扩展已随 [`97f28f2` 合入 main 旁置](https://github.com/dbvv1/FPS-Like/commit/97f28f2cfabcca47d7a343af7c311b6f3c2137f5)。CPU 接线／失败恢复、构建与关闭开关的跨基线回放一致通过；实际云浏览器默认与全场材质各完成 2×144 tick、hash 同为 `2d7ad50c`，ground 与组合各为 `bc7ad7c8`，并自然回退 Canvas2D、显示恢复提示。它证明失败时仍可玩，不证明全场 Three 材质实际显示或比小样好。`materials=ai-courtyard-full-v1` 保持显式候选；Site v23（885a53c）已部署；本地 Canvas 已验自然六回合，但线上仅默认菜单到达，shell HTTP 403，完整线上验收未通过且不绕过。真实 shader、同机位图与非作者盲评待补，不能沿用旧小样判优。（旁置门槛核实 2026-11-03 Asia/Shanghai）
+**[案例旁置接线] 整层扩展要覆盖真正显示的消费者，并保失败恢复。** FPS 后继 `67ae83a7` 将地面与全部 10 堵墙及真实显示的标准件 GLB（`center-dogleg`／`site-cover`）共同接入同一材质族，各自按独立采样坐标与语义区掩码限定覆区，保持原 atlas UV、顶点色与标线/灯具。加载前先走原 GLB 校验，失败或迟到时回滚已修改对象并释放自有纹理（[接线 `67ae83a`](https://github.com/dbvv1/FPS-Like/blob/67ae83a7bd3e5c909723ba5ddda2c173bb82bd26/src/candidates/offline-training-v1/render/ai-materials.ts) · [合入提交 `97f28f2`](https://github.com/dbvv1/FPS-Like/commit/97f28f2cfabcca47d7a343af7c311b6f3c2137f5)）。软件帧耗曾有 +4.8%～+16.2% 成本；实际画面品质以最新默认核实为准。
 
 ### 叶片与毛发重叠出错：先分覆盖与半透明
 
-**[研究] ✅ 合格cards先保源，轮廓覆盖先比较原生裁剪材质。** 需要背景渐变混合的内容保留半透明，不为排序稳定直接裁掉。已有兼容MSAA路线、仍需平滑边缘时才🧪比较A2C，不为单件资产默认换管线。
-
-相交卡片不靠排序器承诺全解；薄丝、密度或运动表现变坏就撤回，换配套源或接受不透明几何。必须手绘遮罩／头皮才能补好仍按零手修基准失败。现成植被对照、Unity／UE契约与Paragon反例见 [覆盖取舍](../../../docs/research/2026-10-14-game-wp5-material-effects.md#cards-覆盖补研先修材质表达再决定换源)。[一手／研究]
+**[研究] ✅ 合格cards先保源，轮廓覆盖先比较原生裁剪材质。** 需要背景渐变混合的内容保留半透明，不为排序稳定直接裁掉；兼容 MSAA 且需柔边时才评估 A2C，须手绘遮罩/头皮则换资产（[WP5 覆盖取舍](../../../docs/research/2026-10-14-game-wp5-material-effects.md#cards-覆盖补研先修材质表达再决定换源)）。
 
 ### 先统一画面语言，再让关键动作突出
 
-**[研究] ✅ 先让玩家在移动中认出自己、威胁方向、危险范围和动作结果，再增加装饰。** 风格统一不等于给所有资产套同一滤镜：先固定一套适合实际游玩尺寸的材质明暗、高光强弱和细节密度，把最显眼的形状、亮度变化和运动留给当下重要的信息。TUNIC 作者曾说明，平色低模借光照形成深度，但增加细节也会破坏整体一致性；这支持限定可持续的视觉语言，不证明低模天然省工或无需美术。[一手：[作者访谈](https://www.thexboxhub.com/the-tunic-interview-an-exclusive-chat-with-polymath-designer-andrew-shouldice/)]
+**[研究] ✅ 先让玩家在移动中认出自己、威胁方向、危险范围和动作结果，再增加装饰。** 固定适合游玩视距的材质明暗、高光与细节密度（参考 TUNIC/CS2 Nuke 明暗分层）；以下引擎特性（URP Render Objects、six-way 等）须按目标管线核实。
 
-**[研究] 下表的可读性目标通用；Render Objects、后文的 URP 着色／Renderer Features 和 Unity six-way lighting 是指定引擎／管线的实现例子，不是跨引擎默认。** 换引擎时保留信息目标，按目标 shader 和管线重核通道、遮挡和合成责任，不机械搬运组件。
+**✅ 掩体与地面混在一起时，先在现有表面分明暗，并严防“视觉假掩体”。** FPS 将墙底涂深、墙面与低掩体顶沿提亮，同时由同一坐标函数驱动 Three 与 Canvas2D；新增装饰网格必须对照玩家常见眼位射线（含斜射向棚顶与转角翼板）与物理阻挡结果（曾查出装饰棚 `Raycaster` 1.616 m 误挡而物理返回未命中），确认退到实体碰撞后或移除（[庭院装饰 `445b93b`](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/courtyard-dressing.ts#L464-L490)）。
 
-**✅ 掩体与地面混在一起时，先在现有表面分明暗，不靠增加几何描边。** FPS 中路接敌片段采用了较亮地面、深墙脚、浅墙面和低掩体亮顶沿：墙脚／地面边界、低掩体顶部和敌腿更容易分开。先改这些玩家用来判断空间的宽面，再决定是否需要新的贴图或模型；碰撞和射线仍取原玩法几何。
-
-**实现起点：一份世界高度配方，分别接入实际后端。** 本例 `src/render/yard.ts` 将墙底 0.48m 涂深、其上 0.05m 和墙顶 0.06m 涂浅；这些是本场景起点，按目标视距调整。Three 用 1×128 的 sRGB 色带涂原盒侧面，顶部独立赋色，删除超出碰撞盒的旧顶条；Canvas2D 读取同一函数，保留原深度／遮挡裁切。Agent 改共享参数与两个消费者，不另画一份近似地图；场景尺寸与通行仍接[玩法几何和碰撞代理](3d.md#装饰改成交互先选运动结构再换外观)，命中光点仍接[权威命中反馈](../04-client-modules.md#打击感与反馈先让命中有含义再让重击有分量)。
-
-**装饰不改碰撞，也要查是否做出了假掩体。** 用同一眼位和同一方向对照生产渲染网格与弹道阻挡；覆盖装饰的每块主要面，另留一条已知实体墙作正对照。只删主板可能留下转角翼板。画面改动不补玩法碰撞：让新增的不透明装饰退到现有实体后面，或移除它，再复跑对照。
-
-**可复验的反例：** FPS [庭院版 `445b93b`](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/courtyard-dressing.ts#L464-L490)的[净空测试](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/tests/offline-training-v1/courtyard-dressing.test.ts#L30-L54)只管头高以下，不能检查斜射。在模拟坐标 `(-10, 1.62, 3)` 和 `(-5.3, 1.62, 9)`，分别沿单位向量 `(0, √15/4, 0.25)` 射向长棚和转角翼板。用 `buildCourtyardDressing` 构建场景、更新世界矩阵后，Three.js `Raycaster` 查询（渲染坐标的起点和方向均反转 Z）各在 **1.616 m** 命中；同坐标送入 [`Physics.wallDistance`](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/sim/physics.ts#L74-L82) 则返回上限 100 m，即未命中任何实体阻挡。从第一个眼位沿 `(-1, 0, 0)` 射击，原西墙仍在 **3.000 m** 拦截。无棚方案应让两个向上测点都不再被棚遮住，而墙仍拦截；还要从两处正常玩家视角检查残留灯具和轮廓。此前本地候选只用一条斜线验证棚与灯的移除，不能代替两处复验。2026-11-21，本端实际运行 Three.js 网格查询和 Rapier 阻挡，不含浏览器出图、实玩或替代版验收。
-
-**何时不够：目标仍贴着暗背景时，要继续改目标与背景的局部关系。** 本次 Three 深头盔未比旧浅头盔更醒目，CPU 浅背墙下才更有利；亮天空又削弱了顶部小字。不能把“整体提亮”当成所有目标与 HUD 都改善。两后端的实际探出→开枪→倒下复评接收了地面与掩体收益；人物形体与材质层次仍须分开比较，不把色带当成完整美术方案。
-
-上述色带案例来源：[FPS-Like 可玩案例](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site)，运行源 `619074e` 的正常 Three／CPU 片段与非作者画面复评，2026-10-26；当前截图与差距在产品 `docs/quality.md`。视觉参照为 [Valve CS2 官方 Nuke 展示](https://cdn.fastly.steamstatic.com/apps/csgo/images/csgo_react/cs2/maps/nuke_ramp_s2.jpg)（文件最后修改于 2024-11-22），只借明暗分工，不使用其资产。
-
-**宽面已经分清、仍像调试场地时，先试一份尺度明确的成熟表面，不急着叠满 PBR 通道。** FPS 本地候选（源 `d0dfe68`，未发布）从 [Poly Haven 的 CC0 Concrete Floor 01](https://polyhaven.com/a/concrete_floor_01) 保留原件与作者信息，按其 2m 尺度采样；可编辑脚本把原图缩至 256px、围绕已有地面配色收敛细节，并生成完整 mip 链。Three 将同源颜色接入原地面材质，Canvas 用同一世界坐标／mip 在原墙和人物遮挡之前绘制，不另造一套场景。实际接敌画面中，近景细骨料替代了调试网格，道路标记、目标环与头胸仍可辨。
-
-**只保留下游真用得到的细节，并把采样成本与首次接入分开。** 此例只消费颜色，不因原包有 normal／AO 就全部加载；纹理由原视图负责释放。CPU 近处稍颗粒、远处变平，Three 低各向异性也牺牲斜视清晰度；这是预算取舍，不是所有后端同等质感。含录像的短首屏采样不能单独判持续代价：固定产品和菜单、关闭录制，热态按基线→候选→基线收原始帧间隔后，本例未复现先前的大幅菜单退化，但仍未证明硬件或长局预算。规则纹路、指定磨损位置或细节抢过威胁时，不机械搬这份缩图／配色配方，回到对应 UV、内容变体与正常视距比较。
-
-**✅ 低模战场地表太空时，先比较局部路肩层次，不把纹理铺满。** MOBA 同镜头比较中，现成石／叶颜色图增加了细节，却留下重复苔斑、草地地毯感，石缝还干扰技能虚线；继续缩放、降对比没解决布局问题。实际采用的是另一条路线：少量 CC0 草簇沿不等距路肩分布，底片用原草色接回大面，战斗中心留白。路沿不再像直线切开，人物和范围提示仍是主信息；大面积地表与整体场景品质仍未完成。
+**宽面分清后仍像调试场地时，先按实尺接单通道表面色图。** 如采用 Poly Haven CC0 纹理并缩至 256px＋完整 mip 接回原有配色，暂不铺满 normal/AO 通道，由视图负责释放；若地面规则重复纹理干扰威胁/技能圈读数，退回低噪底色＋路肩局部 CC0 草簇分布（如 MOBA 路径，战斗区留白）。
 
 **实现起点：把现成形状与可编辑布局分开保留。** 本例选 Kenney Nature Kit 2.1 的宽叶、草簇两种 OBJ；保原字节、许可与导出身份，AI 脚本只提取位置／法线，再从一份布局读取每簇位置、长宽、seed 和有限色板。第二次修改只把悬开的“花床”接到路沿，不重生草形或增加全场密度。消费者沿原场景受光，保留原地面／道路；三批装饰随世界创建和释放，不参与英雄拾取。这里中央 9.6m 不加几何、草高低于 0.5m，是该相机下的起点，换玩法与视距须重定留白与轮廓。
 
@@ -472,9 +446,7 @@ Unity Particle System 提供 C# 粒子读写和物理交互，VFX Graph 偏 GPU 
 | 派生纹理 | flipbook、noise、渐变、边界 SDF、六向光照 | 从合格源重新导出，保通道与帧序对应 | 逐技能手改同一张图 |
 | 运行实例 | 生成的特效组件、暴露参数值、阶段、进度、结果、寿命 | 绑定、推进、取消、回池、清理 | 伤害、命中判定、技能成功 |
 
-**运行时用引擎现有暴露参数和事件，不为每招复制一整份图。** Unity VFX Graph 的 Blackboard 属性勾选 Exposed 后可经组件和 C# 读写（`SetFloat`／`SetVector3`／`SetGradient`／`SetTexture`），`SetFloat` 会把该属性标为已覆盖；`SendEvent` 可带 `VFXEventAttribute` 传事件载荷（如颜色、生成数量），接触点位置另经暴露的 Vector3 属性或事件属性传入；事件接到 Spawn Start／Stop 后会替代默认的 OnPlay／OnStop。Particle System 的 `Stop()` 默认 `StopEmitting`，已有粒子继续到寿命结束；`StopEmittingAndClear` 才立即移除，`Stop Action` 只在粒子全部死亡且超过 Duration 后触发。Sub Emitters 只有 Birth 支持多项 burst，Death／Manual 等只有单个 burst。`VisualEffect.Stop` 只向 Spawn 系统发停止事件，`Reinit` 会恢复初始状态、内部时间归零并重发 initial event，两者都不能当“取消并保留现场”。这些语义必须按目标版本核，不能把组件的视觉收尾当成玩法取消。[一手：[Blackboard](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Blackboard.html)、[VisualEffect](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.html)、[SetFloat](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.SetFloat.html)、[SendEvent](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.SendEvent.html)、[ParticleSystem.Stop](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ParticleSystem.Stop.html)、[Main 模块](https://docs.unity3d.com/6000.3/Documentation/Manual/PartSysMainModule.html)、[Sub Emitters](https://docs.unity3d.com/6000.3/Documentation/Manual/PartSysSubEmitModule.html)、[Reinit](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.Reinit.html)]
-
-**Unreal 同样按合同接，不照搬组件名。** Niagara 组件可按名覆盖 user parameter（`SetVariableFloat`／`SetVariableVec3`），`ResetSystem` 回到初始模拟状态；所核 API 页未统一说明 Deactivate 后已有粒子的行为，停发与 Inactive Response 须按目标系统和版本核，不能把 Deactivate 当“保留现场取消”。[一手：[UNiagaraComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/Niagara/UNiagaraComponent)]
+**运行时用引擎暴露参数和事件，不为每招复制整份资产。** Unity VFX Graph 通过 `Exposed` 属性经 `SetFloat`/`SetVector3`/`SetGradient` 与 `SendEvent`（`VFXEventAttribute`）传载荷，`Stop` 与 `Reinit` 语义不同于取消并保留现场；Particle System 默认 `Stop()` 为 `StopEmitting`（不立即清粒子），须按版本核事件（参考 [VFX Graph Blackboard](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Blackboard.html) · [VisualEffect](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/VFX.VisualEffect.html) · [ParticleSystem.Stop](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/ParticleSystem.Stop.html)）。Unreal Niagara 同理通过 `SetVariable*` 与 `ResetSystem` 传参，停发与 `Inactive Response` 须按版本核（[UNiagaraComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/Niagara/UNiagaraComponent)）。
 
 #### 同族参数边界：共享语言、每招形状、每次施放值
 

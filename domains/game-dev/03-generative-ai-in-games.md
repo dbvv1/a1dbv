@@ -31,22 +31,18 @@
 | 验一个画面与反馈方向 | 一个小空间、一段可操作的交火或驾驶；近景、主要动作和声音一起成立 | 核心画面仍靠远景或特殊机位掩盖缺陷时，不加房间和新机制 |
 | 做可独立游玩的小关卡 | 明确开场、推进、一次转场、控制权交接、失败重试和收尾；每段只留服务流程的内容 | 流程已闭合而新空间明显粗于已认可空间时，先补近景与形体，不继续加区域 |
 
-**让执行者直接看实际运行结果，并据此决定下一轮。** 交代可玩入口、现成截图工具、目标设备与不能改变的玩法／通行约束；允许在同一工程连续修改，不替它预排一串美术参数。每扩一段，先按同一套玩家视点复查新段改前／改后；再用相同距离、构图用途和截图比例，与已认可的最佳空间比近景。前者判断这一轮有没有变好，后者判断能不能继续扩。若新段仍明显更粗，先补近景与形体，不用旧大厅的好图替新段通过。截图文件存在、模型自报“看过”、测试全绿都不是看图结论；截图次数也不是质量配额。控制权交还、贴近门墙和擦碰等运动片段另回看，静态终图看不到这类问题。
+**让执行者看真实运行结果并决定下一轮。** 交代入口、截图工具、目标设备与玩法／通行硬约束，不在简报里写死实现参数；每扩一段先在同视角对照新段改前改后，再用同距离/构图对比已认可近景（不拿旧大厅好图替粗劣新段背书）。控制权交还、贴门擦碰等运动时序须另看视频/帧序列。
 
-**收窄范围时，把要修和要保留的特征一起写进验收线。** 例如：“这一轮只改卷闸；从正常站位看 1:1 截图，没有明显像素块，锈蚀跟随分件，不跨横档糊成一片，同时保留原图可辨的使用痕迹。拿原大厅的近景当细节锚点，由非作者看同机位前后图。” 若同时修转场，要另看「交还控制后」的长帧，不能用静帧和 smoke 通过代替。修完清单但没到验收线，交付可玩的版本并标出未达项，不称完成。
+**收窄单轮范围，并明确停止信号。** 例如指定本轮只修特定物件，要求正常站位下纹理与结构清晰且保留原用法痕；若明确验收线后连续同处失手，则切回同一镜头下的单变量对照（[现成 PBR／bpy 改造](assets/3d.md#licensed-closeup-assets) 或单变光照），仍由非作者复评结果。若需多轮持续接力，每次要求交回可运行入口、同机位图与最大未达项，续跑直接从最大差距推进（[单次中断案例](../../docs/collaboration/demo-trial-20261117.md)）。
 
-**停止信号看收益，不看做了多久。** 已达到本轮体验目标，就保留可玩版本，进入独立检查；继续迭代只增加小构件而没有改善主要差距，改做最大缺口。若明确验收线后仍反复在同一处失手，不再只重写目标：保持入口、镜头和其余视觉条件不变，先对一个表面试[许可清楚的现成 PBR 材质或原 bpy 改造链](assets/3d.md#licensed-closeup-assets)；若问题在室外照明，另做一次 HDRI 单变量对照。让非作者指出差异再保留，不要求所有内容代码生成，也不预判换来源必然更好。若流程扩展摊薄了质量，收窄新增区域，或明确把下一轮投入放在新空间，不能用旧大厅的好图替整关背书。
+**可直接填的三段简报（按任务删改）：**
+1. **要什么：** 玩家体验目标【简述】；本轮范围【画面样段／独立小关卡】与核心操作；在正常视角对齐【可见差距】，保持【玩法／碰撞／镜头不变量】。
+2. **几点事实：** 运行【版本与入口】及【目标设备】，自看同机位前后先修最大视觉差距；换资产走 [CC0／CC BY＋bpy 单件接入](assets/3d.md#licensed-closeup-assets)；改操控走真实按键响应与可分辨回归（[验证页 §2](02-verification-and-playtesting.md#handling-regression)）。
+3. **交付：** 可玩入口、关键修改位置、同机位对照图/动作片段与最大未达项；未测项直接标出。
 
-**投入几小时要安排续跑，不能只在提示词里要求不许停。** 每轮把可运行版本、同机位结果和仍未达标的最大差距交回；需要继续时，从这个版本接着做该差距，不重开、不加范围。执行者给出终答只代表这一轮结束；是否达到目标仍看实物。方向会话的[单次自主执行记录](https://github.com/dbvv1/a1dbv/blob/ee92bf60009ee996fdaac7145580a9046e4e37fe/docs/collaboration/demo-trial-20261117.md#L120-L132)中，约 29 分钟即交回，且自评仍未达目标。这是该次运行的反例，不是所有执行者的时限，也不代替案例发布时的非作者验收。
+**换资产路线先跑通单件。** 用同环境选中对应最大缺口的单件合法素材，走通导出、游戏加载并从正常玩家视角入屏，交付来源/许可、加载标识与实图（缺工具时勿强行替代并记录未试到）。
 
-**可直接填的三段简报（删掉不适用的分支）：**
-1. **要什么：** 玩家原目标【原话或已确认目标】。本轮做【一段画面样段／一个可独立游玩的小关卡】，玩家要能【正常操作】；在【正常视角／动作】里对齐【参照及可见差距】。做到【范围】，不改【玩法、碰撞、镜头等不变量】。
-2. **几点事实：** 从【版本与普通入口】在【目标设备】运行；执行者自己看同机位前后，先改最大的可见差距。换资产路线才做下文的**单件接入**，沿项目现有 [CC0／CC BY、CREDITS 与 bpy 做法](assets/3d.md#licensed-closeup-assets)。改操控才填【短拨、持键、松手的预期响应】，从正常键位进，核模拟实际收到的输入，再用能分辨坏版本的[合成玩家](02-verification-and-playtesting.md#handling-regression)跑重复回归。
-3. **交付：** 【可玩入口】、【技术和代码位置】、【同机位图或相关动作的前后片段】、【最大未达项】。只收到脚本或离线结果就写明没看见什么；合成成绩不代替玩家手感。不把研究来源或诊断入口塞进玩家界面。
-
-**换资产做法，先让实际执行者跑通一件。** 在简报的「几点事实」里写：用正式制作的同一执行环境和权限，选一件对应最大缺口的合法素材，走拟用的处理或导出步骤。再从游戏普通入口，用现有加载器确认实际读到了这件资产，在正常玩家视角看到它而非占位或回退。交来源、许可、实际加载标识和一张玩家视角图；如果任一步不可用，记「这条路线没试到」，保留原品质目标。《雪线回波》的[试验记录](https://github.com/dbvv1/a1dbv/blob/0696361e90c4c0893dbd08cdc46f6754f9d93210/docs/collaboration/demo-trial-20261117.md#L204-L208)中，实际环境未装 Blender，也找不到网关生成命令，长回合仍沿用代码生成，不能据此判断换管线的效果。单件跑通只证明这条路线能用；是否值得批量制作，另看[同机位对照](assets/3d.md#licensed-closeup-assets)。
-
-**依据与失败边界：** 单次 FPS 样本中，补齐流程后新空间的近景仍比原大厅粗；卷闸修掉像素块却留下跨横档的糊斑。前者说明“宁少勿粗”不能替代逐段验收，后者说明整局能跑不能替代近景判断。[扩关记录](https://github.com/dbvv1/a1dbv/blob/4c6c7b8aba2fa64d76c3d18454578bccbe3c1d0d/docs/collaboration/demo-trial-20261117.md#L66-L98)、[卷闸同机位前后图](https://github.com/dbvv1/a1dbv/blob/d51d4259cee8e9b582cc255fc0b9531a906cfef8/docs/img/2026-11-18-demo-fps-r4-shutter-1x.jpg)（本端样本，2026-11-18）。另一次调整同时换了材质、扫描件与环境光，[前后图](https://github.com/dbvv1/a1dbv/blob/ee92bf60009ee996fdaac7145580a9046e4e37fe/docs/img/2026-11-19-demo-fps-r5-r7.jpg)不支持单独归因给素材、措辞、看图次数或模型。本节不是三案的采用回执。
+**案例记录：** 参见 [扩关样本](../../docs/collaboration/demo-trial-20261117.md) 与 [卷闸/光材对照图](../../docs/img/2026-11-18-demo-fps-r4-shutter-1x.jpg)（同时改材质、扫描件与光照无法单独归因，图证于 [r5-r7 对照](../../docs/img/2026-11-19-demo-fps-r5-r7.jpg)）。
 
 <a id="30-秒结论先定来源再选模型"></a>
 <a id="有具体资源缺口时先定来源再选模型"></a>
@@ -441,8 +437,4 @@ MatLat 免费权重为非商业许可，不作商用默认；Unity 原生包与 
 | 向开源引擎或插件贡献代码 | 先读对方的贡献政策 |
 | 商店披露 | 如实、具体地写明用途和人工审核环节 |
 
-**依据**：[一手／研究] 发布渠道与披露（2026-10-14 官方规则核查），见 [WP1](../../docs/research/2026-10-14-game-wp1-licensing.md#发布渠道不能被生成许可替代)；[一手；2026-10-20 补核] [GDC 2026](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)（2026 年扩大受访角色并调整问卷，历年结果不作同群体追踪）；[社区：原文；2026-10-20 补核] [Sulka Haro 普查](https://fragwyz.substack.com/p/three-years-of-ai-on-steam)（2023-07 至 2026-07 共 53,597 款 Games 发行；用途比较取成功组 138 款（≥1,000 评测）与失败组随机 400 款（<50 评测、上市 ≥9 个月））；[一手] [Clair Obscur 开发方澄清](https://elpais.com/cultura/2025-06-28/la-revolucion-creativa-low-cost-cuando-la-tecnologia-pone-el-arte-al-alcance-de-todos.html)、[Godot 官方贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)；[二手：媒体转引] [撤奖报道](https://www.gamesradar.com/games/rpg/clair-obscur-expedition-33s-controversial-goty-wins-at-the-indie-game-awards-retracted-after-the-rpgs-use-of-generative-ai/)；核实 2026-10-20。
-
-## 来源
-
-**依据**：[一手] [GDC 2026 State of the Game Industry](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/)、[Godot 官方贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions)；[社区：原文] [Sulka Haro：Three years of AI on Steam](https://fragwyz.substack.com/p/three-years-of-ai-on-steam)；[二手] Clair Obscur 撤奖报道见上表；核实 2026-10-20。
+**依据**（2026-10-20 核查）：[GDC 2026 状态报告](https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/) · [Sulka Haro Steam 普查](https://fragwyz.substack.com/p/three-years-of-ai-on-steam) · [Clair Obscur 澄清](https://elpais.com/cultura/2025-06-28/la-revolucion-creativa-low-cost-cuando-la-tecnologia-pone-el-arte-al-alcance-de-todos.html) / [撤奖声明](https://www.gamesradar.com/games/rpg/clair-obscur-expedition-33s-controversial-goty-wins-at-the-indie-game-awards-retracted-after-the-rpgs-use-of-generative-ai/) · [Godot 贡献政策](https://contributing.godotengine.org/en/latest/development/contribution_rules.html#ai-assisted-contributions) · 完整发布边界见 [WP1](../../docs/research/2026-10-14-game-wp1-licensing.md#发布渠道不能被生成许可替代)。
