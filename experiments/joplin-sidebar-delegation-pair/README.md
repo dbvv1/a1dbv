@@ -18,7 +18,9 @@
 
 **从同一份源码编译后再验 Electron。** 原版预检和每个待评分补丁都在各自受检工作树根先跑 `yarn tsc`，成功后才跑桌面测试；把源码版本／补丁、编译结果与测试结果记在同一回执。不拿新 profile 当作新构建：`test-ui` 的 `before-start` 会打包，但不负责 TypeScript 编译；打包器可能优先取已有的同名 JS。依据：[一手] [固定构建说明](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/readme/dev/BUILD.md#watching-files)、[before-start](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/gulpfile.ts#L77-L90) 与[模块解析](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/tools/bundleJs.ts#L71-L87)，2026-11-24 核源码，未跑 Electron。
 
-组织者可另备桌面包 `integration-tests/sidebar-scroll.spec.ts`，运行 `yarn workspace @joplin/app-desktop test-ui sidebar-scroll.spec.ts --workers=1 --retries=0`；夹具至少三屏，下部目标远离滚动边界。必须先连续两次重现原问题并验邻接能力；未重现、桌面不可用、依赖漂移就停止。评分必须操作实际应用，不以 mock 替代。只把下段交执行者。
+组织者可另备桌面包 `integration-tests/sidebar-scroll.spec.ts`，运行 `yarn workspace @joplin/app-desktop test-ui sidebar-scroll.spec.ts --workers=1 --retries=0`。**原版预检与两臂盲评都在测试进程设置 `PLAYWRIGHT_HTML_OPEN=never`**：在 Windows 命令提示符先运行 `set "PLAYWRIGHT_HTML_OPEN=never"`；在 Bash 可直接加在命令前。HTML 报告照常生成，但失败后不会自动启动报告服务器而卡住；保留报告和实际退出码。依据：[一手] [固定桌面配置](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/playwright.config.ts#L23-L27) 与 [Playwright 1.56.1 报告器](https://github.com/microsoft/playwright/blob/v1.56.1/packages/playwright/src/reporters/html.ts#L149-L210)，2026-11-26 核源码，未跑 Electron。
+
+夹具至少三屏，下部目标远离滚动边界；先连续两次得到原缺陷的行为断言失败，并验邻接能力。未重现、桌面不可用、依赖漂移就停止。评分必须操作实际应用，不以 mock 替代。只把下段交执行者。
 
 > 桌面笔记本列表：选中靠顶部的笔记本，滚到下方，点击下方目录的展开或折叠按钮，再往下滚。目前列表会跳回顶部。修复它；保留当前选择和正常的方向键选中、滚动及焦点，不要从编辑器抢走焦点。交局部补丁、可重跑回归和实际检查结果。
 
