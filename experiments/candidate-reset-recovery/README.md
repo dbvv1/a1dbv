@@ -132,7 +132,7 @@ GOOSE_DISABLE_KEYRING=1 cargo test -p goose --test litellm_vision --locked -- --
 
 本次只补上游实现的这组回归，未重跑旧基线对照、完整工作区或 Clippy，也未接真实 LiteLLM／模型、正式客户端或本机读者。原图片断言核相同 data URI 的总数与省略标记；这 18 项不覆盖逐消息图片身份、最终流文本或缓存 TTL／并发；上游单测另含失败缓存过期重试。
 
-依据与核实：[合并记录](https://github.com/aaif-goose/goose/pull/13239)、[此前固定 provider](https://github.com/aaif-goose/goose/blob/090dedb7625c8aadb9bb05d68028fd00f36b429e/crates/goose/src/providers/litellm.rs)、[正式版 v1.57.0](https://github.com/aaif-goose/goose/releases/tag/v1.57.0)及[标签源码](https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/providers/litellm.rs)；2026-10-30。2026-11-01 实跑固定[上游主干](https://github.com/aaif-goose/goose/tree/b23d21cabd9b4de0c045dcdd731821a3a15c2bfc)，并复核最新正式版。更完整的[原控制与当前取舍](../../docs/collaboration/inbox.md#goose-litellm-vision-payload)沿原入口阅读。
+依据与核实：[合并记录](https://github.com/aaif-goose/goose/pull/13239)、[此前固定 provider](https://github.com/aaif-goose/goose/blob/090dedb7625c8aadb9bb05d68028fd00f36b429e/crates/goose/src/providers/litellm.rs)、[正式版 v1.57.0](https://github.com/aaif-goose/goose/releases/tag/v1.57.0)及[标签源码](https://github.com/aaif-goose/goose/blob/v1.57.0/crates/goose/src/providers/litellm.rs)；2026-10-30。2026-11-01 实跑固定[上游主干](https://github.com/aaif-goose/goose/tree/b23d21cabd9b4de0c045dcdd731821a3a15c2bfc)，并复核最新正式版。更完整的[原控制与当前取舍](../../docs/collaboration/archive/inbox-through-2026-11-25.md#goose-litellm-vision-payload)沿原入口阅读。
 
 ## 许可与修改通知
 

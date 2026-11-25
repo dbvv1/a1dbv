@@ -68,7 +68,7 @@ pnpm --filter portless lint
 |---|---|
 | 官方能力与源码 | [worktree 子域与默认监听](https://portless.sh/#git-worktrees)、[正式版](https://github.com/vercel-labs/portless/releases/tag/v0.15.12)、固定主干的 [state 目录](https://github.com/vercel-labs/portless/blob/96a3bbb353e5a2bcc223ed014102737160e7f983/packages/portless/src/cli-utils.ts#L465-L488)及 [stop 实现](https://github.com/vercel-labs/portless/blob/96a3bbb353e5a2bcc223ed014102737160e7f983/packages/portless/src/cli.ts#L1034-L1169)；形成 1 项状态隔离采用判断 |
 | 真实用户与其他待修问题 | [#521](https://github.com/vercel-labs/portless/issues/521) 提供本次消费者；另核 [#525](https://github.com/vercel-labs/portless/issues/525) 上传响应问题，已有 [#477](https://github.com/vercel-labs/portless/pull/477)／[#478](https://github.com/vercel-labs/portless/pull/478) 在修，不重复实现 |
-| 社区与既有采用 | [LINUX DO 原帖](https://linux.do/t/topic/1796422)指出 worktree 之外仍共享端口等资源，作为问题背景；既有 [state-in-url 采用核查](../../docs/collaboration/inbox.md#portless-worktree-urls)保留，不把它当成 #521 的复现 |
+| 社区与既有采用 | [LINUX DO 原帖](https://linux.do/t/topic/1796422)指出 worktree 之外仍共享端口等资源，作为问题背景；既有 [state-in-url 采用核查](../../docs/collaboration/archive/inbox-through-2026-11-25.md#portless-worktree-urls)保留，不把它当成 #521 的复现 |
 | 外部覆盖缺口 | 本轮是地图已有候选的定向实试，不是新工具广扫；HN Algolia 入口本轮不可读，搜索未取得新的 Portless 专题原帖，不据此作热度或“当前最佳”排名 |
 
 核实与 CLI 试验：2026-10-31 UTC。#521 仍开放、无评论；没有声称维护者已接受候选，也未测模型效果或整任务节时。

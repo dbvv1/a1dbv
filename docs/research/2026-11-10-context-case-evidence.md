@@ -30,7 +30,7 @@ git hash-object --no-filters received-page.md
 
 **重载依据**：[Claude 旧副本修复](https://github.com/anthropics/claude-code/blob/08c6a4f5121ae140d3c1b5c96e3e5ae53587b54b/CHANGELOG.md#L12)与[旧版反馈](https://github.com/anthropics/claude-code/issues/92949#issuecomment-6119121589)，核实 2026-10-27、未实跑；[AOCI 全量重读核查](../research/2026-10-26-context-reload-scope.md)与[断流反馈](https://github.com/openai/codex/issues/53653)，核实 2026-10-26、未复现客户端故障。
 
-**图片估算依据**：[Cline 修复](https://github.com/cline/cline/pull/14520)、[4.1.24 发布](https://github.com/cline/cline/releases/tag/v4.1.24)、[同请求与缓存口径](https://github.com/cline/cline/issues/14979)、[本仓固定源码离线对照](../collaboration/inbox.md#cline-image-token-estimate)，核实 2026-10-28。v4.1.20／v4.1.24 相同文本加一张 192×128 合成 PNG 的请求估算为 32,926／1,662；正常路径的 1,600 token／图是内部定额，文本仍按字符估算。真实压缩时机、恢复质量及服务端用量待验。10-31 补核[原使用者后续回执](https://github.com/cline/cline/issues/14979#issuecomment-6473972321)：旧扩展的 1.2–1.5 倍报告不能套到 CLI；CLI 3.0.73 两次自报约 1.08／1.04 倍，非同负载比较。
+**图片估算依据**：[Cline 修复](https://github.com/cline/cline/pull/14520)、[4.1.24 发布](https://github.com/cline/cline/releases/tag/v4.1.24)、[同请求与缓存口径](https://github.com/cline/cline/issues/14979)、[本仓固定源码离线对照](../collaboration/archive/inbox-through-2026-11-25.md#cline-image-token-estimate)，核实 2026-10-28。v4.1.20／v4.1.24 相同文本加一张 192×128 合成 PNG 的请求估算为 32,926／1,662；正常路径的 1,600 token／图是内部定额，文本仍按字符估算。真实压缩时机、恢复质量及服务端用量待验。10-31 补核[原使用者后续回执](https://github.com/cline/cline/issues/14979#issuecomment-6473972321)：旧扩展的 1.2–1.5 倍报告不能套到 CLI；CLI 3.0.73 两次自报约 1.08／1.04 倍，非同负载比较。
 
 
 ## 检查点与 SDK 的证据边界

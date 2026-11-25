@@ -27,3 +27,4 @@
 - [2026-11-09 FPS 状态接续](completed-through-2026-11-09.txt)：终局目标提示修复前原项目行；产品采用仍看当前 TASKS。
 
 - [2026-11-13 B状态接续](completed-through-2026-11-13.txt)：FPS原回执与实例行更新前原文；以当前TASKS和原卡审计为准。
+- [2026-11-26 状态与收件箱收敛](completed-through-2026-11-26.txt)：移出过期 11-06 临时纠偏、旧 P81 过程注记与云端截图过期阻塞；已吸收前沿候选见 [inbox-through-2026-11-25.md](inbox-through-2026-11-25.md)。
