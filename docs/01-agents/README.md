@@ -120,6 +120,11 @@
 
 此处只核 OpenCode 的具体机制；Qwen Code／Goose 的完整离线性、组织策略强制性及目标环境实际隔离仍须另查，不能由同属开源推定。**[研究：证据范围]**
 
+### 跨客户端混用先核指令加载与插件遮蔽
+
+- **合并字节上限与跨端忽略**：Codex 启动按目录拼装指令链并在 **32 KiB** 截断——160 次对照（[dev.to/4sapi](https://dev.to/4sapi/who-wins-when-claudemd-agentsmd-and-a-skill-disagree-160-runs-across-two-coding-agents-p9b)）中 36 KiB 文档放尾部的规则 5/5 丢失；481 仓审计（[dev.to/shoustak](https://dev.to/shoustak/we-audited-481-public-claudemd-and-agentsmd-files-here-is-what-claude-code-cursor-and-codex-47if)）确认根目录同放 `CLAUDE.md` 与 `AGENTS.md` 时，Claude 忽略后者（须 `@AGENTS.md` 引用）、Codex 默认忽略前者（须配 `project_doc_fallback_filenames`）。
+- **Claude Code 内跨派 Codex**：官方 [`openai/codex-plugin-cc`](https://github.com/openai/codex-plugin-cc) 提供 `/codex:review`、`/codex:adversarial-review` 与 `/codex:rescue`；迁移插件须避开在根目录与 `.codex-plugin/plugin.json` 并放旧 `plugin.json`，否则 Codex 0.162.1 静默不跑 Hook，且冷启动外部审阅循环曾因每轮重建前缀出现 2,904 次调用耗 79.4M 输入 token（[2026-11-24 复盘](https://dev.to/iliaa/porting-claude-codes-you-should-know-to-codex-and-the-hooks-that-never-ran-2m35)）。**[社区实测，未在本仓复跑]**
+
 ## 照做证据：保留已有入口
 
 **本次采用**：沿用已有云端 Agent 修复公开 [git-filter-repo #739](https://github.com/newren/git-filter-repo/issues/739)，修后真实 CLI 完成目录过滤，并保住空值、多行值与重复键的原语义。2026-11-08 的[独立云端复验与补丁](../../experiments/git-filter-repo-config/README.md)补齐缺失依赖，项目原生 `make test` 134 项全过，生产脚本语句覆盖率 100%；未更换客户端或模型。这支持保留入口，不作产品优劣比较。作者实作 2026-11-02；入口和验收边界见下表。
