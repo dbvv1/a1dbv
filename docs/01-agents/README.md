@@ -122,7 +122,7 @@
 
 ### 跨客户端混用先核指令加载与插件遮蔽
 
-- **合并字节上限与跨端忽略**：Codex 启动按目录拼装指令链并在 **32 KiB** 截断——160 次对照（[dev.to/4sapi](https://dev.to/4sapi/who-wins-when-claudemd-agentsmd-and-a-skill-disagree-160-runs-across-two-coding-agents-p9b)）中 36 KiB 文档放尾部的规则 5/5 丢失；481 仓审计（[dev.to/shoustak](https://dev.to/shoustak/we-audited-481-public-claudemd-and-agentsmd-files-here-is-what-claude-code-cursor-and-codex-47if)）确认根目录同放 `CLAUDE.md` 与 `AGENTS.md` 时，Claude 忽略后者（须 `@AGENTS.md` 引用）、Codex 默认忽略前者（须配 `project_doc_fallback_filenames`）。
+- **多客户端共用指令，先验实际装载。** 不默认两端会合并 `AGENTS.md` 与 `CLAUDE.md`。Codex 同目录最多取一份，默认合计 32 KiB；写法、覆盖和加载检查统一见[指令文件决策页](../decisions/instruction-files.md)。
 - **Claude Code 内跨派 Codex**：官方 [`openai/codex-plugin-cc`](https://github.com/openai/codex-plugin-cc) 提供 `/codex:review`、`/codex:adversarial-review` 与 `/codex:rescue`；迁移插件须避开在根目录与 `.codex-plugin/plugin.json` 并放旧 `plugin.json`，否则 Codex 0.162.1 静默不跑 Hook，且冷启动外部审阅循环曾因每轮重建前缀出现 2,904 次调用耗 79.4M 输入 token（[2026-11-24 复盘](https://dev.to/iliaa/porting-claude-codes-you-should-know-to-codex-and-the-hooks-that-never-ran-2m35)）。**[社区实测，未在本仓复跑]**
 
 ## 照做证据：保留已有入口
