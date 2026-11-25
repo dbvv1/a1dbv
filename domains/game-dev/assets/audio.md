@@ -50,6 +50,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 **先分「听不听得到」和「听起来隔不隔墙」。** FPS-Like 现有模拟用墙体射线决定敌声是否可听；声音层只收通过的事件 ID，再按距离与方向播放。受控探针复用原观察和播放代码，分别让墙体查询返回有墙／无墙：40 m 半径的枪声在 20 m 处仅无墙可听，在 12 m 处两路都播放，送入同样的 0.105 增益。若要加隔墙音色，只给原本可听的声音加低通或额外衰减；别用室内混响代替遮挡，也别因此让玩家或机器人收到原本不该听见的事件。试听先用同一位置、距离和武器的有墙／无墙两段，再另验原不可听点仍静音。见[可听判定](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/sim/game.ts#L244-L252)、[播放消费者](https://github.com/dbvv1/FPS-Like/blob/445b93b119c5780fae7faae1515f0a06ca43b73c/src/candidates/offline-training-v1/render/audio.ts#L33-L57)（2026-11-18，本端假音频输出与受控墙体查询；未验真实几何角点或试听，未改游戏）。
 
+**会动的门要用当前状态算遮声。** 固定玩家耳位和同一持续声源，让射线穿过门洞中央；保持距离与混音设置不变，逐次比较门关、门开、暂停。复用项目已有的场景射线并传入本帧门的位置，给声源的 `GainNode` 平滑改目标值。《余压》的马达挡住时乘 0.24，`setTargetAtTime` 时间常数 0.12 s，可作起点，不是听觉阈值。反例：相距 5 m 时，原射线带门状态查到关闭的门距耳位 2.04 m、开启后无遮挡；只查静态几何，两次都返回 5 m。原音频代码接到的目标增益为关门 0.01016、开门 0.04233、开门暂停 0.0001。先核这三个状态，再用相同站位试听开关门，检查衰减是否还保留方位提示。依据：[射线与动态门](https://github.com/dbvv1/a1dbv/blob/49f1c2629b7e2e7d1869e62cc3368de7c7d26ebe/experiments/demo-afterpressure/src/sim.mjs#L117-L142) · [持续马达混音](https://github.com/dbvv1/a1dbv/blob/49f1c2629b7e2e7d1869e62cc3368de7c7d26ebe/experiments/demo-afterpressure/src/audio.mjs#L127-L137)。[本端实测] 2026-11-25，原代码配假 AudioContext 的定点检查，未录音试听。
+
 ### 按每条录音的事件标记截取对照片段
 
 **做法：** 在实际经过关键点时，把里程／tick／事件和该次录制起点后的秒数一起保存。按各自标记裁出同一逻辑区间，不跨 A/B 共用秒数。先核报告对应的文件名、字节数和时间单调性，再以 `ffprobe -show_entries format=duration` 核时长；例如标记落在 12.5–18.1 秒的这一条，用 `ffmpeg -i mix.webm -af 'atrim=start=12.5:end=18.1,asetpts=PTS-STARTPTS,ebur128=peak=true' -f null -` 核该段原幅响度与真峰。比较刹车、撞栏等瞬态时，还须有相同事件序列；只有里程对齐的两次驾驶，可比较环境声所在区段，不能把不同事件当成混音遮蔽。
