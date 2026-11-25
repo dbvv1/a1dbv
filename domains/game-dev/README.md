@@ -7,6 +7,8 @@
 
 **从这里开始：[独立游戏从概念到发布的路线图](06-indie-roadmap.md)。** 按概念、原型、垂直切片、内容生产、打磨、发布和上线后选择下一步；每阶段列质量标准、AI 能做、人必须决定与对应专题。先过许可与真人反馈；扩角色／组合前确认玩家能察觉核心选择差异；切片必须经历第二次需求修改。阶段路线仍是资料比较。G1 的实测范围与未验项见第 5 节。[研究]
 
+**正在做一个 Web 可玩小样：** 先用[三段简报](03-generative-ai-in-games.md#small-scene-quality-loop)选一个画面样段或一段完整流程。近景不够精细时，[先让一件合法资产进普通入口](assets/3d.md#licensed-closeup-assets)；操作有问题时，[先从真实按键验方向、幅度和松手恢复](02-verification-and-playtesting.md#handling-regression)。
+
 ## 三个网页案例：先找要玩的版本，再找证据
 
 **线上试玩：** [Star-Rush-Reborn · 海岸公路](https://dbvv1-star-rush.pretty-llama-9945.chatgpt.site/road/) ｜ [FPS-Like · 爆破训练](https://dbvv1-fps-like.pretty-llama-9945.chatgpt.site/) ｜ [MOBA-Like · 单线乱斗](https://dbvv1-moba-like.pretty-llama-9945.chatgpt.site/)。
