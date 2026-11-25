@@ -40,6 +40,8 @@ Windows PowerShell 可先用 `$env:STAR_RUSH_RAIL_SOURCE='synth-v1'` 再构建�
 
 脚步选声先信接触事件的表面与介质结果，不再只按 x/z 重查地面积水覆盖它；否则上层干金属可能发出下层水声。正常地面、高低重叠和查询失败的原代码反例见[共享接触结果](materials.md#web-scene-recipe)。
 
+**替换脚步音效，先核音库格式，再走同一地面两步。** 同名 WAV 能解码，不等于符合播放器的切片规则。如果原播放器从一条音频里随机取片段，沿用现有槽宽，至少保留一个完整槽；不合格时在选片前走已有回退。从正常入口在同一表面连续踏两次，检查两次偏移有限且在素材范围内、无异常，再试听音色与轮换。反例：《雪线回波》封存版每槽 0.5 秒，读取 0.49 秒；给原选择函数喂入 0.4 秒的假解码数据，第一步从 0 秒排程，第二步偏移为 `NaN`。0.5 秒正对照两次均为 0，1 秒在两个槽之间轮换，取到文件但解码尚未完成或失败时，走原合成回退；封存版取文件返回 404 会在启动阶段中止。0.5 秒是本例格式，不是脚步时长规范。依据：[固定选择与回退](https://github.com/dbvv1/a1dbv/blob/49f1c2629b7e2e7d1869e62cc3368de7c7d26ebe/experiments/demo-pale-signal/src/audio.js#L133-L184) · [启动取件](https://github.com/dbvv1/a1dbv/blob/49f1c2629b7e2e7d1869e62cc3368de7c7d26ebe/experiments/demo-pale-signal/src/main.js#L37-L50) · [Web Audio 起播](https://www.w3.org/TR/webaudio-1.0/#dom-audiobuffersourcenode-start) · [Web IDL 对无效偏移的限制](https://webidl.spec.whatwg.org/#es-double)。[本端实测] 2026-11-25，假音频输出；未试听，不代表原素材有误。
+
 失败反例：把总线压缩器或“无削波”当成听感通过。限制峰值仍可能让环境遮住换弹、让 UI 随暂停消失，或使旧声在恢复后补播。分别验正确事件、暂停／重开生命周期、响度／削波与真实试听；未做的保留未验。
 
 **工具：** 浏览器原生 `AudioContext`／`GainNode`／`DynamicsCompressorNode` 足够实现基础分流与增益，沿现有合法样本和混音映射，不为试此机制迁移中间件。[MDN GainNode 创建与增益](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)给出接口；源码参照为 [Saltline 音频实际实现](https://github.com/realcodebear/saltline-fable-5.2/blob/09c51774cd77aad750bd2d6c42af2b1020cb668d/index.html#L5928)和 [Evensong 音频模块](https://evensong-phi.vercel.app/src/audio/audio.js)。核实 2026-11-12；只读源码，未试听、未作三案采用或成本收益结论。
