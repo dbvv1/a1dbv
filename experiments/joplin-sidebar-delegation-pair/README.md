@@ -28,6 +28,6 @@
 
 1. 展开与折叠各测一次：渲染稳定后不跳回选中的顶部，选择身份不变，后续向下滚动有效。小幅合理布局位移不算跳顶。
 2. 用方向键跨过视口边缘：选中项实际更换，新项目可见，连续方向键仍有效。
-3. 编辑器有焦点时，触发不改变选择的列表更新（取已在基线验证的动作），下一次输入仍进原编辑器；既有[侧栏方向键与展开折叠测试](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/integration-tests/sidebar.spec.ts)也要通过。
+3. 编辑器有焦点时，触发不改变选择的列表更新（取已在基线验证的动作）；先观察焦点，不重新点编辑器，再用 `mainWindow.keyboard` 发键并核对输入是否进入原编辑器。上一步的连续方向键也走这一路径：[`locator.press()` 会先聚焦目标](https://playwright.dev/docs/api/class-locator#locator-press)，可能掩盖丢焦点。既有[侧栏方向键与展开折叠测试](https://github.com/laurent22/joplin/blob/02c1c75587a0e7b2a56353d58d821f5d7add77ac/packages/app-desktop/integration-tests/sidebar.spec.ts)也要通过。依据：[一手] Playwright 文档与固定 Joplin 测试，2026-11-25。
 
 三项与可重跑回归均过才算达标。每组从发题到验收最多 60 分钟，记录首次／最终是否过、首交／验收墙钟、人工纠正次数与分钟、主子 Agent 及失败重试的输入／缓存／输出和实扣（拿不到写未知，API 回算另列）。同条件最多发一次只描述失败行为的反馈，连等待、协调和返工一起计时；超时或补丁本身编译失败仍记为未交付，模型漂移、答案泄漏或运行环境失效才判配对无效。单题结果先限定到这类任务，不改默认。
