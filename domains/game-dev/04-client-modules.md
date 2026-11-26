@@ -1210,7 +1210,13 @@ flowchart TD
 
 **稳态掉档和首动作尖峰分开修。** [《雪线回波》本机对照](https://github.com/dbvv1/a1dbv/blob/0fdc83d18ea9e21a42b4f3fd9ae39a0bab9fcfe2/docs/collaboration/demo-trial-20261117.md#L236-L246)中，消除斜坡雪地条纹后，撤离段 P95 仍是 16.7 ms，主游玩段仍是 33.4 ms；提前音效并预热相关材质后，首枪的 `drawMs` 从 84–94 ms 降到 66–71 ms，也不代表进入稳态。保留同机位画质，先单独试阴影投射范围或 AO 分辨率之一，与原配置对比同一游玩段；首次深度材质和首枪另做冷启动对照。记录帧间隔、长帧比例和阶段；`drawMs` 是提交侧读数，不当成独立 GPU 耗时，也不凭这些对照给某个通道定责。[本端实测，2026-11-25]
 
-**后处理降采样需保共享深度精度，并同步核对几何、阴影与片元噪声预算。** 若雾效、水体等下游通道复用 `GTAOPass` 的 `normalRenderTarget.depthTexture`，降采样只能拆在 `gtaoRenderTarget` 与 `pdRenderTarget`（如 `0.5×`）并按比例折半 `pdParameters.radius` 以保持屏幕空间降噪半径，`normalRenderTarget` 仍维持全分辨率避免前景边缘雾效漏光。同时避免全场景 `25k+` 面静态实例盲开 `castShadow`（仅主走道与碰撞实心体用高模并投射主光源阴影，外围装饰岩退回低模且关阴影），并将单角色自定义材质的 3D 程序噪声压到 `color_fragment` 算一次、复用进 `roughnessmap_fragment`（将材质自身的 `onBeforeCompile` 链式挂在全局光探针注入之前），否则在 60 Hz 垂直同步阈值附近，重度片元噪声叠加三遍通道渲染（主色＋法线＋阴影）会把第三人称特写帧直接推过 `16.67 ms` 落入 `33.3 ms` 档。[本端实测，[第八批验证](../../docs/collaboration/demo-trial-20261117.md#第八批11-26性能回正与材质质感验证构建本机-rtx-5070-实测)]
+<a id="shared-depth-ao-scale"></a>
+
+**AO 降采样保留共用深度；调完窗口尺寸再验一遍。** 如果雾效从 `GTAOPass` 的 `normalRenderTarget.depthTexture` 取深度，保这张图全分辨率，只将 AO 与降噪目标缩到 0.5×。Three r170 原版 `setSize` 会把三个目标及 AO、降噪的尺寸 uniform 全设成同一尺寸。用现有 composer 触发一次 resize，检查三张图实际尺寸，并确认降噪的 `resolution` 跟着半尺寸。若它确实是半尺寸，半径 4.9→2.5 只近似保外圈距离（4.9→5.0 个全尺寸像素），内圈仍从 1 变 2；用接触边缘、雾边和移动镜头对照，不当作等价核。
+
+**拆开画质留证与计时；看分镜，不只看整局。** 《雪线回波》RTX 5070 隔离试验同时改了 AO、阴影、LOD 和材质。关闭采图时，整局 P95 同为 16.8 ms，第三人称 P95 却从 16.8 升到 33.2 ms，最慢帧从 50.1 降到 33.5 ms；新版带 30 张截图时整局 P95 为 33.3 ms。报告的雾边来自作者实拍，并非独立复核。判断第三人称退步时，固定同镜头、角色网格和投影件，只切换一个变量如衣料噪声；先无录制比较相同路段，再另拍前后画面。这组组合对照不定责到任何单项，也不替代发布版跑测。
+
+依据：[第八批实机记录](https://github.com/dbvv1/a1dbv/blob/6ba869d73753245d1ae7085a2ed7fdadea33cbd2/docs/collaboration/demo-trial-20261117.md#L248-L263) · [Three r170 resize](https://github.com/mrdoob/three.js/blob/r170/examples/jsm/postprocessing/GTAOPass.js#L489-L505) · [降噪采样偏移](https://github.com/mrdoob/three.js/blob/r170/examples/jsm/shaders/PoissonDenoiseShader.js#L166-L179)。[本端实测] 单次实机批次；半径和 resize 为原版源码核算，新版子类未独立复跑。
 
 静止菜单确为渲染耗用才试 OnDemandRendering，保所需更新、输入／异步到达恢复绘制；耗用未降或首反馈变迟就退回。[Unciv 与 Android 延迟反例](../../docs/research/2026-10-14-game-wp10-client-modules.md#闲时预算少画几帧不等于整个应用一起慢)。
 
