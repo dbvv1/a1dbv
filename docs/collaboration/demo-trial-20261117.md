@@ -289,3 +289,21 @@
 
 **核心教训**：**拿工程代理指标（`100.2 FPS` / `0` 报错 / `0.029 m` IK / 自动通关）冒充视觉升级，且缺少“同机位像素分布预筛＋上下文隔离双序盲评＋非补偿否决门”，是连续多轮原地打转甚至负优化的直接根因**。见 [Web 渲染方案与资产解耦](../../domains/game-dev/09-web-rendering-and-pipelines.md) 与 [视觉反负优化四道门](../../domains/game-dev/02-verification-and-playtesting.md#visual-anti-regression-gates)。[本端实测]
 
+<a id="tenth-batch-ab-tests"></a>
+
+## 第十批（11-26 晚）：WebGPU 最小 A/B 与上游英雄资产（Tripo / Hunyuan3D / Blender）单件对照实测
+
+在完成第 9 批负优化复盘后，于独立隔离实验工程串行跑通两项单变量 A/B，全程执行第 9 批新立的“锁机位＋`visual_pregate.py`＋无代码双序盲评＋非补偿否决”四道门：[本端实测]
+
+1. **实验 A（零费用 · 渲染管线 A/B）：`WebGL2` vs `Three.js 0.187.0 WebGPU (4-MRT SSGI+Bloom+TRAA)`**
+   - **唯一变量**：同场景几何（`alpine.r16` 地形、扫描巨石、`BOREAL 07` 站房与道具、`field-technician.glb` 主角）、同 PBR 贴图与同灯光曝光参数（`hemi=0.45 / sun=1.85 / env=0.36 / exp=1.06`），`1280×720` RTX 5070 无头采集 `cam1_courtyard`、`cam2_hero_close`、`cam3_alley_lights` 三机位。
+   - **客观实测与排坑**：初始 5-MRT（`40 bytes/sample`）触发 WebGPU 默认 `32 bytes/sample` 上限报黑；收窄至 4-MRT（`output+diffuseColor+normal+velocity`）并将 `bloom` 移至合成后即零报错跑通，WebGPU 实测 **`100.0–100.9 FPS`**（`P95 10.2–10.3 ms`、`1,668 calls`、`1.71M–1.82M tris`），对比 WebGL2 `95.3–100.0 FPS`（`P95 10.3–13.0 ms`）。三机位全部通过 `visual_pregate.py`（`cam1`：`P5 46.69→29.06`、`RMS 42.22→43.53`；`cam2`：`P5 32.99→20.42`、`RMS 51.87→53.18`；`cam3`：`P5 36.15→16.40`、`RMS 49.00→50.86`）。
+   - **独立双序盲评结论**：不看源码与指标的独立美术评审在 6 张左右互换图上 **6/6 一致选 WebGPU**（`2.5–3.0/5` vs `1.5–2.0/5`，高光晕染收紧、道具接地阴影更稳、远山脊立体感更强）；**同时证实仅换渲染器不解决人物近景（`cam2` 仍仅 `2.0/5`）**。
+2. **实验 B（4 次上限 · 上游资产单件 A/B）：`Blender 对照` vs `tripo-p1` vs `hunyuan-3.1`**
+   - **成本与规范**：严格限额调用授权网关共 4 次（主角与 `K-07` 步枪各 2 次，无失败重发），经 Blender 4.5 批处理减面、清除自定义分裂法线并 `shade_auto_smooth`：
+     - `hero_tripo`：`4,722` 面（`94 s`，`3.14→1.58 MB`）｜ `hero_hunyuan`：`499,826 → 35,000` 面（`231 s`，`50.6→2.57 MB`）
+     - `k07_tripo`：`4,887` 面（`80 s`，`3.72→2.22 MB`）｜ `k07_hunyuan`：`500,000 → 12,000` 面（`216 s`，`47.3→1.63 MB`）
+   - **像素门禁与双序盲评**：在胜出的 WebGPU 同机位下，全部 9 镜均以 `100.0–100.1 FPS`、`0` 报错跑通；正面主角与步枪 4 项对照（`hero_blender_front` vs `tripo`/`hunyuan`、`k07_blender` vs `tripo`/`hunyuan`；独立复核补测含 3P 在内共 6 项）全部通过 `visual_pregate.py`。不看源码的独立盲审子代理对 5 组（10 张 `o1`/`o2` 互换图：`H-A/B/C`、`W-C` 及 `k07-blender-vs-hunyuan`，不含 `k07-blender-vs-tripo`）给出 **100% 一致判定**：**`hunyuan-3.1` 减面后主角与步枪均获 `4/5`（near-AAA）**（自然 A-Pose 适合绑定、4 联弹匣袋与导轨/光学瞄具/磨损细节清晰），胜过 **`tripo-p1` 主角 `3/5`（90° 硬 T-Pose、手指粘连）与步枪 `2/5`（缺瞄具、软边）**，显著甩开 **Blender 对照 `1/5`**（盲审评分留存于独立复核会话记录，图像目录保留全套双序原图，未单独写回盲评 JSON）。
+
+**诚实边界（尚未等于可发售 3A 整局）**：实验 B 验证了静态主体资产与 WebGPU 渲染的跨代跃升，但 ① `hunyuan-3.1` 主角仍为无骨骼静态网格（`animations = 0`），且靴底带有少量白色融雪斑瑕疵；② 站房门洞仍为矩形发光盒、外围地面边界平铺仍待雪坡衔接重制；③ 距离完整可玩 3A 仍缺**主角自动绑定＋专用持枪战术动捕＋配套高精 1P 手臂**整合实测。[本端实测]
+
