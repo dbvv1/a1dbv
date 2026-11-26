@@ -593,3 +593,14 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 **可用命令**：`curl -fL https://evensong-phi.vercel.app/src/chars/wardrobe.js -o wardrobe.js && rg -n 'gripLo|leftOn|leftPull|leftArm.align|leftArm.reach' wardrobe.js`；地面修正可对 `src/chars/boss.js` 搜索 `rideFloor`。命令只取得公开源码供阅读，不授予再分发许可；原模型／动画许可须另核，不复制资产或整段实现。
 
 依据：[握持源码](https://evensong-phi.vercel.app/src/chars/wardrobe.js)和[动作消费者](https://evensong-phi.vercel.app/src/chars/boss.js)，2026-11-12 实际读取，响应 SHA256 分别 `1b02308099bea882dc7b9f242a03838b2b865068c182a7f46c28c227b4ccce9a`、`3ed805b180484d5df76909c05383eb93252078c07a1c34d94403e89461f2cea1`。作者制作过程与运行画面未由此次源码读取核实，不推断全 AI 生成动画。
+
+<a id="rocketbox-slotted-nla-ik"></a>
+
+### Blender 4.5 带槽动捕烘焙与 `Bip01` 跨动作运行时对齐实证
+
+**使用 Blender 4.5 批处理 `.max.fbx` 光学动捕＋运行时手臂 IK 时，仅凭“导出 12 条动画名齐全”或“骨长匹配”远远不够；第 9 批《雪线回波》实机迭代证实四个直接决定人物是否变形的关键契约：**[本端实测，2026-11-26]
+
+1. **Blender 4.5 Action Slots 与 NLA 静音陷阱**：Blender 4.5 导入 FBX 会生成**带槽动作（`action.slots`）**，剥离根位移须遍历 `strip.channelbag(slot).fcurves` 并赋 `strip.action_slot`；导出 GLB 的 `export_animation_mode="NLA_TRACKS"` **不可把 `strip.mute` 设为 `True`**，否则所有轨道都按静默栈烘焙成全片段 `242` 通道 `0` 旋转方差的静帧 T-pose。导出后立即用二进制读数脚本核对活动旋转通道数（例如本批解静音后 `walk` 相对首帧波动 `>0.02` 恢复到 `44` 通道、全区间共 `54` 条活动旋转通道、`sprint` 相对首帧 `53` 通道），不跳过直接进游戏猜。
+2. **Three.js `crossFadeTo` 与蹲姿时间锚点**：`AnimationMixer` 中调用 `activeAction.crossFadeTo(next, fade, false)` 前必须对 `next` 调用 `.play()`，否则新状态不会参与混合。对站→蹲过渡慢的长动捕（本批 `crouch_in` 全长 `4.50 s`、末端 `Bip01 L Calf` 才达 `115.3°` 屈膝）可直接令 `activeAction.setEffectiveTimeScale(0)` 并把 `time = duration * crouch` 与角色控制器蹲伏度 `1:1` 同步，避免半拍卡在站立态。
+3. **每帧股骨归正与世界坐标轴逆父链旋转**：不同光学动捕 `.max.fbx` 常带不同初始根朝向，且 3ds Max `Bip01` 局部骨轴旋转了 `90°`（直接乘局部欧拉俯仰会让上半身侧歪或头顶朝下）。每帧先计算 `hipR - hipL` 在角色根空间的前向 `cross(UP, hipVec)` 将模型归正朝 `-Z`，再把世界空间右向量与 `UP` 用 `parent.getWorldQuaternion().invert()` 映入父骨局部轴并通过 `bone.quaternion.premultiply(...)` 叠加俯仰与转向。
+4. **双骨手臂 IK 矩阵同步与动态脚踝接地**：`UpperArm` 转动后必须立刻 `updateMatrixWorld(true)` 再求 `Forearm`，且枪械装配须先 `camera.updateMatrixWorld(true)` 再驱动 `hands()`；运行时在 `mixer.update` 之后取左右脚踝最低世界高度纠偏骨盆 Y。第 9 批 RTX 5070 实测站姿双脚 `-0.014 m`、动捕深蹲双脚 `[0.024, 0.027] m`，近景双腕握枪误差压到 `[0.029 m, 0.000 m]`（[第 9 批实测](../../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)）。

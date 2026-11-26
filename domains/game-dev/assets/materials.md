@@ -614,4 +614,19 @@ Unity six-way lighting 将六方向光照图在运行时按场景灯光混合，
 
 ## 中距离衣料折叠、霜蚀与近壁域扭曲消纹
 
+## 中距离衣料折叠、霜蚀与近壁域扭曲消纹
+
 **第三人称中距离（约 2–6 m）不能只靠微米级织纹贴图，近景崖壁也不能只靠直线岩层采样。** 当毫米级织布法线贴图随距离衰减与 mipmap 缩小时，肩部与风衣易退化成塑料纯色块。可直接在着色器内把粗粒度（约 4–15 cm）布料褶皱、斜纹三角波与下摆污渍锁在**绑定姿势局部坐标**（`position`，移动时不漂移），把迎雪面微霜锁在**蒙皮后世界法线**（`objectNormal`）向上分量，并将布料基础粗糙度抬到 `≥ 0.81`（经噪声与霜蚀调制后钳位在 `0.70–0.96`）、限制 `sheen ≤ 0.22` 以避免背光塑料亮边，从而把哑光防寒织物与头盔/卡扣等低粗糙度缎面和金属拉开材质阶层（见 [第八批实测](../../../docs/collaboration/demo-trial-20261117.md#第八批11-26性能回正与材质质感验证构建本机-rtx-5070-实测)）。同理，大尺度斜坡与崖壁若直接用线性坐标切出沉积层理与积雪线，近距离直射光下易出现平行条带；在层理坐标与雪线阈值叠加一组中频（约 15–20 m 周期）3D 域扭曲即可自然打断近壁条纹，不需为远景重烤高分辨率贴图。需要注意：单靠片段噪声会带来 3D 视距内帧耗代价，真正的大场景合批减面仍要配合几何与纹理复用一起做。[本端实测，2026-11-26]
+
+<a id="n8ao-csm-agx-stack"></a>
+
+## HDR＋半分辨率 N8AO＋3 级联 CSM＋AgX 后处理栈（本机 RTX 5070 实测）
+
+**全分辨率传统 GTAO 容易与高模多槽材质一起跌出 60 Hz 预算；第 9 批实测改用 `N8AOPass`＋Three r170 3 级联 `CSM`＋2K HDRI PMREM＋`AgXToneMapping`＋`SMAAPass` 组合，在 578 万三角面下稳定跑到 100 FPS 以上。**[本端实测，2026-11-26]
+
+| 渲染阶段 | 实测配置要点 | 避坑与耦合约束 |
+|---|---|---|
+| **环境与地形 PBR** | `horn-koppe_snow_2k.hdr` 经 `PMREMGenerator` 作室外环境反射；地表三平面采样 2K 岩/雪贴图并叠加 `1024²` Horizon AO ＋ SunVis 与雪表掠射晶粒闪烁 | HDR 管线统一输出线性高动态值，色彩分级放进后处理色调阶段，不在材质内二次压 γ |
+| **3 级联实时阴影** | `three/addons/csm/CSM.js`：`cascades: 3`、`maxFar: 155`、`mode: 'practical'`、`shadowMapSize: 2048`、`fade: true`、`lightIntensity: 2.35` | **先建 CSM 再挂自定义片元块**：`csm.lights` 强度不要按级联数平分；已有 `onBeforeCompile` 链式包裹进 `setupCsmMaterial` |
+| **接触遮蔽与大气** | `N8AOPass`（`halfRes: true`、`aoSamples: 16`、`denoiseSamples: 6`、`gammaCorrection: false`）；大气散射复用 `n8aopass.beautyRenderTarget.depthTexture` | **`OutputPass` 配 `N8AO` 必须设 `gammaCorrection: false`**，否则双重 sRGB 导致全屏泛白过曝 |
+| **色调映射与抗锯齿** | `renderer.toneMapping = AgXToneMapping`（`exposure = 1.05`）→ 轻量 `UnrealBloomPass`（阈值 `1.16`）→ `OutputPass` → `SMAAPass` | 第 9 批同机 RTX 5070（`1440×900`）实测 `100.2 FPS`、`1,881 calls`、`5,783,263 tris`、`longFrames = 2`、`errors = []`（[第 9 批报告](../../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)） |
