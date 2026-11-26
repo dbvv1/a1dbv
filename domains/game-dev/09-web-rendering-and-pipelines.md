@@ -15,7 +15,7 @@
 
 | 渲染方案 | 评级 | 关键渲染与画质能力 | 适合的 3D 游戏形态 | 采用条件与硬边界 |
 |---|---|---|---|---|
-| **Three.js `r187+` `WebGPURenderer` + TSL** | ✅ 采用（桌面高画质） | 原生 MRT 多目标、节点式 `SSGINode`（屏幕空间 GI）、`GTAONode`、`TRAANode`（速度缓冲时域抗锯齿）与 Bloom，自动输出 WGSL 并在不支持设备回退 WebGL2（[WebGPURenderer 手册](https://threejs.org/manual/pages/webgpurenderer)、[后处理文档](https://threejs.org/manual/pages/webgpu-postprocessing.html)、[r187 SSGI 示例](https://raw.githubusercontent.com/mrdoob/three.js/r187/examples/webgpu_postprocessing_ssgi.html)） | 现有 Three.js 写实或高质感 PBR 游戏平滑升级，需保留自定义材质/角色管线与可控包体 | **本仓第 10 批 RTX 5070 实测 100 FPS / 6/6 盲选胜出**（见 [§6 最小 A/B 实测](#webgpu-vs-webgl2-ab)）；须注意 **4-MRT 32 bytes/sample 硬上限**（`output+diffuse+normal+velocity`，不可再加第 5 个 RGBA16F 附件），需将旧 `EffectComposer` 重写为 TSL `RenderPipeline` |
+| **Three.js `r187+` `WebGPURenderer` + TSL** | ✅ 采用（桌面高画质） | 原生 MRT 多目标、节点式 `SSGINode`（屏幕空间 GI）、`GTAONode`、`TRAANode`（速度缓冲时域抗锯齿）与 Bloom，自动输出 WGSL 并在不支持设备回退 WebGL2（[WebGPURenderer 手册](https://threejs.org/manual/pages/webgpurenderer)、[后处理文档](https://threejs.org/manual/pages/webgpu-postprocessing.html)、[r187 SSGI 示例](https://raw.githubusercontent.com/mrdoob/three.js/r187/examples/webgpu_postprocessing_ssgi.html)） | 现有 Three.js 写实或高质感 PBR 游戏平滑升级，需保留自定义材质/角色管线与可控包体 | **本仓第 10 批 RTX 5070 实测 100 FPS / 6/6 盲选胜出**（见 [§6 最小 A/B 实测](#webgpu-vs-webgl2-ab)）；默认附件预算下先用四个 RGBA16Float，格式和数量分开校验，需将旧 `EffectComposer` 重写为 TSL `RenderPipeline` |
 | **Babylon.js `9.0`（2026-03）** | 🧪 试用 | 8.0 起核心着色器原生双写 GLSL+WGSL（免去 >3 MB GLSL→WGSL 转译库）；9.0 **Frame Graph v1.0**（DAG 显存复用）、**Clustered Lighting**、带纹理发射的 **Area Lights**、WebGPU 计算着色器 **Volumetric Lighting**、Adobe 贡献 **Dynamic IBL Shadows** 及内置 Havok 物理与 Inspector（[9.0 官宣](https://blogs.windows.com/windowsdeveloper/2026/03/26/announcing-babylon-js-9-0)、[9.0 特性全览](https://babylonjs.medium.com/welcome-to-babylon-js-9-0-c3edc9ee6428)、[8.0 WGSL 说明](https://blogs.windows.com/windowsdeveloper/2025/03/27/announcing-babylon-js-8-0)） | 需要成套开箱即用引擎能力（体光、区域光、多盏动态灯光、Havok 物理、在线检查器）的中大型 3D 网页作品 | `IBL Shadows` 体素追踪目前**主要适用于静态投射体**，高频变形蒙皮角色实时重体素化开销高（[IBL Shadows 文档](https://aka.ms/babylon9IBLSDoc)） |
 | **PlayCanvas `v2.19+`（MIT）** | 🧪 试用 | WebGL2 + WebGPU 双后端、簇状照明，WebGPU 计算着色器 GPU 基数排序的 **3D Gaussian Splatting（3DGS）** 与分段流式加载 **Streamed SOG** LOD 管线（[PlayCanvas Engine](https://github.com/playcanvas/engine)、[v2.19 WebGPU+SOG 博文](https://github.com/playcanvas/blog/blob/main/blog/2026-06-03-new-in-supersplat-webgpu-and-streaming-bring-huge-performance-wins.md)、[GSplat 渲染器文档](https://developer.playcanvas.com/user-manual/gaussian-splatting/rendering-architecture/renderers)） | 实景扫描/重建背景＋低多边形碰撞代理网格＋前场少数高精度可动角色/载具的混合路线 | 3DGS 背景难做任意破坏或动态全局打光；云端编辑器强耦合其工作流，纯本地代码可控度弱于 Three/Babylon |
 | **裸 WebGPU + WGSL（无引擎）** | 👀 评估 | 零外部框架包体、直接用 Compute Shader 在 GPU 现成生成海量实例植被/粒子与体积雾散射（如 [Abyssal Garden](https://github.com/Noniv/abyssal-garden) 97 KB 单 HTML 生成水下体积光与约两百万摇曳海藻）[一手／研究] | **纯程序地貌、体积光雾、水下/流体物理等氛围展示与单主题原型** | 缺原生 glTF 蒙皮骨骼混合、物理碰撞与资产热替换；**不适合多角色持枪、UI 重度交互的写实战术游戏** |
@@ -38,7 +38,7 @@
 
 ## 4. 架构原则：3D 美术／动作资产与 Web 运行时彻底解耦
 
-**角色脸面与装备精不精细、枪械好不好看、持枪动画协调不协调，100% 属于资产与动画生产层问题，与 WebGL2/WebGPU 运行时无关。** 一旦建立跨引擎 `glTF 2.0` 资产合同，同一套高精角色、武器、1P 手臂、持枪动捕与模块建筑可在 Three.js、Babylon.js 或 PlayCanvas 间无缝复用：
+**先把可复用的资产与动作源从运行时分出来。** `glTF 2.0` 可作为角色、武器、第一人称手臂与模块建筑的交付合同；换引擎仍要复核材质、蒙皮、持枪姿态与镜头。渲染栈能改变边缘和受光，但本例没有靠换栈解决人物近景：
 
 ```mermaid
 flowchart LR
@@ -70,10 +70,10 @@ flowchart LR
 
 <a id="webgpu-vs-webgl2-ab"></a>
 
-## 6. 本机 RTX 5070 最小 A/B 实测：`Three.js 0.187.0 WebGPU` vs `WebGL2`
+## 6. 先比较完整画面，再决定要不要隔离渲染后端
 
-在同场景几何、同 PBR 贴图、同灯光与曝光参数（`hemi = 0.45`、`sun = 1.85`、`env = 0.36`、`exposure = 1.06`）下，本机 RTX 5070（`1280×720`）对 `WebGL2`（`EffectComposer` + `UnrealBloomPass` + `OutputPass`）与 `WebGPU`（`4-MRT` + `SSGINode` + `BloomNode` + `TRAANode`）跑通三机位锁定对照（[第 10 批详细记录](../../docs/collaboration/demo-trial-20261117.md#tenth-batch-ab-tests)）：[本端实测]
+**留原管线，用同一批素材、灯光、输入和固定机位比较两套可交付配置。** 《雪线回波》第十批的 RTX 5070 三机位试验比较的是 WebGL2 原后处理与 Three r187 WebGPU 的 SSGI、TRAA、Bloom 组合。WebGPU 组合的 P95 为 10.2–10.3 ms，原组合为 10.3–13.0 ms；同一非作者在三组图左右互换后仍都偏好新组合，但原人物特写仍为 2/5。这回答「该试哪套画面」，不回答「API 本身省了多少」。若确需隔离后端，可用 r187 的 `forceWebGL` 尝试同一受支持的 TSL 图，固定格式与质量，记录实际后端和回退；图或效果不等价就标为管线比较。这次没有做同图换后端和整局验收。
 
-- **性能与硬件校验坑**：初版挂入 5 个 `RGBA16Float` MRT（含 `emissive`，`40 bytes/sample`）触发 WebGPU 默认 `32 bytes/sample` 校验失败导致全黑输出；缩减为 **4 MRT（`output`、`diffuseColor`、`normal`、`velocity`）＋ 合成后阈值 `bloom`** 后全链路 `0` 报错，WebGPU 三机位实测 **`100.0–100.9 FPS`**（`P95 10.2–10.3 ms`、`1,668 calls`、`1.71M–1.82M tris`），不慢于同场景 WebGL2（`95.3–100.0 FPS`、`P95 10.3–13.0 ms`）。
-- **像素预筛与双序盲评全过**：三机位全部通过 `visual_pregate.py`（如庭院机位 `P5: 46.69 → 29.06`、`dark_pct: 2.98% → 10.14%`、`RMS: 42.22 → 43.53`）；不看代码与数据的独立视觉盲审在全部 6 张左右互换图上 **6/6 一致判定 WebGPU 胜出**（`2.5–3.0/5` vs `1.5–2.0/5`，远山体块阴影清晰度、道具脚底接触接地感与门口高光控制明显更佳）。
-- **单靠换渲染器的诚实天花板**：即便切到 WebGPU SSGI+TRAA，原纯 Blender 人物近景在盲评里**依然只拿到 `2.0/5`**（面数折角感与平涂色块仍像玩具）。证明渲染管线只能救光影，人物与枪械必须同步切现代上游 3D 资产（见 [第 10 批实验 B](assets/3d.md#gen3d-vs-blender-ab)）。
+**MRT 黑屏先验附件格式预算，不先减光效。** 同时查设备的 `maxColorAttachments` 和 `maxColorAttachmentBytesPerSample`。默认 32 bytes/sample 的实测配置放不进五个 RGBA16Float（40）；改成四个目标并把阈值 Bloom 移到合成后即跑通。反例：只将其中一张换成 RGBA8Unorm，存储少了，但两种格式的验证成本都是 8，五张仍是 40。可先保默认四目标的可移植路线；确需更多时，只有适配器支持才请求更高设备限制，并保留回退。
+
+依据：[第十批本机固定机位记录](../../docs/collaboration/demo-trial-20261117.md#tenth-batch-ab-tests)（单次整套管线实测） · [r187 后端选项](https://github.com/mrdoob/three.js/blob/r187/src/renderers/webgpu/WebGPURenderer.js#L41-L70) · [WebGPU 限制](https://www.w3.org/TR/webgpu/#limits)及[格式成本](https://www.w3.org/TR/webgpu/#plain-color-formats)（一手规范）。
