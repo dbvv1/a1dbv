@@ -82,13 +82,12 @@ flowchart LR
 
 <a id="webgpu-tsl-production-lessons"></a>
 
-## 7. WebGPU + TSL 战役迁移深水坑与自动化交互守则（第 11 批实证）
+## 7. 把 TSL 画面从三张测试图接进可玩场景
 
-在将《雪线回波》战役级场景与 1P/3P 武器系统迁入 Three.js `0.187.0` WebGPU 后，以下 6 条踩坑与修法均经核心交互切片 `0` WGSL 报错及无源码双序盲评实证成立（详情与未测边界见 [第 11 批实录](../../docs/collaboration/demo-trial-20261117.md#eleventh-batch-webgpu-remake)）：[本端实测]
+**目标：迁移后，转动镜头时光照仍贴在物体上，镜头边缘的反射消失时地面不会变黑。** 先保留旧管线作对照；在同一材质上固定灯光与几何，只转相机，检查主画面、法线缓冲和反射缓冲。再用同一段真实输入穿过室外干路面到室内湿地面：先关 SSR 保住底图，再单开 SSR，观察反射物移出屏幕时底图是否仍然成立。
 
-1. **`material.normalNode` 的视图空间合同（高频隐蔽 Bug）**：Three.js WebGPU `NodeMaterial.setupNormal()` 直接将 `material.normalNode` 当作 **`normalView`（视图空间法线）** 送入光照与 MRT 缓冲。若在 `TSL` 中把三平面世界法线 `normalWorld + perturb` 直接赋给 `normalNode`，场景光照会随相机偏航/俯仰错转，并直接污染 `SSGINode` / `SSRNode` 的 G-Buffer 法线。**规范写法**：世界空间扰动后一律包裹 `transformNormalByViewMatrix(perturbedWorld, cameraViewMatrix)`；物体局部空间扰动包裹 `transformNormalToView(perturbedLocal)`。
-2. **`vertexColors: true` 与 `colorNode` 乘法顺序**：当材质启用 `vertexColors: true` 且几何体带 `color` 属性时，`NodeMaterial` 会在自定义 `colorNode` 之后再乘 `vertexColor()`。因此 `cut` 类预烘暗部顶点色的岩壁切勿再给较低暗色底乘数，避免双倍压暗形成死黑面片。
-3. **WebGPU `1 px` 点图元上限与默认 4-MRT 通道复用**：WGSL 规范对 `point-list` 点精灵固定渲染 `1×1 px`、`PointsNodeMaterial.sizeNode` 无效，风雪/雨水须改为单网格相机朝向广告牌四角片；WebGPU 默认 `32 bytes/sample` 附件预算下，保持 4 附件（`output`、`diffuseColor`、`normal`、`velocity`）并分别复用 `diffuseColor.a` 与 `normal.a` 打包粗糙度与金属度。
-4. **`SSRNode` 暗部压黑与户外空洞隔离**：`SSRNode` 射线未命中时返回 `(0, 0, 0)`；若直接用 `max(giColor * 0.58, ssr)` 混合，会把本应明亮的室内暗部混凝土硬生生压黑成块状黑斑，须把保底漫反射压暗收窄到 `>= 0.84` 并叠加命中权重（`ssrPass.a`）、亮度（`luminance`）与粗糙度门控。同时须将户外路面（如北侧水泥坡道）从室内湿混凝土着色器彻底剥离，保证户外路面粗糙度始终 `> 0.40`，避免室外天空或地底漏光穿透为黑洞。
-5. **生成式 3D 资产在 3P 与 1P 近景的适用边界**：经 Blender 减面绑定骨骼的 `hunyuan-3.1` 寒区角色（含背甲组件 `35,048` 面）在第三人称近/中景稳定拿下盲评 **`4.1/5`**（远胜早期简化方块人 `2.3/5`）；但同一代生成模型产出的硬表面 `K-07` 枪械网格（`12,000` 面）存在 `15,648` 条开放 UV 接缝边与局部翻转面岛，在 `15 cm` 极近第一人称视角下无论是法线重算还是体素重网格均易出现破洞与黑缝。**工程解法**：极近 1P 枪械保留水密参数化硬表面几何，并用零 UV 依赖的**物体局部空间三平面 TSL 磨损/斜切露金属 Shader** + 原生 TSL 针织袖口着色器补齐质感。
-6. **Windows 无头浏览器鼠标锁定防护**：在 Windows 桌面跑自动化测试时，无头浏览器若页面调用 `Element.requestPointerLock()` 会触发系统光标区域锁定，将物理鼠标关入隐藏窗口矩形内。测试脚本应在 `page.addInitScript` 阶段拦截并虚拟化 `Document.prototype.pointerLockElement`、`requestPointerLock` 与 `exitPointerLock`；同时产品端需提供自由鼠标视角设置项、URL 开关与 `pointerlockerror` 自动降级，避免浏览器权限受阻或真机测试锁鼠。
+1. **自定义法线先匹配空间。** Three r187 的 `normalNode` 结果会当作视图空间法线使用。世界空间三平面扰动应从几何法线 `normalWorldGeometry` 起算，然后转到视图空间并归一化；物体局部法线用 `transformNormalToView`。不要在 `normalNode` 内把已读取材质结果的 `normalWorld` 当几何输入。若材质开启 `vertexColors`，颜色节点结果还会乘几何顶点色。岩壁已靠顶点色压暗时，先去掉自定义颜色中重复的暗色乘数，再决定是否调灯。依据：[r187 法线构建](https://github.com/mrdoob/three.js/blob/r187/src/nodes/accessors/Normal.js#L70-L119)、[r187 材质颜色与法线入口](https://github.com/mrdoob/three.js/blob/r187/src/materials/nodes/NodeMaterial.js#L801-L906)。[一手]
+2. **反射漏采样不是表面光照变暗。** 先用原底图加受材质控制的 SSR RGB，保证关闭 SSR 或其贡献为零时回到原底图；有环境回退时也别重复计算同一份环境高光。反例：先把漫反射乘暗、再与 SSR 取最大值，未命中的区域仍然丢掉底图亮度。不要拿 `ssrPass.a` 当通用命中权重：在 r187 原始追踪结果中，命中时该通道写入距离量，随机追踪的环境回退也能写入非零值；粗糙度模糊路径还可能读取过滤后的结果。要区分真正的屏幕命中，就单独记录遮罩或输出诊断视图。干、湿表面按材质分别调整，不沿用样片的粗糙度阈值。依据：[r187 命中与回退输出](https://github.com/mrdoob/three.js/blob/r187/examples/jsm/tsl/display/SSRNode.js#L1198-L1249)、[官方 SSR 合成示例](https://github.com/mrdoob/three.js/blob/r187/examples/webgpu_postprocessing_ssr.html#L160-L175)。[一手]
+3. **近景资产、时序表现和操作分别验。** WebGPU 原生点图元无法拿尺寸参数做大雪片，需要可变屏幕尺寸时用实例化朝相机四边形；MRT 格式和通道消费按[第 6 节](#webgpu-vs-webgl2-ab)查。角色减面绑定后先过第三人称轮廓、握持接触、起停录像；第一人称武器以实际贴脸距离单独选材，生成网格出现破洞时，可保留原硬表面几何并用局部三平面材质加磨损。Windows 自动化若为了不锁住桌面使用了 Pointer Lock 替身，只算游戏对事件的响应检查，不能代替真实浏览器的锁定、退出和失败降级。粒子依据：[WebGPU 点图元光栅化](https://www.w3.org/TR/webgpu/#rasterization)。[一手／单次本端实测启发]
+
+**已用在哪里**：[《雪线回波》第 11 批](../../docs/collaboration/demo-trial-20261117.md#eleventh-batch-webgpu-remake)把上一批的隔离渲染方案和生成角色带进独立可玩副本。试验记录中的四个同机位盲评从 0 胜 4 负收敛至 2 胜、0 负、2 平，胜在第三人称进场和厅内；这不是单一修法的效果。实际输入覆盖进场、瞄准、射击、换弹到进厅，尚未证明后续通关、独立无截图帧耗或持枪急停动作质量，不据此替换原默认。下一次保留同一路径连续移动，并把无截图的整段帧耗与出图分开记录。[本端实测／单次]
