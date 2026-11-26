@@ -3,7 +3,7 @@
 <a id="本周-top-5"></a>
 ## 本周 Top 5：挑一个真实任务就开做
 
-**本周（2026-11-26 刷新）优先清理五类跨端暗伤：指令静默截断、长程自驱无外置计划、跨宿主插件遮蔽 Hook、后台子 Agent 调用开销，以及 WebGL2 阴影与渲染回退。** 按手头任务选一项即做；上一轮通过的 [Playwright 分片核对](decisions/verification.md#第一步把目标和保留项填进这段任务) 与 [Memos #6502 冲突检查](decisions/upstream-contributions.md#实现到投稿让-agent-产出可审材料) 继续保留为默认常规检查。
+**本周（2026-11-26 刷新）优先清理五类跨端暗伤：指令因字节预算被截断或跳过、长程自驱无外置计划、跨宿主插件遮蔽 Hook、后台子 Agent 调用开销，以及 WebGL2 阴影与渲染回退。** 按手头任务选一项即做；上一轮通过的 [Playwright 分片核对](decisions/verification.md#第一步把目标和保留项填进这段任务) 与 [Memos #6502 冲突检查](decisions/upstream-contributions.md#实现到投稿让-agent-产出可审材料) 继续保留为默认常规检查。
 
 | 排名／你正在做什么 | 本周先试的做法 | 依据与边界／何时换路 |
 |---|---|---|
