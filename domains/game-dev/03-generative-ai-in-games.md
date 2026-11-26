@@ -42,19 +42,21 @@
 
 **换资产路线先跑通单件。** 用同环境选中对应最大缺口的单件合法素材，走通导出、游戏加载并从正常玩家视角入屏，交付来源/许可、加载标识与实图（缺工具时勿强行替代并记录未试到）。
 
-**案例记录：** 参见 [扩关样本](../../docs/collaboration/demo-trial-20261117.md) 与 [卷闸/光材对照图](../../docs/img/2026-11-18-demo-fps-r4-shutter-1x.jpg)（同时改材质、扫描件与光照无法单独归因，图证于 [r5-r7 对照](../../docs/img/2026-11-19-demo-fps-r5-r7.jpg)）。进一步将资产供给替换为“**CC0 摄影测量＋MIT 光学动捕＋Blender 4.5 无头烘培＋现代 WebGL2 后处理**”后的整局实测（`100.2 FPS`、4 阶段通关 `0` 报错）见 [第 9 批实战重制](../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)。
+**案例记录：** 参见 [扩关样本](../../docs/collaboration/demo-trial-20261117.md) 与 [卷闸/光材对照图](../../docs/img/2026-11-18-demo-fps-r4-shutter-1x.jpg)（同时改材质、扫描件与光照无法单独归因，图证于 [r5-r7 对照](../../docs/img/2026-11-19-demo-fps-r5-r7.jpg)）。将资产零散替换为“2005 旧人形库＋CC0 道具＋后处理”后出现**工程全绿但画面显著发灰退步的负优化反例**，完整拆解见 [第 9 批负优化复盘](../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)。
 
 **开源前沿参考与生产积木（按源码与实跑边界评级，非同题实测排名）：**
 
 | 方向 | 评级 | 开源／开放参照 | 可直接复用的核心机制 | 核实范围与采用边界 |
 |---|---|---|---|---|
-| **近景写实静态件** | ✅ 采用 | [Poly Haven](https://polyhaven.com/)（CC0） | 摄影测量岩壁、工业道具 GLB 与 2K PBR／HDRI | **第 9 批本地实测接入**（`1440×900` 下 `1,881 calls` 稳跑）；导入仍须经 Blender 减面与米制规范化 |
-| **人形与光学动捕** | ✅ 采用 | [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox)（MIT 代码／条款另核） | 完整骨骼军用/工装人形与 `.max.fbx` 真人光学动捕库 | **第 9 批本地实测烘焙 12 段动作**：绕过纯代码拼人天花板；导出需解除 Blender 4.5 NLA 静音 |
-| **山体侵蚀与可见度烘焙** | 🧪 试用 | [art-demo-terrain](https://github.com/petershk/art-demo-terrain) / [glacial-valley](https://github.com/deedy/glacial-valley) | 坡度阻尼 fBm、Horizon AO ＋ 多步太阳可见度 SunVis 烘焙、分析微凹凸 | **已阅读公开 `README`/`shaders.js`，第 9 批独立 Python 管线落地实证**：长山影依赖离线/首帧高度场可见度贴图 |
+| **近景写实静态件** | 🧪 试用 | [Poly Haven](https://polyhaven.com/)（CC0） | 摄影测量岩壁、工业道具 GLB 与 2K PBR／HDRI | **第 9 批实测帧耗正常（`1,881 calls` @ `100.2 FPS`），但未校比例与落位会产生 `1.6 m` 巨型道具与穿模岩壁**；须配缩放校准与同机位视觉门禁 |
+| **旧代际人形与空手动捕** | 👀 评估 | [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox)（MIT 代码／条款另核） | 完整骨骼人形与 `.max.fbx` 光学动捕库（含 Action Slots 批处理范式） | **第 9 批负优化实证**：2005–2010 年代低模＋空手平民动捕用于现代战术主角会造成清晰度退步与缝合怪效应，仅作绑定/动捕管线试验，**不作写实主角终版** |
+| **山体侵蚀与可见度烘焙** | 🧪 试用 | [art-demo-terrain](https://github.com/petershk/art-demo-terrain) / [glacial-valley](https://github.com/deedy/glacial-valley) | 坡度阻尼 fBm、Horizon AO ＋ 多步太阳可见度 SunVis 烘焙、分析微凹凸 | **已阅读公开 `README`/`shaders.js`，第 9 批独立 Python 管线落地实证**：长山影依赖离线/首帧高度场可见度贴图；需避免表面积雪着色器糊平岩石轮廓 |
 | **自动看图自迭代管线** | 👀 评估 | [Ponlai](https://github.com/HuberyLL/ponlai) | 暂停帧可复现渲染、分 pass GPU 耗时与同视角截图对照 | **仅阅读公开 `README` 设计说明**（WebGPU 架构，未运行原仓）；截图对比与耗时观测模式可迁至 WebGL2／引擎 |
 | **可商用绑定调研** | 👀 评估 | [Effigy 绑定调研](https://github.com/SifuInTheShell/Effigy/blob/main/docs/research/05-rigging-animation.md) | 区分 MIT/CC0（Mesh2Motion/KayKit/SkinTokens）与商用/地域受限权重（如 Hunyuan/Bones-SEED） | **仅阅读研究文档笔记**，本地未运行 SkinTokens／UniRig 推理，商用仍须独立复核上游依赖许可 |
 
-**依据**：[一手实跑] 第 9 批 RTX 5070 本机实测与本地 Poly Haven/Rocketbox 资源验证（[第 9 批实战重制](../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)）；[一手／研究] `art-demo-terrain`、`glacial-valley`、`Ponlai`、`Effigy` 为公开页面／研究源码文本阅读，未在本地执行原仓库构建；核实 2026-11-26（UTC+8）。
+> 3D 人物、枪械与战术动作本质上**与 Web 运行时解耦**：引擎无关资产交付契约、2026 主流高画质 Web 渲染方案（Three WebGPU/TSL、Babylon 9、PlayCanvas）及 `Fable 5.2` 类作品的真实画质机制，见 [Web 渲染方案与资产解耦](09-web-rendering-and-pipelines.md)。
+
+**依据**：[一手实跑] 第 9 批 RTX 5070 工程实跑与真人对照负优化复盘（[第 9 批复盘](../../docs/collaboration/demo-trial-20261117.md#ninth-batch-snowline-aaa)）；[一手／研究] `art-demo-terrain`、`glacial-valley`、`Ponlai`、`Effigy` 为公开页面／研究源码文本阅读，未在本地执行原仓库构建；核实 2026-11-26（UTC+8）。
 
 <a id="30-秒结论先定来源再选模型"></a>
 <a id="有具体资源缺口时先定来源再选模型"></a>
