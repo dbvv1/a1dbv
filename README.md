@@ -27,7 +27,7 @@
 | 已有产品正常工作，还应怎样改 | [按具体问题选择后续改进](docs/decisions/product-improvement.md) | ✅ exporter 输入校验改进 |
 | 团队怎么推广 | [18 团队落地](docs/18-team-adoption.md) | 🟡 |
 | AI 辅助补丁怎样贡献给开源项目 | [先核准入、上游现状与投稿主体](docs/decisions/upstream-contributions.md) | 🟡 准入核查／投稿待验 |
-| 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | 🟡 Top 1 已复跑缺片、重复片；实际项目采用待验 |
+| 本周值得试什么 | [本周 Top 5：按当前编码任务选](docs/13-frontier-radar.md#本周-top-5) | 🟡 本期候选待本仓实测 |
 | 用 AI 做游戏 | [游戏分支](domains/game-dev/README.md) | 🟡 |
 
 需要自己找当前最强的做法时，用 [explore-frontier Skill](templates/generic/.claude/skills/explore-frontier/SKILL.md)。
