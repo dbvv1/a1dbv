@@ -6,11 +6,11 @@
 
 > 按[手册§6](LONG-TERM-PLAN.md#6-节奏与反馈)，只留当前活跃收窄分工与未完成纠偏；11-25 及更早的临时纠偏与旧过程记录已移入[归档](archive/completed-through-2026-11-26.txt)。
 
-### 11-24 A、B 收窄为知识岗
+### 11-24 A、B 收窄为知识岗（11-26 用户确认落地）
 
-- 角色边界见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)：本机 demo 与三案的制作、换默认和发布归本机方向会话；11-17 已批准的三案部署回填进展见下表（MOBA `fa3076f`、Star `1796e9f`、FPS `445b93b`）。
-- **B 首项**：把[本机 demo 记录](demo-trial-20261117.md)沉淀为可复用知识配方（目标措辞、自看实图、真实输入测试、手感规格与合成玩家、CC0／CC-BY＋bpy 改造）。已有[三段简报与单件接入](../../domains/game-dev/03-generative-ai-in-games.md#small-scene-quality-loop)、[缺工具时的单件直读替代](../../domains/game-dev/assets/3d.md#licensed-closeup-assets)，仍缺实际应用采纳回执。
-- **A 首项**：[platformdirs 对照提案](../../experiments/platformdirs-effort-pair/README.md) · [Joplin 桌面回归诊断提案](../../experiments/joplin-sidebar-delegation-pair/README.md)（均为待本机运行验证的提案）。
+- 角色边界见 [A](prompts/dot-a.md)／[B](prompts/dot-b.md)：本机 demo 与三案的制作、换默认和发布归本机方向会话；**B 优先完成 11-17 已批准三旧案线上部署并回填网站版本**（MOBA `fa3076f` v22→新、Star `1796e9f` v11→新、FPS `445b93b` v25→新）。
+- **B 知识重点**：把[本机 demo 记录](demo-trial-20261117.md)与渲染／材质实测沉淀为可复用配方（不写入单次测试临时参数）。已有[三段简报与单件接入](../../domains/game-dev/03-generative-ai-in-games.md#small-scene-quality-loop)、[缺工具时的单件直读替代](../../domains/game-dev/assets/3d.md#licensed-closeup-assets)，仍缺实际应用采纳回执。
+- **A 下一轮试验方向**：`platformdirs` 降级暂停、`joplin` 冻结不再叠前置门槛；新主试转向[长回合真实反馈对照](../../experiments/long-horizon-feedback-pair/README.md)（待本机选定公开多步开源任务后运行）。
 
 ## 专业审计
 
