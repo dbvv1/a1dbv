@@ -52,6 +52,61 @@ def split_side_by_side(arr: np.ndarray, center_gap: int) -> tuple[np.ndarray, np
     return left[:, :aligned_w], right[:, -aligned_w:]
 
 
+def measure_floor_row_step(rgb: np.ndarray) -> dict[str, float | int]:
+    """Measure horizontal band luminance step on the lower central floor ROI.
+
+    Detects sharp screen-space SSR/SSGI frustum-cutoff reflection seams.
+    """
+    lum = (0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]) / 255.0
+    h, w = lum.shape
+    y0, y1 = int(h * 0.52), int(h * 0.90)
+    x0, x1 = int(w * 0.18), int(w * 0.52)
+    roi = lum[max(0, y0):max(1, y1), max(0, x0):max(1, x1)]
+    if roi.shape[0] < 9 or roi.shape[1] < 1:
+        return {"max_adj_row_step": 0.0, "max_adj_row_y": y0, "band_step_4row": 0.0}
+    row_mean = roi.mean(axis=1)
+    row_diffs = np.abs(np.diff(row_mean))
+    max_adj = float(row_diffs.max())
+    max_y = int(y0 + np.argmax(row_diffs))
+    smooth = np.convolve(row_mean, np.ones(4, dtype=np.float32) / 4.0, mode="valid")
+    band_step = float(np.abs(smooth[4:] - smooth[:-4]).max()) if len(smooth) > 4 else max_adj
+    return {
+        "max_adj_row_step": round(max_adj, 4),
+        "max_adj_row_y": max_y,
+        "band_step_4row": round(band_step, 4),
+    }
+
+
+def evaluate_pitch_sweep(paths: list[Path], args: argparse.Namespace) -> dict[str, object]:
+    """Detect sharp horizontal reflection cutoff bands sliding vertically with camera pitch."""
+    if len(paths) < 2:
+        raise ValueError("--pitch-sweep requires at least 2 images ordered by camera pitch.")
+    frames = []
+    for p in paths:
+        rgb = load_rgb(p, args.top_crop_ratio)
+        h = rgb.shape[0]
+        step = measure_floor_row_step(rgb)
+        step["file"] = p.name
+        step["norm_y"] = round(step["max_adj_row_y"] / max(1, h), 4)
+        frames.append(step)
+
+    max_band = max(f["band_step_4row"] for f in frames)
+    ys = [f["max_adj_row_y"] for f in frames]
+    slide_px = max(ys) - min(ys)
+    reasons: list[str] = []
+    if max_band > args.max_sliding_band_step and slide_px >= args.min_slide_px:
+        reasons.append(
+            f"sliding_ssr_cutoff_band: band_step={max_band} > {args.max_sliding_band_step}, slide_px={slide_px} >= {args.min_slide_px}"
+        )
+    return {
+        "frames": frames,
+        "max_band_step": round(max_band, 4),
+        "slide_px": slide_px,
+        "verdict": "FAIL" if reasons else "PASS",
+        "reasons": reasons,
+    }
+
+
 def measure_stats(rgb: np.ndarray) -> dict[str, float]:
     lum = 0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]
     max_c = rgb.max(axis=-1)
@@ -60,6 +115,7 @@ def measure_stats(rgb: np.ndarray) -> dict[str, float]:
     p5 = float(np.percentile(lum, 5))
     p50 = float(np.percentile(lum, 50))
     p95 = float(np.percentile(lum, 95))
+    row_metrics = measure_floor_row_step(rgb)
     return {
         "p5": round(p5, 2),
         "p50": round(p50, 2),
@@ -68,6 +124,7 @@ def measure_stats(rgb: np.ndarray) -> dict[str, float]:
         "dynamic_range": round(p95 - p5, 2),
         "mean_sat": round(float(sat.mean()), 4),
         "dark_pct": round(float((lum < 40.0).mean() * 100.0), 2),
+        "band_step_4row": float(row_metrics["band_step_4row"]),
     }
 
 
@@ -155,6 +212,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--baseline", type=Path, help="Baseline screenshot path")
     parser.add_argument("--candidate", type=Path, help="Candidate screenshot path")
     parser.add_argument("--side-by-side", type=Path, help="Stitched Left|Right PNG path")
+    parser.add_argument("--pitch-sweep", nargs="+", type=Path, help="Pitch-ordered indoor reflection screenshots")
     parser.add_argument("--top-crop-ratio", type=float, default=0.0, help="Crop top HUD/title ratio")
     parser.add_argument("--center-gap", type=int, default=4, help="Pixel gap at side-by-side seam")
     parser.add_argument("--flip", action="store_true", help="Compute NVIDIA LDR-FLIP if installed")
@@ -164,12 +222,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-sat-drop-pct", type=float, default=25.0)
     parser.add_argument("--max-dark-collapse-pct", type=float, default=60.0)
     parser.add_argument("--min-baseline-dark-pct", type=float, default=8.0)
+    parser.add_argument("--max-sliding-band-step", type=float, default=0.16)
+    parser.add_argument("--min-slide-px", type=int, default=12)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
+        if args.pitch_sweep:
+            report = evaluate_pitch_sweep(args.pitch_sweep, args)
+            print(json.dumps(report, ensure_ascii=True, indent=2))
+            return 0 if report["verdict"] == "PASS" else 1
         if args.side_by_side:
             full = load_rgb(args.side_by_side, args.top_crop_ratio)
             base_rgb, cand_rgb = split_side_by_side(full, args.center_gap)
@@ -178,7 +242,7 @@ def main() -> int:
             cand_rgb = load_rgb(args.candidate, args.top_crop_ratio)
         else:
             print(
-                "Error: specify either --side-by-side or both --baseline and --candidate.",
+                "Error: specify --pitch-sweep, --side-by-side, or both --baseline and --candidate.",
                 file=sys.stderr,
             )
             return 2
