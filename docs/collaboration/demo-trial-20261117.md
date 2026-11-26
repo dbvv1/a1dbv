@@ -307,3 +307,16 @@
 
 **诚实边界（尚未等于可发售 3A 整局）**：实验 B 验证了静态主体资产与 WebGPU 渲染的跨代跃升，但 ① `hunyuan-3.1` 主角仍为无骨骼静态网格（`animations = 0`），且靴底带有少量白色融雪斑瑕疵；② 站房门洞仍为矩形发光盒、外围地面边界平铺仍待雪坡衔接重制；③ 距离完整可玩 3A 仍缺**主角自动绑定＋专用持枪战术动捕＋配套高精 1P 手臂**整合实测。[本端实测]
 
+<a id="eleventh-batch-webgpu-remake"></a>
+
+## 第十一批（11-26 晚）：《雪线回波》Three.js WebGPU＋TSL 迁移重构与四轮盲评收敛实录
+
+基于第 10 批实验 A/B 结论，在独立重构副本将《雪线回波》迁移至 **Three.js `0.187.0` `WebGPURenderer`＋原生 TSL**（`4-MRT` + `SSGINode` + `SSRNode` + `GodraysNode` + `BloomNode` + `TRAANode` + `SharpenNode`）并接入 `hunyuan-3.1` 减面＋Blender 骨骼绑定寒区主角（含背甲组件合计 `35,048` 面），经多轮“核心切片运行 → `visual_pregate.py` → 无源码双序盲评 → 根因返修”收敛后，从初始 `0–4` 追至终版 **`2 胜 0 负 2 平`（零落败且 100% 交换一致；终版盲评逐项明细与迭代过程留存于独立评审会话记录，图像目录保留终版 26 张实拍与 `verify-report.json`，未另存盲评 JSON）**：[本端实测]
+
+| 检验维度 | 第 11 批 WebGPU 重构终版（RTX 5070 `1280×720`） | 对照基线与边界说明 |
+|---|---|---|
+| **核心交互切片与零报错** | `isWebGPU: true`、含截屏混跑 **`49.4 FPS`**（`avg 20.26 ms` / `P95 20.1 ms`、`2,551` calls、`4,476,565` tris），覆盖 Title → 进场移动 → 1P 切镜/ADS/开火 `4` 枪/`KeyR` 换弹 → 冲刺进厅（`hallInside: true`），`errors: []`、`warnings: []` | 原版 WebGL2 基线同脚本跑出 `63.8 FPS`（`avg 15.68 ms` / `P95 30 ms`，含 `2` 条资源 404 console error）；**未含阶段 2–4 通关（`won`）及独立无截屏 `perf-only` 复测** |
+| **4 机位像素预筛（`visual_pregate.py`）** | **4/4 全部 PASS**：<br>• `01-title`：`RMS 54.24→57.22`、`DR 145.37→157.23`（`+8.16%`）<br>• `02-approach-3p`：`RMS 52.19→59.08`、`DR 154.65→171.57`（`+10.94%`）<br>• `04-approach-1p`：`RMS 54.20→60.46`、`DR 165.59→178.92`（`+8.05%`）<br>• `06-hall-interior`：`RMS 36.58→39.89`、`DR 106.36→126.15`（`+18.61%`） | 相较第 9 批 `AgX` 抬灰负优化，全部 4 机位暗部层次、对比度与动态范围均正向领先原基线 |
+| **无源码双序盲评演变** | 终版 **`2–0–2`（0 负，交换最大像素误差 `0.000`）**：<br>• `02-approach-3p`：**WebGPU 完胜**（`3.88` vs `2.95`，人物 `4.1` vs `2.3`）<br>• `06-hall-interior`：**WebGPU 完胜**（`4.10` vs `2.80`，角色＋湿混凝土 SSR 反射获评“genuinely AAA”）<br>• `01-title`：**TIE 平局**（`3.63` vs `3.57`）<br>• `04-approach-1p`：**TIE 平局**（`3.53` vs `3.55`） | 初版因缺天空雾效/雪片/SSR 空洞 `0–4`；首轮修雪山与 3P 人物后翻至 `2–2`；次轮修户外路面空坑并将室内地坪调干后反使室内跌回平局；终版修正 **TSL 视图空间法线、`vertexColors` 双重压暗、1P 枪身三平面磨损与 `-0.704` 视距**后消除全部负项 |
+
+**六条经实机复现的工程教训（已沉淀入 [09 渲染专节 §7](../../domains/game-dev/09-web-rendering-and-pipelines.md#webgpu-tsl-production-lessons)）**：① Three.js WebGPU `NodeMaterial.normalNode` **要求输入视图空间法线（`normalView`）**而非世界空间，错喂 `normalWorld` 会令地面与岩壁法线随视角旋转、导致陡面变黑并污染 SSGI/SSR，须经 `transformNormalByViewMatrix(..., cameraViewMatrix)` 或 `transformNormalToView(...)` 转换；② 开启 `vertexColors: true` 时引擎在 `colorNode` 之后再乘顶点色，灰暗岩壁常数乘高遮蔽顶点色极易出现死黑三角块；③ WebGPU WGSL `point-list` 固定 `1×1 px`（忽略粒子尺寸），雪花粒子须改单网格广告牌四角片；④ `SSRNode` 光线未命中返回黑像素，严禁用 `max(gi * 0.58, ssr)` 压暗漫反射地坪且室外路面粗糙度须保持 `>0.40` 防空洞；⑤ `hunyuan-3.1` 适合 3P 写实人物骨骼化，但 `15,648` 条开放边界＋翻转法线岛的 1P 枪械底模在 `15 cm` 近距无法闭合修复，1P 武器采用水密参数化硬表面配原生 TSL 三平面磨损更稳；⑥ Windows 无头浏览器调用 `requestPointerLock()` 会触发 Win32 鼠标区域锁死桌面光标，自动化校验脚本须注入虚拟 Pointer Lock 垫片并为真人试玩提供自由鼠标视角切换与降级。[本端实测]

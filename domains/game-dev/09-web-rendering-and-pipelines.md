@@ -77,3 +77,18 @@ flowchart LR
 **MRT 黑屏先验附件格式预算，不先减光效。** 同时查设备的 `maxColorAttachments` 和 `maxColorAttachmentBytesPerSample`。默认 32 bytes/sample 的实测配置放不进五个 RGBA16Float（40）；改成四个目标并把阈值 Bloom 移到合成后即跑通。反例：只将其中一张换成 RGBA8Unorm，存储少了，但两种格式的验证成本都是 8，五张仍是 40。可先保默认四目标的可移植路线；确需更多时，只有适配器支持才请求更高设备限制，并保留回退。
 
 依据：[第十批本机固定机位记录](../../docs/collaboration/demo-trial-20261117.md#tenth-batch-ab-tests)（单次整套管线实测） · [r187 后端选项](https://github.com/mrdoob/three.js/blob/r187/src/renderers/webgpu/WebGPURenderer.js#L41-L70) · [WebGPU 限制](https://www.w3.org/TR/webgpu/#limits)及[格式成本](https://www.w3.org/TR/webgpu/#plain-color-formats)（一手规范）。
+
+---
+
+<a id="webgpu-tsl-production-lessons"></a>
+
+## 7. WebGPU + TSL 战役迁移深水坑与自动化交互守则（第 11 批实证）
+
+在将《雪线回波》战役级场景与 1P/3P 武器系统迁入 Three.js `0.187.0` WebGPU 后，以下 6 条踩坑与修法均经核心交互切片 `0` WGSL 报错及无源码双序盲评实证成立（详情与未测边界见 [第 11 批实录](../../docs/collaboration/demo-trial-20261117.md#eleventh-batch-webgpu-remake)）：[本端实测]
+
+1. **`material.normalNode` 的视图空间合同（高频隐蔽 Bug）**：Three.js WebGPU `NodeMaterial.setupNormal()` 直接将 `material.normalNode` 当作 **`normalView`（视图空间法线）** 送入光照与 MRT 缓冲。若在 `TSL` 中把三平面世界法线 `normalWorld + perturb` 直接赋给 `normalNode`，场景光照会随相机偏航/俯仰错转，并直接污染 `SSGINode` / `SSRNode` 的 G-Buffer 法线。**规范写法**：世界空间扰动后一律包裹 `transformNormalByViewMatrix(perturbedWorld, cameraViewMatrix)`；物体局部空间扰动包裹 `transformNormalToView(perturbedLocal)`。
+2. **`vertexColors: true` 与 `colorNode` 乘法顺序**：当材质启用 `vertexColors: true` 且几何体带 `color` 属性时，`NodeMaterial` 会在自定义 `colorNode` 之后再乘 `vertexColor()`。因此 `cut` 类预烘暗部顶点色的岩壁切勿再给较低暗色底乘数，避免双倍压暗形成死黑面片。
+3. **WebGPU `1 px` 点图元上限与默认 4-MRT 通道复用**：WGSL 规范对 `point-list` 点精灵固定渲染 `1×1 px`、`PointsNodeMaterial.sizeNode` 无效，风雪/雨水须改为单网格相机朝向广告牌四角片；WebGPU 默认 `32 bytes/sample` 附件预算下，保持 4 附件（`output`、`diffuseColor`、`normal`、`velocity`）并分别复用 `diffuseColor.a` 与 `normal.a` 打包粗糙度与金属度。
+4. **`SSRNode` 暗部压黑与户外空洞隔离**：`SSRNode` 射线未命中时返回 `(0, 0, 0)`；若直接用 `max(giColor * 0.58, ssr)` 混合，会把本应明亮的室内暗部混凝土硬生生压黑成块状黑斑，须把保底漫反射压暗收窄到 `>= 0.84` 并叠加命中权重（`ssrPass.a`）、亮度（`luminance`）与粗糙度门控。同时须将户外路面（如北侧水泥坡道）从室内湿混凝土着色器彻底剥离，保证户外路面粗糙度始终 `> 0.40`，避免室外天空或地底漏光穿透为黑洞。
+5. **生成式 3D 资产在 3P 与 1P 近景的适用边界**：经 Blender 减面绑定骨骼的 `hunyuan-3.1` 寒区角色（含背甲组件 `35,048` 面）在第三人称近/中景稳定拿下盲评 **`4.1/5`**（远胜早期简化方块人 `2.3/5`）；但同一代生成模型产出的硬表面 `K-07` 枪械网格（`12,000` 面）存在 `15,648` 条开放 UV 接缝边与局部翻转面岛，在 `15 cm` 极近第一人称视角下无论是法线重算还是体素重网格均易出现破洞与黑缝。**工程解法**：极近 1P 枪械保留水密参数化硬表面几何，并用零 UV 依赖的**物体局部空间三平面 TSL 磨损/斜切露金属 Shader** + 原生 TSL 针织袖口着色器补齐质感。
+6. **Windows 无头浏览器鼠标锁定防护**：在 Windows 桌面跑自动化测试时，无头浏览器若页面调用 `Element.requestPointerLock()` 会触发系统光标区域锁定，将物理鼠标关入隐藏窗口矩形内。测试脚本应在 `page.addInitScript` 阶段拦截并虚拟化 `Document.prototype.pointerLockElement`、`requestPointerLock` 与 `exitPointerLock`；同时产品端需提供自由鼠标视角设置项、URL 开关与 `pointerlockerror` 自动降级，避免浏览器权限受阻或真机测试锁鼠。
