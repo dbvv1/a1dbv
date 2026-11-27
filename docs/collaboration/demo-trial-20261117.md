@@ -347,3 +347,18 @@
 | **`1920×1080 dpr=1.25` 无截图战斗帧耗** | 曳光弹/烟尘/碎片/弹痕全预分配池化；`prepareScene()` 异步预编译纳入 `fx.bolt()`、枪口焰、准星与天线场 `-52.5` 战区＋双帧冲洗 | 第 1 轮盲评一票否决 Stage 2/3 未预热造成的 `60–90 ms` 战斗长帧；纳入全战区 `compileAsync` 后清零稳态长帧 | **Gate 5 PASS**：Stage 0→3 实机推进（`17` 枪/`drawCalls = 29`/`2.36M tris`），`avgMs = 15.71`（**`63.7 FPS`**）、**`P95 = 20.1 ms`**、**`steadyCombatLongFrames50ms = 0`**、`0` 控制台与 WebGPU 报错 |
 
 **最终独立盲评复核与边界**：不看源码的独立盲评代理对比用户原始报错截图与第 12 批完整 5 组拼接图，确认两项首轮否决项已全部清除、5 项门禁均判定 **`PASS`**。**诚实范围声明**：上述均为本机单台桌面 RTX 5070（Windows 无头 Playwright + 虚拟 Pointer Lock 垫片、`?qa=1&dpr=1.25`）上的技术实测与视觉复核，尚待用户实机操控试玩体验手感、完整战役第 4 阶段终局演出以及多硬件跨端验证；网页可玩样本亦不冒充完整商业长篇 3A 体量。[本端实测]
+
+<a id="thirteenth-batch-aaa-pass"></a>
+
+## 第十三批（11-27 午）：《雪线回波》手部／步态／1P 换弹收口与第 8 轮独立盲评全维度通关实录
+
+按用户“先集中把案例一（《雪线回波》）彻底打磨至商业 3A 标准、暂跳过案例二”的明确要求，针对第 12 批后仍残留的 3P 断腕/腋下误切、`strafe_left` 空中跪姿、避难舱进石与 1P 换弹悬浮握持问题完成全链路根治，并经第 8 轮完全隔离代码的独立 1080p 玩家视角视觉盲评正式给出 **`OVERALL PASS`（5 大维度全 `>= 4/5`、`0` 项 Major Defect）**：[本端实测，2026-11-27]
+
+1. **四项关键根因修复（第 13 批核心沉淀已回写至 [02 验证](../../domains/game-dev/02-verification-and-playtesting.md)、[animation](../../domains/game-dev/assets/animation.md#batch13-rig-deadblend-1p-mag)、[04 客户端](../../domains/game-dev/04-client-modules.md) 与 [09 Web 管线](../../domains/game-dev/09-web-rendering-and-pipelines.md)）**：
+   - **3P 双手复原与零尖刺**：删掉 `armature_apply` 前基于 T-pose `knuckle_pt` 与 3 米叶骨 `fb.tail` 的错误预卷曲，改在 `armature_apply` 前保存 `pre_cut_zones` 切分快照并做实骨轴有界弯曲，`HAND_RESTORE_CHECK` 实测右/左低于 `z = 0.88` 位置恢复 `374` / `425` 个完好手掌顶点、`BODY_SPIKE_AUDIT_COUNT = 0`。
+   - **3P 横移防跪与全步态接地**：给 `DeadBlend` 增加 `reset()` 与 `<= 5.5 rad/s`、`<= 1.2 m/s` 速度钳位，收窄 `strafe_*` 骨盆偏航至 `32°`（四元数半球连续性）并将脚底俯仰钳位扩展至全部 6 条移动剪辑。
+   - **1P 材质拆分与换弹实测掌长对齐**：1P 手臂 GLB 拆分为双材质槽（哑光深炭考杜拉战术手套 ＋ 逐像素重心 UV 橙条夹克袖），去掉突出指节垫片与过曝枪口焰洗白；依据 `Hand -> Finger2 = 0.0956 m` 实测掌长将左右换弹腕部偏移与 `wrapBlend` 分段对齐，并在 `solveIK(armL)` 后把带顶部枢轴的 `K07_Magazine` 按 `lerp(lHand, lFinger2, 0.62) + 0.026*palmW + 0.054*rigUpW` 锚入左拳掌心，消除最后一处 1P 换弹 Major Defect。
+   - **避难舱净空清理**：迁移侵入 `CACHE` 小屋内的 `rock_face_01` 与碰撞盒并把小屋基底列入随机巨岩散点排除区。
+2. **第 8 轮量化门禁与独立盲评总表（`1920×1080 @ ?qa=1&dpr=1.25`、WebGPU `renderer`、`0` 报错）**：
+   - **第 8 轮代码隔离视觉盲评（16 张原生 1080p 图分批 <=2 张审阅，评分留存于独立评审会话记录）**：**`OVERALL PASS`**——Dim 1（3P 角色/绑定）**`4/5`**、Dim 2（3P 持枪/动作）**`4/5`**、Dim 3（1P 视图/瞄具/换弹/开火）**`4/5`**、Dim 4（场景/光照/SSR/质感）**`4/5`**、Dim 5（WebGPU 性能与稳态）**`5/5`**，**Major Defects = `0`**（另记录 `8` 项细节微瑕供后续打磨）。
+   - **关键客观遥测**：**`65.7 FPS`**（`avgMs = 15.21`、`p95Ms = 20.1`、`29` calls、`3,716,274` tris、`steadyCombatLongFrames50ms = 0`、`errorsVis = []`、`errorsPerf = []`）；`Gate 1` `overlap1P3P = 0`、`maxGripErrorR = 0.0005`、`maxGripErrorL = 0.0193`、`minSoleError = -0.0004`；`Gate 2` `maxHallBandStep = 0.0478`；`Gate 3` 户外/室内 ADS 准星偏移 `dx/dy <= 0.0008`；`Gate 6` 150 帧 60Hz 连续运动无瞬移（`max1PHandCamStepM = 0.0264`、`p99 = 0.0188`）。**边界**：仍为本机单台桌面 WebGPU QA 与实机渲染验证；按用户指示未开启案例二。

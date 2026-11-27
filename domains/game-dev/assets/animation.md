@@ -619,3 +619,13 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 **失败反例**：第 11 批的后背远景放过了默认握姿错误和双套手臂重叠；第 12 批首轮增加蹲姿检查后，又发现小腿埋入地面。修正屈膝和接地后，通过的是同机截图及姿态采样，不是用户复玩或持续动作接触验证。
 
 依据：[《雪线回波》第 12 批局部实测与复核范围](../../../docs/collaboration/demo-trial-20261117.md#twelfth-batch-aaa-gates)（本端实测，单批次）；[Three.js r187 固定源码：旋转夹角](https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/src/math/Quaternion.js#L506-L516)（一手，核实 2026-11-27）。两点绕轴反例经离线几何复算；鞋底取样和切换录像检查是下一轮验法，未在该批证实。
+
+<a id="batch13-rig-deadblend-1p-mag"></a>
+
+### 手部静置卷曲顺序、DeadBlend 速度钳位与 1P 掌长对齐换弹道具实证
+
+**在第 13 批《雪线回波》3P 断腕与 1P 换弹悬空排查中，定位并验证了三项跨角色资产与 IK 管线的底层边界：**[本端实测，2026-11-27]
+
+1. **Blender 静态重置顺序与切分快照（禁止先卷曲后 `armature_apply`）**：FBX 导入叶骨 `.tail` 常长达数米，绝不能用于指轴计算（须取 `head -> child.head`）；若在 `armature_apply` 前用 T-pose `knuckle_pt` 预卷手指，会把已蒙皮手部顶点误映射到腋下或胸侧。正确顺序是先保存 `pre_cut_zones` 切分快照，再执行 `armature_apply` 与有界指节卷曲，并用顶点分布断言（例如 `HAND_RESTORE_CHECK` 确认双手各有数百顶点真实留在 `z < 0.88` 位置、`BODY_SPIKE_AUDIT_COUNT = 0`）验明手掌未漂移。
+2. **`DeadBlend`（Inertialization）角／线速度钳位与全步态接地**：姿态硬切或坐标瞬移后若不调用 `DeadBlend.reset()`，极短 `dt` 差分（`quatDiff / dt`）会飙升出异常惯性速度，将腿骨反向外推成“半空单膝跪地”。应给 `DeadBlend` 加硬限速（例如角速度 `<= 5.5 rad/s`、线速度 `<= 1.2 m/s`）并在瞬移/立姿重置时清空速度；横移 `strafe_*` 骨盆偏航收敛至约 `32°` 配四元数半球连续性，同时把脚踝俯仰钳位与骨盆接地同步覆盖全部移动剪辑（站走/冲刺/横移/蹲走）。
+3. **1P 掌长实测标定与换弹弹匣 Post-IK 掌窝锚定**：当 1P 手臂 GLB 按 `1.0×` 挂载而武器按 `(0.75, 0.75, 0.80)` 缩放时，不能凭经验硬写 `-0.034 m` 手腕偏移；实测 `Hand -> Finger2`（MCP 关节）骨长 `0.0956 m` 下，手腕须后撤约 `0.65–0.70×` 掌长（`-0.066 m` 右手 / `-0.068 m` 左手换弹）并通过分段渐进 `wrapBlend`（保持 Hip/ADS/Sprint 原姿态与 C1 连续性）加紧 MCP/PIP 弯曲，四指才能贴实包住握把与弹匣。换弹中的新弹匣不可在 IK 求解前绑到预估手位，须在 **`solveIK(armL)` 与 `lHand.updateMatrixWorld(true)` 之后**按 `lerp(lHand, lFinger2, t) + palmW * offset` 计算实测掌窝，并按道具局部枢轴偏移（如 `K07_Magazine` 枢轴位于顶部进弹口、主体中心在下方 `-0.048` 局部单位，须沿枪身上方补偿 `+0.054 m` 并绕 Y 旋转展示侧面发光电芯）world-to-local 锚定进左拳掌心。
