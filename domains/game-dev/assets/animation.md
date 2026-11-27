@@ -636,9 +636,13 @@ FPS [换弹快照适配候选](https://github.com/dbvv1/FPS-Like/commit/2e770621
 
 <a id="rig-space-additive-and-1p-ik"></a>
 
-### 1P 高模手臂 IK 重定向与 3P Rig-Space 增量冲刺姿态
+### 1P 专业武器手部绑定、视口构图与 3P 有符号俯仰／Rig-Space 增量契约
 
-**除静态骨轴对齐外，第一人称近景手臂烘焙与第三人称跨骨架增量姿态同样决定实操可玩质感：**[本端实测，2026-11-27]
+**参考商业 3A FPS（Infinity Ward *MW*、UE5 [Lyra](https://dev.epicgames.com/documentation/en-us/unreal-engine/lyra-sample-game-in-unreal-engine) / Game Animation Sample）与开源高精度实作 [`FP_FRAMING.md`](https://raw.githubusercontent.com/cktang88/3d-fps/main/docs/FP_FRAMING.md) 的一手契约，结合本端失败教训，1P/3P 持枪动画须守住以下通用约束（详拆见[商业 3A FPS 架构研究](../../../docs/research/2026-11-27-aaa-fps-architecture-and-judge-teardown.md)）：**[一手源码／文档＋本端失败实证，2026-11-27]
 
-1. **高模雕刻 1P 手臂离线分析式重定向（避免运行时手腕抖动）**：第一人称近景切忌使用光滑程序管状手。应对具备真实织物褶皱与独立手套材质的高模手臂骨架，在离线资产编译阶段采用**解析两骨余弦定理 IK ＋ 正交手掌/指节基准帧差求解器 ＋ 约 50% 前臂扭转分担混合**直接烘焙进全部动作剪辑，而非在渲染每帧临时用启发式骨骼叠加去拉扯前臂和手指，从根源上消除第一人称持枪手部抖动与瞬移。
-2. **3P glTF Y-up 挂点坐标系核对与 Rig-Space 增量冲刺姿态**：Blender 中的 `+Y 朝前 / +Z 朝上` 经 glTF Y-up 导出后在运行时会映射为 **`-Z 朝前 / +Y 朝上`**，调整 3P 武器相对右手骨插槽偏移时若沿 `+Y` 上抬会把枪托顶入头盔衣领，沿 `-Z` 与适当 `-Y` 前推下压才能留出清晰净空。进一步地，**严禁在异构骨架上直接按骨骼局部 X/Y/Z 轴做冲刺前倾或低姿持枪加法旋转**——不同动作库或骨架的静置 Bone Roll 各异，局部同轴旋转极易把冲刺枪口扳向正上方；正确做法是在角色根空间（Rig Space）指定前倾/横摆方向，经 `inv(qParent) * qDeltaWorld * qParent` 换算为父骨骼局部增量四元数后左乘（`premultiply`）至 `bone.quaternion`，同步实现脊柱前倾、头部反向抬头看向前方，以及双臂压低并斜向收于胸前的战术低姿持枪（Low-Ready）。
+1. **禁止裁切全身低模充当 1P 手臂；严格遵守 1P 构图、独立可动件与离线 BVH 穿模门禁**：写实项目应采用独立 DCC 手臂＋高精分件武器骨架（独立弹匣/枪机/拉机柄骨骼，彻底排除胸腔/躯干网格），在实尺（腕至食指尖约 `0.18 m`）与独立视模相机（典型如垂直 `vFOV 52°`、`near = 0.01 m`，ADS 缩窄约 `10°`）下控制腰射枪身占比与手臂屏占比（例如手臂峰值像素 `< 25%` 且不侵入屏幕中心框）；支持使用 DCC/效应器重定向主手与换弹轨迹，辅手结合两骨解析 IK 与多段前臂扭转骨（`BoneTwist`）跟随护木或弹匣包，并在离线阶段用 BVH 最近面＋多射线退出投票把穿模压到 `< 2 mm`。
+2. **主动作与二阶弹簧动力分层，严禁同骨剪辑互斥打架 ＋ 真准直视差瞄具**：换弹/切枪/拉栓靠手 K 主剪辑表达重量与卡点，滞后、微摆与开火后坐回弹靠**二阶弹簧阻尼层（`F = -kx - cv`）**驱动叠加；触发 `Fire` 时不得让同权重 `Idle`/`Walk` 剪辑与持枪主骨抢权，亦不得让后坐位移撞入近裁面。光学瞄具红点采用基于视线与光轴夹角的视差准直着色器按镜框裁切，不用静态 3D 球体占位。
+3. **3P 有符号垂直俯仰校验 ＋ 后置 `ik_hand_gun` 锁枪 ＋ Rig-Space 冲刺姿态**：
+   - 核对 DCC 与运行时坐标系转换（例如 Blender `+Y 朝前 / +Z 朝上` 导出 glTF Y-up 后映射为 `-Z 朝前 / +Y 朝上`）确保武器挂点与头盔衣领留足净空。
+   - **AimOffset 与脊柱/头部俯仰必须在世界或角色空间做有符号校验**：模型若在根节点绕垂直轴旋转了 `180°`，绝不可沿用局部 `rotateX(+pitch)`，须确保向上瞄准（`+pitch`）时世界头骨与枪口真实上仰；并在脊柱旋转之后由 `ik_hand_gun` 锁死支撑手位置，避免左手悬空。
+   - 跨异构骨架叠加冲刺前倾或胸前低姿持枪（Low-Ready）时，不在任意局部骨轴直接叠加角度（不同 Rest Bone Roll 会把枪口扳向天空），而是从角色根空间指定旋转经父骨局部共轭转换（`inv(qParent) * qDeltaWorld * qParent`）后左乘 `bone.quaternion`，配合 Motion Matching / Distance＋Stride＋Orientation Warping 消除“腿动躯干平推”。
